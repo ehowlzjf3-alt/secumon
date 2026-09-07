@@ -1,5 +1,5 @@
 {
-  "checkpoint": 372,
+  "checkpoint": 373,
   "date": "2026-09-08",
   "status": "local_verification_in_progress",
   "goalComplete": false,
@@ -198,17 +198,71 @@
       "filter": "prepare (original|candidate) copy (interruption|attempt limit)|documents recovery rejects|prepare rejects super-journal",
       "command": ".tools/node-v24.20.0-darwin-arm64/bin/node --test --test-concurrency=1 --test-name-pattern='prepare (original|candidate) copy (interruption|attempt limit)|documents recovery rejects|prepare rejects super-journal' --test-reporter=tap dist/tests/agent-sqlite-recovery.test.js",
       "scope": "Actual local POSIX prepare copy interruption/retry and 4-attempt exhaustion; valid documents-fence mismatch and unsupported super-journal refusal"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-target12.log",
+      "sourceDigest": "8f3ec0f6e0946a3a015a0ca1486701d23ab832eff891bd449bffb385061cd8fd",
+      "buildManifest": "runtime/evidence/C05-ordered-build1-manifest.json",
+      "exitCode": 0,
+      "total": 11,
+      "pass": 11,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 6123.989792,
+      "files": [
+        "agent-sqlite-recovery.test.js"
+      ],
+      "selectedTestNames": [
+        "prepare rejects a missing owner table without binding or changing the original hot rollback pair",
+        "prepare rejects a missing owner row without binding or changing the original hot rollback pair",
+        "prepare rejects file-journal selection before adopting a leftover local rollback pair",
+        "prepare rejects postgres-state selection before adopting a leftover local rollback pair",
+        "prepare rejects postgres-memory selection before adopting a leftover local rollback pair",
+        "prepare rejects postgres-channel selection before adopting a leftover local rollback pair",
+        "same-operation prepare rejects original main same-bytes replacement while retaining all interrupted recovery files",
+        "same-operation prepare rejects original main same-inode content mutation while retaining all interrupted recovery files",
+        "same-operation prepare rejects original journal same-bytes replacement while retaining all interrupted recovery files",
+        "same-operation prepare rejects original journal same-inode content mutation while retaining all interrupted recovery files",
+        "same-operation prepare rejects a different kind while preserving both databases and prepared receipts"
+      ],
+      "uniqueIncrement": 11,
+      "session": 57177,
+      "scope": "Actual temporary hot-pair missing-owner rejection; persisted file-journal/PostgreSQL selection refusal without a PostgreSQL connection; same-operation main/journal object/content changes and kind conflict preserve originals and recovery records"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-target13.log",
+      "sourceDigest": "8f3ec0f6e0946a3a015a0ca1486701d23ab832eff891bd449bffb385061cd8fd",
+      "buildManifest": "runtime/evidence/C05-ordered-build1-manifest.json",
+      "exitCode": 0,
+      "total": 2,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 59.824,
+      "files": [
+        "agent-sqlite-recovery-process.test.js"
+      ],
+      "selectedTestNames": [
+        "recovery process event contract: deadline survives a late successful reply and still waits for exit and close",
+        "recovery process event contract: abort survives a late successful reply and still waits for exit and close"
+      ],
+      "uniqueIncrement": 0,
+      "scope": "Existing deadline/abort ChildStub cases strengthened with late successful replies and rerun; no actual worker/SQLite close fault or additional unique tests",
+      "executionObservation": "inline terminal completion; no live session handle"
     }
   ],
   "modelApiTests": "stopped",
   "externalServiceConnectionsRun": false,
   "remaining": [
-    "R02 missing owner and unsupported active storage selection; R03 original identity/content changes and same-operation kind conflict",
-    "R04 remaining phase/platform cases; R06 late reply and managed worker/close/unobserved propagation; R07 external tool receipts; R08 recovery CLI",
+    "R04 remaining explicitly unobserved interruption boundaries and native Windows no-replace resume",
+    "R06 actual candidate-worker/DB-close fault propagation, worker-unobserved receipt and maintenance retention; late-response event cases are verified reruns",
+    "R07 existing external-tool attempt/effect receipts without automatic success or replay; R08 general sqlite-recovery CLI prepare/apply/status",
     "Current Linux/native Windows and final integrated regression"
   ],
-  "next": "Reuse current recovery fixture for remaining R02/R03 selection and original-currentness rejection; C04 selected158 passed and C05 preparation saved",
-  "uniquePassingTests": 222,
+  "next": "Preserve locally proven R02/R03 and event-only late-reply reruns; continue the named R04/R06/R07/R08 acceptance gaps without rerunning historical selections solely to increase totals",
+  "uniquePassingTests": 233,
   "preparedFixtureSourcesBaselineCheckpoint": 370,
   "preparedFixtureSources": {
     "src/tests/personal-memory-context.test.ts": "e74b39f1e75e2d008fa2a8222b005117cc99b96319687d13155ba6453a1ce004",
@@ -254,9 +308,16 @@
       "exitCode": 0,
       "manifest": "runtime/evidence/C03-ordered-build5-manifest.json",
       "sourceDigest": "e6d6c53682954cdac728d0ca41e792efc53af1a5ee942e710a6b26b5d9343d0c"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-build1.log",
+      "session": 40906,
+      "exitCode": 0,
+      "manifest": "runtime/evidence/C05-ordered-build1-manifest.json",
+      "sourceDigest": "8f3ec0f6e0946a3a015a0ca1486701d23ab832eff891bd449bffb385061cd8fd"
     }
   ],
-  "uniqueTests": 222,
+  "uniqueTests": 233,
   "failingTests": 0,
   "activeTest": null,
   "recoveryHappyPaths": {
@@ -295,5 +356,31 @@
       "sourceDigest": "e6d6c53682954cdac728d0ca41e792efc53af1a5ee942e710a6b26b5d9343d0c"
     }
   ],
-  "remainingAcceptance": "design/chapters/C03-remaining-acceptance.md"
+  "remainingAcceptance": "design/chapters/C03-remaining-acceptance.md",
+  "acceptanceUpdates": {
+    "checkpoint": 373,
+    "R02": {
+      "status": "local_selected_verified",
+      "logs": [
+        "runtime/evidence/C03-ordered-target8.log",
+        "runtime/evidence/C03-ordered-target11.log",
+        "runtime/evidence/C03-ordered-target12.log"
+      ],
+      "limit": "PostgreSQL-selected purposes use real setup metadata with no PostgreSQL connection; not PostgreSQL server acceptance"
+    },
+    "R03": {
+      "status": "local_selected_verified",
+      "logs": [
+        "runtime/evidence/C03-ordered-target11.log",
+        "runtime/evidence/C03-ordered-target12.log"
+      ],
+      "limit": "Actual temporary POSIX files and interrupted prepare; native Windows not executed"
+    },
+    "R06LateResponse": {
+      "status": "event_contract_verified",
+      "log": "runtime/evidence/C03-ordered-target13.log",
+      "uniqueIncrement": 0
+    },
+    "totalMeaning": "233 unique selected cases across the retained per-run source digests; not a 233-case run against the latest source"
+  }
 }

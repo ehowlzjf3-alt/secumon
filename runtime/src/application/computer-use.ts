@@ -7,6 +7,7 @@ import type { ComputerBinding, ComputerDriver } from './computer-use-ports.js';
 import type { RuntimeServices } from './services.js';
 import type { Tool, ToolDefinition } from './ports.js';
 import { ToolContracts } from './tool-contracts.js';
+import { markComputerObservationTool } from './computer-tool-identity.js';
 import { ToolDefinitionSchema, frozen } from './resource-contracts.js';
 import { parseContract, ToolResultSchema, ToolUsageSchema } from './contracts.js';
 import { asJson, taskDigest } from './plan-validator.js';
@@ -68,10 +69,12 @@ export function createComputerTools(input: ComputerBinding, runner: () => Comput
         type: 'object', properties: { kind: { const: kind === 'observe' ? 'computer_observation' : 'computer_run' }, sessionId: { const: binding.sessionId }, driver: { const: identity } },
         required: ['kind', 'sessionId', 'driver'],
       } }));
-    return Object.freeze({ definition,
+    const tool: Tool = Object.freeze({ definition,
       execute: (task: TaskSpec, context: Context) => runner().execute(binding, definition, kind, task, context),
       validateResult: (state: WorkState, result: ToolResult) => runner().validateResult(binding, definition, kind, state, result),
     });
+    if (kind === 'observe') markComputerObservationTool(tool);
+    return tool;
   });
 }
 

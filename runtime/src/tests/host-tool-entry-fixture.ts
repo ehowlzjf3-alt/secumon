@@ -1,4 +1,5 @@
 import { appendFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import type { AgentTurnInput } from '../application/agent-turn-types.js';
 import { RESOURCE_TOOL_IDS } from '../application/resource-tools.js';
 import type { Tool } from '../application/ports.js';
@@ -10,11 +11,15 @@ import type { AgentExecutionHost, HostToolContext } from '../presentation/host-t
 export const HOST_ENTRY_PROFILE = 'host-entry-v1';
 export const HOST_ENTRY_TOOL = 'company.document.read';
 export const HOST_ENTRY_TEXT = '이 담당에게 연결한 원본 문서의 내용을 확인해 알려 줘.';
-export interface HostEntryOptions { text: string; callsFile?: string; allowRead?: boolean; principalId?: string; labels?: string[]; toolCalls?: number }
+export interface HostEntryOptions { text: string; callsFile?: string; identityRegistryDirectory?: string;
+  allowRead?: boolean; principalId?: string; labels?: string[]; toolCalls?: number }
 export function hostEntryFixture(options: HostEntryOptions) {
+  const identityRegistryDirectory = options.identityRegistryDirectory ?? (options.callsFile ? join(dirname(options.callsFile), 'registry') : undefined);
+  if (!identityRegistryDirectory) throw new Error('host_entry_fixture_registry_required');
   const observed = { modelInputs: [] as AgentTurnInput[], toolContexts: [] as HostToolContext[], reads: 0, toolCloses: 0, modelCloses: 0 };
   const identity = { provider: 'local-fixture', model: 'host-entry', revision: '1' };
   const host: AgentExecutionHost = {
+    identityRegistryDirectory,
     models: new Map([[HOST_ENTRY_PROFILE, { execution: 'deterministic_fixture', async open(profile) {
       const planner = new StructuredAgentTurnAdapter({ identity, profile, destination: 'local', maxRequestBytes: 65536,
         capabilities: { structuredOutput: true, toolCalling: false, images: false, cancellation: true, maxInputTokens: 100000, maxOutputTokens: 2048 } }, {

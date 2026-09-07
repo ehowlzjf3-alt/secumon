@@ -19,8 +19,15 @@ function fixture(t: TestContext, backend: 'sqlite' | 'file-journal') {
   const ready = new FileAgentProfileStore(runtimeRoot).initialize(directory);
   writeFileSync(join(directory, 'config.json'), JSON.stringify({ ...ready.config, storage: { ...ready.config.storage, state: backend },
     model: { profile: HOST_ENTRY_PROFILE } }), { mode: 0o600 });
-  t.after(() => rmSync(base, { recursive: true, force: true }));
-  return { base, directory, callsFile: join(base, 'source-calls.log') };
+  let close: (() => Promise<void>) | undefined;
+  t.after(async () => {
+    const errors: unknown[] = [];
+    try { await close?.(); } catch (error) { errors.push(error); }
+    try { rmSync(base, { recursive: true, force: true }); } catch (error) { errors.push(error); }
+    if (errors.length === 1) throw errors[0];
+    if (errors.length > 1) throw new AggregateError(errors, 'host_entry_cleanup_failed', { cause: errors[0] });
+  });
+  return { base, directory, callsFile: join(base, 'source-calls.log'), beforeRemove(callback: () => Promise<void>) { close = callback; } };
 }
 interface Chat { workId: string; sessionId: string; accepted: boolean; snapshot: { status: string; resultDelivery: string;
   usage: { toolCalls: number; modelCalls: number; tokens: number } }; messages: { kind: string; text: string }[] }
@@ -72,12 +79,16 @@ async function connect(directory: string, options: HostEntryOptions, sessionId?:
       const value: unknown = await response.json(); assert.equal(response.status, expected, JSON.stringify(value)); return value as T;
     }
     return { app, observed: f.observed, config: session.config, request };
-  } catch (error) { await app.close(); throw error; }
+  } catch (error) {
+    try { await app.close(); }
+    catch (cleanup) { throw new AggregateError([error, cleanup], 'host_entry_connect_cleanup_failed', { cause: error }); }
+    throw error;
+  }
 }
 
 for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: native HTTP keeps host registration out of requests and connects one read through evidence and reconnect`, async t => {
   const f = fixture(t, backend), options = { text: '웹 담당의 원본 결과입니다.', callsFile: f.callsFile };
-  let web = await connect(f.directory, options); t.after(() => web.app.close());
+  let web = await connect(f.directory, options); f.beforeRemove(() => web.app.close());
   const first = await web.request<WebAcceptResult>('/api/requests', { requestId: 'read', rawText: HOST_ENTRY_TEXT, mode: 'auto' });
   assert.equal(web.observed.modelInputs.length, 0); assert.equal(web.observed.reads, 0);
   const done = await web.request<WebCommandResult>(`/api/works/${first.workId}/commands`, { requestId: 'run', kind: 'run', expectedGoalRevision: 1 });

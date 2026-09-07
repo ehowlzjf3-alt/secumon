@@ -114,7 +114,7 @@ for (const mismatch of ['request', 'result-agent', 'result-kind', 'duplicate'] a
 }
 
 for (const reason of ['deadline', 'abort'] as const) {
-  test(`recovery process event contract: ${reason} requests a kill but still waits for exit and close`, async t => {
+  test(`recovery process event contract: ${reason} survives a late successful reply and still waits for exit and close`, async t => {
     const { child } = fixture(t), controller = new AbortController(), cause = new Error('host-abort-reason');
     const run = watch(runSqliteRecoveryWorker(request, { timeoutMs: 25, signal: controller.signal }));
     if (reason === 'deadline') {
@@ -122,12 +122,17 @@ for (const reason of ['deadline', 'abort'] as const) {
       t.mock.timers.tick(1);
     } else controller.abort(cause);
     assert.deepEqual(child.kills, ['SIGKILL']); await stillPending(run);
-    child.emit('exit', null, 'SIGKILL'); await stillPending(run);
-    child.emit('close', null, 'SIGKILL');
+    child.emit('message', reply()); await stillPending(run);
+    // A racing success and clean termination cannot undo the host's earlier stop decision.
+    child.emit('exit', 0, null); await stillPending(run);
+    child.emit('close', 0, null);
     const error = await rejected(run), first = failureAt(error, reason, reason === 'abort' ? 'aborted' : 'deadline');
     assert.equal(error.cause, first);
     if (reason === 'abort') assert.equal(first.cause, cause);
-    assert.deepEqual(error.workerExit, { observed: true, code: null, signal: 'SIGKILL', pid: child.pid, closed: true });
+    assert.deepEqual(error.failures.map(item => item.stage), [reason]);
+    assert.deepEqual(error.report, reply());
+    assert.deepEqual(error.workerExit, { observed: true, code: 0, signal: null, pid: child.pid, closed: true });
+    assert.deepEqual(child.kills, ['SIGKILL']);
   });
 }
 

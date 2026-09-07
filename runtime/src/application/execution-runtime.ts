@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type { Control } from '../domain/control.js';
 import { decideExecution, taskFailureKey } from './execution-decision.js';
 import { acceptedToolProgressKeys, captureProgress } from './work-progress.js';
+import { isComputerObservationTool } from './computer-tool-identity.js';
 import type { Attempt, Json, PlanProposal, TaskSpec, ToolExecution, ToolResult, ToolUsage, WorkState } from '../domain/model.js';
 import { GoalSchema, ObligationSchema, PlanProposalSchema, ToolResultSchema, parseContract } from './contracts.js';
 import { transact } from './work-transactions.js';
@@ -696,7 +697,8 @@ export class ExecutionRuntime {
         captureProgress(state, this.services.digester,
           a.adopted && state.progress?.processed.includes(`attempt:${a.id}:settled`) ? `attempt:${a.id}:received:${a.resultId}:adopted` : `attempt:${a.id}:settled`, this.services.clock.now(), {
           failureKey: a.error ? taskFailureKey(state, task, this.services.digester) : null,
-          additionalKeys: a.adopted && !result.reuse ? acceptedToolProgressKeys(state, task, result, this.services.digester) : [],
+          additionalKeys: a.adopted && !result.reuse ? acceptedToolProgressKeys(state, task, result, this.services.digester,
+            toolProofValid && proofTool?.definition.resultValidation === 'artifact-proof-v1' && Boolean(proofTool.validateResult) && isComputerObservationTool(proofTool)) : [],
         });
       if (!['cancelled', 'paused', 'failed', 'blocked', 'completed'].includes(state.status)) { state.status = 'ready'; state.statusReason = rejection ?? 'result_settled'; }
     }, async () => {

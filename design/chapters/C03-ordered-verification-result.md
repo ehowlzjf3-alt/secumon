@@ -1,5 +1,15 @@
 # C03 순차 검증·수정 기록
 
+## Checkpoint373 — 소유·저장 선택과 원본 변경 거절11개 확인
+
+신규 **11/11 통과**(target12, session57177, exit0)로 선택한 누적 고유 시험은 **233개(222+11) 통과**다. C05 build1(session40906, exit0)의 Node v24.20.0 및 소스 지문 `8f3ec0f6e0946a3a015a0ca1486701d23ab832eff891bd449bffb385061cd8fd`에서 확인했다. 이전 선택은 당시 소스 범위를 유지하며, 233개를 이번 최종 소스로 한 번에 실행한 결과는 아니다. [신규 원로그](../../runtime/evidence/C03-ordered-target12.log) · [빌드 지문](../../runtime/evidence/C05-ordered-build1-manifest.json) · [실행 기록](../../runtime/evidence/C03-ordered-checkpoint.json).
+
+owner 테이블/행 누락2개, file-journal state 및 PostgreSQL로 선택한 state/knowledge/channel의 로컬 복구 거절4개, 원 main/journal의 같은 bytes·다른 inode 교체와 같은 inode 내용 변조4개, 동일 operation의 다른 kind 거절1개를 확인했다. 선택은 실제 초기화 API로 저장했고 PostgreSQL pool·endpoint·연결은 제공하지 않았다. 원본 변경은 실제 후보 복사 중단 후 같은 ID를 재개하여 검사했으며, 원 파일·보존본·부분 후보·영수증을 유지하고 새 후보를 만들지 않았다. **R02/R03의 명시된 로컬 사례는 확인됐으며**, 플랫폼/최종 통합 인수와는 구분한다.
+
+기존 worker deadline/abort2개에 late 정상 응답을 추가한 **2/2 재실행**(target13, inline terminal exit0)도 같은 빌드에서 통과했다. 중단 결정 뒤 정상 응답과 exit0/close가 와도 최초 실패를 유지한다. 기존14개 안의 두 사례이므로 고유 시험 수에 더하지 않는다. ChildStub 이벤트 검증이며 실제 후보 worker의 SQLite close 오류나 종료 미관측의 관리 흐름을 검증한 결과는 아니다. [재실행 원로그](../../runtime/evidence/C03-ordered-target13.log).
+
+남은 인수는 [현재 목록](C03-remaining-acceptance.md)에 유지한다. R04의 미관측 중단 경계/native Windows, R06의 실제 worker·DB close·종료 미관측 전파, R07 외부 도구 영수증, R08 새 복구 CLI와 현재 Linux/native Windows·최종 통합은 미완료다. 실제 모델/API 시험은 계속 중단한다. 아래 checkpoint372 이전의 남은 작업 설명은 각 실행 당시 기록이다.
+
 ## Checkpoint372 — 준비 중단·시도 상한과 추가 거절6개 확인
 
 신규6개(session5970, target11)는 **6/6 통과**, 실패·취소·건너뜀0이다. C04 build2(session62563)와 동일한 지문 `578542798a5b4edfa21734cdf456c6a1bff7b0546f4d807487e5f33b07d556ca`에서 실행했다. [원로그](../../runtime/evidence/C03-ordered-target11.log) · [실행 기록](../../runtime/evidence/C03-ordered-checkpoint.json).

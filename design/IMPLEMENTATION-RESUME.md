@@ -4,6 +4,16 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT373-START -->
+### Checkpoint373 — 컴퓨터 관찰 진행 교정·일반 쓰기/컴퓨터 입구 검증
+
+Checkpoint373: 컴퓨터 관찰의 준비 진전 누락을 교정하고 C05 선택 고유201개를 확인했다. C03은 owner/저장 선택·원본 현재성 거절11개 추가로 고유233개이며 late 응답2개 재실행은 중복 합산하지 않는다. 각 실행의 소스 지문과 실패 원로그를 보존한다. 이전 완료 단위는 `b40d68d`에 게시했다.
+
+최종 C05 build3(session94397)는 exit0, sourceDigest `0f6dc7c8aecebc952a940cc23e279fa58b29cf1a39f730cbd38d76f79bd89341`이다. 신규25개는 build2에서 통과했고, 관련175개 중 실패8개를 교정해 관찰7·reconciliation6·host입구5의18개를 build3에서 통과했다. 신규 고유26+관련175=201이며 전체를 한 소스에서 다시 실행한 것으로 표시하지 않는다. build2 코어 타입·구조189개/위반0도 확인했다.
+
+[현재 C05 결과](chapters/C05-ordered-verification-result.md) · [C03 결과](chapters/C03-ordered-verification-result.md) · [다음 작업](NEXT-STEPS.md). 다음은 C03의 실제 worker 오류/종료 미관측 전파·잔여 복구 CLI 등과 C05 도구/기억/스킬·MCP 후속 인수다. R02/R03 및 이번 host/computer 선택 검증은 반복하지 않는다. 실제 모델/API 중단과 전체 goal 미완료를 유지한다. 활성 빌드·시험 없음. 작업 단위별 문서 동반 커밋·푸시 규칙을 적용한다. 아래 checkpoint372 이하는 당시 이력이다.
+<!-- CHECKPOINT373-END -->
+
 <!-- CHECKPOINT372-START -->
 ### Checkpoint372 — chat 호스트 연결·C04 선택 검증, C03 복구6개 추가
 

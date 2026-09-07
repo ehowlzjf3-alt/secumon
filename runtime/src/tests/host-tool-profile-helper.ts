@@ -19,6 +19,7 @@ export const hostLimits: Limits = { toolCalls: 8, modelCalls: 12, tokens: 1_000_
 
 export function hostToolFixture(t: TestContext) {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'host-tool-profile-')));
+  const hostOptions = { identityRegistryDirectory: join(base, 'registry') };
   const profiles = new FileAgentProfileStore(runtimeRoot);
   const active = new Set<AgentTurnProfile>();
   t.after(async () => {
@@ -33,9 +34,9 @@ export function hostToolFixture(t: TestContext) {
       storage: { ...ready.config.storage, state: backend }, skills: { mode: skills } }), { mode: 0o600 });
     return ready;
   }
-  return { base, profiles, create,
+  return { base, profiles, create, hostOptions,
     async open(directory: string, host: AgentExecutionHost) {
-      const profile = await openAgentTurnProfile(directory, { provider: 'registered' }, host); active.add(profile); return profile;
+      const profile = await openAgentTurnProfile(directory, { provider: 'registered' }, { ...host, ...hostOptions }); active.add(profile); return profile;
     },
     async close(profile: AgentTurnProfile) { try { await profile.close(); } finally { active.delete(profile); } },
     untrack(profile: AgentTurnProfile) { active.delete(profile); },

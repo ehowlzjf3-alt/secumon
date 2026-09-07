@@ -36,7 +36,15 @@ async function fixture(t: TestContext, backend: ComputerBackend) {
   }) });
   t.after(() => h.close()); assert.ok(h.driver instanceof SyntheticComputerDriver); const driver = h.driver;
   driver.injectNextAction({}); driver.injectNextAction({ outcome: 'not_applied_timeout' });
+  const firstObservation = await observeComputer(h), prepared = await h.runtime.state(h.workId);
+  // The first view earns preparation credit; an unchanged second read starts the deliberate no-progress sequence.
   const observation = await observeComputer(h);
+  const reread = await h.runtime.state(h.workId);
+  assert.notEqual(observation.observationId, firstObservation.observationId);
+  assert.equal(reread.progress!.productiveSteps, prepared.progress!.productiveSteps);
+  assert.deepEqual(reread.progress!.knownKeys, prepared.progress!.knownKeys);
+  assert.equal(reread.progress!.consecutiveUnproductive, prepared.progress!.consecutiveUnproductive + 1);
+  assert.equal(driver.snapshot().inputCount, 0); assert.equal(driver.snapshot().saveCount, 0);
   const parent = await run(h, await submitComputerTask(h, 'act', computerActInput(observation.observationId, saveNoteSteps)));
   assert.equal(parent.status, 'partial'); assert.equal(parent.effectState, 'confirmed'); assert.ok(parent.computerUse);
   const task = await plan(h, 'continue', { attemptId: parent.id, checkpointId: parent.computerUse.head.id, reconciliation: null });

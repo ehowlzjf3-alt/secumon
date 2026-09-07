@@ -119,7 +119,7 @@ test('a tool factory failure preserves the original exception, closes acquired s
   const close = SqliteStateRepository.prototype.close; let closed: SqliteStateRepository | undefined;
   SqliteStateRepository.prototype.close = async function () { await close.call(this); closed = this; };
   try {
-    await assert.rejects(openAgentTurnProfile(ready.root, { provider: 'registered' }, h.host), error => error === original);
+    await assert.rejects(openAgentTurnProfile(ready.root, { provider: 'registered' }, { ...h.host, ...f.hostOptions }), error => error === original);
     assert.equal(h.modelOpens.length, 0); assert.equal(h.toolCloses.length, 0); assert.equal(h.toolCalls.length, 0);
     assert.ok(closed); await assert.rejects(closed.get('absent'));
   } finally { SqliteStateRepository.prototype.close = close; }
@@ -132,7 +132,7 @@ test('a model factory failure still closes the acquired host tools and preserves
   const close = SqliteStateRepository.prototype.close; let closed: SqliteStateRepository | undefined;
   SqliteStateRepository.prototype.close = async function () { await close.call(this); closed = this; };
   try {
-    await assert.rejects(openAgentTurnProfile(ready.root, { provider: 'registered' }, h.host), error => {
+    await assert.rejects(openAgentTurnProfile(ready.root, { provider: 'registered' }, { ...h.host, ...f.hostOptions }), error => {
       assert.ok(error instanceof AggregateError); assert.equal(error.cause, primary); assert.deepEqual(errorLeaves(error), [primary, cleanup]); return true;
     });
     assert.deepEqual(h.toolCloses, [ready.identity.agentId]); assert.equal(h.modelCloses.length, 0);
@@ -148,7 +148,7 @@ test('composition failure preserves its parse error and closes model, tools and 
   const close = SqliteStateRepository.prototype.close; let closed: SqliteStateRepository | undefined;
   SqliteStateRepository.prototype.close = async function () { await close.call(this); closed = this; };
   try {
-    await assert.rejects(openAgentTurnProfile(ready.root, { provider: 'registered' }, h.host), error => {
+    await assert.rejects(openAgentTurnProfile(ready.root, { provider: 'registered' }, { ...h.host, ...f.hostOptions }), error => {
       assert.ok(error instanceof AggregateError); assert.ok(error.cause instanceof SyntaxError);
       const leaves = errorLeaves(error); assert.equal(leaves[0], error.cause);
       assert.equal(leaves.filter(value => value === modelError).length, 1); assert.equal(leaves.filter(value => value === toolError).length, 1);

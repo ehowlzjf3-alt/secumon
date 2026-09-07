@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import { fork } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { once } from 'node:events';
-import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { fileURLToPath } from 'node:url';
 import { SQLITE_RECOVERY_PENDING, SqliteRecoveryPendingSchema, type SqliteRecoveryFilePin, type SqliteRecoveryKind } from '../application/agent-sqlite-recovery-contracts.js';
+import type { AgentSetupOptions } from '../application/agent-profile-contracts.js';
 import type { KnowledgeRecord } from '../domain/knowledge.js';
 import { FileAgentProfileStore } from '../infrastructure/file-agent-profile.js';
 import { openAgentStores } from '../infrastructure/agent-stores.js';
@@ -608,4 +609,115 @@ test('prepare rejects super-journal names and rollback trailers while preserving
     assert.deepEqual(readdirSync(status.directory), []);
     assert.equal(existsSync(join(f.profile.paths.metadata, 'lifecycle-maintenance.json')), false);
   }
+});
+
+for (const missing of ['table', 'row'] as const) {
+  test(`prepare rejects a missing owner ${missing} without binding or changing the original hot rollback pair`, options, async t => {
+    const f = await fixture(t, 'state', db => {
+      if (missing === 'table') {
+        db.exec('DROP TABLE agent_storage_owner;');
+        assert.equal(db.prepare("SELECT name FROM sqlite_master WHERE name='agent_storage_owner'").get(), undefined);
+      } else {
+        assert.equal(db.prepare('DELETE FROM agent_storage_owner WHERE singleton=1').run().changes, 1);
+        assert.equal(db.prepare('SELECT count(*) AS count FROM agent_storage_owner').get()?.['count'], 0);
+      }
+    });
+    const unchanged = unchangedFiles([f.path, f.path + '-journal']), operationId = randomUUID();
+    await assert.rejects(prepareAgentSqliteRecovery(f.profiles, f.profile.root,
+      { operationId, kind: 'state', offline: true }, f.host),
+    validatorRejected(missing === 'table' ? 'agent_storage_owner_missing' : 'agent_storage_owner_mismatch'));
+    unchanged(); assertPreservedRejection(f, operationId);
+  });
+}
+
+for (const selection of ['file-journal', 'postgres-state', 'postgres-memory', 'postgres-channel'] as const) {
+  test(`prepare rejects ${selection} selection before adopting a leftover local rollback pair`, options, async t => {
+    const kind: SqliteRecoveryKind = selection === 'postgres-memory' ? 'memory' : selection === 'postgres-channel' ? 'channel' : 'state';
+    const f = await fixture(t, kind), purpose = kind === 'memory' ? 'knowledge' : kind;
+    const setup: AgentSetupOptions = selection === 'file-journal' ? { stateBackend: 'file-journal' } : {
+      postgres: { storeId: randomUUID(), registrationId: randomUUID(), purposes: [purpose] },
+    };
+    // Persist a real selection using setup only. No PostgreSQL pool, endpoint, or physical-store open is supplied.
+    const selected = f.profiles.initialize(join(dirname(f.profile.root), 'selected-agent'), setup);
+    assert.equal(selected.status, 'ready');
+    if (selection === 'file-journal') assert.equal(selected.config.storage.state, 'file-journal');
+    else assert.deepEqual(selected.config.storage.postgres, setup.postgres);
+    const path = kind === 'state' ? join(selected.paths.metadata, 'runtime.sqlite') :
+      kind === 'memory' ? selected.paths.memory : join(selected.paths.metadata, 'channel.sqlite');
+    // These leftover bytes belong to the other temporary agent. Selection must reject them before owner inspection or rollback.
+    writeFileSync(path, f.main, { flag: 'wx', mode: 0o600 });
+    writeFileSync(path + '-journal', f.journal, { flag: 'wx', mode: 0o600 });
+    assert.notEqual(selected.identity.agentId, f.profile.identity.agentId);
+    const unchanged = unchangedFiles([f.path, f.path + '-journal', path, path + '-journal',
+      join(selected.root, 'config.json'), ...['identity.json', 'setup.json', 'setup-operation.json'].map(name => join(selected.paths.metadata, name))]);
+    const operationId = randomUUID(), before = readAgentSqliteRecovery(f.profiles, selected.root, operationId);
+    assert.deepEqual(before, { operationId, stage: 'not_started', pending: null });
+    await assert.rejects(prepareAgentSqliteRecovery(f.profiles, selected.root,
+      { operationId, kind, offline: true }, f.host), { message: 'sqlite_recovery_local_database_not_selected' });
+    unchanged(); assert.deepEqual(readAgentSqliteRecovery(f.profiles, selected.root, operationId), before);
+    assert.equal(existsSync(join(selected.paths.metadata, 'sqlite-recovery')), false);
+    assert.equal(existsSync(join(selected.paths.metadata, 'lifecycle-maintenance.json')), false);
+    assert.equal(existsSync(join(selected.paths.metadata, SQLITE_RECOVERY_PENDING)), false);
+    assert.equal(existsSync(path + '-wal'), false); assert.equal(existsSync(path + '-shm'), false);
+    if (selection === 'file-journal') assert.equal(existsSync(selected.paths.state), false);
+  });
+}
+
+for (const file of ['main', 'journal'] as const) {
+  for (const change of ['same-bytes replacement', 'same-inode content mutation'] as const) {
+    test(`same-operation prepare rejects original ${file} ${change} while retaining all interrupted recovery files`, options, async t => {
+      const f = await fixture(t, 'state'), operationId = randomUUID();
+      const interrupted = await interruptPrepare(f, operationId, 'candidate', 1);
+      const before = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+      assert.equal(before.stage, 'preserved'); assert.ok('preserved' in before && before.preserved && before.intent);
+      const original = join(interrupted.folder, before.preserved.directory, basename(f.path));
+      const recoveryUnchanged = unchangedFiles([interrupted.target, original, original + '-journal',
+        join(interrupted.folder, 'intent.json'), join(interrupted.folder, 'original.json')]);
+      const names = readdirSync(interrupted.folder).sort(), path = file === 'main' ? f.path : f.path + '-journal';
+      const expected = f.source[file], bytes = readFileSync(path), heldOriginal = path + '.fixture-original';
+      if (change === 'same-bytes replacement') {
+        const mode = statSync(path).mode & 0o777;
+        renameSync(path, heldOriginal);
+        writeFileSync(path, bytes, { flag: 'wx', mode });
+        assert.deepEqual(pin(heldOriginal), expected);
+        assert.notDeepEqual(pin(path).identity, expected.identity);
+        assert.equal(pin(path).sha256, expected.sha256);
+      } else {
+        // Keep file length, mode, and inode unchanged; alter a byte beyond the rollback/database header.
+        assert.ok(bytes.length > 512);
+        bytes[bytes.length - 1] = bytes[bytes.length - 1]! ^ 1;
+        writeFileSync(path, bytes, { flag: 'r+' });
+        assert.deepEqual(pin(path).identity, expected.identity);
+        assert.equal(pin(path).bytes, expected.bytes); assert.notEqual(pin(path).sha256, expected.sha256);
+      }
+      const sourceUnchanged = unchangedFiles([f.path, f.path + '-journal', ...(change === 'same-bytes replacement' ? [heldOriginal] : [])]);
+      await assert.rejects(prepareAgentSqliteRecovery(f.profiles, f.profile.root,
+        { operationId, kind: 'state', offline: true }, f.host), { message: 'sqlite_recovery_file_changed' });
+      sourceUnchanged(); recoveryUnchanged();
+      assert.deepEqual(readAgentSqliteRecovery(f.profiles, f.profile.root, operationId), before);
+      assert.deepEqual(readdirSync(interrupted.folder).sort(), names);
+      assert.equal(existsSync(join(interrupted.folder, 'candidate-0002')), false);
+      assert.equal(existsSync(join(f.profile.paths.metadata, SQLITE_RECOVERY_PENDING)), false);
+      assert.equal(existsSync(join(f.profile.paths.metadata, 'lifecycle-maintenance.json')), false);
+      assert.equal(existsSync(f.path + `.retired-${operationId}`), false);
+      assert.equal(existsSync(f.path + `-journal.retired-${operationId}`), false);
+    });
+  }
+}
+
+test('same-operation prepare rejects a different kind while preserving both databases and prepared receipts', options, async t => {
+  const f = await preparedFixture(t), memory = f.profile.paths.memory;
+  assert.notEqual(memory, f.path); assert.equal(existsSync(memory), true);
+  const unchanged = unchangedFiles([f.path, f.path + '-journal', memory, f.prepared.candidatePath, ...f.preservedPaths]);
+  const status = readAgentSqliteRecovery(f.profiles, f.profile.root, f.operationId);
+  const names = readdirSync(f.prepared.directory).sort();
+  await assert.rejects(prepareAgentSqliteRecovery(f.profiles, f.profile.root,
+    { operationId: f.operationId, kind: 'memory', offline: true }, f.host), { message: 'sqlite_recovery_kind_mismatch' });
+  unchanged(); assert.deepEqual(readAgentSqliteRecovery(f.profiles, f.profile.root, f.operationId), status);
+  assert.deepEqual(readdirSync(f.prepared.directory).sort(), names);
+  assert.equal(existsSync(join(f.prepared.directory, 'complete.json')), false);
+  assert.equal(existsSync(join(f.profile.paths.metadata, SQLITE_RECOVERY_PENDING)), false);
+  assert.equal(existsSync(join(f.profile.paths.metadata, 'lifecycle-maintenance.json')), false);
+  assert.equal(existsSync(f.path + `.retired-${f.operationId}`), false);
+  assert.equal(existsSync(f.path + `-journal.retired-${f.operationId}`), false);
 });

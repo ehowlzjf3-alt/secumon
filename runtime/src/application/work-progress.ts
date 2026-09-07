@@ -12,6 +12,7 @@ import { ToolDefinitionSchema } from './resource-contracts.js';
 import { GuidanceManifestSchema } from './guidance.js';
 import { toolAllowed } from './tool-contracts.js';
 import { BoardRequestPageSchema } from './board-contracts.js';
+import { ComputerDriverIdentitySchema, ComputerViewSchema } from './computer-use-contracts.js';
 
 type ProgressState = WorkState & { progress?: WorkProgress | undefined };
 type CaptureOptions = { failureKey?: string | null; additionalKeys?: string[]; policy?: ProgressPolicy };
@@ -36,15 +37,27 @@ function record(value: unknown): Record<string, unknown> | null {
 }
 
 /** Preparation credit only after ordinary source/contract validation and adoption; this never supplies evidence or grants authority. */
-export function acceptedToolProgressKeys(state: WorkState, task: TaskSpec, result: ToolResult, digester: Digester): string[] {
+export function acceptedToolProgressKeys(state: WorkState, task: TaskSpec, result: ToolResult, digester: Digester, verifiedComputerObservation = false): string[] {
   const attempt = state.attempts.find(value => value.id === result.attemptId);
   if (!attempt?.adopted || attempt.resultId !== result.resultId || attempt.taskId !== task.id || attempt.toolId !== task.toolId || attempt.toolVersion !== task.toolVersion ||
     attempt.goalRevision !== state.goal.revision || attempt.scope !== state.goal.scope || attempt.effect !== 'read' || attempt.effectState !== 'none' || task.effect !== 'read' ||
     !['succeeded', 'partial'].includes(attempt.status) || !['success', 'partial'].includes(result.status) || result.error || result.effectState !== 'none' ||
-    result.reuse || attempt.reuse || attempt.execution?.mode === 'reused' || !state.policy.allowedTools.includes(task.toolId) || !state.policy.allowedDestinations.includes('local')) return [];
+    result.reuse || attempt.reuse || attempt.execution?.mode === 'reused' || !state.policy.allowedTools.includes(task.toolId)) return [];
   const output = record(result.output); if (!output || (output['status'] !== undefined && output['status'] !== 'available')) return [];
   const digest = (value: unknown) => digester.digest(asJson(value));
   const key = (kind: string, value: unknown) => `preparation:${kind}:${digest({ tenantId: state.policy.tenantId, value })}`;
+  if (verifiedComputerObservation && output['kind'] === 'computer_observation') {
+    const view = ComputerViewSchema.safeParse(output['view']), driver = ComputerDriverIdentitySchema.safeParse(output['driver']);
+    if (!view.success || !driver.success || output['sessionId'] !== view.data.sessionId ||
+      typeof output['observationId'] !== 'string' || !output['observationId'].length ||
+      (!view.data.elements.length && !Object.keys(view.data.facts).length)) return [];
+    // Lease, observation and element handles change on reread; only screen content earns a new preparation credit.
+    const elements = view.data.elements.map(({ ref: _ref, ...element }) => digest(element)).sort();
+    return [key('computer-observation', { toolId: task.toolId, toolVersion: task.toolVersion, driver: driver.data,
+      sessionId: view.data.sessionId, surfaceId: view.data.surfaceId, elements, facts: view.data.facts,
+      partial: view.data.partial, omittedCount: view.data.omittedCount })];
+  }
+  if (!state.policy.allowedDestinations.includes('local')) return [];
   const catalogKey = (value: z.infer<typeof toolCard>) => key('tool-card', { id: value.id, version: value.version, contractDigest: value.contractDigest });
   const guideKey = (value: { id: string; version: string; sha256: string }) => key('guidance-card', { id: value.id, version: value.version, sha256: value.sha256 });
   const permittedCard = (value: z.infer<typeof toolCard>) => value.id.startsWith(`${value.provider}.`) && state.policy.allowedTools.includes(value.id) &&
