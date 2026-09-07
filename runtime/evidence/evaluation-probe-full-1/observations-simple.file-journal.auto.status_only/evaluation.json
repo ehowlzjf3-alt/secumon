@@ -1,0 +1,598 @@
+{
+  "version": 1,
+  "workId": "work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6",
+  "pins": {
+    "suite": "3f76f66e21b264954aadb39379d277163dc23449b35e9e8860cba499e81a52aa",
+    "code": "37da2a85a14fc874e3dc1c52978020813af59728c112917bdd9a6b525e25e6d4",
+    "fixture": "a3a60fbbc2f7cd7d396b5212e247f634de4b8599853ad52cf11e77905afcd24b",
+    "configuration": "7bc76fbf5dddf0ff20abbc308bb7671e48ac9c1b397131d68c9a9b0f2c1a39cc",
+    "environment": {
+      "node": "v24.20.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "inference": "scripted",
+      "externalCallsAllowed": false
+    }
+  },
+  "sample": {
+    "case": {
+      "id": "observations-simple.file-journal.auto.status_only",
+      "family": "observation_review",
+      "fixtureId": "observations-simple",
+      "backend": "file-journal",
+      "mode": "auto",
+      "variant": "status_only",
+      "oracle": {
+        "expectedFinal": "unchanged",
+        "completionEligible": false,
+        "requiredEvidenceIds": [
+          "collection-complete"
+        ],
+        "originals": [
+          {
+            "id": "collection-complete",
+            "sourceId": "collection-complete",
+            "lineageId": "collection-complete",
+            "observedAt": 1788566400000
+          }
+        ],
+        "facts": {
+          "collection.complete": true
+        },
+        "finalHypothesis": null,
+        "forbiddenEvidenceIds": [
+          "revoked-ticket"
+        ],
+        "noCompletionBefore": null
+      }
+    },
+    "observations": [
+      {
+        "at": 1788566400002,
+        "stage": "status_only",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6",
+          "revision": 3,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "auto",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "auto",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_auto"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-8bfde6ed768abaab0dca5aada5da4d16136c3e70a2512f5db90ebec614f6fc22",
+                "channel": "test",
+                "conversationId": "observations-simple.file-journal.auto.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-8bfde6ed768abaab0dca5aada5da4d16136c3e70a2512f5db90ebec614f6fc22",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-449bcaadec89eabcfe69125ac430c0cece9140e3f58551d06510da515042f989",
+            "context": {
+              "binding": {
+                "id": "binding-8bfde6ed768abaab0dca5aada5da4d16136c3e70a2512f5db90ebec614f6fc22",
+                "channel": "test",
+                "conversationId": "observations-simple.file-journal.auto.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "status_only",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6",
+          "revision": 3,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "auto",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "auto",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_auto"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-8bfde6ed768abaab0dca5aada5da4d16136c3e70a2512f5db90ebec614f6fc22",
+                "channel": "test",
+                "conversationId": "observations-simple.file-journal.auto.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-8bfde6ed768abaab0dca5aada5da4d16136c3e70a2512f5db90ebec614f6fc22",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-449bcaadec89eabcfe69125ac430c0cece9140e3f58551d06510da515042f989",
+            "context": {
+              "binding": {
+                "id": "binding-8bfde6ed768abaab0dca5aada5da4d16136c3e70a2512f5db90ebec614f6fc22",
+                "channel": "test",
+                "conversationId": "observations-simple.file-journal.auto.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "status_only",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6",
+          "revision": 3,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "auto",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "auto",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_auto"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-8bfde6ed768abaab0dca5aada5da4d16136c3e70a2512f5db90ebec614f6fc22",
+                "channel": "test",
+                "conversationId": "observations-simple.file-journal.auto.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-8bfde6ed768abaab0dca5aada5da4d16136c3e70a2512f5db90ebec614f6fc22",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-a0df228ac6ba5a0fe3d5ff4c20d71443501786067b813d61f6d65d108b13b7a6] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-449bcaadec89eabcfe69125ac430c0cece9140e3f58551d06510da515042f989",
+            "context": {
+              "binding": {
+                "id": "binding-8bfde6ed768abaab0dca5aada5da4d16136c3e70a2512f5db90ebec614f6fc22",
+                "channel": "test",
+                "conversationId": "observations-simple.file-journal.auto.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      }
+    ],
+    "entries": [],
+    "finalControl": "unchanged",
+    "startedAt": 1788566400002,
+    "finishedAt": 1788566400002,
+    "wallElapsedMs": 2.4629170000116574,
+    "runError": null
+  },
+  "sampleDigest": "2466bce1cbdcfd49629be0f55d354e46efbf59b07005a18074ca17528e073d2b",
+  "score": {
+    "caseId": "observations-simple.file-journal.auto.status_only",
+    "contractPassed": true,
+    "goalCompleted": false,
+    "falseCompletionRevisions": [],
+    "failures": [],
+    "finalControl": "unchanged",
+    "usage": {
+      "limits": {
+        "toolCalls": 20,
+        "modelCalls": 10,
+        "tokens": 1000000,
+        "replans": 5,
+        "wallTimeMs": 172800000
+      },
+      "used": {
+        "toolCalls": 0,
+        "modelCalls": 0,
+        "tokens": 0,
+        "replans": 0,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "calls": {
+      "modelEntries": 0,
+      "toolEntries": 0,
+      "sends": 0,
+      "lookups": 0,
+      "uniqueQueries": 0,
+      "repeatedQueries": 0,
+      "adoptedTools": 0,
+      "reusedTools": 0
+    },
+    "context": {
+      "requestBytes": 0,
+      "estimatedTokens": 0,
+      "sourceReads": 0,
+      "evictions": 0,
+      "reloads": 0
+    },
+    "latency": {
+      "ackMs": null,
+      "firstEvidenceMs": null,
+      "firstUsefulAnswerMs": null,
+      "verifiedCompletionMs": null,
+      "simulatedElapsedMs": 0,
+      "wallElapsedMs": 2.4629170000116574
+    },
+    "interventions": 0,
+    "promotions": 0
+  },
+  "scoreDigest": "f40036c8b893b9df8e9c54faa4662a10562ec9d4b88a49ab7d585a1932815caa",
+  "finalStateDigest": "b1edb421a6c74796292cd12cd79d8a77e074990be8eb710a61bb1e42cfbedf86",
+  "eventsDigest": "6381cc2e3c03fcf59c47556f1efff93acbba018746bbbc29e6a477941f031249",
+  "deliveriesDigest": "72fe41bd3736fa81fddd3ca8213c16a853ceda23ee9404ac7e7724284c42189a",
+  "receipts": [
+    {
+      "commandId": "conversation.accept",
+      "digest": "ff9c6f93ce0b6bd19cc8b4f9bcd73d77d2df57ae3b283892836c1ac5a048ce0c",
+      "stateRevision": 1,
+      "stateDigest": "ca7d1aca170035666d689b8dfe5031551f7e5432b7172b1a864f2e937d886eae"
+    },
+    {
+      "commandId": "delivery-claim:ack:1",
+      "digest": "423f4b2fbfd0c0b567fe06874475ded32d9826b59e26eaea0d04d785eb46953b",
+      "stateRevision": 2,
+      "stateDigest": "e8cce097dae33817d47a76d15120599b5e68a87dab7c3a38eeb8374a6f7ded5e"
+    },
+    {
+      "commandId": "delivery-settle:ack:1:delivered:2",
+      "digest": "35c04d1e67022c517231672849ede998ceca6e254e7d3a3ddc6e826a37e47e96",
+      "stateRevision": 3,
+      "stateDigest": "b1edb421a6c74796292cd12cd79d8a77e074990be8eb710a61bb1e42cfbedf86"
+    }
+  ],
+  "artifacts": [],
+  "checkpoint": null
+}

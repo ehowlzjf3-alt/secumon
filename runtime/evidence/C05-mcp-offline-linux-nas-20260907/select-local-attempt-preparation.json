@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "status": "prepared_not_executed",
+  "preparedAt": "2026-09-07T14:17:56.190890+00:00",
+  "source": {
+    "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs",
+    "sha256": "fef3301375d8edab037c186ac055571c232358d62b8f2a5816153a423a71f98c"
+  },
+  "target": {
+    "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/select-local-attempt.mjs",
+    "sha256": "722bffa22c050056503c92ff9df5a745cc0b0b8e8d36c6adfd694018f2333f7d"
+  },
+  "syntax": {
+    "node": "v24.20.0",
+    "nodePath": "/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node",
+    "command": [
+      "/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node",
+      "--check",
+      "/Users/seunghanee/Documents/secumon/runtime/evidence/C05-mcp-offline-linux-nas-20260907/select-local-attempt.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": "",
+    "observation": "Actual separate Node --check invocation completed with exit 0; helper body was not executed."
+  },
+  "normalizedDiff": {
+    "equalsOriginal": true,
+    "baselineSha256": "fef3301375d8edab037c186ac055571c232358d62b8f2a5816153a423a71f98c",
+    "normalizedSha256": "fef3301375d8edab037c186ac055571c232358d62b8f2a5816153a423a71f98c",
+    "allowedChangeGroups": [
+      "usage",
+      "explicit attempt and fixed output/read namespace",
+      "historical files read allowlist",
+      "preceding failed native collection gate and baseline hash",
+      "immutable pin path",
+      "immutable observed exit path",
+      "own helper read",
+      "retry provenance",
+      "helper observation paths",
+      "direct historical evidence SHA entries",
+      "immutable result paths",
+      "retry report"
+    ],
+    "diff": "--- runtime/evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs\n+++ runtime/evidence/C05-mcp-offline-linux-nas-20260907/select-local-attempt.mjs\n@@ -1,6 +1,7 @@\n // Select existing successful stages; never runs a build, test, NAS helper or SSH command.\n // From runtime with Node 24:\n-// node evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs evidence/C05-mcp-offline-stage-selection.json evidence/C05-mcp-offline-terminal-input.json\n+// node evidence/C05-mcp-offline-linux-nas-20260907/select-local-attempt.mjs 2 evidence/C05-mcp-offline-stage-selection-attempt2.json evidence/C05-mcp-offline-terminal-input-attempt2.json\n+// Derived from the retained initial selector; writes only one explicit native retry namespace.\n // First file: {build:\"buildN\",new:\"newN\",related:\"relatedN\",core:\"coreN\",architecture:\"architectureN\"}\n // Second file: {executions:[{stage,sessionId,exitCode}],synchronous?:[{stage,exitCode}],observedAt?:string,source?:string}\n // Supply only actual unified-exec terminal observations. Never infer a sessionId or success from a log.\n@@ -16,8 +17,17 @@\n assert.ok(/^v24\\./.test(process.version), 'use the actual Node 24 build runtime');\n const runtime = realpathSync(fileURLToPath(new URL('../../', import.meta.url)));\n assert.equal(realpathSync(process.cwd()), runtime, 'run from runtime');\n-assert.equal(process.argv.length, 4, 'explicit stage selection and terminal observations JSON file paths required');\n-const suppliedInputs = process.argv.slice(2).map(path => {\n+assert.equal(process.argv.length, 5, 'explicit attempt, stage selection and terminal observations JSON file paths required');\n+assert.match(process.argv[2], /^[2-9]$/, 'native retry attempt must be 2 through 9');\n+const attempt = Number(process.argv[2]);\n+const directory = 'evidence/C05-mcp-offline-linux-nas-20260907';\n+const selectorPath = directory + '/select-local-attempt.mjs';\n+const baselineSelectorPath = directory + '/select-local.mjs';\n+const previousDirectory = directory + '/attempt-' + (attempt - 1);\n+const previousCollectionPath = directory + '/attempt-' + (attempt - 1) + '-collection.json';\n+const nativeSteps = ['build', 'new-mcp-offline-tests', 'related-existing-tests', 'typecheck-core', 'architecture', 'architecture-cli-fixtures', 'all-tests', 'fixtures'];\n+const previousFilePaths = new Set(['result.json', ...nativeSteps.map(name => name + '.log')].map(name => previousDirectory + '/' + name));\n+const suppliedInputs = process.argv.slice(3).map(path => {\n   assert.ok(/^evidence\\/C05-mcp-offline-[a-zA-Z0-9-]+\\.json$/.test(path), 'bounded local recovery input path required');\n   const absolute = resolve(runtime, path), stat = lstatSync(absolute);\n   assert.equal(realpathSync(absolute), absolute); assert.ok(stat.isFile() && !stat.isSymbolicLink() && stat.size <= 32768);\n@@ -56,7 +66,8 @@\n const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');\n const inputs = new Map(suppliedInputs.map(({ path, sha256 }) => [path, { path, sha256 }]));\n function read(path, maximum = 2 * 1024 * 1024) {\n-  assert.ok(/^evidence\\/C05-mcp-offline-[a-zA-Z0-9-]+\\.(json|log|mjs)$/.test(path) || path === 'evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs', 'fixed local evidence path required');\n+  assert.ok(/^evidence\\/C05-mcp-offline-[a-zA-Z0-9-]+\\.(json|log|mjs)$/.test(path) ||\n+    path === selectorPath || path === baselineSelectorPath || path === previousCollectionPath || previousFilePaths.has(path), 'fixed local evidence path required');\n   const absolute = resolve(runtime, path), stat = lstatSync(absolute);\n   assert.ok(stat.isFile() && !stat.isSymbolicLink() && stat.size <= maximum);\n   assert.equal(realpathSync(absolute), absolute);\n@@ -66,6 +77,36 @@\n   inputs.set(path, { path, sha256: digest });\n   return bytes;\n }\n+// Local collected evidence proves the preceding native attempt has finished in failure.\n+// Do not import NAS common/configuration or inspect a live remote process here.\n+const previousResultPath = previousDirectory + '/result.json';\n+const previous = JSON.parse(read(previousResultPath).toString('utf8'));\n+const collection = JSON.parse(read(previousCollectionPath).toString('utf8'));\n+assert.equal(previous.status, 'failed', 'preceding native attempt must be a terminal failure');\n+assert.ok(Number.isFinite(Date.parse(previous.startedAt)) && Number.isFinite(Date.parse(previous.finishedAt)) &&\n+  Date.parse(previous.finishedAt) >= Date.parse(previous.startedAt), 'preceding native attempt has no valid terminal interval');\n+assert.equal(collection.status, 'failed'); assert.equal(collection.finishedAt, previous.finishedAt);\n+assert.ok(Number.isFinite(Date.parse(collection.collectedAt)) && Date.parse(collection.collectedAt) >= Date.parse(previous.finishedAt));\n+assert.deepEqual(collection.sourceAndBuild, previous.buildPin);\n+assert.ok(previous.buildPin && /^[a-f0-9]{64}$/.test(previous.buildPin.sourceDigest) &&\n+  /^[a-f0-9]{64}$/.test(previous.buildPin.filesDigest) && Number.isSafeInteger(previous.buildPin.fileCount) && previous.buildPin.fileCount > 0);\n+assert.ok(Array.isArray(previous.steps) && previous.steps.length <= nativeSteps.length &&\n+  previous.steps.every(step => step && nativeSteps.includes(step.name)) && new Set(previous.steps.map(step => step.name)).size === previous.steps.length);\n+assert.ok(Array.isArray(collection.files));\n+const previousNames = ['result.json', ...previous.steps.map(step => step.name + '.log')];\n+assert.deepEqual(collection.files.map(item => item.file).sort(), [...previousNames].sort(), 'preceding native raw-log collection is incomplete');\n+for (const item of collection.files) {\n+  assert.ok(/^[a-f0-9]{64}$/.test(item.sha256));\n+  read(previousDirectory + '/' + item.file, 128 * 1024 * 1024);\n+  assert.equal(inputs.get(previousDirectory + '/' + item.file).sha256, item.sha256, 'preceding native evidence changed');\n+}\n+read(baselineSelectorPath);\n+assert.equal(inputs.get(baselineSelectorPath).sha256, 'fef3301375d8edab037c186ac055571c232358d62b8f2a5816153a423a71f98c', 'retained initial selector changed');\n+const priorFailureEvidence = [previousCollectionPath, ...previousNames.map(name => previousDirectory + '/' + name)];\n+const priorFailedAttempt = { attempt: attempt - 1, status: previous.status, startedAt: previous.startedAt, finishedAt: previous.finishedAt,\n+  sourceAndBuild: previous.buildPin, result: inputs.get(previousResultPath), collection: inputs.get(previousCollectionPath),\n+  meaning: 'Collected preceding native failure is historical evidence, not success for the new source.' };\n+\n const pin = await verifyEvaluationBuild(runtime);\n const stagePath = stage => `evidence/C05-mcp-offline-${stage}.json`;\n const logPath = stage => `evidence/C05-mcp-offline-${stage}.log`;\n@@ -131,20 +172,21 @@\n   return { counts, durationMs: Number(duration) };\n }\n const summaries = { new: summary(stages.new.log), related: summary(stages.related.log) };\n-const pinPath = `evidence/C05-mcp-offline-linux-nas-20260907/local-${selected.build}-pin.json`;\n-const processPath = 'evidence/C05-mcp-offline-linux-nas-20260907/tool-exit-observations.json';\n+const pinPath = `${directory}/local-attempt${attempt}-${selected.build}-pin.json`;\n+const processPath = `${directory}/tool-exit-observations-attempt${attempt}.json`;\n const encode = value => Buffer.from(JSON.stringify(value, null, 2) + '\\n');\n const prepared = new Map([[pinPath, encode(pin)]]);\n-read('evidence/C05-mcp-offline-run.mjs'); read('evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs');\n+read('evidence/C05-mcp-offline-run.mjs'); read(selectorPath);\n prepared.set(processPath, encode({ recordedAt: new Date().toISOString(),\n   meaning: 'Root-supplied actual unified-exec terminal observations, not inferred from stage logs. Stage finishedAt means child exit followed by log close observed by the stage runner, not the exact OS exit time.',\n   executions, synchronous, selectedStages: selected,\n+  nativeRetrySelection: { attempt, priorFailedAttempt, baselineSelector: inputs.get(baselineSelectorPath) },\n   ...(supplied.observedAt === undefined ? {} : { operatorObservedAt: supplied.observedAt }),\n   ...(supplied.source === undefined ? {} : { operatorObservationSource: supplied.source }),\n   suppliedInputFiles: suppliedInputs.map(({ path, sha256 }) => ({ path, sha256 })),\n   stageEvidence: roles.flatMap(role => [inputs.get(stagePath(selected[role])), inputs.get(logPath(selected[role]))]),\n   helperSourceObservation: { meaning: 'Read at selection time; not claimed captured before each stage.',\n-    files: [inputs.get('evidence/C05-mcp-offline-run.mjs'), inputs.get('evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs')] } }));\n+    files: [inputs.get('evidence/C05-mcp-offline-run.mjs'), inputs.get(selectorPath), inputs.get(baselineSelectorPath)] } }));\n for (const role of ['new', 'related']) {\n   const stage = selected[role], actual = stages[role].actual, observed = executions.find(item => item.stage === stage);\n   const evidence = [[logPath(stage), 'original_test_log'], [stagePath(stage), 'original_stage_runner_observation'],\n@@ -152,10 +194,12 @@\n     [stagePath(selected.build), 'successful_build_stage_observation'], [processPath, 'recorded_exec_exit_observations'],\n     [suppliedInputs[0].path, 'operator_selected_stage_input'], [suppliedInputs[1].path, 'operator_terminal_observation_input'],\n     [listPaths[0], 'selected_new_test_files'], [listPaths[1], 'selected_related_test_files'],\n+    [selectorPath, 'retry_alias_selector_source'], [baselineSelectorPath, 'retained_initial_selector_source'],\n+    ...priorFailureEvidence.map(path => [path, 'preceding_failed_native_evidence']),\n     ...['core', 'architecture'].flatMap(key => [[logPath(selected[key]), 'successful_' + key + '_log'],\n       [stagePath(selected[key]), 'successful_' + key + '_stage_observation']])]\n     .map(([path, role]) => ({ path, role, sha256: prepared.has(path) ? sha256(prepared.get(path)) : inputs.get(path).sha256 }));\n-  prepared.set(`evidence/C05-mcp-offline-linux-nas-20260907/local-${role}-result.json`, encode({ code: actual.exitCode, signal: actual.signal,\n+  prepared.set(`${directory}/local-attempt${attempt}-${role}-result.json`, encode({ code: actual.exitCode, signal: actual.signal,\n     // The new stage runner records an explicit false; a missing timeout field was rejected above.\n     timedOut: actual.timedOut, testNode: actual.node, sourceAndBuild: pin, ...summaries[role], logPath: logPath(stage),\n     startedAt: actual.startedAt, finishedAt: actual.finishedAt, timestampMeaning: 'child_exit_then_log_close_observed_by_stage_runner',\n@@ -171,5 +215,5 @@\n assert.deepEqual(await verifyEvaluationBuild(runtime), pin);\n for (const [path, entry] of inputs) assert.equal(sha256(readFileSync(path)), entry.sha256, 'original evidence changed before publication');\n for (const [path, bytes] of prepared) writeFileSync(path, bytes, { flag: 'wx', mode: 0o600 });\n-console.log(JSON.stringify({ status: 'selected_existing_successes', outputs: [...prepared.keys()], sourceAndBuild: pin,\n+console.log(JSON.stringify({ status: 'selected_existing_successes', attempt, priorFailedAttempt, outputs: [...prepared.keys()], sourceAndBuild: pin,\n   newTests: summaries.new.counts, relatedTests: summaries.related.counts, testsExecuted: false, sshUsed: false }));\n"
+  },
+  "protectedFilesObserved": [
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs",
+      "sha256": "fef3301375d8edab037c186ac055571c232358d62b8f2a5816153a423a71f98c"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/mcp-offline-c05-common.mjs",
+      "sha256": "a353d4bfd9adbf0f365ba3f54147a7f079f178d2a362c9f6789f3d3d6e2a30ea"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/finalize-evidence.mjs",
+      "sha256": "ad584c0cbbd25445eda1b0a86f69386aed91a85bcb9b8295add636a583942748"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/script-provenance.json",
+      "sha256": "78a7b34a8ce77b0dcd648e5c8e1c6d094fc1fd4ae19430cc3c273f0de962368a"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/local-new-result.json",
+      "sha256": "0b8831bd226866198d432dd9b05b57c87cc0571c6ad371c2b4a2f5514d40d23e"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/local-related-result.json",
+      "sha256": "4dd63b31e9bb8f2fc7f839e333d6aa40a492f4fe5577a3bcf6e039a635046e2f"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/local-build2-pin.json",
+      "sha256": "4ba2e97515294f96480efaa533ac06d1a0dac88de27228a9b77aaf3db3289172"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/tool-exit-observations.json",
+      "sha256": "ed0072b3b53397759ccac3d22b2f50a7a1863fe13b916a609a40bdf80517be66"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/mcp-offline-c05-config.json",
+      "sha256": "7ee2e4f916f4d8f3effaaf772f1f7787274ffa656c3d9e00d02027cf7fbc0352"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/preflight.json",
+      "sha256": "98950c11e1a89e01e0277a47241d8cf27dd1f6210c21754f764e5946b683ffb6"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/upload-attempt1-validation-inputs.json",
+      "sha256": "857f847ce821013b7fb570ff20a7cbcee6ce787a17347178c2f17aac55e6eb0d"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/upload-attempt1-targeted-files.json",
+      "sha256": "64a1042e0eec4ad27b0355eb8ad63aea9d7413f0575a0046605d20c1724d5947"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/upload-attempt1-uploads.json",
+      "sha256": "5a567f91b83770275d596ebb595b37383791d6a190d107a767850d32a2579fd8"
+    },
+    {
+      "path": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/upload-attempt1.json",
+      "sha256": "323eb389681854c2c73667c55536b37f10f080da7fd685a4e2893ba26dcb8f7e"
+    }
+  ],
+  "unchangedOriginalSelector": true,
+  "execution": {
+    "selectorBodyExecuted": false,
+    "aliasesCreated": false,
+    "managementScriptsExecuted": false,
+    "buildsOrTestsExecuted": false,
+    "sshUsed": false
+  },
+  "rootSequence": [
+    "Wait for actual native attempt 1 termination and collect-attempt.mjs attempt-1 exactly once. Preserve its original logs and failed result.",
+    "After final-source build/new/related/core/architecture success and actual exec terminal observations, create new stage-selection-attempt2 and terminal-input-attempt2 JSON inputs without changing the original inputs.",
+    "Run the new helper once with explicit attempt 2 and both new input paths from runtime using pinned Node24.",
+    "Pass local-attempt2-new-result.json and local-attempt2-related-result.json explicitly to existing prepare-upload.mjs 2; then existing start-native.mjs 2. Do not rerun configure/preflight or attempt1 upload/start."
+  ],
+  "outputPaths": [
+    "local-attemptN-buildK-pin.json",
+    "tool-exit-observations-attemptN.json",
+    "local-attemptN-new-result.json",
+    "local-attemptN-related-result.json"
+  ],
+  "constraints": [
+    "Attempts 2 through 9 only; no output-directory parameter; every output must be absent and is written with wx mode 0600.",
+    "Previous native failure/result plus all executed-stage logs must match the immutable collection hashes. It is history, not final-source success.",
+    "Original successful-stage argv, source/build, actual exit/group absence, unique final TAP/spec summary and current selection checks are copied without relaxation.",
+    "Original test-file selection JSON must remain unchanged while referenced by old aliases. If the selected file sets need to change, stop for a separate snapshot-path adaptation; do not overwrite old evidence.",
+    "If publication is interrupted or source changes after selection, preserve outputs and do not overwrite or silently reselect the same attempt.",
+    "Native prepare/start already implement failed-attempt archiving. No new NAS runner/common/finalizer/config changes are required."
+  ],
+  "aliasEvidenceMaximumEntries": 26
+}

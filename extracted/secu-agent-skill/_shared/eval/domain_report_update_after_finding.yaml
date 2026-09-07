@@ -1,0 +1,62 @@
+name: domain_report_update_after_finding
+description: |
+  A confirmed finding should be normalized into the domain report and then
+  converted into follow-up todo work instead of ending at raw discovery.
+task_type: operator
+user_input: "intranet web finding 있으면 report에 반영하고 필요한 deep dive todo까지 잡아줘"
+tool_stubs:
+  - name: web_task_scan
+    description: run scoped web tasking
+    success_message: |
+      confirmed_findings:
+        - asset: https://intranet.example.test/.env
+          severity: critical
+          evidence_ref: demo/web/exposed-env.json
+      follow_up:
+        - deep-dive adjacent internal web hosts for the same pattern
+  - name: domain_report
+    description: normalized finding report update
+    success_message: "domain report updated"
+  - name: todo
+    description: plan follow-up work
+    success_message: "todo updated"
+script:
+  - reasoning: "먼저 scoped web task로 confirmed finding 여부를 확인한다."
+    tool_calls:
+      - name: web_task_scan
+        input:
+          seed: "https://intranet.example.test"
+          max_pages: 20
+          max_probe_urls: 20
+  - reasoning: "confirmed finding은 공통 domain report state에 기록한다."
+    tool_calls:
+      - name: domain_report
+        input:
+          action: upsert
+          task_type: web
+          asset: "https://intranet.example.test/.env"
+          asset_kind: url
+          severity: critical
+          summary: "Internal web endpoint exposes environment configuration."
+          evidence_ref: "demo/web/exposed-env.json"
+          confidence: 0.94
+          recommended_actions:
+            - "remove public access and rotate exposed credentials"
+            - "deep-dive adjacent internal web hosts for the same pattern"
+  - reasoning: "finding 이후 deep dive와 검증 작업을 todo로 이어간다."
+    tool_calls:
+      - name: todo
+        input:
+          action: write
+          todos:
+            - id: "1"
+              content: "Validate exposed env evidence and impacted credentials"
+              status: pending
+            - id: "2"
+              content: "Deep-dive adjacent internal web hosts for the same pattern"
+              status: pending
+  - text: "web finding을 domain report에 반영했고 deep dive todo를 추가했습니다."
+expectations:
+  tools_called: ["web_task_scan", "domain_report", "todo"]
+  final_text_contains: ["domain report", "deep dive todo"]
+  min_turns: 4

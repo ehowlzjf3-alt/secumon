@@ -1,0 +1,68 @@
+✔ agent setup preserves files, creates private identity/config and reopens without a model (97.929625ms)
+✔ status and invalid initialization options do not create files (4.273167ms)
+✔ separate directories get distinct IDs and moving a directory preserves its identity (161.290542ms)
+✔ initialization can finish after a process stops between identity and config publication (99.467417ms)
+✔ missing identity uses explicit repair with the existing config; missing completed config is not reset (123.582958ms)
+✔ completed layout repairs missing directories only with explicit repair and preserves existing state (136.664875ms)
+✔ unknown data without identity is not assigned a new ID (2.2295ms)
+✔ config identity mismatch, unsupported versions and malformed documents are preserved (95.249167ms)
+✔ metadata symlinks and external hard links cannot be used for setup (85.765833ms)
+✔ managed directory links and writable/public metadata are rejected without changing permissions (75.620875ms)
+✔ engine overlap and nested agent registration are rejected (71.333083ms)
+✔ CLI first call, status, version and invalid commands expose readiness without claiming runtime execution (443.413541ms)
+✖ separate CLI processes initializing concurrently settle on exactly one identity (307.301625ms)
+✖ two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen (385.54275ms)
+✔ agent work files cannot traverse into engine or another agent and remain separate (483.5865ms)
+✔ copying another agents database is detected by its durable owner before runtime access (175.582125ms)
+✔ unowned existing databases are not silently adopted (156.351167ms)
+✔ symlink database and sidecar destinations cannot overwrite another file (100.545667ms)
+✔ configured but not yet connected backend is not replaced by SQLite (89.202083ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 17
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1763.962958
+
+✖ failing tests:
+
+test at dist/tests/agent-profile.test.js:213:1
+✖ separate CLI processes initializing concurrently settle on exactly one identity (307.301625ms)
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-cli.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-qVso7c/agent --json
+  agent_setup_failed
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:514:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: 1,
+    killed: false,
+    signal: null,
+    cmd: '/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-cli.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-qVso7c/agent --json',
+    stdout: '',
+    stderr: 'agent_setup_failed\n'
+  }
+
+test at dist/tests/agent-stores.test.js:22:1
+✖ two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen (385.54275ms)
+  ZodError: [
+    {
+      "origin": "array",
+      "code": "too_small",
+      "minimum": 1,
+      "inclusive": true,
+      "path": [
+        "sources"
+      ],
+      "message": "Too small: expected array to have >=1 items"
+    }
+  ]
+      at parseKnowledge (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/knowledge-contracts.js:37:70)
+      at SqliteKnowledgeRepository.commit (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-knowledge.js:46:22)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-stores.test.js:36:41)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

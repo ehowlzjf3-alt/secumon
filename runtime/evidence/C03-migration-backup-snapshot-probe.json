@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "kind": "C03-D3-preimplementation-backup-snapshot-probe",
+  "status": "passed",
+  "startedAt": "2026-09-07T02:00:34.347Z",
+  "scriptPath": "/Users/seunghanee/Documents/secumon/runtime/evidence/C03-migration-backup-snapshot-probe.mjs",
+  "scriptSha256": "ef717ec8551237bf8b5268f17830a5d6e32b6be8a4a6b43c425e2ee97a251782",
+  "environment": {
+    "node": "v24.20.0",
+    "execPath": "/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "maxFixtures": 1,
+  "fixturesExecuted": 1,
+  "automaticRetries": 0,
+  "timeoutMs": 15000,
+  "sourceBuildPinIsContextOnly": true,
+  "D2VerificationResult": false,
+  "productImplementationVerified": false,
+  "existingDatabasesOpened": false,
+  "rawSourceCopied": false,
+  "modelOrExternalServiceCalled": false,
+  "nasUsed": false,
+  "cleanup": {
+    "workerExitObserved": true,
+    "fixtureDirectoryRemoved": true,
+    "errors": []
+  },
+  "limitations": [
+    "One local synthetic WAL database, one later writer commit, one fixed read snapshot and one backup call; no repeated benchmark.",
+    "Uses Node24.20.0 backup rate 1 to observe multiple batches, not the proposed production default 256.",
+    "Does not test the 256MiB limit, a production owner/fence/importer, backup publication, recovery after SIGKILL, Windows or real-model behavior.",
+    "The current source/build pin is recorded for provenance. No D2 test is run and this observation is not a D2 result."
+  ],
+  "expectedPin": {
+    "sourceDigest": "6ba26f7b1f070e6429c16644b5af2a196582613125bdcc71dba8fb529d9f2f92",
+    "filesDigest": "b35876061e1db51fe1d97a6525db03c8d27cbfdfc2bb9acd3a98f9da483b5e53",
+    "fileCount": 1377
+  },
+  "buildBefore": {
+    "sourceDigest": "6ba26f7b1f070e6429c16644b5af2a196582613125bdcc71dba8fb529d9f2f92",
+    "filesDigest": "b35876061e1db51fe1d97a6525db03c8d27cbfdfc2bb9acd3a98f9da483b5e53",
+    "fileCount": 1377
+  },
+  "fixtureDirectory": "/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/secumon-C03-backup-synthetic-rGzhcc",
+  "workerPid": 9069,
+  "workerExit": {
+    "code": 0,
+    "signal": null
+  },
+  "worker": {
+    "kind": "one-synthetic-WAL-read-snapshot-backup",
+    "status": "passed",
+    "pid": 9069,
+    "node": "v24.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "fixtureCount": 1,
+    "rate": 1,
+    "sourceRawFdReads": 0,
+    "sourceApiCallsWhileBackupPending": 0,
+    "candidateApiCallsWhileBackupPending": 0,
+    "progress": [
+      {
+        "totalPages": 9,
+        "remainingPages": 8
+      },
+      {
+        "totalPages": 9,
+        "remainingPages": 7
+      },
+      {
+        "totalPages": 9,
+        "remainingPages": 6
+      },
+      {
+        "totalPages": 9,
+        "remainingPages": 5
+      },
+      {
+        "totalPages": 9,
+        "remainingPages": 4
+      },
+      {
+        "totalPages": 9,
+        "remainingPages": 3
+      },
+      {
+        "totalPages": 9,
+        "remainingPages": 2
+      },
+      {
+        "totalPages": 9,
+        "remainingPages": 1
+      }
+    ],
+    "stages": [
+      {
+        "name": "synthetic_source_created_in_wal",
+        "elapsedMs": 9.926250000000001
+      },
+      {
+        "name": "readonly_BEGIN_and_main_read_fixed_snapshot",
+        "elapsedMs": 10.382416000000001
+      },
+      {
+        "name": "other_connection_committed_new_row",
+        "elapsedMs": 10.492707999999999
+      },
+      {
+        "name": "same_readonly_handle_backup_started",
+        "elapsedMs": 10.500915999999998
+      },
+      {
+        "name": "backup_promise_resolved",
+        "elapsedMs": 10.910082999999998
+      },
+      {
+        "name": "closed_connections_and_verified_backup_snapshot",
+        "elapsedMs": 12.067290999999999
+      }
+    ],
+    "connectionsOpened": 3,
+    "connectionsClosed": 3,
+    "apiExclusionBasis": "controlled sequential worker code; no concurrent source/candidate calls or instrumentation during backup",
+    "backupSettled": true,
+    "sourceAndCandidateDistinct": true,
+    "cleanupErrors": [],
+    "sqliteVersion": "3.53.4",
+    "snapshot": {
+      "rowIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rowCount": 6,
+      "logicalDigest": "135dbc029b53e137a5436212b74014b2fe232835c57c6f9e4bb363a15c534314"
+    },
+    "pageSize": 4096,
+    "snapshotPages": 9,
+    "walBytesBeforeBackup": 65952,
+    "backupElapsedMs": 0.3962090000000025,
+    "returnedPages": 9,
+    "progressCallbacks": 8,
+    "finalCallbackRemainingPages": 1,
+    "finalPageCompletionObservedBy": "resolved backup Promise and returned page count; not a progress callback",
+    "backup": {
+      "rowIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rowCount": 6,
+      "logicalDigest": "135dbc029b53e137a5436212b74014b2fe232835c57c6f9e4bb363a15c534314",
+      "integrityCheck": "ok"
+    },
+    "latestSource": {
+      "rowIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "rowCount": 7,
+      "logicalDigest": "309bbfcd8b3dcc673821989ccf9d99b52fa56817dd7954d165f66cbaea947469"
+    },
+    "assertions": {
+      "backupEqualsFixedSnapshot": true,
+      "latestSourceHasNewCommit": true,
+      "snapshotAndLatestDigestsDiffer": true
+    },
+    "fileBytesAfterSqliteClose": {
+      "sourceMain": 40960,
+      "backupCandidate": 36864
+    },
+    "fileModes": {
+      "sourceMain": "0600",
+      "backupCandidate": "0600",
+      "fixtureDirectory": "0700"
+    },
+    "elapsedMs": 12.075833000000001
+  },
+  "buildAfter": {
+    "sourceDigest": "6ba26f7b1f070e6429c16644b5af2a196582613125bdcc71dba8fb529d9f2f92",
+    "filesDigest": "b35876061e1db51fe1d97a6525db03c8d27cbfdfc2bb9acd3a98f9da483b5e53",
+    "fileCount": 1377
+  },
+  "completedAt": "2026-09-07T02:00:34.822Z",
+  "elapsedMs": 474.943333,
+  "logSha256": "8ef7430e5b02d6266a66fa6f17b9d6f57ea4e8d9c143f6ec59872c03f42464d4"
+}

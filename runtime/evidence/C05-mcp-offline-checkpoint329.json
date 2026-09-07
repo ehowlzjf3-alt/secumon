@@ -1,0 +1,154 @@
+{
+  "checkpoint": 329,
+  "recordedAt": "2026-09-07T14:30:00.018Z",
+  "unit": "mcp_offline_resume",
+  "status": "native_attempt2_live_after_all_local_checks_passed",
+  "sourceFrozen": true,
+  "chapterComplete": false,
+  "goalComplete": false,
+  "previousProof": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/verification.json",
+  "previousProofSha256": "3783a0a1f5ba3a4eea5a9a2231d5def3dbaf44a163c4444b8e559642283e463c",
+  "plan": "design/chapters/C05-mcp-offline-resume-plan.md",
+  "running": {
+    "native": {
+      "sessionId": 54736,
+      "status": "running_last_observed",
+      "stage": "build",
+      "stageStartedAt": "2026-09-07T14:28:48.559Z"
+    },
+    "ssh": {
+      "control": "/private/tmp/secumon-mcp-offline-nas.i60oVW/control",
+      "authSessionId": 75156,
+      "authExitCode": 0
+    }
+  },
+  "owners": {
+    "root": "execution-decision/execution-runtime/workflow-runtime/domain task status and control",
+    "linux": "MCP reader/host/protocol + focused tests",
+    "windows": "Tool availability/contracts/catalog/broker + focused tests",
+    "metadata": "ContextCompiler/AgentTurnCalls/PlanningRuntime + focused tests"
+  },
+  "validation": "local_verified_native_recheck_running",
+  "nextAction": "Observe native54736 only; do not restart old98882 or repeat all completed local/selector/upload steps. Product/tests frozen at fe438.../f6c070.../1758. On actual success collect final once, close/audit SSH, run finalizer, review amended docs updater and execute once. On failure collect attempt-2 before any diagnosis/further changes. Preserve attempt1=3600/3595/5 and all original aliases.",
+  "testSelection": {
+    "newFiles": 10,
+    "relatedFiles": 67
+  },
+  "sourceAndBuild": {
+    "sourceDigest": "fe438a3d25a33c43b3b7403b9b584df78eef86f044aadf9c7102cd6969798a15",
+    "filesDigest": "f6c07038312ab9a9db5b94f70ef3caa106ee104d12aaa00146dc29d47c3d745f",
+    "fileCount": 1758
+  },
+  "local": {
+    "build": {
+      "stage": "build3",
+      "sessionId": 88697,
+      "exitCode": 0
+    },
+    "core": {
+      "stage": "core3",
+      "sessionId": 51789,
+      "exitCode": 0
+    },
+    "architecture": {
+      "stage": "architecture3",
+      "synchronous": true,
+      "exitCode": 0
+    },
+    "correctedBoundaries": {
+      "stage": "related-native-fixes1",
+      "sessionId": 8643,
+      "exitCode": 0,
+      "counts": {
+        "tests": 68,
+        "pass": 68,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sourceUnchanged": true,
+      "log": "evidence/C05-mcp-offline-related-native-fixes1.log",
+      "runner": "evidence/C05-mcp-offline-related-native-fixes1.json"
+    },
+    "new": {
+      "stage": "new3",
+      "sessionId": 68512,
+      "exitCode": 0,
+      "tests": 145,
+      "pass": 145,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "related": {
+      "stage": "related3",
+      "sessionId": 68164,
+      "exitCode": 0,
+      "tests": 847,
+      "pass": 847,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "productFrozen": true,
+  "related1": {
+    "sessionId": 1432,
+    "exitCode": 1,
+    "tests": 847,
+    "pass": 833,
+    "fail": 14,
+    "timedOut": false,
+    "sourceUnchanged": true,
+    "finishedAt": "2026-09-07T13:47:30.565Z"
+  },
+  "activeEdits": {},
+  "nativePreparation": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/README.md",
+  "nas": {
+    "configured": true,
+    "preflight": true,
+    "localAliasesSelected": true,
+    "selector": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/select-local-attempt.mjs",
+    "selectorExitCode": 0,
+    "uploaded": true,
+    "uploadSessionId": 79611,
+    "uploadExitCode": 0,
+    "uploadedFiles": 7,
+    "started": true,
+    "attempt": 2,
+    "completed": false,
+    "passedStages": [],
+    "retainedAttempt1": "runtime/evidence/C05-mcp-offline-native-attempt1-terminal.json"
+  },
+  "preparation": {
+    "nextCoreDesign": "being_prepared_without_source_edits",
+    "docsUpdater": "being_amended_to_include_native_attempt1_and_local_68_case_correction_history_not_executed",
+    "initialDocsReview": "runtime/evidence/C05-mcp-offline-update-docs-root-review.json",
+    "retrySelectorReview": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/select-local-attempt-root-review.json"
+  },
+  "diagnosis": {
+    "evidence": [
+      "runtime/evidence/C05-mcp-offline-native-live-failures1.json",
+      "runtime/evidence/C05-mcp-offline-native-live-failures2.json",
+      "runtime/evidence/C05-mcp-offline-native-attempt1-terminal.json"
+    ],
+    "kind": "live_nonterminal_excerpt_and_source_read",
+    "finding": "New outgoingDefinitionsCheck reads stored input before dispatch. Three old test hooks use the first read and now remove disclosure/effect proof before dispatch instead of their named post-dispatch transport boundary. Original model_not_dispatchable stacks match existing edit/beforeCommit guards.",
+    "sourceChanged": false,
+    "reproducedAfterCorrection": false,
+    "plannedCorrection": "Gate the post-dispatch hook on exact input artifact, persisted running call and original model-dispatch receipt; reserved reads return immediately. Keep predispatch effect-proof loss as a separate meaningful case with no dispatch/usage.",
+    "rootUpdaterReview": "runtime/evidence/C05-mcp-offline-update-docs-root-review.json",
+    "updaterExecuted": false,
+    "failureCount": 5
+  },
+  "nextUnitReviews": {
+    "plan": "design/chapters/C05-mcp-collections-entry-plan.md",
+    "recovery": "design/chapters/C05-mcp-collections-recovery-review.md",
+    "planning": "design/chapters/C05-mcp-collections-planning-review.md",
+    "status": "prepared_not_implemented"
+  },
+  "fixtureCorrection": "runtime/evidence/C05-mcp-offline-fixture-correction-result.json"
+}

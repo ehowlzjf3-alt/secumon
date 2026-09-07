@@ -1,0 +1,81 @@
+{
+  "checkpoint": 331,
+  "recordedAt": "2026-09-07T14:52:34.755Z",
+  "unit": "mcp_collection_general_entry_connection",
+  "status": "staging_not_applied",
+  "goalComplete": false,
+  "chapterComplete": false,
+  "previousUnit": {
+    "unit": "mcp_offline_resume",
+    "status": "verified_supported_local_posix",
+    "proof": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/verification.json",
+    "sha256": "28cdec0cdcaa8d7e308e8341258218a6b85e31d5053f50cf914e5e6edd7f38b9",
+    "sourceAndBuild": {
+      "sourceDigest": "fe438a3d25a33c43b3b7403b9b584df78eef86f044aadf9c7102cd6969798a15",
+      "filesDigest": "f6c07038312ab9a9db5b94f70ef3caa106ee104d12aaa00146dc29d47c3d745f",
+      "fileCount": 1758
+    },
+    "nativeSession": 54736,
+    "nativeExitCode": 0,
+    "local": {
+      "new": 145,
+      "related": 847,
+      "focusedCorrection": 68
+    },
+    "linux": {
+      "new": 145,
+      "related": 847,
+      "all": 3601,
+      "stages": 8
+    },
+    "collectedFiles": 9,
+    "sshClosed": true,
+    "updaterAppliedOnce": true,
+    "docsRevision": "v0.66",
+    "publicationReview": "runtime/evidence/C05-mcp-offline-final-publication-review.json"
+  },
+  "sourceFrozen": false,
+  "productChangedSinceProof": false,
+  "runningNative": null,
+  "ssh": null,
+  "plan": "design/chapters/C05-mcp-collections-entry-plan.md",
+  "stagingRoot": "runtime/evidence/C05-mcp-collections-staging",
+  "staging": {
+    "root": {
+      "status": "partial",
+      "notes": "runtime/evidence/C05-mcp-collections-staging/root/notes.md",
+      "pending": [
+        "complete async control connection",
+        "local race and general entry tests",
+        "final source review"
+      ]
+    },
+    "linux": {
+      "adapterAndHost": "frozen_staging",
+      "connectionControl": "being_written"
+    },
+    "windows": {
+      "hostAndProfile": "frozen_staging",
+      "completeResumeTests": "being_written"
+    },
+    "metadata": {
+      "status": "staging_written_tests_in_progress",
+      "includesLegacy": true,
+      "inspectedControlConnected": true
+    }
+  },
+  "decisions": [
+    "reuse same ReadCollections and existing reserve/dispatch/receive/adopt",
+    "two strict local methods rather than opaque permit API",
+    "never route incomplete checkpoint to local consumption or remote fallback",
+    "reuse checkpoint already read by wait validation within same stage",
+    "async inspectedControl authenticates stored partial next-request need; independent task/review control wins",
+    "optional marker canonical comparison and received proof independent of availability"
+  ],
+  "nextAction": "Review completed staged diffs and manifests, finish inspector/root race tests, then compare every original SHA to current src and integrate once. No native or old proof reruns. New build/typecheck and focused integration after source is actually applied. Keep real model/API and internal services cancelled.",
+  "notVerified": [
+    "collection staged changes not built or tested",
+    "general CLI/HTTP collection recovery not yet connected and tested",
+    "native Windows/PostgreSQL/internal service/model quality remain incomplete"
+  ]
+}

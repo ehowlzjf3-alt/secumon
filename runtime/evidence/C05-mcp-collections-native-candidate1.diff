@@ -1,0 +1,331 @@
+--- evidence/C05-mcp-offline-linux-nas-20260907/configure.mjs	2026-09-07 22:47:43
++++ evidence/C05-mcp-collections-linux-nas-20260908/configure.mjs	2026-09-08 00:21:50
+@@ -16,13 +16,13 @@
+ assert.ok(typeof previousNativeResult === 'string' && /^evidence-[a-zA-Z0-9_-]+\/result\.json$/.test(previousNativeResult), 'explicit prior finished native result relative to dedicated root required');
+-assert.equal(previousNativeResult, 'evidence-mcp-custody-c05/result.json', 'offline validation requires the completed response-custody predecessor');
++assert.equal(previousNativeResult, 'evidence-mcp-offline-c05/result.json', 'collection validation requires the completed plain-read offline predecessor');
+ assert.ok(new Set(historyEvidence).size === historyEvidence.length && historyEvidence.every(path => /^evidence\/[a-zA-Z0-9_./-]+\.json$/.test(path) && !path.split('/').includes('..')), 'historical JSON paths must stay under runtime/evidence');
+-const predecessor = { path: 'evidence/C05-mcp-custody-linux-nas-20260907/verification.json',
+-  sha256: '3783a0a1f5ba3a4eea5a9a2231d5def3dbaf44a163c4444b8e559642283e463c',
+-  nativeResultSha256: '739ddb55922a08ed87cb5e7b324e26b1d05f0c0f4d79175c77d6ffa8dabd1999' };
+-assert.ok(historyEvidence.includes(predecessor.path), 'completed response-custody proof must remain historical evidence');
++const predecessor = { path: 'evidence/C05-mcp-offline-linux-nas-20260907/verification.json',
++  sha256: '28cdec0cdcaa8d7e308e8341258218a6b85e31d5053f50cf914e5e6edd7f38b9',
++  nativeResultSha256: 'a64d5f74827c2db5ae3ecb103ce1863663d4de148f189129e0ac75b10a3607c3' };
++assert.ok(historyEvidence.includes(predecessor.path), 'completed plain-read offline proof must remain historical evidence');
+ const predecessorBytes = readFileSync(predecessor.path), predecessorProof = JSON.parse(predecessorBytes.toString('utf8'));
+ assert.equal(createHash('sha256').update(predecessorBytes).digest('hex'), predecessor.sha256, 'predecessor proof changed');
+-assert.equal(predecessorProof.scope, 'mcp_post_send_response_custody'); assert.equal(predecessorProof.nativeLinux.status, 'passed');
++assert.equal(predecessorProof.scope, 'mcp_offline_general_resume'); assert.equal(predecessorProof.nativeLinux.status, 'passed');
+ assert.deepEqual(predecessorProof.nativeLinux.collectedFiles.filter(item => item.file === 'result.json'), [{ file: 'result.json', sha256: predecessor.nativeResultSha256 }]);
+-const configPath = join(directory, 'mcp-offline-c05-config.json'), controlPath = join(directory, 'control-directory.txt');
++const configPath = join(directory, 'mcp-collections-c05-config.json'), controlPath = join(directory, 'control-directory.txt');
+ assert.equal(existsSync(configPath), false, 'configuration already exists');
+
+--- evidence/C05-mcp-offline-linux-nas-20260907/mcp-offline-c05-common.mjs	2026-09-07 22:47:43
++++ evidence/C05-mcp-collections-linux-nas-20260908/mcp-collections-c05-common.mjs	2026-09-08 00:21:50
+@@ -4,4 +4,4 @@
+ import { isAbsolute, join } from 'node:path';
+-export const directory = 'evidence/C05-mcp-offline-linux-nas-20260907';
+-export const configuration = JSON.parse(readFileSync(new URL('./mcp-offline-c05-config.json', import.meta.url), 'utf8'));
++export const directory = 'evidence/C05-mcp-collections-linux-nas-20260908';
++export const configuration = JSON.parse(readFileSync(new URL('./mcp-collections-c05-config.json', import.meta.url), 'utf8'));
+ assert.equal(configuration.schemaVersion, 1);
+@@ -11,8 +11,8 @@
+ assert.ok(/^evidence-[a-zA-Z0-9_-]+\/result\.json$/.test(configuration.previousNativeResult));
+-assert.equal(configuration.previousNativeResult, 'evidence-mcp-custody-c05/result.json');
++assert.equal(configuration.previousNativeResult, 'evidence-mcp-offline-c05/result.json');
+ assert.ok(Array.isArray(configuration.historyEvidence) && configuration.historyEvidence.every(path => /^evidence\/[a-zA-Z0-9_./-]+\.json$/.test(path) && !path.split('/').includes('..')));
+-assert.ok(configuration.historyEvidence.includes('evidence/C05-mcp-custody-linux-nas-20260907/verification.json'));
+-assert.deepEqual(configuration.predecessor, { path: 'evidence/C05-mcp-custody-linux-nas-20260907/verification.json',
+-  sha256: '3783a0a1f5ba3a4eea5a9a2231d5def3dbaf44a163c4444b8e559642283e463c',
+-  nativeResultSha256: '739ddb55922a08ed87cb5e7b324e26b1d05f0c0f4d79175c77d6ffa8dabd1999' });
++assert.ok(configuration.historyEvidence.includes('evidence/C05-mcp-offline-linux-nas-20260907/verification.json'));
++assert.deepEqual(configuration.predecessor, { path: 'evidence/C05-mcp-offline-linux-nas-20260907/verification.json',
++  sha256: '28cdec0cdcaa8d7e308e8341258218a6b85e31d5053f50cf914e5e6edd7f38b9',
++  nativeResultSha256: 'a64d5f74827c2db5ae3ecb103ce1863663d4de148f189129e0ac75b10a3607c3' });
+ export const root = configuration.root;
+@@ -23,4 +23,4 @@
+ export function assertLocalResult(result, pin) {
+-  assert.equal(result?.sourceObservation?.kind, 'per_run_source_and_build_verification', 'MCP stored-only general resume run requires actual per-run source/build observations');
+-  assert.ok(/^v24\./.test(result.testNode), 'MCP stored-only general resume local tests require Node 24');
++  assert.equal(result?.sourceObservation?.kind, 'per_run_source_and_build_verification', 'MCP collection general resume run requires actual per-run source/build observations');
++  assert.ok(/^v24\./.test(result.testNode), 'MCP collection general resume local tests require Node 24');
+   assert.equal(result?.code, 0); assert.equal(result.signal, null); assert.equal(result.timedOut, false);
+
+--- evidence/C05-mcp-offline-linux-nas-20260907/preflight.mjs	2026-09-07 22:47:43
++++ evidence/C05-mcp-collections-linux-nas-20260908/preflight.mjs	2026-09-08 00:21:50
+@@ -2,3 +2,3 @@
+ import { writeFileSync } from 'node:fs';
+-import { directory, root, configuration, remoteJson, requireCleanAudit } from './mcp-offline-c05-common.mjs';
++import { directory, root, configuration, remoteJson, requireCleanAudit } from './mcp-collections-c05-common.mjs';
+ const result = remoteJson(async (root, previousNativeResult) => {
+
+--- evidence/C05-mcp-offline-linux-nas-20260907/prepare-upload.mjs	2026-09-07 22:47:43
++++ evidence/C05-mcp-collections-linux-nas-20260908/prepare-upload.mjs	2026-09-08 00:21:50
+@@ -5,3 +5,3 @@
+ import { verifyEvaluationBuild } from '../../dist/infrastructure/local-evaluation.js';
+-import { directory, root, configuration, assertPin, assertLocalResult, assertLocalStageObservation, parseTestSummary, selectedTestFiles, controlPath, remoteJson, requireCleanAudit } from './mcp-offline-c05-common.mjs';
++import { directory, root, configuration, assertPin, assertLocalResult, assertLocalStageObservation, parseTestSummary, selectedTestFiles, controlPath, remoteJson, requireCleanAudit } from './mcp-collections-c05-common.mjs';
+ const attempt = Number(process.argv[2] ?? 1); assert.ok(Number.isSafeInteger(attempt) && attempt >= 1 && attempt <= 9);
+@@ -30,3 +30,3 @@
+ };
+-const selections = { newTests: select('evidence/C05-mcp-offline-new-files.json'), relatedTests: select('evidence/C05-mcp-offline-related-files.json') };
++const selections = { newTests: select('evidence/C05-mcp-collections-new-files.json'), relatedTests: select('evidence/C05-mcp-collections-related-files.json') };
+ assert.equal(selections.newTests.files.some(file => selections.relatedTests.files.includes(file)), false);
+@@ -52,7 +52,7 @@
+ assert.deepEqual(await verifyEvaluationBuild(process.cwd()), pin);
+-const uploads = [[stamp + '.tar.gz', 'mcp-offline-c05-source-attempt' + attempt + '.tar.gz'],
+-  [directory + '/verify-linux-mcp-offline-c05.mjs', 'verify-linux-mcp-offline-c05.mjs'], [directory + '/mcp-offline-c05-common.mjs', 'mcp-offline-c05-common.mjs'],
+-  [stamp + '-validation-inputs.json', 'mcp-offline-c05-validation-inputs.json'],
+-  [directory + '/mcp-offline-c05-config.json', 'mcp-offline-c05-config.json'],
+-  [stamp + '-targeted-files.json', 'mcp-offline-c05-targeted-files.json'], [directory + '/build-pin.json', 'mcp-offline-c05-build-pin.json']]
++const uploads = [[stamp + '.tar.gz', 'mcp-collections-c05-source-attempt' + attempt + '.tar.gz'],
++  [directory + '/verify-linux-mcp-collections-c05.mjs', 'verify-linux-mcp-collections-c05.mjs'], [directory + '/mcp-collections-c05-common.mjs', 'mcp-collections-c05-common.mjs'],
++  [stamp + '-validation-inputs.json', 'mcp-collections-c05-validation-inputs.json'],
++  [directory + '/mcp-collections-c05-config.json', 'mcp-collections-c05-config.json'],
++  [stamp + '-targeted-files.json', 'mcp-collections-c05-targeted-files.json'], [directory + '/build-pin.json', 'mcp-collections-c05-build-pin.json']]
+   .map(([local, name]) => ({ local, remote: root + '/' + name, sha256: createHash('sha256').update(readFileSync(local)).digest('hex') }));
+@@ -65,3 +65,3 @@
+   if (audit.auditErrors.length || audit.observedOwnedProcesses || audit.realRoot !== root || audit.rootMode !== '700' || audit.defaultNode !== expectedDefaultNode) throw new Error('unsafe_prepare_environment');
+-  const allowed = new Set(['mcp-offline-c05-source-attempt' + attempt + '.tar.gz', 'verify-linux-mcp-offline-c05.mjs', 'mcp-offline-c05-common.mjs', 'mcp-offline-c05-targeted-files.json', 'mcp-offline-c05-build-pin.json', 'mcp-offline-c05-validation-inputs.json', 'mcp-offline-c05-config.json']);
++  const allowed = new Set(['mcp-collections-c05-source-attempt' + attempt + '.tar.gz', 'verify-linux-mcp-collections-c05.mjs', 'mcp-collections-c05-common.mjs', 'mcp-collections-c05-targeted-files.json', 'mcp-collections-c05-build-pin.json', 'mcp-collections-c05-validation-inputs.json', 'mcp-collections-c05-config.json']);
+   for (const item of uploads) {
+@@ -70,3 +70,3 @@
+   }
+-  const evidence = root + '/evidence-mcp-offline-c05';
++  const evidence = root + '/evidence-mcp-collections-c05';
+   if (attempt > 1) {
+@@ -78,4 +78,4 @@
+   if (fs.existsSync(evidence)) throw new Error('evidence_already_exists');
+-  const cwd = root + '/runtime', backup = root + '/before-mcp-offline-c05-attempt' + attempt;
+-  const archive = root + '/mcp-offline-c05-source-attempt' + attempt + '.tar.gz';
++  const cwd = root + '/runtime', backup = root + '/before-mcp-collections-c05-attempt' + attempt;
++  const archive = root + '/mcp-collections-c05-source-attempt' + attempt + '.tar.gz';
+   const allowedRoots = new Set(['src', 'scripts', 'fixtures', 'package.json', 'package-lock.json', 'tsconfig.json', 'tsconfig.core.json']);
+
+--- evidence/C05-mcp-offline-linux-nas-20260907/start-native.mjs	2026-09-07 22:46:51
++++ evidence/C05-mcp-collections-linux-nas-20260908/start-native.mjs	2026-09-08 00:21:50
+@@ -3,3 +3,3 @@
+ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+-import { directory, root, configuration, assertPin, controlPath, remoteJson, requireCleanAudit } from './mcp-offline-c05-common.mjs';
++import { directory, root, configuration, assertPin, controlPath, remoteJson, requireCleanAudit } from './mcp-collections-c05-common.mjs';
+ const attempt = Number(process.argv[2] ?? 1); assert.ok(Number.isSafeInteger(attempt) && attempt >= 1 && attempt <= 9);
+@@ -24,3 +24,3 @@
+ const command = '/usr/bin/env -i PATH=' + root + '/node-v24.20.0-linux-x64/bin:/usr/bin:/bin TMPDIR=' + root + '/tmp NODE_COMPILE_CACHE=' +
+-  root + '/tmp/node-compile-cache npm_config_cache=' + root + '/npm-cache /usr/bin/nice -n 10 ' + root + '/node-v24.20.0-linux-x64/bin/node ' + root + '/verify-linux-mcp-offline-c05.mjs ' + root;
++  root + '/tmp/node-compile-cache npm_config_cache=' + root + '/npm-cache /usr/bin/nice -n 10 ' + root + '/node-v24.20.0-linux-x64/bin/node ' + root + '/verify-linux-mcp-collections-c05.mjs ' + root;
+ const child = spawn('ssh', ['-S', control.socket, configuration.sshHost, command], { stdio: ['ignore', 'inherit', 'inherit'] });
+
+--- evidence/C05-mcp-offline-linux-nas-20260907/verify-linux-mcp-offline-c05.mjs	2026-09-07 22:47:43
++++ evidence/C05-mcp-collections-linux-nas-20260908/verify-linux-mcp-collections-c05.mjs	2026-09-08 00:21:50
+@@ -1,2 +1,2 @@
+-// C05 MCP stored-only general resume runner adapted from completed C05 response custody; bounded process-group settlement and actual exits retained.
++// C05 MCP collection general resume runner adapted from completed C05 plain-read offline resume; bounded process-group settlement and actual exits retained.
+ import { spawn } from 'node:child_process';
+@@ -7,3 +7,3 @@
+ import { pathToFileURL } from 'node:url';
+-import { auditRoot, assertPin, assertLocalResult, configuration } from './mcp-offline-c05-common.mjs';
++import { auditRoot, assertPin, assertLocalResult, configuration } from './mcp-collections-c05-common.mjs';
+ 
+@@ -12,4 +12,4 @@
+ if (root !== configuration.root || (statSync(root).mode & 0o777) !== 0o700) throw new Error('unexpected_dedicated_test_root');
+-const cwd = join(root, 'runtime'), evidence = join(root, 'evidence-mcp-offline-c05');
+-const expectedPin = JSON.parse(readFileSync(join(root, 'mcp-offline-c05-build-pin.json'), 'utf8'));
++const cwd = join(root, 'runtime'), evidence = join(root, 'evidence-mcp-collections-c05');
++const expectedPin = JSON.parse(readFileSync(join(root, 'mcp-collections-c05-build-pin.json'), 'utf8'));
+ mkdirSync(evidence, { mode: 0o700 }); process.umask(0o022);
+@@ -20,4 +20,4 @@
+     testConcurrency: 2, umask: '0022', temporaryDirectory: process.env.TMPDIR },
+-  scope: 'native_linux_mcp_offline_general_resume',
+-  runnerTemplate: 'evidence/C05-mcp-custody-linux-nas-20260907/verify-linux-mcp-custody-c05.mjs',
++  scope: 'native_linux_mcp_collections_general_resume',
++  runnerTemplate: 'evidence/C05-mcp-offline-linux-nas-20260907/verify-linux-mcp-offline-c05.mjs',
+   executionLimits: { overallDeadlineMs: 1800000, nodeTestTimeoutMs: 60000, fullStageDeadlineMs: 1200000, testStageDeadlineMs: 300000, otherStageDeadlineMs: 180000,
+@@ -34,3 +34,3 @@
+   const stageLimit = name === 'all-tests' ? record.executionLimits.fullStageDeadlineMs :
+-    ['new-mcp-offline-tests', 'related-existing-tests'].includes(name) ? record.executionLimits.testStageDeadlineMs : record.executionLimits.otherStageDeadlineMs;
++    ['new-mcp-collections-tests', 'related-existing-tests'].includes(name) ? record.executionLimits.testStageDeadlineMs : record.executionLimits.otherStageDeadlineMs;
+   const deadlineMs = Math.min(remaining, stageLimit);
+@@ -143,3 +143,3 @@
+     step.nodeTestTimeoutFailures = [...text.matchAll(/failureType:\s*['"]?testTimeoutFailure\b/g)].length;
+-    if (['new-mcp-offline-tests', 'related-existing-tests', 'all-tests'].includes(name)) {
++    if (['new-mcp-collections-tests', 'related-existing-tests', 'all-tests'].includes(name)) {
+       step.tapSummary = Object.fromEntries(['tests', 'pass', 'fail', 'cancelled', 'skipped', 'todo'].map(key => {
+@@ -148,3 +148,3 @@
+       if (!(step.tapSummary.tests > 0) || step.tapSummary.fail !== 0 || step.tapSummary.cancelled !== 0) step.errors.push({ stage: 'tap_summary', code: 'test_failure_or_missing_summary' });
+-      if (name === 'new-mcp-offline-tests') record.targeted.observedTestCount = step.tapSummary.tests;
++      if (name === 'new-mcp-collections-tests') record.targeted.observedTestCount = step.tapSummary.tests;
+       if (name === 'related-existing-tests') record.related.observedTestCount = step.tapSummary.tests;
+@@ -168,3 +168,3 @@
+   record.predecessor = configuration.predecessor;
+-  const validationInputs = JSON.parse(readFileSync(join(root, 'mcp-offline-c05-validation-inputs.json'), 'utf8'));
++  const validationInputs = JSON.parse(readFileSync(join(root, 'mcp-collections-c05-validation-inputs.json'), 'utf8'));
+   if (JSON.stringify(expectedPin) !== JSON.stringify(validationInputs.pin)) throw new Error('unapproved_build_pin');
+@@ -195,3 +195,3 @@
+   if (JSON.stringify(record.buildPin) !== JSON.stringify(expectedPin)) throw new Error('initial_build_pin_mismatch');
+-  const lists = JSON.parse(readFileSync(join(root, 'mcp-offline-c05-targeted-files.json'), 'utf8'));
++  const lists = JSON.parse(readFileSync(join(root, 'mcp-collections-c05-targeted-files.json'), 'utf8'));
+   const available = readdirSync(join(cwd, 'dist/tests')).filter(name => name.endsWith('.test.js')).sort();
+@@ -209,3 +209,3 @@
+   record.related = { files: lists.relatedFiles, fileCount: lists.relatedFiles.length, observedTestCount: null }; persist();
+-  await run('new-mcp-offline-tests', process.execPath, ['--test', '--test-concurrency=2', '--test-timeout=60000', '--test-reporter=tap', ...lists.newFiles]);
++  await run('new-mcp-collections-tests', process.execPath, ['--test', '--test-concurrency=2', '--test-timeout=60000', '--test-reporter=tap', ...lists.newFiles]);
+   await run('related-existing-tests', process.execPath, ['--test', '--test-concurrency=2', '--test-timeout=60000', '--test-reporter=tap', ...lists.relatedFiles]);
+
+--- evidence/C05-mcp-offline-linux-nas-20260907/collect-attempt.mjs	2026-09-07 22:46:51
++++ evidence/C05-mcp-collections-linux-nas-20260908/collect-attempt.mjs	2026-09-08 00:21:50
+@@ -4,6 +4,6 @@
+ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+-import { directory, root, configuration, assertPin, controlPath } from './mcp-offline-c05-common.mjs';
++import { directory, root, configuration, assertPin, controlPath } from './mcp-collections-c05-common.mjs';
+ const label = process.argv[2]; if (!/^(attempt-[1-9][0-9]*|final)$/.test(label ?? '')) throw new Error('collection_label_required');
+ const control = controlPath();
+-const get = name => execFileSync('ssh', ['-S', control.socket, configuration.sshHost, '/bin/cat ' + root + '/evidence-mcp-offline-c05/' + name], { timeout: 30000, maxBuffer: 32 * 1024 * 1024 });
++const get = name => execFileSync('ssh', ['-S', control.socket, configuration.sshHost, '/bin/cat ' + root + '/evidence-mcp-collections-c05/' + name], { timeout: 30000, maxBuffer: 32 * 1024 * 1024 });
+ const bytes = get('result.json'), result = JSON.parse(bytes);
+@@ -11,3 +11,3 @@
+ if (label === 'final') { assert.equal(result.status, 'passed'); assert.deepEqual(result.buildPin, assertPin(JSON.parse(readFileSync(directory + '/build-pin.json', 'utf8')))); }
+-const allowed = new Set(['build', 'new-mcp-offline-tests', 'related-existing-tests', 'typecheck-core', 'architecture', 'architecture-cli-fixtures', 'all-tests', 'fixtures']);
++const allowed = new Set(['build', 'new-mcp-collections-tests', 'related-existing-tests', 'typecheck-core', 'architecture', 'architecture-cli-fixtures', 'all-tests', 'fixtures']);
+ if (!Array.isArray(result.steps) || result.steps.some(step => !allowed.has(step.name)) || new Set(result.steps.map(step => step.name)).size !== result.steps.length) throw new Error('invalid_step_name');
+
+--- evidence/C05-mcp-offline-linux-nas-20260907/close-native.mjs	2026-09-07 22:46:51
++++ evidence/C05-mcp-collections-linux-nas-20260908/close-native.mjs	2026-09-08 00:21:50
+@@ -3,3 +3,3 @@
+ import { existsSync, readFileSync, rmdirSync, writeFileSync } from 'node:fs';
+-import { directory, root, configuration, assertPin, controlPath, remoteJson, requireCleanAudit } from './mcp-offline-c05-common.mjs';
++import { directory, root, configuration, assertPin, controlPath, remoteJson, requireCleanAudit } from './mcp-collections-c05-common.mjs';
+ const native = JSON.parse(readFileSync(directory + '/final/result.json', 'utf8'));
+
+--- evidence/C05-mcp-offline-linux-nas-20260907/finalize-evidence.mjs	2026-09-07 23:02:56
++++ evidence/C05-mcp-collections-linux-nas-20260908/finalize-evidence.mjs	2026-09-08 00:21:50
+@@ -7,3 +7,3 @@
+ import { verifyEvaluationBuild } from '../../dist/infrastructure/local-evaluation.js';
+-import { directory, root, configuration, assertPin, assertLocalResult, assertLocalStageObservation, parseTestSummary, selectedTestFiles, requireCleanAudit } from './mcp-offline-c05-common.mjs';
++import { directory, root, configuration, assertPin, assertLocalResult, assertLocalStageObservation, parseTestSummary, selectedTestFiles, requireCleanAudit } from './mcp-collections-c05-common.mjs';
+ 
+@@ -14,3 +14,3 @@
+ const localBuildManifestSha256 = createHash('sha256').update(localBuildManifestBytes).digest('hex');
+-assert.ok(/^v24\./.test(localBuildManifest.node), 'MCP stored-only general resume local build requires Node 24');
++assert.ok(/^v24\./.test(localBuildManifest.node), 'MCP collection general resume local build requires Node 24');
+ assert.equal(process.version, localBuildManifest.node, 'use the actual local build runtime; native Linux has its own recorded runtime');
+@@ -48,3 +48,3 @@
+   assert.ok(observedExit.executions.some(item => item.sessionId === result.processEvidence.sessionId && item.exitCode === 0 &&
+-    `evidence/C05-mcp-offline-${item.stage}.log` === result.logPath));
++    `evidence/C05-mcp-collections-${item.stage}.log` === result.logPath));
+   let stageObservation = null;
+@@ -83,4 +83,4 @@
+ assert.deepEqual(upload.uploads, uploads); requireCleanAudit(upload.beforeProcesses);
+-const remoteNames = new Set(['mcp-offline-c05-source-attempt' + metadata.attempt + '.tar.gz', 'verify-linux-mcp-offline-c05.mjs',
+-  'mcp-offline-c05-common.mjs', 'mcp-offline-c05-config.json', 'mcp-offline-c05-validation-inputs.json', 'mcp-offline-c05-targeted-files.json', 'mcp-offline-c05-build-pin.json']);
++const remoteNames = new Set(['mcp-collections-c05-source-attempt' + metadata.attempt + '.tar.gz', 'verify-linux-mcp-collections-c05.mjs',
++  'mcp-collections-c05-common.mjs', 'mcp-collections-c05-config.json', 'mcp-collections-c05-validation-inputs.json', 'mcp-collections-c05-targeted-files.json', 'mcp-collections-c05-build-pin.json']);
+ assert.equal(uploads.length, remoteNames.size); assert.equal(new Set(uploads.map(item => item.remote)).size, remoteNames.size);
+@@ -95,3 +95,3 @@
+ assert.equal(native.environment.platform, 'linux'); assert.equal(native.environment.node, 'v24.20.0');
+-assert.equal(native.scope, 'native_linux_mcp_offline_general_resume'); assert.deepEqual(native.predecessor, configuration.predecessor);
++assert.equal(native.scope, 'native_linux_mcp_collections_general_resume'); assert.deepEqual(native.predecessor, configuration.predecessor);
+ assert.equal(native.externalModelCalls, false); assert.equal(native.internalServiceIntegration, false); assert.equal(native.productionDeployment, false);
+@@ -101,3 +101,3 @@
+ requireCleanAudit(native.beforeProcesses); requireCleanAudit(native.afterProcesses);
+-const stepNames = ['build', 'new-mcp-offline-tests', 'related-existing-tests', 'typecheck-core', 'architecture', 'architecture-cli-fixtures', 'all-tests', 'fixtures'];
++const stepNames = ['build', 'new-mcp-collections-tests', 'related-existing-tests', 'typecheck-core', 'architecture', 'architecture-cli-fixtures', 'all-tests', 'fixtures'];
+ assert.deepEqual(native.steps.map(step => step.name), stepNames);
+@@ -116,3 +116,3 @@
+ }
+-const nativeTests = Object.fromEntries(['new-mcp-offline-tests', 'related-existing-tests', 'all-tests'].map(name => {
++const nativeTests = Object.fromEntries(['new-mcp-collections-tests', 'related-existing-tests', 'all-tests'].map(name => {
+   const parsed = tap(directory + '/final/' + name + '.log'), stored = native.steps.find(step => step.name === name).tapSummary;
+@@ -124,4 +124,4 @@
+ for (const [key, source, path] of [
+-  ['newFiles', 'newTests', 'evidence/C05-mcp-offline-new-files.json'],
+-  ['relatedFiles', 'relatedTests', 'evidence/C05-mcp-offline-related-files.json'],
++  ['newFiles', 'newTests', 'evidence/C05-mcp-collections-new-files.json'],
++  ['relatedFiles', 'relatedTests', 'evidence/C05-mcp-collections-related-files.json'],
+ ]) {
+@@ -136,3 +136,3 @@
+ assert.deepEqual(native.targeted.files, lists.newFiles); assert.deepEqual(native.related.files, lists.relatedFiles);
+-assert.equal(native.targeted.observedTestCount, nativeTests['new-mcp-offline-tests'].tests);
++assert.equal(native.targeted.observedTestCount, nativeTests['new-mcp-collections-tests'].tests);
+ assert.equal(native.related.observedTestCount, nativeTests['related-existing-tests'].tests);
+@@ -155,3 +155,3 @@
+     assert.equal(files.get(path).sha256, configuration.predecessor.sha256, 'predecessor proof changed');
+-    assert.equal(record.scope, 'mcp_post_send_response_custody'); assert.equal(record.nativeLinux.status, 'passed');
++    assert.equal(record.scope, 'mcp_offline_general_resume'); assert.equal(record.nativeLinux.status, 'passed');
+     assert.deepEqual(record.nativeLinux.collectedFiles.filter(item => item.file === 'result.json'),
+@@ -172,4 +172,4 @@
+ }
+-for (const name of ['configure.mjs', 'mcp-offline-c05-config.json', 'script-provenance.json', 'mcp-offline-c05-common.mjs', 'verify-linux-mcp-offline-c05.mjs', 'finalize-evidence.mjs', 'collect-attempt.mjs', 'close-native.mjs', 'start-native.mjs', 'prepare-upload.mjs', 'preflight.mjs', 'select-local.mjs']) read(directory + '/' + name);
+-const result = { schemaVersion: 1, chapter: 'C05', scope: 'mcp_offline_general_resume',
++for (const name of ['configure.mjs', 'mcp-collections-c05-config.json', 'script-provenance.json', 'mcp-collections-c05-common.mjs', 'verify-linux-mcp-collections-c05.mjs', 'finalize-evidence.mjs', 'collect-attempt.mjs', 'close-native.mjs', 'start-native.mjs', 'prepare-upload.mjs', 'preflight.mjs', 'select-local.mjs']) read(directory + '/' + name);
++const result = { schemaVersion: 1, chapter: 'C05', scope: 'mcp_collections_general_resume',
+   status: 'verified_supported_local_posix_partial_chapter', recordedAt: new Date().toISOString(), chapterComplete: false, goalComplete: false,
+@@ -177,3 +177,3 @@
+   nativeLinux: { status: 'passed', attempt: metadata.attempt, startedAt: native.startedAt, finishedAt: native.finishedAt,
+-    environment: native.environment, sourceAndBuild: native.buildPin, tests: nativeTests['all-tests'], newTests: nativeTests['new-mcp-offline-tests'],
++    environment: native.environment, sourceAndBuild: native.buildPin, tests: nativeTests['all-tests'], newTests: nativeTests['new-mcp-collections-tests'],
+     relatedTests: nativeTests['related-existing-tests'], targetedFiles: lists.newFiles, relatedFiles: lists.relatedFiles, allTestFiles: native.allTestFiles,
+@@ -199,4 +199,4 @@
+     'Explicit stored_only MCP registration skips peer construction/discovery; it is not an automatic fallback or a guarantee that the selected model/provider uses no network.',
+-    'SQLite and file-journal entry fixtures cover two real CLI response restorations and four localhost HTTP cases: two response restorations without a peer, plus two uncalled-task waits followed by explicit online reopen and one actual peer call. Stored-only portions preserve peer audit bytes; repeated commands preserve original records and accounting. Other interruption boundaries require their own tests.',
+-    'General-entry collection/page/wait recovery is not completed by this bounded plain-read offline unit.',
++    'Collection acceptance is limited to the exact selected test files and retained logs; historical plain-read CLI/HTTP counts do not establish collection coverage.',
++    'Collection/page/wait behavior beyond the retained final tests remains unverified; a stored_complete marker is not execution authority or permission for automatic online fallback.',
+     'This script does not decide C05 chapter acceptance or complete the overall implementation goal.'],
+
+--- evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs	2026-09-07 22:46:51
++++ evidence/C05-mcp-collections-linux-nas-20260908/select-local.mjs	2026-09-08 00:21:50
+@@ -2,3 +2,3 @@
+ // From runtime with Node 24:
+-// node evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs evidence/C05-mcp-offline-stage-selection.json evidence/C05-mcp-offline-terminal-input.json
++// node evidence/C05-mcp-collections-linux-nas-20260908/select-local.mjs evidence/C05-mcp-collections-stage-selection.json evidence/C05-mcp-collections-terminal-input.json
+ // First file: {build:"buildN",new:"newN",related:"relatedN",core:"coreN",architecture:"architectureN"}
+@@ -20,3 +20,3 @@
+ const suppliedInputs = process.argv.slice(2).map(path => {
+-  assert.ok(/^evidence\/C05-mcp-offline-[a-zA-Z0-9-]+\.json$/.test(path), 'bounded local recovery input path required');
++  assert.ok(/^evidence\/C05-mcp-collections-[a-zA-Z0-9-]+\.json$/.test(path), 'bounded local recovery input path required');
+   const absolute = resolve(runtime, path), stat = lstatSync(absolute);
+@@ -58,3 +58,3 @@
+ function read(path, maximum = 2 * 1024 * 1024) {
+-  assert.ok(/^evidence\/C05-mcp-offline-[a-zA-Z0-9-]+\.(json|log|mjs)$/.test(path) || path === 'evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs', 'fixed local evidence path required');
++  assert.ok(/^evidence\/C05-mcp-collections-[a-zA-Z0-9-]+\.(json|log|mjs)$/.test(path) || path === 'evidence/C05-mcp-collections-linux-nas-20260908/select-local.mjs', 'fixed local evidence path required');
+   const absolute = resolve(runtime, path), stat = lstatSync(absolute);
+@@ -69,4 +69,4 @@
+ const pin = await verifyEvaluationBuild(runtime);
+-const stagePath = stage => `evidence/C05-mcp-offline-${stage}.json`;
+-const logPath = stage => `evidence/C05-mcp-offline-${stage}.log`;
++const stagePath = stage => `evidence/C05-mcp-collections-${stage}.json`;
++const logPath = stage => `evidence/C05-mcp-collections-${stage}.log`;
+ const stages = Object.fromEntries(roles.map(role => {
+@@ -111,3 +111,3 @@
+ assert.equal(newFiles.some(file => relatedFiles.includes(file)), false, 'new and related files overlap');
+-const listPaths = ['evidence/C05-mcp-offline-new-files.json', 'evidence/C05-mcp-offline-related-files.json'];
++const listPaths = ['evidence/C05-mcp-collections-new-files.json', 'evidence/C05-mcp-collections-related-files.json'];
+ const selectedLists = listPaths.map(path => JSON.parse(read(path).toString('utf8')));
+@@ -118,3 +118,3 @@
+ 
+-// Same TAP/spec summary contract used by mcp-offline-c05-common; no NAS configuration is opened.
++// Same TAP/spec summary contract used by mcp-collections-c05-common; no NAS configuration is opened.
+ function summary(raw) {
+@@ -133,7 +133,7 @@
+ const summaries = { new: summary(stages.new.log), related: summary(stages.related.log) };
+-const pinPath = `evidence/C05-mcp-offline-linux-nas-20260907/local-${selected.build}-pin.json`;
+-const processPath = 'evidence/C05-mcp-offline-linux-nas-20260907/tool-exit-observations.json';
++const pinPath = `evidence/C05-mcp-collections-linux-nas-20260908/local-${selected.build}-pin.json`;
++const processPath = 'evidence/C05-mcp-collections-linux-nas-20260908/tool-exit-observations.json';
+ const encode = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
+ const prepared = new Map([[pinPath, encode(pin)]]);
+-read('evidence/C05-mcp-offline-run.mjs'); read('evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs');
++read('evidence/C05-mcp-collections-run.mjs'); read('evidence/C05-mcp-collections-linux-nas-20260908/select-local.mjs');
+ prepared.set(processPath, encode({ recordedAt: new Date().toISOString(),
+@@ -146,3 +146,3 @@
+   helperSourceObservation: { meaning: 'Read at selection time; not claimed captured before each stage.',
+-    files: [inputs.get('evidence/C05-mcp-offline-run.mjs'), inputs.get('evidence/C05-mcp-offline-linux-nas-20260907/select-local.mjs')] } }));
++    files: [inputs.get('evidence/C05-mcp-collections-run.mjs'), inputs.get('evidence/C05-mcp-collections-linux-nas-20260908/select-local.mjs')] } }));
+ for (const role of ['new', 'related']) {
+@@ -157,3 +157,3 @@
+     .map(([path, role]) => ({ path, role, sha256: prepared.has(path) ? sha256(prepared.get(path)) : inputs.get(path).sha256 }));
+-  prepared.set(`evidence/C05-mcp-offline-linux-nas-20260907/local-${role}-result.json`, encode({ code: actual.exitCode, signal: actual.signal,
++  prepared.set(`evidence/C05-mcp-collections-linux-nas-20260908/local-${role}-result.json`, encode({ code: actual.exitCode, signal: actual.signal,
+     // The new stage runner records an explicit false; a missing timeout field was rejected above.

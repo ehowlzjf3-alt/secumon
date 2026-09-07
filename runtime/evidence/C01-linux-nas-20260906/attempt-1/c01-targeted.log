@@ -1,0 +1,224 @@
+TAP version 13
+# Subtest: agent setup preserves files, creates private identity/config and reopens without a model
+ok 1 - agent setup preserves files, creates private identity/config and reopens without a model
+  ---
+  duration_ms: 22.497773
+  type: 'test'
+  ...
+# Subtest: status and invalid initialization options do not create files
+ok 2 - status and invalid initialization options do not create files
+  ---
+  duration_ms: 1.83689
+  type: 'test'
+  ...
+# Subtest: separate directories get distinct IDs and moving a directory preserves its identity
+ok 3 - separate directories get distinct IDs and moving a directory preserves its identity
+  ---
+  duration_ms: 19.090891
+  type: 'test'
+  ...
+# Subtest: initialization can finish after a process stops between identity and config publication
+ok 4 - initialization can finish after a process stops between identity and config publication
+  ---
+  duration_ms: 11.556458
+  type: 'test'
+  ...
+# Subtest: missing identity uses explicit repair with the existing config; missing completed config is not reset
+ok 5 - missing identity uses explicit repair with the existing config; missing completed config is not reset
+  ---
+  duration_ms: 16.197791
+  type: 'test'
+  ...
+# Subtest: completed layout repairs missing directories only with explicit repair and preserves existing state
+ok 6 - completed layout repairs missing directories only with explicit repair and preserves existing state
+  ---
+  duration_ms: 16.482979
+  type: 'test'
+  ...
+# Subtest: unknown data without identity is not assigned a new ID
+ok 7 - unknown data without identity is not assigned a new ID
+  ---
+  duration_ms: 1.882349
+  type: 'test'
+  ...
+# Subtest: config identity mismatch, unsupported versions and malformed documents are preserved
+ok 8 - config identity mismatch, unsupported versions and malformed documents are preserved
+  ---
+  duration_ms: 8.003005
+  type: 'test'
+  ...
+# Subtest: metadata symlinks and external hard links cannot be used for setup
+ok 9 - metadata symlinks and external hard links cannot be used for setup
+  ---
+  duration_ms: 6.939843
+  type: 'test'
+  ...
+# Subtest: managed directory links and writable/public metadata are rejected without changing permissions
+ok 10 - managed directory links and writable/public metadata are rejected without changing permissions
+  ---
+  duration_ms: 8.137512
+  type: 'test'
+  ...
+# Subtest: engine overlap and nested agent registration are rejected
+ok 11 - engine overlap and nested agent registration are rejected
+  ---
+  duration_ms: 5.934913
+  type: 'test'
+  ...
+# Subtest: CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+ok 12 - CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+  ---
+  duration_ms: 852.592289
+  type: 'test'
+  ...
+# Subtest: separate CLI processes initializing concurrently settle on exactly one identity
+ok 13 - separate CLI processes initializing concurrently settle on exactly one identity
+  ---
+  duration_ms: 611.995302
+  type: 'test'
+  ...
+# Subtest: two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+ok 14 - two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+  ---
+  duration_ms: 90.31205
+  type: 'test'
+  ...
+# Subtest: agent work files cannot traverse into engine or another agent and remain separate
+ok 15 - agent work files cannot traverse into engine or another agent and remain separate
+  ---
+  duration_ms: 90.538053
+  type: 'test'
+  ...
+# Subtest: copying another agents database is detected by its durable owner before runtime access
+ok 16 - copying another agents database is detected by its durable owner before runtime access
+  ---
+  duration_ms: 51.513002
+  type: 'test'
+  ...
+# Subtest: unowned existing databases are not silently adopted
+ok 17 - unowned existing databases are not silently adopted
+  ---
+  duration_ms: 14.094846
+  type: 'test'
+  ...
+# Subtest: symlink database and sidecar destinations cannot overwrite another file
+ok 18 - symlink database and sidecar destinations cannot overwrite another file
+  ---
+  duration_ms: 16.874224
+  type: 'test'
+  ...
+# Subtest: configured but not yet connected backend is not replaced by SQLite
+ok 19 - configured but not yet connected backend is not replaced by SQLite
+  ---
+  duration_ms: 15.806226
+  type: 'test'
+  ...
+# Subtest: CLI resumes across processes, keeps conversation/work identities and separates disconnect, pause and cancel
+not ok 20 - CLI resumes across processes, keeps conversation/work identities and separates disconnect, pause and cancel
+  ---
+  duration_ms: 355.85648
+  type: 'test'
+  location: '/home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/tests/cli.test.js:17:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: /home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node /home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/presentation/cli.js accept --request-id r1 --data-dir /home/shaneee/secumon-linux-test.pCJ0bd/tmp/runtime-cli-c8WSNI --json
+    오류: cli_request_failed
+    
+  code: 1
+  stack: |-
+    genericNodeError (node:internal/errors:986:15)
+    wrappedFn (node:internal/errors:540:14)
+    ChildProcess.exithandler (node:child_process:417:12)
+    ChildProcess.emit (node:events:514:28)
+    maybeClose (node:internal/child_process:1141:16)
+    ChildProcess._handle.onexit (node:internal/child_process:306:5)
+  ...
+# Subtest: CLI human output is reception plus result, with no internal events or ANSI: documents-simple
+not ok 21 - CLI human output is reception plus result, with no internal events or ANSI: documents-simple
+  ---
+  duration_ms: 726.903063
+  type: 'test'
+  location: '/home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/tests/cli.test.js:54:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: /home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node /home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/presentation/cli.js demo --scenario documents-simple --request-id human --data-dir /home/shaneee/secumon-linux-test.pCJ0bd/tmp/runtime-cli-quiet-6Zdcv6
+    오류: cli_request_failed
+    
+  code: 1
+  stack: |-
+    genericNodeError (node:internal/errors:986:15)
+    wrappedFn (node:internal/errors:540:14)
+    ChildProcess.exithandler (node:child_process:417:12)
+    ChildProcess.emit (node:events:514:28)
+    maybeClose (node:internal/child_process:1141:16)
+    ChildProcess._handle.onexit (node:internal/child_process:306:5)
+  ...
+# Subtest: CLI human output is reception plus result, with no internal events or ANSI: observations-simple
+not ok 22 - CLI human output is reception plus result, with no internal events or ANSI: observations-simple
+  ---
+  duration_ms: 310.651193
+  type: 'test'
+  location: '/home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/tests/cli.test.js:54:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: /home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node /home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/presentation/cli.js demo --scenario observations-simple --request-id human --data-dir /home/shaneee/secumon-linux-test.pCJ0bd/tmp/runtime-cli-quiet-DVk65b
+    오류: cli_request_failed
+    
+  code: 1
+  stack: |-
+    genericNodeError (node:internal/errors:986:15)
+    wrappedFn (node:internal/errors:540:14)
+    ChildProcess.exithandler (node:child_process:417:12)
+    ChildProcess.emit (node:events:514:28)
+    maybeClose (node:internal/child_process:1141:16)
+    ChildProcess._handle.onexit (node:internal/child_process:306:5)
+  ...
+# Subtest: CLI goal changes require an explicit revision and failures have no success JSON on stdout
+not ok 23 - CLI goal changes require an explicit revision and failures have no success JSON on stdout
+  ---
+  duration_ms: 281.1849
+  type: 'test'
+  location: '/home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/tests/cli.test.js:71:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: /home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node /home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/presentation/cli.js accept --request-id goal --data-dir /home/shaneee/secumon-linux-test.pCJ0bd/tmp/runtime-cli-goal-4156wQ --json
+    오류: cli_request_failed
+    
+  code: 1
+  stack: |-
+    genericNodeError (node:internal/errors:986:15)
+    wrappedFn (node:internal/errors:540:14)
+    ChildProcess.exithandler (node:child_process:417:12)
+    ChildProcess.emit (node:events:514:28)
+    maybeClose (node:internal/child_process:1141:16)
+    ChildProcess._handle.onexit (node:internal/child_process:306:5)
+  ...
+# Subtest: CLI checkpoint is a derived reference and an old resume file does not reverse a paused work
+not ok 24 - CLI checkpoint is a derived reference and an old resume file does not reverse a paused work
+  ---
+  duration_ms: 279.281028
+  type: 'test'
+  location: '/home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/tests/cli.test.js:103:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: /home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node /home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/presentation/cli.js accept --request-id checkpoint --data-dir /home/shaneee/secumon-linux-test.pCJ0bd/tmp/runtime-cli-checkpoint-8piYNW --json
+    오류: cli_request_failed
+    
+  code: 1
+  stack: |-
+    genericNodeError (node:internal/errors:986:15)
+    wrappedFn (node:internal/errors:540:14)
+    ChildProcess.exithandler (node:child_process:417:12)
+    ChildProcess.emit (node:events:514:28)
+    maybeClose (node:internal/child_process:1141:16)
+    ChildProcess._handle.onexit (node:internal/child_process:306:5)
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 19
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2606.972797

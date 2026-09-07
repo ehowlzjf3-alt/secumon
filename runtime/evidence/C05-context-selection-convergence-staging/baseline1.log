@@ -1,0 +1,46 @@
+✖ inspect retains a measured fitting optional subset when byte capacity exceeds the chosen items (71.699791ms)
+ℹ {"path":"inspect","proof":{"full":{"tokens":180,"bytes":13723,"method":"fixture-optional-token-pressure"},"intermediate":{"tokens":140,"bytes":9444,"method":"fixture-optional-token-pressure"},"candidateBytes":6259},"selected":["core.catalog.get","core.catalog.search"],"observedEstimates":[{"tools":["core.catalog.get","core.catalog.search"],"tokens":100,"bytes":8165},{"tools":["core.catalog.get","core.catalog.search"],"tokens":100,"bytes":8165},{"tools":[],"tokens":100,"bytes":7548},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search"],"tokens":100,"bytes":8165}],"frameWrites":1,"calls":{"modelCalls":0,"toolCalls":0}}
+✖ prepare retains a measured fitting optional subset instead of exhausting unused-byte-budget retries (27.4655ms)
+ℹ {"path":"prepare","proof":{"full":{"tokens":180,"bytes":13723,"method":"fixture-optional-token-pressure"},"intermediate":{"tokens":140,"bytes":9444,"method":"fixture-optional-token-pressure"},"candidateBytes":6259},"error":"model_input_limit","observedEstimates":[{"tools":[],"tokens":100,"bytes":7548},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723}],"frameWrites":0,"calls":{"modelCalls":0,"toolCalls":0}}
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 174.251375
+
+✖ failing tests:
+
+test at evidence/C05-context-selection-convergence-staging/context-selection-convergence.probe.test.mjs:90:1
+✖ inspect retains a measured fitting optional subset when byte capacity exceeds the chosen items (71.699791ms)
+  AssertionError [ERR_ASSERTION]: a fitting optional subset must survive unused-byte-budget convergence
+  + actual - expected
+  
+    [
+      'core.catalog.get',
+      'core.catalog.search',
+  -   'fixture.a'
+    ]
+  
+      at assertRetained (file:///Users/seunghanee/Documents/secumon/runtime/evidence/C05-context-selection-convergence-staging/context-selection-convergence.probe.test.mjs:78:12)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/evidence/C05-context-selection-convergence-staging/context-selection-convergence.probe.test.mjs:100:11)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'core.catalog.get', 'core.catalog.search' ],
+    expected: [ 'core.catalog.get', 'core.catalog.search', 'fixture.a' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at evidence/C05-context-selection-convergence-staging/context-selection-convergence.probe.test.mjs:102:1
+✖ prepare retains a measured fitting optional subset instead of exhausting unused-byte-budget retries (27.4655ms)
+  Error: model_input_limit
+      at ContextCompiler.compile (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:823:23)
+      at async ContextCompiler.prepare (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:255:16)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/evidence/C05-context-selection-convergence-staging/context-selection-convergence.probe.test.mjs:106:20)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)

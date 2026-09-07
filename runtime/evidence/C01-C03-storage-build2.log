@@ -1,0 +1,16 @@
+
+> long-horizon-runtime@0.1.0 build
+> tsc -p tsconfig.json && node scripts/record-build.mjs
+
+src/infrastructure/agent-memory-profile.ts(25,63): error TS2322: Type '{ backend: "sqlite"; schemaVersion: 1; agentId: string; } | { backend: "documents"; storeId: string; schemaVersion: 1; agentId: string; } | { backend: "postgres"; storeId: string; registrationId: string; schemaVersion: 1; agentId: string; }' is not assignable to type '{ backend: "sqlite"; schemaVersion: 1; agentId: string; } | { backend: "documents"; storeId: string; schemaVersion: 1; agentId: string; }'.
+  Type '{ backend: "postgres"; storeId: string; registrationId: string; schemaVersion: 1; agentId: string; }' is not assignable to type '{ backend: "sqlite"; schemaVersion: 1; agentId: string; } | { backend: "documents"; storeId: string; schemaVersion: 1; agentId: string; }'.
+    Type '{ backend: "postgres"; storeId: string; registrationId: string; schemaVersion: 1; agentId: string; }' is not assignable to type '{ backend: "documents"; storeId: string; schemaVersion: 1; agentId: string; }'.
+      Types of property 'backend' are incompatible.
+        Type '"postgres"' is not assignable to type '"documents"'.
+src/infrastructure/file-agent-profile.ts(243,13): error TS2322: Type '{ storage: { state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; postgres?: { storeId: string; registrationId: string; purposes: ("channel" | "state" | "knowledge")[]; } | undefined; } | { ...; }; ... 6 more ...; schemaVersion: 2; }' is not assignable to type '{ schemaVersion: 1; identity: { schemaVersion: 1; agentId: string; createdAt: number; }; name: string; purpose: string; storage: { state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; postgres?: { ...; } | undefined; }; model: { ...; } | null; features: { ...; }; skills: { ...; }; } | { ...; }'.
+  Types of property 'storage' are incompatible.
+    Type '{ state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; postgres?: { storeId: string; registrationId: string; purposes: ("channel" | "state" | "knowledge")[]; } | undefined; } | { ...; }' is not assignable to type '{ state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; personalMemory: { backend: "documents"; storeId: string; }; postgres?: { storeId: string; registrationId: string; purposes: ("channel" | ... 1 more ... | "knowledge")[]; } | undefined; }'.
+      Property 'personalMemory' is missing in type '{ state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; postgres?: { storeId: string; registrationId: string; purposes: ("channel" | "state" | "knowledge")[]; } | undefined; }' but required in type '{ state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; personalMemory: { backend: "documents"; storeId: string; }; postgres?: { storeId: string; registrationId: string; purposes: ("channel" | ... 1 more ... | "knowledge")[]; } | undefined; }'.
+src/infrastructure/postgres-knowledge.ts(164,40): error TS2339: Property 'principalId' does not exist on type 'KnowledgeStoreScope'.
+  Property 'principalId' does not exist on type '{ agentId: string; partition: "work"; }'.
+src/presentation/local-profile.ts(70,71): error TS2739: Type 'AgentChannel' is missing the following properties from type 'LocalChannel': #db, #digester, #sessions

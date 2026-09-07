@@ -1,0 +1,2469 @@
+{
+  "version": 1,
+  "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+  "pins": {
+    "suite": "3f76f66e21b264954aadb39379d277163dc23449b35e9e8860cba499e81a52aa",
+    "code": "37da2a85a14fc874e3dc1c52978020813af59728c112917bdd9a6b525e25e6d4",
+    "fixture": "dc887135116034d7e2373d938098c884bc6e7486ab799652ff9f8e59b9dccdfb",
+    "configuration": "7bc76fbf5dddf0ff20abbc308bb7671e48ac9c1b397131d68c9a9b0f2c1a39cc",
+    "environment": {
+      "node": "v24.20.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "inference": "scripted",
+      "externalCallsAllowed": false
+    }
+  },
+  "sample": {
+    "case": {
+      "id": "documents-simple.sqlite.fast.cancel_running",
+      "family": "document_comparison",
+      "fixtureId": "documents-simple",
+      "backend": "sqlite",
+      "mode": "fast",
+      "variant": "cancel_running",
+      "oracle": {
+        "expectedFinal": "cancelled",
+        "completionEligible": false,
+        "requiredEvidenceIds": [
+          "doc-current"
+        ],
+        "originals": [
+          {
+            "id": "doc-current",
+            "sourceId": "doc-current",
+            "lineageId": "doc-current",
+            "observedAt": 1788566400000
+          }
+        ],
+        "facts": {
+          "retention.days": 30
+        },
+        "finalHypothesis": null,
+        "forbiddenEvidenceIds": [
+          "private-doc",
+          "other-tenant",
+          "bad-amendment"
+        ],
+        "noCompletionBefore": null
+      }
+    },
+    "observations": [
+      {
+        "at": 1788566400000,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 1,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400000,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "request_accepted"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "pending",
+            "externalId": null,
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": null
+          }
+        ]
+      },
+      {
+        "at": 1788566400000,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 2,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400000,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "delivery_claimed"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "sending",
+            "externalId": null,
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430000,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 3,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "delivery_settled"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-18679a9fa15c64204d57a341d11d456e5145314ab063ecbc339d732ad4482f1d",
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 4,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "status": "ready",
+          "statusReason": "plan_required",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "control_selected"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-18679a9fa15c64204d57a341d11d456e5145314ab063ecbc339d732ad4482f1d",
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 5,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "82e381f08c599a5494d2c29005b916876aa061ef252c53bc66dfc31a4098853a",
+              "sha256": "4117ab4b0b2323fbf43aa562938cab0fb7c9fc3de4baf24e63be5bdaeabc7e9e",
+              "byteLength": 3697,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "waiting",
+          "statusReason": "model_call_pending",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 1,
+            "reservedTokens": 6402
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "2a3b661cf5bfdc286d1ce1439ba2d17df0f61c3023eceae71425d5d8ce2bb6c9",
+              "semanticVersion": 2,
+              "failureKey": "model:205aed6c5aa1137662d00afdf59b26e6959200ac5a6fc965d548c430a53fad1a",
+              "inputArtifact": {
+                "id": "3ae2a07c000952f2dbdd0632121c8f5059aca324854c2856d113b433b8e50057",
+                "sha256": "4b2e25db01927ff29e12d2e0f01932d3f7fadde69da8d6590d058d0026c1a325",
+                "byteLength": 2306,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": null,
+              "inputEstimate": 4354,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6402,
+              "inputTokens": null,
+              "outputTokens": null,
+              "usageStatus": "reserved",
+              "status": "reserved",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": null,
+              "expired": false,
+              "outcome": null,
+              "reason": "utf8_bytes_with_template_allowance",
+              "contextMetrics": {
+                "baselinePacketBytes": 1491,
+                "baselineToolBytes": 409,
+                "packetBytes": 1823,
+                "toolBytes": 409,
+                "envelopeBytes": 2306,
+                "requestBytes": 2306,
+                "estimatedTokens": 4354,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "model_call_reserved"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-18679a9fa15c64204d57a341d11d456e5145314ab063ecbc339d732ad4482f1d",
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 6,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "82e381f08c599a5494d2c29005b916876aa061ef252c53bc66dfc31a4098853a",
+              "sha256": "4117ab4b0b2323fbf43aa562938cab0fb7c9fc3de4baf24e63be5bdaeabc7e9e",
+              "byteLength": 3697,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "waiting",
+          "statusReason": "model_call_pending",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 6402
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "2a3b661cf5bfdc286d1ce1439ba2d17df0f61c3023eceae71425d5d8ce2bb6c9",
+              "semanticVersion": 2,
+              "failureKey": "model:205aed6c5aa1137662d00afdf59b26e6959200ac5a6fc965d548c430a53fad1a",
+              "inputArtifact": {
+                "id": "3ae2a07c000952f2dbdd0632121c8f5059aca324854c2856d113b433b8e50057",
+                "sha256": "4b2e25db01927ff29e12d2e0f01932d3f7fadde69da8d6590d058d0026c1a325",
+                "byteLength": 2306,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": null,
+              "inputEstimate": 4354,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6402,
+              "inputTokens": null,
+              "outputTokens": null,
+              "usageStatus": "reserved",
+              "status": "running",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": null,
+              "expired": false,
+              "outcome": null,
+              "reason": "utf8_bytes_with_template_allowance",
+              "contextMetrics": {
+                "baselinePacketBytes": 1491,
+                "baselineToolBytes": 409,
+                "packetBytes": 1823,
+                "toolBytes": 409,
+                "envelopeBytes": 2306,
+                "requestBytes": 2306,
+                "estimatedTokens": 4354,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "model_call_dispatched"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-18679a9fa15c64204d57a341d11d456e5145314ab063ecbc339d732ad4482f1d",
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400022,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 7,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "82e381f08c599a5494d2c29005b916876aa061ef252c53bc66dfc31a4098853a",
+              "sha256": "4117ab4b0b2323fbf43aa562938cab0fb7c9fc3de4baf24e63be5bdaeabc7e9e",
+              "byteLength": 3697,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "cancelled",
+          "statusReason": "Synthetic user cancels an entered model call",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 6402
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "2a3b661cf5bfdc286d1ce1439ba2d17df0f61c3023eceae71425d5d8ce2bb6c9",
+              "semanticVersion": 2,
+              "failureKey": "model:205aed6c5aa1137662d00afdf59b26e6959200ac5a6fc965d548c430a53fad1a",
+              "inputArtifact": {
+                "id": "3ae2a07c000952f2dbdd0632121c8f5059aca324854c2856d113b433b8e50057",
+                "sha256": "4b2e25db01927ff29e12d2e0f01932d3f7fadde69da8d6590d058d0026c1a325",
+                "byteLength": 2306,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": null,
+              "inputEstimate": 4354,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6402,
+              "inputTokens": null,
+              "outputTokens": null,
+              "usageStatus": "reserved",
+              "status": "running",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": null,
+              "expired": true,
+              "outcome": null,
+              "reason": "user_control_changed",
+              "contextMetrics": {
+                "baselinePacketBytes": 1491,
+                "baselineToolBytes": 409,
+                "packetBytes": 1823,
+                "toolBytes": 409,
+                "envelopeBytes": 2306,
+                "requestBytes": 2306,
+                "estimatedTokens": 4354,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "waived",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400022,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "user_command"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-18679a9fa15c64204d57a341d11d456e5145314ab063ecbc339d732ad4482f1d",
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400022,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 8,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "82e381f08c599a5494d2c29005b916876aa061ef252c53bc66dfc31a4098853a",
+              "sha256": "4117ab4b0b2323fbf43aa562938cab0fb7c9fc3de4baf24e63be5bdaeabc7e9e",
+              "byteLength": 3697,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "cancelled",
+          "statusReason": "Synthetic user cancels an entered model call",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 1
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 6402
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "2a3b661cf5bfdc286d1ce1439ba2d17df0f61c3023eceae71425d5d8ce2bb6c9",
+              "semanticVersion": 2,
+              "failureKey": "model:205aed6c5aa1137662d00afdf59b26e6959200ac5a6fc965d548c430a53fad1a",
+              "inputArtifact": {
+                "id": "3ae2a07c000952f2dbdd0632121c8f5059aca324854c2856d113b433b8e50057",
+                "sha256": "4b2e25db01927ff29e12d2e0f01932d3f7fadde69da8d6590d058d0026c1a325",
+                "byteLength": 2306,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": null,
+              "inputEstimate": 4354,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6402,
+              "inputTokens": null,
+              "outputTokens": null,
+              "usageStatus": "unknown",
+              "status": "unknown",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": true,
+              "outcome": null,
+              "reason": "model_lease_expired",
+              "contextMetrics": {
+                "baselinePacketBytes": 1491,
+                "baselineToolBytes": 409,
+                "packetBytes": 1823,
+                "toolBytes": 409,
+                "envelopeBytes": 2306,
+                "requestBytes": 2306,
+                "estimatedTokens": 4354,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "waived",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400022,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "model_call_recovered"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-18679a9fa15c64204d57a341d11d456e5145314ab063ecbc339d732ad4482f1d",
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400022,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 9,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "82e381f08c599a5494d2c29005b916876aa061ef252c53bc66dfc31a4098853a",
+              "sha256": "4117ab4b0b2323fbf43aa562938cab0fb7c9fc3de4baf24e63be5bdaeabc7e9e",
+              "byteLength": 3697,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "cancelled",
+          "statusReason": "Synthetic user cancels an entered model call",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "2a3b661cf5bfdc286d1ce1439ba2d17df0f61c3023eceae71425d5d8ce2bb6c9",
+              "semanticVersion": 2,
+              "failureKey": "model:205aed6c5aa1137662d00afdf59b26e6959200ac5a6fc965d548c430a53fad1a",
+              "inputArtifact": {
+                "id": "3ae2a07c000952f2dbdd0632121c8f5059aca324854c2856d113b433b8e50057",
+                "sha256": "4b2e25db01927ff29e12d2e0f01932d3f7fadde69da8d6590d058d0026c1a325",
+                "byteLength": 2306,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5e9548841b7bd44c5b86f5b492225f4493d1c604a62731ebc7e4ed3c285777c9",
+                "sha256": "a385dd812c5d2d72d32fbdeacad0efc877acc978a1cf223572c8f840e938a874",
+                "byteLength": 475,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4354,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6402,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "received",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": true,
+              "outcome": "ok",
+              "reason": "model_lease_expired",
+              "contextMetrics": {
+                "baselinePacketBytes": 1491,
+                "baselineToolBytes": 409,
+                "packetBytes": 1823,
+                "toolBytes": 409,
+                "envelopeBytes": 2306,
+                "requestBytes": 2306,
+                "estimatedTokens": 4354,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "waived",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400022,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "model_reply_received"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-18679a9fa15c64204d57a341d11d456e5145314ab063ecbc339d732ad4482f1d",
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400022,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 9,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "82e381f08c599a5494d2c29005b916876aa061ef252c53bc66dfc31a4098853a",
+              "sha256": "4117ab4b0b2323fbf43aa562938cab0fb7c9fc3de4baf24e63be5bdaeabc7e9e",
+              "byteLength": 3697,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "cancelled",
+          "statusReason": "Synthetic user cancels an entered model call",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "2a3b661cf5bfdc286d1ce1439ba2d17df0f61c3023eceae71425d5d8ce2bb6c9",
+              "semanticVersion": 2,
+              "failureKey": "model:205aed6c5aa1137662d00afdf59b26e6959200ac5a6fc965d548c430a53fad1a",
+              "inputArtifact": {
+                "id": "3ae2a07c000952f2dbdd0632121c8f5059aca324854c2856d113b433b8e50057",
+                "sha256": "4b2e25db01927ff29e12d2e0f01932d3f7fadde69da8d6590d058d0026c1a325",
+                "byteLength": 2306,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5e9548841b7bd44c5b86f5b492225f4493d1c604a62731ebc7e4ed3c285777c9",
+                "sha256": "a385dd812c5d2d72d32fbdeacad0efc877acc978a1cf223572c8f840e938a874",
+                "byteLength": 475,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4354,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6402,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "received",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": true,
+              "outcome": "ok",
+              "reason": "model_lease_expired",
+              "contextMetrics": {
+                "baselinePacketBytes": 1491,
+                "baselineToolBytes": 409,
+                "packetBytes": 1823,
+                "toolBytes": 409,
+                "envelopeBytes": 2306,
+                "requestBytes": 2306,
+                "estimatedTokens": 4354,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "waived",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400022,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-18679a9fa15c64204d57a341d11d456e5145314ab063ecbc339d732ad4482f1d",
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400022,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+          "revision": 9,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "82e381f08c599a5494d2c29005b916876aa061ef252c53bc66dfc31a4098853a",
+              "sha256": "4117ab4b0b2323fbf43aa562938cab0fb7c9fc3de4baf24e63be5bdaeabc7e9e",
+              "byteLength": 3697,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "cancelled",
+          "statusReason": "Synthetic user cancels an entered model call",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "2a3b661cf5bfdc286d1ce1439ba2d17df0f61c3023eceae71425d5d8ce2bb6c9",
+              "semanticVersion": 2,
+              "failureKey": "model:205aed6c5aa1137662d00afdf59b26e6959200ac5a6fc965d548c430a53fad1a",
+              "inputArtifact": {
+                "id": "3ae2a07c000952f2dbdd0632121c8f5059aca324854c2856d113b433b8e50057",
+                "sha256": "4b2e25db01927ff29e12d2e0f01932d3f7fadde69da8d6590d058d0026c1a325",
+                "byteLength": 2306,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5e9548841b7bd44c5b86f5b492225f4493d1c604a62731ebc7e4ed3c285777c9",
+                "sha256": "a385dd812c5d2d72d32fbdeacad0efc877acc978a1cf223572c8f840e938a874",
+                "byteLength": 475,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4354,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6402,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "received",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": true,
+              "outcome": "ok",
+              "reason": "model_lease_expired",
+              "contextMetrics": {
+                "baselinePacketBytes": 1491,
+                "baselineToolBytes": 409,
+                "packetBytes": 1823,
+                "toolBytes": 409,
+                "envelopeBytes": 2306,
+                "requestBytes": 2306,
+                "estimatedTokens": 4354,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "waived",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400022,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-6ddcfdacf063e4a38717946c924ff7e60ad925833a0f35739484f55c64055301] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-18679a9fa15c64204d57a341d11d456e5145314ab063ecbc339d732ad4482f1d",
+            "context": {
+              "binding": {
+                "id": "binding-3a672e11c60d06f04e544536fcbde7e6377a4416da9311a629a850ff5555c199",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.cancel_running",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "kind": "send",
+        "at": 1788566400000,
+        "id": "ack",
+        "sourceKey": null
+      },
+      {
+        "kind": "model",
+        "at": 1788566400002,
+        "id": "model-3",
+        "sourceKey": null
+      }
+    ],
+    "finalControl": "cancelled",
+    "startedAt": 1788566400000,
+    "finishedAt": 1788566400022,
+    "wallElapsedMs": 108.47041699999954,
+    "runError": null
+  },
+  "sampleDigest": "77ddf3ad4692cf132604ecd8b19fffe84ad54f7921de07784bd8436efae0c075",
+  "score": {
+    "caseId": "documents-simple.sqlite.fast.cancel_running",
+    "contractPassed": true,
+    "goalCompleted": false,
+    "falseCompletionRevisions": [],
+    "failures": [],
+    "finalControl": "cancelled",
+    "usage": {
+      "limits": {
+        "toolCalls": 20,
+        "modelCalls": 10,
+        "tokens": 1000000,
+        "replans": 5,
+        "wallTimeMs": 172800000
+      },
+      "used": {
+        "toolCalls": 0,
+        "modelCalls": 1,
+        "tokens": 150,
+        "replans": 0,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "calls": {
+      "modelEntries": 1,
+      "toolEntries": 0,
+      "sends": 1,
+      "lookups": 0,
+      "uniqueQueries": 0,
+      "repeatedQueries": 0,
+      "adoptedTools": 0,
+      "reusedTools": 0
+    },
+    "context": {
+      "requestBytes": 2306,
+      "estimatedTokens": 4354,
+      "sourceReads": 1,
+      "evictions": 0,
+      "reloads": 0
+    },
+    "latency": {
+      "ackMs": 2,
+      "firstEvidenceMs": null,
+      "firstUsefulAnswerMs": null,
+      "verifiedCompletionMs": null,
+      "simulatedElapsedMs": 22,
+      "wallElapsedMs": 108.47041699999954
+    },
+    "interventions": 1,
+    "promotions": 0
+  },
+  "scoreDigest": "308558ae96b8baf5fb9c5dd3fe10372aeb1392792d6bfa19b49961e82c94006a",
+  "finalStateDigest": "2ba44df7716bc9515bccda0f6eb6164b878f6e5670c8fae024ebe67563b40a3e",
+  "eventsDigest": "eccc4de3226f1d818e8b2852f4bc124dee2019d1d8ed637e232c2d7d78104534",
+  "deliveriesDigest": "74471afd495871d72608c2a52d33a4170ca3e4d0041c4f9379bf0d615ca2ddcb",
+  "receipts": [
+    {
+      "commandId": "conversation.accept",
+      "digest": "82fe88caeffc6c9e3ef45a84dff9f84d92922cbbe0663d8a37321b5a0dc34fa4",
+      "stateRevision": 1,
+      "stateDigest": "d1635d8ef2ed6e48bc0044704895e4add674b0b8c79cc8d61c79ea181732742f"
+    },
+    {
+      "commandId": "delivery-claim:ack:1",
+      "digest": "423f4b2fbfd0c0b567fe06874475ded32d9826b59e26eaea0d04d785eb46953b",
+      "stateRevision": 2,
+      "stateDigest": "46d053816d6fbacf32b8082a9beb4270468e9b60a1f767c2ea8dfba51ad8bd6d"
+    },
+    {
+      "commandId": "delivery-settle:ack:1:delivered:2",
+      "digest": "cf9ac0ebc419e9079566c56e2c637458f5ffbe8e0b013ca1ba274949c57d399b",
+      "stateRevision": 3,
+      "stateDigest": "68a0494404b81795a66e38f2ebaea57ebc7be7cb3423b06414fc0004ce688a08"
+    },
+    {
+      "commandId": "control:3",
+      "digest": "52d73767fd578ef6af805cad0a2997f917393df7e72a5e389d8b88f9b0b0102e",
+      "stateRevision": 4,
+      "stateDigest": "139910044330fb4bcc1b38aeb1fe750555208d6f8007a4ffdbe5fbc67580cf8a"
+    },
+    {
+      "commandId": "model-reserve:model-3",
+      "digest": "847cb3f7f2d3f25985010c46f0bf4aff869570d7aafa099eea8dc02a303b0b9c",
+      "stateRevision": 5,
+      "stateDigest": "7fd3eefa6516c7d45c94fde28471e9c3fed6fac34ade2872777c411cc5d07046"
+    },
+    {
+      "commandId": "model-dispatch:model-3",
+      "digest": "1edcdf055aea0387e26276a07f7140dbe6534b41d94aaae4ea6cf9b439b743c6",
+      "stateRevision": 6,
+      "stateDigest": "a0171f220b3bc7be01b854198c09923ef637cd7175317f03fd24fc50e4c80784"
+    },
+    {
+      "commandId": "evaluation-cancel_running",
+      "digest": "cc24c61dedccd0db2897b6b45359333f04f9515d9b6c5eb0958d602452a678c4",
+      "stateRevision": 7,
+      "stateDigest": "b775b1b1ca12a7f4516b17a2555b986815e5fa3ecc2e330af74340bb608552c8"
+    },
+    {
+      "commandId": "model-recover:model-3",
+      "digest": "ba3eb3d056d74bba1a0c23149aaf23305a0cbb2c295f986bfa4d838217d4676d",
+      "stateRevision": 8,
+      "stateDigest": "6fbb2593661fd909a0c547a0b851aa3311afd182e8cd9278ace41a15b575e047"
+    },
+    {
+      "commandId": "model-receive:model-3",
+      "digest": "85d80f9581c5dc594244d2d9edf3de7b2e86fa95e4323a46a75910f06fc78b3d",
+      "stateRevision": 9,
+      "stateDigest": "2ba44df7716bc9515bccda0f6eb6164b878f6e5670c8fae024ebe67563b40a3e"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "3ae2a07c000952f2dbdd0632121c8f5059aca324854c2856d113b433b8e50057",
+      "sha256": "4b2e25db01927ff29e12d2e0f01932d3f7fadde69da8d6590d058d0026c1a325",
+      "byteLength": 2306,
+      "mediaType": "application/json",
+      "tenantId": "synthetic",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    },
+    {
+      "id": "5e9548841b7bd44c5b86f5b492225f4493d1c604a62731ebc7e4ed3c285777c9",
+      "sha256": "a385dd812c5d2d72d32fbdeacad0efc877acc978a1cf223572c8f840e938a874",
+      "byteLength": 475,
+      "mediaType": "application/json",
+      "tenantId": "synthetic",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    },
+    {
+      "id": "82e381f08c599a5494d2c29005b916876aa061ef252c53bc66dfc31a4098853a",
+      "sha256": "4117ab4b0b2323fbf43aa562938cab0fb7c9fc3de4baf24e63be5bdaeabc7e9e",
+      "byteLength": 3697,
+      "mediaType": "application/json",
+      "tenantId": "synthetic",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    },
+    {
+      "id": "ed14ff181579cd49f8662ef210c6b10e6183658e5f0fb1365f47f6073d094a45",
+      "sha256": "b957a9bb34fef9289e244e72b148f8cf6f442faaa33e2b7a61922e0d8b51a84c",
+      "byteLength": 5768,
+      "mediaType": "application/json",
+      "tenantId": "synthetic",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    }
+  ],
+  "checkpoint": {
+    "id": "ed14ff181579cd49f8662ef210c6b10e6183658e5f0fb1365f47f6073d094a45",
+    "sha256": "b957a9bb34fef9289e244e72b148f8cf6f442faaa33e2b7a61922e0d8b51a84c",
+    "byteLength": 5768,
+    "mediaType": "application/json",
+    "tenantId": "synthetic",
+    "labels": [
+      "public",
+      "synthetic"
+    ]
+  }
+}

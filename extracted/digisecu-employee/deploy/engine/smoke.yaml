@@ -1,0 +1,171 @@
+# M3.3a-Gate2 boot smoke — 무수정 엔진 이미지를 격리 파드에서 doctor/web(scheduler off)로 부팅 검증.
+# 실 타깃·자격증명·LLM 없이: 일회용 in-cluster PG(엔진이 첫 접속 시 자기 스키마 자동생성) + §6 안전 env.
+# 경계(codex): DigitalEmployee CR 흐름 밖 **독립 de-smoke** 경로(CR 통합은 후속 Gate). 엔진 파드가 검증 대상.
+#
+# de-smoke-db: 일회용 PG fixture(테스트용, PSS 미적용). de-smoke: 엔진(PSS restricted + egress 격리).
+# 【사전 준비 — 사용자】 엔진 이미지는 Harbor(private) → de-smoke ns 에 pull secret 생성(값=로봇토큰 Claude 미열람):
+#   kubectl -n de-smoke create secret docker-registry harbor-pull \
+#     --docker-server=harbor.security.samsungds.net \
+#     --docker-username='robot$digital-employee+digital-employee' --docker-password="$HARBOR_TOKEN"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: de-smoke-db
+  labels: { app.kubernetes.io/managed-by: digisecu-smoke }
+---
+apiVersion: v1
+kind: Secret
+metadata: { name: smoke-pg, namespace: de-smoke-db }
+type: Opaque
+stringData:
+  POSTGRES_PASSWORD: smokepass
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: smoke-pg, namespace: de-smoke-db, labels: { app: smoke-pg } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: smoke-pg } }
+  template:
+    metadata: { labels: { app: smoke-pg } }
+    spec:
+      containers:
+        - name: pg
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          env:
+            - { name: POSTGRES_USER, value: smoke }
+            - { name: POSTGRES_DB, value: secu_agent }
+            - { name: POSTGRES_PASSWORD, valueFrom: { secretKeyRef: { name: smoke-pg, key: POSTGRES_PASSWORD } } }
+            - { name: PGDATA, value: /var/lib/postgresql/data/pgdata }
+          ports: [{ containerPort: 5432 }]
+          volumeMounts: [{ name: data, mountPath: /var/lib/postgresql/data }]
+      volumes: [{ name: data, emptyDir: {} }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: smoke-pg, namespace: de-smoke-db }
+spec:
+  selector: { app: smoke-pg }
+  ports: [{ port: 5432, targetPort: 5432 }]
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: de-smoke
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+    app.kubernetes.io/managed-by: digisecu-smoke
+---
+# 엔진 env: PG DSN + §6 안전 세팅. SA_DELIVERY_AUTOSEND_*·SA_AUTONOMOUS_TOOLS 미설정(dry-run/무인 전면차단).
+apiVersion: v1
+kind: Secret
+metadata: { name: engine-env, namespace: de-smoke }
+type: Opaque
+stringData:
+  SECU_AGENT_PG_DSN: postgresql://smoke:smokepass@smoke-pg.de-smoke-db.svc.cluster.local:5432/secu_agent
+  SA_CHAT_TOKEN: smoke-boot-token
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: de-smoke-deny-all, namespace: de-smoke }
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: de-smoke-egress-allow, namespace: de-smoke }
+spec:
+  podSelector: { matchLabels: { runtime.digisecu.local/role: employee } }
+  policyTypes: [Egress]
+  egress:
+    - to: # DNS
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: kube-system } }
+          podSelector: { matchLabels: { k8s-app: kube-dns } }
+      ports: [{ protocol: UDP, port: 53 }, { protocol: TCP, port: 53 }]
+    - to: # 일회용 PG(다른 ns)
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: de-smoke-db } }
+          podSelector: { matchLabels: { app: smoke-pg } }
+      ports: [{ protocol: TCP, port: 5432 }]
+---
+# 엔진 doctor Job(one-shot) — 빈 PG에 자기 스키마 생성 + 사전점검.
+apiVersion: batch/v1
+kind: Job
+metadata: { name: engine-doctor, namespace: de-smoke }
+spec:
+  backoffLimit: 0
+  template:
+    metadata: { labels: { runtime.digisecu.local/role: employee } }
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      imagePullSecrets: [{ name: harbor-pull }] # Harbor(private) pull — 사용자가 de-smoke ns 에 생성
+      securityContext: { runAsNonRoot: true, runAsUser: 10001, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: engine
+          image: harbor.security.samsungds.net/digital-employee/engine:smoke
+          imagePullPolicy: IfNotPresent
+          args: ["doctor"]
+          envFrom: [{ secretRef: { name: engine-env } }]
+          env: [{ name: XDG_CACHE_HOME, value: /home/engine/.cache }]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+            capabilities: { drop: ["ALL"] }
+            seccompProfile: { type: RuntimeDefault }
+          volumeMounts:
+            - { name: results, mountPath: /results }
+            - { name: tmp, mountPath: /tmp }
+            - { name: home, mountPath: /home/engine }
+      volumes:
+        - { name: results, emptyDir: {} }
+        - { name: tmp, emptyDir: {} }
+        - { name: home, emptyDir: {} }
+---
+# 엔진 web Pod(상시, scheduler off) — FastAPI 부팅 + 무scope API 거부 검증.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: engine-web
+  namespace: de-smoke
+  labels: { runtime.digisecu.local/role: employee }
+spec:
+  automountServiceAccountToken: false
+  imagePullSecrets: [{ name: harbor-pull }] # Harbor(private) pull — 사용자가 de-smoke ns 에 생성
+  securityContext: { runAsNonRoot: true, runAsUser: 10001, seccompProfile: { type: RuntimeDefault } }
+  containers:
+    - name: engine
+      image: harbor.security.samsungds.net/digital-employee/engine:smoke
+      imagePullPolicy: IfNotPresent
+      args: ["web", "--host", "0.0.0.0", "--port", "8765"]
+      envFrom: [{ secretRef: { name: engine-env } }]
+      env:
+        - { name: SA_SCHEDULER, value: "off" } # 자율 스케줄러 off — 스스로 타깃 미접촉
+        - { name: SA_WEB_REQUIRE_SCOPE, value: "true" } # §6 scope 강제
+        - { name: XDG_CACHE_HOME, value: /home/engine/.cache }
+      ports: [{ containerPort: 8765 }]
+      readinessProbe:
+        httpGet: { path: /api/health, port: 8765 }
+        initialDelaySeconds: 5
+        periodSeconds: 5
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 10001
+        capabilities: { drop: ["ALL"] }
+        seccompProfile: { type: RuntimeDefault }
+      volumeMounts:
+        - { name: results, mountPath: /results }
+        - { name: tmp, mountPath: /tmp }
+        - { name: home, mountPath: /home/engine }
+  volumes:
+    - { name: results, emptyDir: { sizeLimit: 512Mi } }
+    - { name: tmp, emptyDir: { sizeLimit: 512Mi } }
+    - { name: home, emptyDir: { sizeLimit: 256Mi } }

@@ -1,0 +1,47 @@
+{
+  "recordedAt": "2026-09-07T11:51:38.384Z",
+  "status": "source_review_not_implemented",
+  "currentUnitSourceFrozen": true,
+  "nextPlan": "design/chapters/C05-mcp-sent-authority-plan.md",
+  "facts": [
+    {
+      "source": "runtime/src/infrastructure/mcp-stdio-client.ts",
+      "finding": "SDK tools/call request may resolve decoded value before the current session/abort check throws. The current catch retains sent but not that value."
+    },
+    {
+      "source": "runtime/src/infrastructure/mcp-stdio-client.ts",
+      "finding": "The local sent mark is set before super.send, so it is not proof of successful stdin delivery, remote execution or billing."
+    },
+    {
+      "source": "runtime/src/infrastructure/mcp-read-tools.ts",
+      "finding": "Post-call authorize and response-record guards currently require active execution authority; currentness failure can prevent durable capture of an already returned response."
+    },
+    {
+      "source": "runtime/src/application/context-recovery.ts",
+      "finding": "Current resume references include raw state.artifacts except lifecycle-blocked refs; a ref whose labels exceed the current policy prevents checkpoint construction."
+    },
+    {
+      "source": "runtime/src/application/work-resources.ts",
+      "finding": "authorizedWork intersects policy with the reader but does not filter stored artifact references by those narrowed labels."
+    }
+  ],
+  "reviewRequirements": [
+    "Keep append-only custody tied to original dispatch/intent separate from present body adoption and model/channel disclosure.",
+    "Do not invent decoded response data when the SDK request rejected before resolving.",
+    "Do not weaken current StoredToolResults body proof merely to settle a measured local count.",
+    "Explicit data lifecycle invalidation/deletion is not covered by a generic late-custody exception.",
+    "Validate ordinary entry status and stop/reopen behavior after receiving hidden custody refs; lower policy must not reveal body metadata through unchecked context projection.",
+    "Retain original timestamp meanings and distinguish local call attempt accounting from unknown remote effects or charges."
+  ],
+  "newImplementation": false,
+  "realModelApi": "paused",
+  "nativeLinux": {
+    "sessionId": 62370,
+    "status": "running",
+    "lastObserved": "2026-09-07T11:50:54.572Z",
+    "stage": "all-tests",
+    "reportedPassed": 270,
+    "reportedFailures": [],
+    "final": false
+  }
+}

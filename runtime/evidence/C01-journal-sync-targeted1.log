@@ -1,0 +1,1006 @@
+TAP version 13
+# Subtest: file-journal agents separate identical work IDs, events and historical receipts across reopen
+ok 1 - file-journal agents separate identical work IDs, events and historical receipts across reopen
+  ---
+  duration_ms: 301.807
+  type: 'test'
+  ...
+# Subtest: file-journal state keeps private memory and channel messages in separately owned SQLite databases
+ok 2 - file-journal state keeps private memory and channel messages in separately owned SQLite databases
+  ---
+  duration_ms: 222.040334
+  type: 'test'
+  ...
+# Subtest: a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+ok 3 - a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+  ---
+  duration_ms: 428.702417
+  type: 'test'
+  ...
+# Subtest: copying another agents complete journal is rejected before binding a new backend marker
+ok 4 - copying another agents complete journal is rejected before binding a new backend marker
+  ---
+  duration_ms: 188.966167
+  type: 'test'
+  ...
+# Subtest: file-journal selection does not bypass foreign memory or channel SQLite ownership
+ok 5 - file-journal selection does not bypass foreign memory or channel SQLite ownership
+  ---
+  duration_ms: 419.926667
+  type: 'test'
+  ...
+# Subtest: empty and populated legacy v1 journals are not automatically adopted by an agent
+ok 6 - empty and populated legacy v1 journals are not automatically adopted by an agent
+  ---
+  duration_ms: 354.398
+  type: 'test'
+  ...
+# Subtest: changing config between SQLite and file-journal never creates a replacement state store
+ok 7 - changing config between SQLite and file-journal never creates a replacement state store
+  ---
+  duration_ms: 598.705584
+  type: 'test'
+  ...
+# Subtest: an owned legacy SQLite agent gains only its backend marker and preserves historical data
+ok 8 - an owned legacy SQLite agent gains only its backend marker and preserves historical data
+  ---
+  duration_ms: 423.326917
+  type: 'test'
+  ...
+# Subtest: an unowned legacy SQLite database is preserved without creating a backend marker
+ok 9 - an unowned legacy SQLite database is preserved without creating a backend marker
+  ---
+  duration_ms: 202.902375
+  type: 'test'
+  ...
+# Subtest: copying another agents backend marker is rejected before creating any state or private databases
+ok 10 - copying another agents backend marker is rejected before creating any state or private databases
+  ---
+  duration_ms: 189.60775
+  type: 'test'
+  ...
+# Subtest: malformed, unsupported or linked backend markers cannot initialize state stores
+ok 11 - malformed, unsupported or linked backend markers cannot initialize state stores
+  ---
+  duration_ms: 554.681791
+  type: 'test'
+  ...
+# Subtest: ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+ok 12 - ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+  ---
+  duration_ms: 196.906959
+  type: 'test'
+  ...
+# Subtest: concurrent CLI first storage opens retain one agent, backend selection and journal identity
+ok 13 - concurrent CLI first storage opens retain one agent, backend selection and journal identity
+  ---
+  duration_ms: 610.966375
+  type: 'test'
+  ...
+# Subtest: metadata boundary: host dispatch exposes declared POSIX mechanisms and refuses unsupported or emulated hosts
+ok 14 - metadata boundary: host dispatch exposes declared POSIX mechanisms and refuses unsupported or emulated hosts
+  ---
+  duration_ms: 0.728417
+  type: 'test'
+  ...
+# Subtest: metadata boundary: missing directories return null; regular files and linked directories are rejected
+ok 15 - metadata boundary: missing directories return null; regular files and linked directories are rejected
+  ---
+  duration_ms: 0.797209
+  type: 'test'
+  ...
+# Subtest: metadata boundary: directory access keeps private and owner-writable policies distinct without chmod
+ok 16 - metadata boundary: directory access keeps private and owner-writable policies distinct without chmod
+  ---
+  duration_ms: 0.370333
+  type: 'test'
+  ...
+# Subtest: metadata boundary: public parent traversal permits a private file without weakening its access policy
+ok 17 - metadata boundary: public parent traversal permits a private file without weakening its access policy
+  ---
+  duration_ms: 6.284834
+  type: 'test'
+  ...
+# Subtest: metadata boundary: files enforce their own access policy and preserve original bytes and permissions
+ok 18 - metadata boundary: files enforce their own access policy and preserve original bytes and permissions
+  ---
+  duration_ms: 1.598334
+  type: 'test'
+  ...
+# Subtest: metadata boundary: only a missing read has missing code and its original ENOENT cause
+ok 19 - metadata boundary: only a missing read has missing code and its original ENOENT cause
+  ---
+  duration_ms: 7.447875
+  type: 'test'
+  ...
+# Subtest: metadata boundary: named pipes are rejected without waiting for a writer
+ok 20 - metadata boundary: named pipes are rejected without waiting for a writer
+  ---
+  duration_ms: 25.983875
+  type: 'test'
+  ...
+# Subtest: metadata boundary: maximum counts bytes and includes exact, one-over and empty zero-byte cases
+ok 21 - metadata boundary: maximum counts bytes and includes exact, one-over and empty zero-byte cases
+  ---
+  duration_ms: 1.330458
+  type: 'test'
+  ...
+# Subtest: metadata boundary: invalid maximums fail before allocating or reading data
+ok 22 - metadata boundary: invalid maximums fail before allocating or reading data
+  ---
+  duration_ms: 4.15175
+  type: 'test'
+  ...
+# Subtest: metadata boundary: a leaf may contain Unicode and spaces but cannot traverse directories
+ok 23 - metadata boundary: a leaf may contain Unicode and spaces but cannot traverse directories
+  ---
+  duration_ms: 3.716417
+  type: 'test'
+  ...
+# Subtest: metadata boundary: copied, fabricated and foreign adapter directory references cannot authorize access
+ok 24 - metadata boundary: copied, fabricated and foreign adapter directory references cannot authorize access
+  ---
+  duration_ms: 0.606333
+  type: 'test'
+  ...
+# Subtest: metadata boundary: an issued directory reference detects replacement before read, sync and reinspection
+ok 25 - metadata boundary: an issued directory reference detects replacement before read, sync and reinspection
+  ---
+  duration_ms: 5.022459
+  type: 'test'
+  ...
+# Subtest: metadata boundary: issued directory access is rechecked after permissions change
+ok 26 - metadata boundary: issued directory access is rechecked after permissions change
+  ---
+  duration_ms: 4.689833
+  type: 'test'
+  ...
+# Subtest: metadata boundary: external hard links are rejected and a matching sibling publication pair can be allowed
+ok 27 - metadata boundary: external hard links are rejected and a matching sibling publication pair can be allowed
+  ---
+  duration_ms: 8.277125
+  type: 'test'
+  ...
+# Subtest: metadata boundary: publication link removal during policy observation retries the stable single-link file
+ok 28 - metadata boundary: publication link removal during policy observation retries the stable single-link file
+  ---
+  duration_ms: 9.973917
+  type: 'test'
+  ...
+# Subtest: metadata boundary: sibling inspection cannot escape its issued directory
+ok 29 - metadata boundary: sibling inspection cannot escape its issued directory
+  ---
+  duration_ms: 6.965709
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated changed-once observation preserves stable-read and descriptor cleanup contracts
+ok 30 - metadata boundary: isolated changed-once observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 30.95875
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated changed-twice observation preserves stable-read and descriptor cleanup contracts
+ok 31 - metadata boundary: isolated changed-twice observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 27.002792
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated replaced-once observation preserves stable-read and descriptor cleanup contracts
+ok 32 - metadata boundary: isolated replaced-once observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 27.79425
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated directory-replaced observation preserves stable-read and descriptor cleanup contracts
+ok 33 - metadata boundary: isolated directory-replaced observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 27.274791
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated grew-over-limit observation preserves stable-read and descriptor cleanup contracts
+ok 34 - metadata boundary: isolated grew-over-limit observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 26.081375
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated read-error observation preserves stable-read and descriptor cleanup contracts
+ok 35 - metadata boundary: isolated read-error observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 23.603666
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated sync-error observation preserves stable-read and descriptor cleanup contracts
+ok 36 - metadata boundary: isolated sync-error observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 23.371541
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated foreign-file-uid observation preserves stable-read and descriptor cleanup contracts
+ok 37 - metadata boundary: isolated foreign-file-uid observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 22.96675
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated foreign-directory-uid observation preserves stable-read and descriptor cleanup contracts
+ok 38 - metadata boundary: isolated foreign-directory-uid observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 20.955541
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated policy-error observation preserves stable-read and descriptor cleanup contracts
+ok 39 - metadata boundary: isolated policy-error observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 27.2105
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated check-failure preserves notification, syscall and cleanup boundaries
+ok 40 - metadata sync observer: isolated check-failure preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 23.893292
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated open-eio preserves notification, syscall and cleanup boundaries
+ok 41 - metadata sync observer: isolated open-eio preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 19.801625
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated opened-object-replaced preserves notification, syscall and cleanup boundaries
+ok 42 - metadata sync observer: isolated opened-object-replaced preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 25.679834
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated fsync-eio preserves notification, syscall and cleanup boundaries
+ok 43 - metadata sync observer: isolated fsync-eio preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 25.073292
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated success preserves notification, syscall and cleanup boundaries
+ok 44 - metadata sync observer: isolated success preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 24.191208
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated after-fsync-replaced preserves notification, syscall and cleanup boundaries
+ok 45 - metadata sync observer: isolated after-fsync-replaced preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 25.454625
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated observer-throws preserves notification, syscall and cleanup boundaries
+ok 46 - metadata sync observer: isolated observer-throws preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 20.043042
+  type: 'test'
+  ...
+# Subtest: journal directories: an unobserved absent work remains absent and a later external creation can be discovered
+ok 47 - journal directories: an unobserved absent work remains absent and a later external creation can be discovered
+  ---
+  duration_ms: 69.006291
+  type: 'test'
+  ...
+# Subtest: journal directories: deletion of an observed empty folder cannot be mistaken for an unobserved absent work
+ok 48 - journal directories: deletion of an observed empty folder cannot be mistaken for an unobserved absent work
+  ---
+  duration_ms: 31.967708
+  type: 'test'
+  ...
+# Subtest: journal directories: a limited listing observes unread work folders and rejects later replacement
+ok 49 - journal directories: a limited listing observes unread work folders and rejects later replacement
+  ---
+  duration_ms: 102.977041
+  type: 'test'
+  ...
+# Subtest: journal directories: a limited listing observes unread work folders and rejects later deletion
+ok 50 - journal directories: a limited listing observes unread work folders and rejects later deletion
+  ---
+  duration_ms: 93.214291
+  type: 'test'
+  ...
+# Subtest: journal directories: root inspection I/O failures preserve the original cause and never acknowledge or alter stored work
+ok 51 - journal directories: root inspection I/O failures preserve the original cause and never acknowledge or alter stored work
+  ---
+  duration_ms: 150.364792
+  type: 'test'
+  ...
+# Subtest: journal directories: disappearance after replay does not recreate the observed folder before publication
+ok 52 - journal directories: disappearance after replay does not recreate the observed folder before publication
+  ---
+  duration_ms: 123.792709
+  type: 'test'
+  ...
+# Subtest: journal listing rejects an empty work directory replaced after its first missing record observation
+ok 53 - journal listing rejects an empty work directory replaced after its first missing record observation
+  ---
+  duration_ms: 78.612792
+  type: 'test'
+  ...
+# Subtest: journal commit preserves the original missing-directory cause if its newly created work folder disappears
+ok 54 - journal commit preserves the original missing-directory cause if its newly created work folder disappears
+  ---
+  duration_ms: 85.806666
+  type: 'test'
+  ...
+# Subtest: file journal: exception at candidate_synced preserves the publication boundary and retry identity
+ok 55 - file journal: exception at candidate_synced preserves the publication boundary and retry identity
+  ---
+  duration_ms: 113.410583
+  type: 'test'
+  ...
+# Subtest: file journal: actual SIGKILL at candidate_synced reopens a whole commit or no commit
+ok 56 - file journal: actual SIGKILL at candidate_synced reopens a whole commit or no commit
+  ---
+  duration_ms: 184.552042
+  type: 'test'
+  ...
+# Subtest: file journal: exception at published preserves the publication boundary and retry identity
+ok 57 - file journal: exception at published preserves the publication boundary and retry identity
+  ---
+  duration_ms: 71.508125
+  type: 'test'
+  ...
+# Subtest: file journal: actual SIGKILL at published reopens a whole commit or no commit
+ok 58 - file journal: actual SIGKILL at published reopens a whole commit or no commit
+  ---
+  duration_ms: 137.161625
+  type: 'test'
+  ...
+# Subtest: file journal: exception at directory_synced preserves the publication boundary and retry identity
+ok 59 - file journal: exception at directory_synced preserves the publication boundary and retry identity
+  ---
+  duration_ms: 100.263375
+  type: 'test'
+  ...
+# Subtest: file journal: actual SIGKILL at directory_synced reopens a whole commit or no commit
+ok 60 - file journal: actual SIGKILL at directory_synced reopens a whole commit or no commit
+  ---
+  duration_ms: 183.502459
+  type: 'test'
+  ...
+# Subtest: file journal: a reader and duplicate retry observe a whole published record while its writer is pending
+ok 61 - file journal: a reader and duplicate retry observe a whole published record while its writer is pending
+  ---
+  duration_ms: 81.370208
+  type: 'test'
+  ...
+# Subtest: file journal: directory sync failure prevents reads and duplicate acknowledgements without rolling back publication
+ok 62 - file journal: directory sync failure prevents reads and duplicate acknowledgements without rolling back publication
+  ---
+  duration_ms: 47.990375
+  type: 'test'
+  ...
+# Subtest: file journal: listing retries the first record when publication follows its initial ENOENT
+ok 63 - file journal: listing retries the first record when publication follows its initial ENOENT
+  ---
+  duration_ms: 89.149
+  type: 'test'
+  ...
+# Subtest: file journal: checksum corruption blocks reads and subsequent commits without overwriting the damaged record
+ok 64 - file journal: checksum corruption blocks reads and subsequent commits without overwriting the damaged record
+  ---
+  duration_ms: 58.315042
+  type: 'test'
+  ...
+# Subtest: file journal: an intact record checksum does not hide a broken previous-hash link
+ok 65 - file journal: an intact record checksum does not hide a broken previous-hash link
+  ---
+  duration_ms: 75.646458
+  type: 'test'
+  ...
+# Subtest: file journal: deleting a middle revision rejects the incomplete prefix
+ok 66 - file journal: deleting a middle revision rejects the incomplete prefix
+  ---
+  duration_ms: 104.803
+  type: 'test'
+  ...
+# Subtest: file journal: changing store identity is rejected by an open instance and by replay after reopening
+ok 67 - file journal: changing store identity is rejected by an open instance and by replay after reopening
+  ---
+  duration_ms: 62.667208
+  type: 'test'
+  ...
+# Subtest: file journal: a missing format header does not initialize a populated store as empty
+ok 68 - file journal: a missing format header does not initialize a populated store as empty
+  ---
+  duration_ms: 48.908166
+  type: 'test'
+  ...
+# Subtest: file journal: existing root, work and record symlinks are rejected without following their contents
+ok 69 - file journal: existing root, work and record symlinks are rejected without following their contents
+  ---
+  duration_ms: 149.147792
+  type: 'test'
+  ...
+# Subtest: file journal: group or other permissions on the root and records are rejected
+ok 70 - file journal: group or other permissions on the root and records are rejected
+  ---
+  duration_ms: 97.061083
+  type: 'test'
+  ...
+# Subtest: file journal: an observed root or work directory replacement cannot reset the open repository
+ok 71 - file journal: an observed root or work directory replacement cannot reset the open repository
+  ---
+  duration_ms: 91.389958
+  type: 'test'
+  ...
+# Subtest: file journal: record size limits reject both publication and oversized persisted input
+ok 72 - file journal: record size limits reject both publication and oversized persisted input
+  ---
+  duration_ms: 72.437167
+  type: 'test'
+  ...
+# Subtest: file journal: closed instances reject every repository operation while reopening retains data
+ok 73 - file journal: closed instances reject every repository operation while reopening retains data
+  ---
+  duration_ms: 77.34525
+  type: 'test'
+  ...
+# Subtest: file journal: revision zero is invalid layout and cannot be silently ignored
+ok 74 - file journal: revision zero is invalid layout and cannot be silently ignored
+  ---
+  duration_ms: 41.903042
+  type: 'test'
+  ...
+# Subtest: journal owner: existing standalone v1 headers and v1 records remain compatible
+ok 75 - journal owner: existing standalone v1 headers and v1 records remain compatible
+  ---
+  duration_ms: 63.764708
+  type: 'test'
+  ...
+# Subtest: journal owner: v1 empty journals are never automatically adopted
+ok 76 - journal owner: v1 empty journals are never automatically adopted
+  ---
+  duration_ms: 21.776333
+  type: 'test'
+  ...
+# Subtest: journal owner: v1 populated journals are never automatically adopted
+ok 77 - journal owner: v1 populated journals are never automatically adopted
+  ---
+  duration_ms: 48.474167
+  type: 'test'
+  ...
+# Subtest: journal owner: owner is published with v2 header and current records remain v1
+ok 78 - journal owner: owner is published with v2 header and current records remain v1
+  ---
+  duration_ms: 45.653666
+  type: 'test'
+  ...
+# Subtest: journal owner: foreign v2 and absent expected owner preserve the published header
+ok 79 - journal owner: foreign v2 and absent expected owner preserve the published header
+  ---
+  duration_ms: 24.331333
+  type: 'test'
+  ...
+# Subtest: journal owner: expected owner is copied and frozen before any storage is initialized
+ok 80 - journal owner: expected owner is copied and frozen before any storage is initialized
+  ---
+  duration_ms: 52.862959
+  type: 'test'
+  ...
+# Subtest: journal owner: agentId mutation is rejected before cached reads and writes
+ok 81 - journal owner: agentId mutation is rejected before cached reads and writes
+  ---
+  duration_ms: 67.483792
+  type: 'test'
+  ...
+# Subtest: journal owner: kind mutation is rejected before cached reads and writes
+ok 82 - journal owner: kind mutation is rejected before cached reads and writes
+  ---
+  duration_ms: 43.355541
+  type: 'test'
+  ...
+# Subtest: journal owner: version mutation is rejected before cached reads and writes
+ok 83 - journal owner: version mutation is rejected before cached reads and writes
+  ---
+  duration_ms: 68.124792
+  type: 'test'
+  ...
+# Subtest: journal owner: storeId mutation is rejected before cached reads and writes
+ok 84 - journal owner: storeId mutation is rejected before cached reads and writes
+  ---
+  duration_ms: 46.30475
+  type: 'test'
+  ...
+# Subtest: journal owner: read-only preflight preserves empty roots and validates header candidates by content
+ok 85 - journal owner: read-only preflight preserves empty roots and validates header candidates by content
+  ---
+  duration_ms: 35.318917
+  type: 'test'
+  ...
+# Subtest: journal owner: missing header with unknown cannot mint a replacement store ID
+ok 86 - journal owner: missing header with unknown cannot mint a replacement store ID
+  ---
+  duration_ms: 8.735584
+  type: 'test'
+  ...
+# Subtest: journal owner: missing header with record-directory cannot mint a replacement store ID
+ok 87 - journal owner: missing header with record-directory cannot mint a replacement store ID
+  ---
+  duration_ms: 4.961458
+  type: 'test'
+  ...
+# Subtest: journal owner: missing header with invalid-pending cannot mint a replacement store ID
+ok 88 - journal owner: missing header with invalid-pending cannot mint a replacement store ID
+  ---
+  duration_ms: 298.658833
+  type: 'test'
+  ...
+# Subtest: journal owner: missing header with foreign-pending cannot mint a replacement store ID
+ok 89 - journal owner: missing header with foreign-pending cannot mint a replacement store ID
+  ---
+  duration_ms: 15.76475
+  type: 'test'
+  ...
+# Subtest: journal owner: missing header with v1-pending cannot mint a replacement store ID
+ok 90 - journal owner: missing header with v1-pending cannot mint a replacement store ID
+  ---
+  duration_ms: 8.72875
+  type: 'test'
+  ...
+# Subtest: journal owner: missing header with oversized-pending cannot mint a replacement store ID
+ok 91 - journal owner: missing header with oversized-pending cannot mint a replacement store ID
+  ---
+  duration_ms: 6.574083
+  type: 'test'
+  ...
+# Subtest: journal owner: external header hardlinks are rejected while interrupted publication links are preserved
+ok 92 - journal owner: external header hardlinks are rejected while interrupted publication links are preserved
+  ---
+  duration_ms: 16.752791
+  type: 'test'
+  ...
+# Subtest: journal owner: root-symlink is rejected without changing the outside file
+ok 93 - journal owner: root-symlink is rejected without changing the outside file
+  ---
+  duration_ms: 0.989334
+  type: 'test'
+  ...
+# Subtest: journal owner: header-symlink is rejected without changing the outside file
+ok 94 - journal owner: header-symlink is rejected without changing the outside file
+  ---
+  duration_ms: 1.060917
+  type: 'test'
+  ...
+# Subtest: journal owner: public-header is rejected without changing the outside file
+ok 95 - journal owner: public-header is rejected without changing the outside file
+  ---
+  duration_ms: 0.959042
+  type: 'test'
+  ...
+# Subtest: journal owner: external-pending-hardlink is rejected without changing the outside file
+ok 96 - journal owner: external-pending-hardlink is rejected without changing the outside file
+  ---
+  duration_ms: 1.40325
+  type: 'test'
+  ...
+# Subtest: journal owner: pending-symlink is rejected without changing the outside file
+ok 97 - journal owner: pending-symlink is rejected without changing the outside file
+  ---
+  duration_ms: 0.956583
+  type: 'test'
+  ...
+# Subtest: journal owner: header candidate count is bounded without truncation or adoption
+ok 98 - journal owner: header candidate count is bounded without truncation or adoption
+  ---
+  duration_ms: 75.438542
+  type: 'test'
+  ...
+# Subtest: journal owner: concurrent initializers join one atomic header
+ok 99 - journal owner: concurrent initializers join one atomic header
+  ---
+  duration_ms: 112.440417
+  type: 'test'
+  ...
+# Subtest: journal owner: concurrent initializers reject another owner
+ok 100 - journal owner: concurrent initializers reject another owner
+  ---
+  duration_ms: 65.247958
+  type: 'test'
+  ...
+# Subtest: journal owner: actual SIGKILL at header candidate_synced safely resumes the same owner
+ok 101 - journal owner: actual SIGKILL at header candidate_synced safely resumes the same owner
+  ---
+  duration_ms: 74.656584
+  type: 'test'
+  ...
+# Subtest: journal owner: actual SIGKILL at header published safely resumes the same owner
+ok 102 - journal owner: actual SIGKILL at header published safely resumes the same owner
+  ---
+  duration_ms: 98.175166
+  type: 'test'
+  ...
+# Subtest: journal owner: actual SIGKILL at header directory_synced safely resumes the same owner
+ok 103 - journal owner: actual SIGKILL at header directory_synced safely resumes the same owner
+  ---
+  duration_ms: 73.272375
+  type: 'test'
+  ...
+# Subtest: journal sync: public-parent initialization and read/commit fences retain directory order and attempt accounting
+ok 104 - journal sync: public-parent initialization and read/commit fences retain directory order and attempt accounting
+  ---
+  duration_ms: 100.815084
+  type: 'test'
+  ...
+# Subtest: journal sync: open-error retains the original error and counts only an actual fsync attempt
+ok 105 - journal sync: open-error retains the original error and counts only an actual fsync attempt
+  ---
+  duration_ms: 80.200083
+  type: 'test'
+  ...
+# Subtest: journal sync: fsync-error retains the original error and counts only an actual fsync attempt
+ok 106 - journal sync: fsync-error retains the original error and counts only an actual fsync attempt
+  ---
+  duration_ms: 93.969125
+  type: 'test'
+  ...
+# Subtest: journal sync: work replacement between path inspection and directory open is rejected before its fsync
+ok 107 - journal sync: work replacement between path inspection and directory open is rejected before its fsync
+  ---
+  duration_ms: 78.891083
+  type: 'test'
+  ...
+# Subtest: journal sync: root replacement between path inspection and directory open is rejected before its fsync
+ok 108 - journal sync: root replacement between path inspection and directory open is rejected before its fsync
+  ---
+  duration_ms: 86.11075
+  type: 'test'
+  ...
+# Subtest: journal sync: parent replacement between path inspection and directory open is rejected before its fsync
+ok 109 - journal sync: parent replacement between path inspection and directory open is rejected before its fsync
+  ---
+  duration_ms: 80.505875
+  type: 'test'
+  ...
+# Subtest: journal sync: a parent replacement after fsync remains a counted attempt and fails the final identity check
+ok 110 - journal sync: a parent replacement after fsync remains a counted attempt and fails the final identity check
+  ---
+  duration_ms: 77.7975
+  type: 'test'
+  ...
+# Subtest: journal sync: a published commit with fsync EIO retains its cause, record and exactly one receipt on retry
+ok 111 - journal sync: a published commit with fsync EIO retains its cause, record and exactly one receipt on retry
+  ---
+  duration_ms: 95.922417
+  type: 'test'
+  ...
+# Subtest: profile wrapper preserves absent reads, zero-byte reads and original missing sync error
+ok 112 - profile wrapper preserves absent reads, zero-byte reads and original missing sync error
+  ---
+  duration_ms: 1.6885
+  type: 'test'
+  ...
+# Subtest: common diagnostics include directory checks without replacing consumer read counters
+ok 113 - common diagnostics include directory checks without replacing consumer read counters
+  ---
+  duration_ms: 3.983125
+  type: 'test'
+  ...
+# Subtest: profile wrapper preserves open disappearance error and closes opened files
+ok 114 - profile wrapper preserves open disappearance error and closes opened files
+  ---
+  duration_ms: 42.988417
+  type: 'test'
+  ...
+# Subtest: profile wrapper preserves named-lstat disappearance error and closes opened files
+ok 115 - profile wrapper preserves named-lstat disappearance error and closes opened files
+  ---
+  duration_ms: 40.130292
+  type: 'test'
+  ...
+# Subtest: emulated unsupported platform refuses profile and standalone journal writes before creating files
+ok 116 - emulated unsupported platform refuses profile and standalone journal writes before creating files
+  ---
+  duration_ms: 50.01175
+  type: 'test'
+  ...
+# Subtest: sqlite: one commit and reopen retain state, all ordered events, deliveries and historical receipts
+ok 117 - sqlite: one commit and reopen retain state, all ordered events, deliveries and historical receipts
+  ---
+  duration_ms: 25.512042
+  type: 'test'
+  ...
+# Subtest: sqlite: duplicate and idempotency conflict precede revision conflict and preserve the first receipt
+ok 118 - sqlite: duplicate and idempotency conflict precede revision conflict and preserve the first receipt
+  ---
+  duration_ms: 3.050917
+  type: 'test'
+  ...
+# Subtest: sqlite: malformed commits leave all four collections unchanged, even on duplicate commands
+ok 119 - sqlite: malformed commits leave all four collections unchanged, even on duplicate commands
+  ---
+  duration_ms: 4.137417
+  type: 'test'
+  ...
+# Subtest: sqlite: caller mutations and mutable returned snapshots cannot rewrite persisted history
+ok 120 - sqlite: caller mutations and mutable returned snapshots cannot rewrite persisted history
+  ---
+  duration_ms: 2.354625
+  type: 'test'
+  ...
+# Subtest: sqlite: work, tenant, principal, channel and conversation identifiers remain separate
+ok 121 - sqlite: work, tenant, principal, channel and conversation identifiers remain separate
+  ---
+  duration_ms: 3.622292
+  type: 'test'
+  ...
+# Subtest: sqlite: event cursors are exclusive and sequence numbers are local to each work
+ok 122 - sqlite: event cursors are exclusive and sequence numbers are local to each work
+  ---
+  duration_ms: 2.375167
+  type: 'test'
+  ...
+# Subtest: sqlite: runnable respects exact deadline, obligation, tool and model recovery boundaries after reopen
+ok 123 - sqlite: runnable respects exact deadline, obligation, tool and model recovery boundaries after reopen
+  ---
+  duration_ms: 10.861917
+  type: 'test'
+  ...
+# Subtest: sqlite: two separate processes race on revision with exactly one atomic winning commit
+ok 124 - sqlite: two separate processes race on revision with exactly one atomic winning commit
+  ---
+  duration_ms: 58.150666
+  type: 'test'
+  ...
+# Subtest: sqlite: two separate processes race on same-command with exactly one atomic winning commit
+ok 125 - sqlite: two separate processes race on same-command with exactly one atomic winning commit
+  ---
+  duration_ms: 62.617667
+  type: 'test'
+  ...
+# Subtest: sqlite: two separate processes race on different-digest with exactly one atomic winning commit
+ok 126 - sqlite: two separate processes race on different-digest with exactly one atomic winning commit
+  ---
+  duration_ms: 59.757542
+  type: 'test'
+  ...
+# Subtest: sqlite: acknowledged commit survives SIGKILL without close and reopening replays its receipt without duplicate records
+ok 127 - sqlite: acknowledged commit survives SIGKILL without close and reopening replays its receipt without duplicate records
+  ---
+  duration_ms: 164.211417
+  type: 'test'
+  ...
+# Subtest: file-journal: one commit and reopen retain state, all ordered events, deliveries and historical receipts
+ok 128 - file-journal: one commit and reopen retain state, all ordered events, deliveries and historical receipts
+  ---
+  duration_ms: 48.969
+  type: 'test'
+  ...
+# Subtest: file-journal: duplicate and idempotency conflict precede revision conflict and preserve the first receipt
+ok 129 - file-journal: duplicate and idempotency conflict precede revision conflict and preserve the first receipt
+  ---
+  duration_ms: 42.788458
+  type: 'test'
+  ...
+# Subtest: file-journal: malformed commits leave all four collections unchanged, even on duplicate commands
+ok 130 - file-journal: malformed commits leave all four collections unchanged, even on duplicate commands
+  ---
+  duration_ms: 267.758375
+  type: 'test'
+  ...
+# Subtest: file-journal: caller mutations and mutable returned snapshots cannot rewrite persisted history
+ok 131 - file-journal: caller mutations and mutable returned snapshots cannot rewrite persisted history
+  ---
+  duration_ms: 91.776542
+  type: 'test'
+  ...
+# Subtest: file-journal: work, tenant, principal, channel and conversation identifiers remain separate
+ok 132 - file-journal: work, tenant, principal, channel and conversation identifiers remain separate
+  ---
+  duration_ms: 218.859041
+  type: 'test'
+  ...
+# Subtest: file-journal: event cursors are exclusive and sequence numbers are local to each work
+ok 133 - file-journal: event cursors are exclusive and sequence numbers are local to each work
+  ---
+  duration_ms: 65.710625
+  type: 'test'
+  ...
+# Subtest: file-journal: runnable respects exact deadline, obligation, tool and model recovery boundaries after reopen
+ok 134 - file-journal: runnable respects exact deadline, obligation, tool and model recovery boundaries after reopen
+  ---
+  duration_ms: 1330.614416
+  type: 'test'
+  ...
+# Subtest: file-journal: two separate processes race on revision with exactly one atomic winning commit
+ok 135 - file-journal: two separate processes race on revision with exactly one atomic winning commit
+  ---
+  duration_ms: 192.6345
+  type: 'test'
+  ...
+# Subtest: file-journal: two separate processes race on same-command with exactly one atomic winning commit
+ok 136 - file-journal: two separate processes race on same-command with exactly one atomic winning commit
+  ---
+  duration_ms: 123.898125
+  type: 'test'
+  ...
+# Subtest: file-journal: two separate processes race on different-digest with exactly one atomic winning commit
+ok 137 - file-journal: two separate processes race on different-digest with exactly one atomic winning commit
+  ---
+  duration_ms: 98.961459
+  type: 'test'
+  ...
+# Subtest: file-journal: acknowledged commit survives SIGKILL without close and reopening replays its receipt without duplicate records
+ok 138 - file-journal: acknowledged commit survives SIGKILL without close and reopening replays its receipt without duplicate records
+  ---
+  duration_ms: 205.289916
+  type: 'test'
+  ...
+# Subtest: memory: recent metadata is bounded at the requested revision and omits payloads without changing state
+ok 139 - memory: recent metadata is bounded at the requested revision and omits payloads without changing state
+  ---
+  duration_ms: 9.032875
+  type: 'test'
+  ...
+# Subtest: memory: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+ok 140 - memory: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+  ---
+  duration_ms: 6.191
+  type: 'test'
+  ...
+# Subtest: memory: query limits, malformed cursors and empty repositories have a defined result
+ok 141 - memory: query limits, malformed cursors and empty repositories have a defined result
+  ---
+  duration_ms: 3.969166
+  type: 'test'
+  ...
+# Subtest: sqlite: recent metadata is bounded at the requested revision and omits payloads without changing state
+ok 142 - sqlite: recent metadata is bounded at the requested revision and omits payloads without changing state
+  ---
+  duration_ms: 48.911958
+  type: 'test'
+  ...
+# Subtest: sqlite: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+ok 143 - sqlite: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+  ---
+  duration_ms: 48.446666
+  type: 'test'
+  ...
+# Subtest: sqlite: query limits, malformed cursors and empty repositories have a defined result
+ok 144 - sqlite: query limits, malformed cursors and empty repositories have a defined result
+  ---
+  duration_ms: 10.9625
+  type: 'test'
+  ...
+# Subtest: file-journal: recent metadata is bounded at the requested revision and omits payloads without changing state
+ok 145 - file-journal: recent metadata is bounded at the requested revision and omits payloads without changing state
+  ---
+  duration_ms: 240.150291
+  type: 'test'
+  ...
+# Subtest: file-journal: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+ok 146 - file-journal: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+  ---
+  duration_ms: 366.490417
+  type: 'test'
+  ...
+# Subtest: file-journal: query limits, malformed cursors and empty repositories have a defined result
+ok 147 - file-journal: query limits, malformed cursors and empty repositories have a defined result
+  ---
+  duration_ms: 34.059333
+  type: 'test'
+  ...
+# Subtest: journal: each page inspects only its directory budget and a foreign-only page still advances
+ok 148 - journal: each page inspects only its directory budget and a foreign-only page still advances
+  ---
+  duration_ms: 375.520125
+  type: 'test'
+  ...
+# Subtest: journal: cold, warm and external append distinguish body hashing from parsed and replayed records
+ok 149 - journal: cold, warm and external append distinguish body hashing from parsed and replayed records
+  ---
+  duration_ms: 214.223417
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects same-length after caching the complete history
+ok 150 - journal: a warm query rejects same-length after caching the complete history
+  ---
+  duration_ms: 69.881375
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects middle-delete after caching the complete history
+ok 151 - journal: a warm query rejects middle-delete after caching the complete history
+  ---
+  duration_ms: 77.181042
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects tail-delete after caching the complete history
+ok 152 - journal: a warm query rejects tail-delete after caching the complete history
+  ---
+  duration_ms: 73.217667
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects replacement after caching the complete history
+ok 153 - journal: a warm query rejects replacement after caching the complete history
+  ---
+  duration_ms: 77.650666
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects symlink after caching the complete history
+ok 154 - journal: a warm query rejects symlink after caching the complete history
+  ---
+  duration_ms: 75.831167
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects mode after caching the complete history
+ok 155 - journal: a warm query rejects mode after caching the complete history
+  ---
+  duration_ms: 68.908708
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects header after caching the complete history
+ok 156 - journal: a warm query rejects header after caching the complete history
+  ---
+  duration_ms: 80.782458
+  type: 'test'
+  ...
+# Subtest: journal: a warm read still fails when the directory durability fence fails
+ok 157 - journal: a warm read still fails when the directory durability fence fails
+  ---
+  duration_ms: 43.135125
+  type: 'test'
+  ...
+# Subtest: journal: pending-link cleanup retries a warm read once even when timestamps stay unchanged
+ok 158 - journal: pending-link cleanup retries a warm read once even when timestamps stay unchanged
+  ---
+  duration_ms: 65.989584
+  type: 'test'
+  ...
+# Subtest: journal: repeated record changes exhaust the bounded read retry and fail closed
+ok 159 - journal: repeated record changes exhaust the bounded read retry and fail closed
+  ---
+  duration_ms: 33.845709
+  type: 'test'
+  ...
+# Subtest: journal: cache accounting includes historical receipt snapshots and eviction releases record identities
+ok 160 - journal: cache accounting includes historical receipt snapshots and eviction releases record identities
+  ---
+  duration_ms: 45.444083
+  type: 'test'
+  ...
+# Subtest: journal: a delayed older commit acknowledgement cannot lower a newer observed head with caching disabled
+ok 161 - journal: a delayed older commit acknowledgement cannot lower a newer observed head with caching disabled
+  ---
+  duration_ms: 56.420292
+  type: 'test'
+  ...
+# Subtest: sqlite: transactional migration backfills query indexes and an already open legacy writer keeps them current
+ok 162 - sqlite: transactional migration backfills query indexes and an already open legacy writer keeps them current
+  ---
+  duration_ms: 27.875125
+  type: 'test'
+  ...
+# Subtest: sqlite: migration failure rolls back schema and leaves the legacy records unchanged
+ok 163 - sqlite: migration failure rolls back schema and leaves the legacy records unchanged
+  ---
+  duration_ms: 29.3715
+  type: 'test'
+  ...
+# Subtest: sqlite: reopening an intermediate v2 store rebuilds stale indexes and replaces old triggers transactionally
+ok 164 - sqlite: reopening an intermediate v2 store rebuilds stale indexes and replaces old triggers transactionally
+  ---
+  duration_ms: 8.256208
+  type: 'test'
+  ...
+# Subtest: sqlite: a failed index write rolls back canonical state, events, receipt and binding changes together
+ok 165 - sqlite: a failed index write rolls back canonical state, events, receipt and binding changes together
+  ---
+  duration_ms: 2.60375
+  type: 'test'
+  ...
+# Subtest: sqlite: bounded query SQL selects metadata and IDs without loading event or work bodies
+ok 166 - sqlite: bounded query SQL selects metadata and IDs without loading event or work bodies
+  ---
+  duration_ms: 2.137083
+  type: 'test'
+  ...
+1..166
+# tests 166
+# suites 0
+# pass 166
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8114.304875

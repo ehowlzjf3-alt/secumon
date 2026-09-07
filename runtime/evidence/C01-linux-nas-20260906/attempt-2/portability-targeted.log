@@ -1,0 +1,646 @@
+TAP version 13
+# Subtest: agent setup preserves files, creates private identity/config and reopens without a model
+ok 1 - agent setup preserves files, creates private identity/config and reopens without a model
+  ---
+  duration_ms: 29.59876
+  type: 'test'
+  ...
+# Subtest: status and invalid initialization options do not create files
+ok 2 - status and invalid initialization options do not create files
+  ---
+  duration_ms: 2.424961
+  type: 'test'
+  ...
+# Subtest: separate directories get distinct IDs and moving a directory preserves its identity
+ok 3 - separate directories get distinct IDs and moving a directory preserves its identity
+  ---
+  duration_ms: 15.582171
+  type: 'test'
+  ...
+# Subtest: initialization can finish after a process stops between identity and config publication
+ok 4 - initialization can finish after a process stops between identity and config publication
+  ---
+  duration_ms: 17.170088
+  type: 'test'
+  ...
+# Subtest: missing identity uses explicit repair with the existing config; missing completed config is not reset
+ok 5 - missing identity uses explicit repair with the existing config; missing completed config is not reset
+  ---
+  duration_ms: 10.942012
+  type: 'test'
+  ...
+# Subtest: completed layout repairs missing directories only with explicit repair and preserves existing state
+ok 6 - completed layout repairs missing directories only with explicit repair and preserves existing state
+  ---
+  duration_ms: 8.925689
+  type: 'test'
+  ...
+# Subtest: unknown data without identity is not assigned a new ID
+ok 7 - unknown data without identity is not assigned a new ID
+  ---
+  duration_ms: 1.684087
+  type: 'test'
+  ...
+# Subtest: config identity mismatch, unsupported versions and malformed documents are preserved
+ok 8 - config identity mismatch, unsupported versions and malformed documents are preserved
+  ---
+  duration_ms: 6.303374
+  type: 'test'
+  ...
+# Subtest: metadata symlinks and external hard links cannot be used for setup
+ok 9 - metadata symlinks and external hard links cannot be used for setup
+  ---
+  duration_ms: 5.765145
+  type: 'test'
+  ...
+# Subtest: managed directory links and writable/public metadata are rejected without changing permissions
+ok 10 - managed directory links and writable/public metadata are rejected without changing permissions
+  ---
+  duration_ms: 9.345679
+  type: 'test'
+  ...
+# Subtest: engine overlap and nested agent registration are rejected
+ok 11 - engine overlap and nested agent registration are rejected
+  ---
+  duration_ms: 7.268167
+  type: 'test'
+  ...
+# Subtest: CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+ok 12 - CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+  ---
+  duration_ms: 829.897473
+  type: 'test'
+  ...
+# Subtest: separate CLI processes initializing concurrently settle on exactly one identity
+ok 13 - separate CLI processes initializing concurrently settle on exactly one identity
+  ---
+  duration_ms: 686.068345
+  type: 'test'
+  ...
+# Subtest: two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+ok 14 - two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+  ---
+  duration_ms: 74.053358
+  type: 'test'
+  ...
+# Subtest: agent work files cannot traverse into engine or another agent and remain separate
+ok 15 - agent work files cannot traverse into engine or another agent and remain separate
+  ---
+  duration_ms: 86.015101
+  type: 'test'
+  ...
+# Subtest: copying another agents database is detected by its durable owner before runtime access
+ok 16 - copying another agents database is detected by its durable owner before runtime access
+  ---
+  duration_ms: 63.540431
+  type: 'test'
+  ...
+# Subtest: unowned existing databases are not silently adopted
+ok 17 - unowned existing databases are not silently adopted
+  ---
+  duration_ms: 10.945191
+  type: 'test'
+  ...
+# Subtest: symlink database and sidecar destinations cannot overwrite another file
+ok 18 - symlink database and sidecar destinations cannot overwrite another file
+  ---
+  duration_ms: 9.238483
+  type: 'test'
+  ...
+# Subtest: configured but not yet connected backend is not replaced by SQLite
+ok 19 - configured but not yet connected backend is not replaced by SQLite
+  ---
+  duration_ms: 11.562567
+  type: 'test'
+  ...
+# Subtest: CLI resumes across processes, keeps conversation/work identities and separates disconnect, pause and cancel
+ok 20 - CLI resumes across processes, keeps conversation/work identities and separates disconnect, pause and cancel
+  ---
+  duration_ms: 7842.150829
+  type: 'test'
+  ...
+# Subtest: CLI human output is reception plus result, with no internal events or ANSI: documents-simple
+ok 21 - CLI human output is reception plus result, with no internal events or ANSI: documents-simple
+  ---
+  duration_ms: 1066.251256
+  type: 'test'
+  ...
+# Subtest: CLI human output is reception plus result, with no internal events or ANSI: observations-simple
+ok 22 - CLI human output is reception plus result, with no internal events or ANSI: observations-simple
+  ---
+  duration_ms: 1088.705
+  type: 'test'
+  ...
+# Subtest: CLI goal changes require an explicit revision and failures have no success JSON on stdout
+ok 23 - CLI goal changes require an explicit revision and failures have no success JSON on stdout
+  ---
+  duration_ms: 1834.799052
+  type: 'test'
+  ...
+# Subtest: CLI checkpoint is a derived reference and an old resume file does not reverse a paused work
+ok 24 - CLI checkpoint is a derived reference and an old resume file does not reverse a paused work
+  ---
+  duration_ms: 4601.103226
+  type: 'test'
+  ...
+# Subtest: storage root preserves leaf at volume boundaries (posix): /agent
+ok 25 - storage root preserves leaf at volume boundaries (posix): /agent
+  ---
+  duration_ms: 2.414087
+  type: 'test'
+  ...
+# Subtest: storage root preserves leaf at volume boundaries (posix): /자료 담당
+ok 26 - storage root preserves leaf at volume boundaries (posix): /자료 담당
+  ---
+  duration_ms: 0.263647
+  type: 'test'
+  ...
+# Subtest: storage root preserves leaf at volume boundaries (posix): /opt/work/../agent
+ok 27 - storage root preserves leaf at volume boundaries (posix): /opt/work/../agent
+  ---
+  duration_ms: 0.199709
+  type: 'test'
+  ...
+# Subtest: storage root preserves leaf at volume boundaries (win32): C:\\agent
+ok 28 - storage root preserves leaf at volume boundaries (win32): C:\\agent
+  ---
+  duration_ms: 0.236706
+  type: 'test'
+  ...
+# Subtest: storage root preserves leaf at volume boundaries (win32): C:\\자료 담당
+ok 29 - storage root preserves leaf at volume boundaries (win32): C:\\자료 담당
+  ---
+  duration_ms: 0.252446
+  type: 'test'
+  ...
+# Subtest: storage root preserves leaf at volume boundaries (win32): C:\\work\\..\\agent
+ok 30 - storage root preserves leaf at volume boundaries (win32): C:\\work\\..\\agent
+  ---
+  duration_ms: 0.203801
+  type: 'test'
+  ...
+# Subtest: storage root preserves leaf at volume boundaries (win32): \\\\server\\share\\agent
+ok 31 - storage root preserves leaf at volume boundaries (win32): \\\\server\\share\\agent
+  ---
+  duration_ms: 0.235188
+  type: 'test'
+  ...
+# Subtest: storage root refuses whole filesystem, drive and UNC share roots after normalization
+ok 32 - storage root refuses whole filesystem, drive and UNC share roots after normalization
+  ---
+  duration_ms: 0.41049
+  type: 'test'
+  ...
+# Subtest: workspace and journal reject the host filesystem root before opening storage
+ok 33 - workspace and journal reject the host filesystem root before opening storage
+  ---
+  duration_ms: 1.240626
+  type: 'test'
+  ...
+# Subtest: journal record accounting identifies file names using posix separators
+ok 34 - journal record accounting identifies file names using posix separators
+  ---
+  duration_ms: 0.645885
+  type: 'test'
+  ...
+# Subtest: journal record accounting identifies file names using win32 separators
+ok 35 - journal record accounting identifies file names using win32 separators
+  ---
+  duration_ms: 0.999269
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP family 0 stores an original, adopts facts and revalidates offline
+ok 36 - sqlite: MCP family 0 stores an original, adopts facts and revalidates offline
+  ---
+  duration_ms: 398.049135
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP family 1 stores an original, adopts facts and revalidates offline
+ok 37 - sqlite: MCP family 1 stores an original, adopts facts and revalidates offline
+  ---
+  duration_ms: 300.310415
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP partial records do not satisfy complete coverage
+ok 38 - sqlite: MCP partial records do not satisfy complete coverage
+  ---
+  duration_ms: 294.751715
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP error retains no result evidence
+ok 39 - sqlite: MCP error retains no result evidence
+  ---
+  duration_ms: 271.081865
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP invalid retains no result evidence
+ok 40 - sqlite: MCP invalid retains no result evidence
+  ---
+  duration_ms: 291.917765
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP changed projected facts and different attempt proof are rejected
+ok 41 - sqlite: MCP changed projected facts and different attempt proof are rejected
+  ---
+  duration_ms: 295.17639
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP raw body corruption prevents adoption after restart
+ok 42 - sqlite: MCP raw body corruption prevents adoption after restart
+  ---
+  duration_ms: 305.780616
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP received result survives reopen and does not recall a stopped server
+ok 43 - sqlite: MCP received result survives reopen and does not recall a stopped server
+  ---
+  duration_ms: 306.906323
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP request intent prevents a hidden second call for the same attempt
+ok 44 - sqlite: MCP request intent prevents a hidden second call for the same attempt
+  ---
+  duration_ms: 278.059299
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP repeated reads keep one independent source lineage
+ok 45 - sqlite: MCP repeated reads keep one independent source lineage
+  ---
+  duration_ms: 332.417145
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP pause during adapter wait blocks the wire call
+ok 46 - sqlite: MCP pause during adapter wait blocks the wire call
+  ---
+  duration_ms: 229.393819
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP expand-labels during adapter wait blocks the wire call
+ok 47 - sqlite: MCP expand-labels during adapter wait blocks the wire call
+  ---
+  duration_ms: 280.033785
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP cancel after a real reply prevents raw publication and adoption
+ok 48 - sqlite: MCP cancel after a real reply prevents raw publication and adoption
+  ---
+  duration_ms: 232.247649
+  type: 'test'
+  ...
+# Subtest: sqlite: MCP restrict-labels after a real reply prevents raw publication and adoption
+ok 49 - sqlite: MCP restrict-labels after a real reply prevents raw publication and adoption
+  ---
+  duration_ms: 262.979952
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP family 0 stores an original, adopts facts and revalidates offline
+ok 50 - file-journal: MCP family 0 stores an original, adopts facts and revalidates offline
+  ---
+  duration_ms: 348.809331
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP family 1 stores an original, adopts facts and revalidates offline
+ok 51 - file-journal: MCP family 1 stores an original, adopts facts and revalidates offline
+  ---
+  duration_ms: 286.931179
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP partial records do not satisfy complete coverage
+ok 52 - file-journal: MCP partial records do not satisfy complete coverage
+  ---
+  duration_ms: 328.100252
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP error retains no result evidence
+ok 53 - file-journal: MCP error retains no result evidence
+  ---
+  duration_ms: 357.430214
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP invalid retains no result evidence
+ok 54 - file-journal: MCP invalid retains no result evidence
+  ---
+  duration_ms: 318.051818
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP changed projected facts and different attempt proof are rejected
+ok 55 - file-journal: MCP changed projected facts and different attempt proof are rejected
+  ---
+  duration_ms: 346.664535
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP raw body corruption prevents adoption after restart
+ok 56 - file-journal: MCP raw body corruption prevents adoption after restart
+  ---
+  duration_ms: 269.178305
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP received result survives reopen and does not recall a stopped server
+ok 57 - file-journal: MCP received result survives reopen and does not recall a stopped server
+  ---
+  duration_ms: 395.510201
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP request intent prevents a hidden second call for the same attempt
+ok 58 - file-journal: MCP request intent prevents a hidden second call for the same attempt
+  ---
+  duration_ms: 300.617121
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP repeated reads keep one independent source lineage
+ok 59 - file-journal: MCP repeated reads keep one independent source lineage
+  ---
+  duration_ms: 384.286389
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP pause during adapter wait blocks the wire call
+ok 60 - file-journal: MCP pause during adapter wait blocks the wire call
+  ---
+  duration_ms: 256.468473
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP expand-labels during adapter wait blocks the wire call
+ok 61 - file-journal: MCP expand-labels during adapter wait blocks the wire call
+  ---
+  duration_ms: 214.821718
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP cancel after a real reply prevents raw publication and adoption
+ok 62 - file-journal: MCP cancel after a real reply prevents raw publication and adoption
+  ---
+  duration_ms: 218.970807
+  type: 'test'
+  ...
+# Subtest: file-journal: MCP restrict-labels after a real reply prevents raw publication and adoption
+ok 63 - file-journal: MCP restrict-labels after a real reply prevents raw publication and adoption
+  ---
+  duration_ms: 290.070275
+  type: 'test'
+  ...
+# Subtest: MCP client: invalid host process configuration is rejected without starting a child
+ok 64 - MCP client: invalid host process configuration is rejected without starting a child
+  ---
+  duration_ms: 8.98098
+  type: 'test'
+  ...
+# Subtest: MCP fixture: explicit temporary root permits descendants and rejects outside and prefix-sibling paths
+ok 65 - MCP fixture: explicit temporary root permits descendants and rejects outside and prefix-sibling paths
+  ---
+  duration_ms: 610.771763
+  type: 'test'
+  ...
+# Subtest: MCP client: real pinned stdio discovery and repeated reads each make one fresh call
+ok 66 - MCP client: real pinned stdio discovery and repeated reads each make one fresh call
+  ---
+  duration_ms: 250.797852
+  type: 'test'
+  ...
+# Subtest: MCP client: staged paginated listing is bounded and only the approved subset can be called
+ok 67 - MCP client: staged paginated listing is bounded and only the approved subset can be called
+  ---
+  duration_ms: 227.935706
+  type: 'test'
+  ...
+# Subtest: MCP client: partial, mismatched and cycling listings never publish a callable session
+ok 68 - MCP client: partial, mismatched and cycling listings never publish a callable session
+  ---
+  duration_ms: 1060.554737
+  type: 'test'
+  ...
+# Subtest: MCP client: list change during discovery rejects the mixed view; explicit discovery can recover
+ok 69 - MCP client: list change during discovery rejects the mixed view; explicit discovery can recover
+  ---
+  duration_ms: 187.786137
+  type: 'test'
+  ...
+# Subtest: MCP client: caller mutation and rejected authorization cannot change the registered request
+ok 70 - MCP client: caller mutation and rejected authorization cannot change the registered request
+  ---
+  duration_ms: 217.105749
+  type: 'test'
+  ...
+# Subtest: MCP client: cancellation while authorization is pending sends zero calls
+ok 71 - MCP client: cancellation while authorization is pending sends zero calls
+  ---
+  duration_ms: 189.899703
+  type: 'test'
+  ...
+# Subtest: MCP client: active-call admission rejects overflow without invoking its authority callback
+ok 72 - MCP client: active-call admission rejects overflow without invoking its authority callback
+  ---
+  duration_ms: 263.094708
+  type: 'test'
+  ...
+# Subtest: MCP client: actual serialized request and oversized response are bounded
+ok 73 - MCP client: actual serialized request and oversized response are bounded
+  ---
+  duration_ms: 238.982938
+  type: 'test'
+  ...
+# Subtest: MCP client: post-dispatch list change invalidates the result and never repeats the call
+ok 74 - MCP client: post-dispatch list change invalidates the result and never repeats the call
+  ---
+  duration_ms: 217.658671
+  type: 'test'
+  ...
+# Subtest: MCP client: lost delayed response preserves sent uncertainty and releases the owned process
+ok 75 - MCP client: lost delayed response preserves sent uncertainty and releases the owned process
+  ---
+  duration_ms: 229.683217
+  type: 'test'
+  ...
+# Subtest: MCP client: uncertain exit preserves a sent call and explicit concurrent close rechecks once
+ok 76 - MCP client: uncertain exit preserves a sent call and explicit concurrent close rechecks once
+  ---
+  duration_ms: 231.342371
+  type: 'test'
+  ...
+# Subtest: MCP client: crashed peer requires explicit new discovery and old session is never revived
+ok 77 - MCP client: crashed peer requires explicit new discovery and old session is never revived
+  ---
+  duration_ms: 372.197444
+  type: 'test'
+  ...
+# Subtest: MCP client: ambient default environment is blanked; only explicit host variables are forwarded
+ok 78 - MCP client: ambient default environment is blanked; only explicit host variables are forwarded
+  ---
+  duration_ms: 35.712252
+  type: 'test'
+  ...
+# Subtest: memory: recent metadata is bounded at the requested revision and omits payloads without changing state
+ok 79 - memory: recent metadata is bounded at the requested revision and omits payloads without changing state
+  ---
+  duration_ms: 40.160736
+  type: 'test'
+  ...
+# Subtest: memory: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+ok 80 - memory: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+  ---
+  duration_ms: 24.734878
+  type: 'test'
+  ...
+# Subtest: memory: query limits, malformed cursors and empty repositories have a defined result
+ok 81 - memory: query limits, malformed cursors and empty repositories have a defined result
+  ---
+  duration_ms: 5.247558
+  type: 'test'
+  ...
+# Subtest: sqlite: recent metadata is bounded at the requested revision and omits payloads without changing state
+ok 82 - sqlite: recent metadata is bounded at the requested revision and omits payloads without changing state
+  ---
+  duration_ms: 35.833725
+  type: 'test'
+  ...
+# Subtest: sqlite: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+ok 83 - sqlite: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+  ---
+  duration_ms: 33.73338
+  type: 'test'
+  ...
+# Subtest: sqlite: query limits, malformed cursors and empty repositories have a defined result
+ok 84 - sqlite: query limits, malformed cursors and empty repositories have a defined result
+  ---
+  duration_ms: 8.710128
+  type: 'test'
+  ...
+# Subtest: file-journal: recent metadata is bounded at the requested revision and omits payloads without changing state
+ok 85 - file-journal: recent metadata is bounded at the requested revision and omits payloads without changing state
+  ---
+  duration_ms: 69.174025
+  type: 'test'
+  ...
+# Subtest: file-journal: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+ok 86 - file-journal: pages progress once per matching work across Unicode IDs and isolate the complete binding scope
+  ---
+  duration_ms: 65.733846
+  type: 'test'
+  ...
+# Subtest: file-journal: query limits, malformed cursors and empty repositories have a defined result
+ok 87 - file-journal: query limits, malformed cursors and empty repositories have a defined result
+  ---
+  duration_ms: 2.75607
+  type: 'test'
+  ...
+# Subtest: journal: each page inspects only its directory budget and a foreign-only page still advances
+ok 88 - journal: each page inspects only its directory budget and a foreign-only page still advances
+  ---
+  duration_ms: 64.603684
+  type: 'test'
+  ...
+# Subtest: journal: cold, warm and external append distinguish body hashing from parsed and replayed records
+ok 89 - journal: cold, warm and external append distinguish body hashing from parsed and replayed records
+  ---
+  duration_ms: 32.320151
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects same-length after caching the complete history
+ok 90 - journal: a warm query rejects same-length after caching the complete history
+  ---
+  duration_ms: 15.025659
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects middle-delete after caching the complete history
+ok 91 - journal: a warm query rejects middle-delete after caching the complete history
+  ---
+  duration_ms: 15.577252
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects tail-delete after caching the complete history
+ok 92 - journal: a warm query rejects tail-delete after caching the complete history
+  ---
+  duration_ms: 14.569808
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects replacement after caching the complete history
+ok 93 - journal: a warm query rejects replacement after caching the complete history
+  ---
+  duration_ms: 17.065758
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects symlink after caching the complete history
+ok 94 - journal: a warm query rejects symlink after caching the complete history
+  ---
+  duration_ms: 13.86987
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects mode after caching the complete history
+ok 95 - journal: a warm query rejects mode after caching the complete history
+  ---
+  duration_ms: 8.56871
+  type: 'test'
+  ...
+# Subtest: journal: a warm query rejects header after caching the complete history
+ok 96 - journal: a warm query rejects header after caching the complete history
+  ---
+  duration_ms: 5.19605
+  type: 'test'
+  ...
+# Subtest: journal: a warm read still fails when the directory durability fence fails
+ok 97 - journal: a warm read still fails when the directory durability fence fails
+  ---
+  duration_ms: 5.63721
+  type: 'test'
+  ...
+# Subtest: journal: a normal pending-link cleanup during a warm read retries the entire record once
+ok 98 - journal: a normal pending-link cleanup during a warm read retries the entire record once
+  ---
+  duration_ms: 5.083073
+  type: 'test'
+  ...
+# Subtest: journal: repeated record changes exhaust the bounded read retry and fail closed
+ok 99 - journal: repeated record changes exhaust the bounded read retry and fail closed
+  ---
+  duration_ms: 10.50581
+  type: 'test'
+  ...
+# Subtest: journal: cache accounting includes historical receipt snapshots and eviction releases record identities
+ok 100 - journal: cache accounting includes historical receipt snapshots and eviction releases record identities
+  ---
+  duration_ms: 17.986686
+  type: 'test'
+  ...
+# Subtest: journal: a delayed older commit acknowledgement cannot lower a newer observed head with caching disabled
+ok 101 - journal: a delayed older commit acknowledgement cannot lower a newer observed head with caching disabled
+  ---
+  duration_ms: 21.209292
+  type: 'test'
+  ...
+# Subtest: sqlite: transactional migration backfills query indexes and an already open legacy writer keeps them current
+ok 102 - sqlite: transactional migration backfills query indexes and an already open legacy writer keeps them current
+  ---
+  duration_ms: 18.860663
+  type: 'test'
+  ...
+# Subtest: sqlite: migration failure rolls back schema and leaves the legacy records unchanged
+ok 103 - sqlite: migration failure rolls back schema and leaves the legacy records unchanged
+  ---
+  duration_ms: 4.76521
+  type: 'test'
+  ...
+# Subtest: sqlite: reopening an intermediate v2 store rebuilds stale indexes and replaces old triggers transactionally
+ok 104 - sqlite: reopening an intermediate v2 store rebuilds stale indexes and replaces old triggers transactionally
+  ---
+  duration_ms: 10.173511
+  type: 'test'
+  ...
+# Subtest: sqlite: a failed index write rolls back canonical state, events, receipt and binding changes together
+ok 105 - sqlite: a failed index write rolls back canonical state, events, receipt and binding changes together
+  ---
+  duration_ms: 9.435656
+  type: 'test'
+  ...
+# Subtest: sqlite: bounded query SQL selects metadata and IDs without loading event or work bodies
+ok 106 - sqlite: bounded query SQL selects metadata and IDs without loading event or work bodies
+  ---
+  duration_ms: 6.181884
+  type: 'test'
+  ...
+1..106
+# tests 106
+# suites 0
+# pass 106
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17039.825408

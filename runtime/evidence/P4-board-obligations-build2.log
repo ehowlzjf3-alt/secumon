@@ -1,0 +1,38 @@
+
+> long-horizon-runtime@0.1.0 build
+> tsc -p tsconfig.json && node scripts/record-build.mjs
+
+src/application/board-commands.ts(294,13): error TS2322: Type '{ boardId: string; postId: string; status: string; requestId?: never; } | { boardId: string; requestId: string; status: string | undefined; postId?: never; }' is not assignable to type 'Json'.
+  Type '{ boardId: string; requestId: string; status: string | undefined; postId?: never; }' is not assignable to type 'Json'.
+    Type '{ boardId: string; requestId: string; status: string | undefined; postId?: never; }' is not assignable to type '{ [key: string]: Json; }'.
+      Property 'status' is incompatible with index signature.
+        Type 'string | undefined' is not assignable to type 'Json'.
+          Type 'undefined' is not assignable to type 'Json'.
+src/application/contracts.ts(156,14): error TS2375: Type 'ZodObject<{ schemaVersion: ZodLiteral<1>; id: ZodString; revision: ZodNumber; goal: ZodType<Goal, unknown, $ZodTypeInternals<Goal, unknown>>; ... 27 more ...; deadlineAt: ZodNumber; }, $strict>' is not assignable to type 'ZodType<WorkState, unknown, $ZodTypeInternals<WorkState, unknown>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  The types of '_output.obligations' are incompatible between these types.
+    Type '{ id: string; kind: "evidence" | "response" | "effect_reconciliation" | "delivery" | "budget_reconciliation"; reason: string; status: "pending" | "satisfied" | "waived"; wakeKey: string | null; dueAt: number | null; mode?: "waiting" | ... 1 more ... | undefined; source?: { ...; } | undefined; }[]' is not assignable to type 'Obligation[]'.
+      Type '{ id: string; kind: "evidence" | "response" | "effect_reconciliation" | "delivery" | "budget_reconciliation"; reason: string; status: "pending" | "satisfied" | "waived"; wakeKey: string | null; dueAt: number | null; mode?: "waiting" | ... 1 more ... | undefined; source?: { ...; } | undefined; }' is not assignable to type 'Obligation' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Types of property 'mode' are incompatible.
+          Type '"waiting" | "actionable" | undefined' is not assignable to type '"waiting" | "actionable"'.
+            Type 'undefined' is not assignable to type '"waiting" | "actionable"'.
+src/application/contracts.ts(182,14): error TS2375: Type 'ZodObject<{ schemaVersion: ZodLiteral<1>; workId: ZodString; stateRevision: ZodNumber; computerContinuations: ZodOptional<ZodArray<ZodType<ComputerContinuationClaim, unknown, $ZodTypeInternals<...>>>>; ... 17 more ...; execution: ZodOptional<...>; }, $strict>' is not assignable to type 'ZodType<ContextPacket, unknown, $ZodTypeInternals<ContextPacket, unknown>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  The types of '_output.obligations' are incompatible between these types.
+    Type '{ id: string; kind: "evidence" | "response" | "effect_reconciliation" | "delivery" | "budget_reconciliation"; reason: string; status: "pending" | "satisfied" | "waived"; wakeKey: string | null; dueAt: number | null; mode?: "waiting" | ... 1 more ... | undefined; source?: { ...; } | undefined; }[]' is not assignable to type 'Obligation[]'.
+      Type '{ id: string; kind: "evidence" | "response" | "effect_reconciliation" | "delivery" | "budget_reconciliation"; reason: string; status: "pending" | "satisfied" | "waived"; wakeKey: string | null; dueAt: number | null; mode?: "waiting" | ... 1 more ... | undefined; source?: { ...; } | undefined; }' is not assignable to type 'Obligation' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Types of property 'mode' are incompatible.
+          Type '"waiting" | "actionable" | undefined' is not assignable to type '"waiting" | "actionable"'.
+            Type 'undefined' is not assignable to type '"waiting" | "actionable"'.
+src/application/execution-runtime.ts(137,32): error TS2379: Argument of type '{ id: string; kind: "evidence" | "response" | "effect_reconciliation" | "delivery" | "budget_reconciliation"; reason: string; status: "pending" | "satisfied" | "waived"; wakeKey: string | null; dueAt: number | null; mode?: "waiting" | ... 1 more ... | undefined; source?: { ...; } | undefined; }' is not assignable to parameter of type 'Obligation' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'mode' are incompatible.
+    Type '"waiting" | "actionable" | undefined' is not assignable to type '"waiting" | "actionable"'.
+      Type 'undefined' is not assignable to type '"waiting" | "actionable"'.
+src/application/fixtures.ts(34,91): error TS2345: Argument of type '{ id: string; kind: "evidence" | "response" | "effect_reconciliation" | "delivery" | "budget_reconciliation"; reason: string; status: "pending" | "satisfied" | "waived"; wakeKey: string | null; dueAt: number | null; mode?: "waiting" | ... 1 more ... | undefined; source?: { ...; } | undefined; }[]' is not assignable to parameter of type 'Obligation[]'.
+  Type '{ id: string; kind: "evidence" | "response" | "effect_reconciliation" | "delivery" | "budget_reconciliation"; reason: string; status: "pending" | "satisfied" | "waived"; wakeKey: string | null; dueAt: number | null; mode?: "waiting" | ... 1 more ... | undefined; source?: { ...; } | undefined; }' is not assignable to type 'Obligation' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+    Types of property 'mode' are incompatible.
+      Type '"waiting" | "actionable" | undefined' is not assignable to type '"waiting" | "actionable"'.
+        Type 'undefined' is not assignable to type '"waiting" | "actionable"'.
+src/application/fixtures.ts(40,72): error TS2322: Type '{ id: string; kind: "evidence" | "response" | "effect_reconciliation" | "delivery" | "budget_reconciliation"; reason: string; status: "pending" | "satisfied" | "waived"; wakeKey: string | null; dueAt: number | null; mode?: "waiting" | ... 1 more ... | undefined; source?: { ...; } | undefined; }[]' is not assignable to type 'Obligation[]'.
+  Type '{ id: string; kind: "evidence" | "response" | "effect_reconciliation" | "delivery" | "budget_reconciliation"; reason: string; status: "pending" | "satisfied" | "waived"; wakeKey: string | null; dueAt: number | null; mode?: "waiting" | ... 1 more ... | undefined; source?: { ...; } | undefined; }' is not assignable to type 'Obligation' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+    Types of property 'mode' are incompatible.
+      Type '"waiting" | "actionable" | undefined' is not assignable to type '"waiting" | "actionable"'.
+        Type 'undefined' is not assignable to type '"waiting" | "actionable"'.

@@ -1,0 +1,112 @@
+{
+  "date": "2026-09-06",
+  "environment": "Codex In-app Browser; loopback synthetic workbench; SQLite",
+  "profile": "runtime/.data/web-learning",
+  "actualModelCalls": 0,
+  "actualOrganizationServiceCalls": 0,
+  "checks": [
+    {
+      "id": "bootstrap-reload",
+      "result": "passed",
+      "observed": "One-time fragment exchanged and removed; authenticated reload and process restart restore the stored task list without starting tasks."
+    },
+    {
+      "id": "documents",
+      "result": "passed",
+      "observed": "Receipt followed by one current result: retention.days=30, source doc-current."
+    },
+    {
+      "id": "observations-controls",
+      "result": "passed",
+      "observed": "Accept-only, pause, resume, mode change, goal edit and explicit run; collection.complete=true."
+    },
+    {
+      "id": "mode-preservation",
+      "result": "passed_after_fix",
+      "observed": "Goal editor preserves current fast mode rather than initial goal auto mode. This was first found in browser QA, then fixed and rechecked."
+    },
+    {
+      "id": "cross-channel-stale-draft",
+      "result": "passed",
+      "observed": "CLI changed mode during Web goal editing. Input and focus stayed; submit became disabled. Explicit refresh preserved the draft; goal revision 2 retained fast mode."
+    },
+    {
+      "id": "cancel",
+      "result": "passed",
+      "observed": "Explicit cancel produced cancelled state; old result not shown as current."
+    },
+    {
+      "id": "questions",
+      "result": "passed",
+      "observed": "Current question answered and explicitly run; a second synthetic question was answered through the same path; final result completed. After one answer, another pending question is prepared on the next explicit run."
+    },
+    {
+      "id": "cli-primary-web-observer",
+      "result": "passed",
+      "observed": "CLI-created completed task attached to Web. Screen identifies the CLI primary route; receipt and result appear without re-sending."
+    },
+    {
+      "id": "details-diagnostics",
+      "result": "passed",
+      "observed": "Explicitly expanded plan/evidence cards and event metadata; diagnostics collapsed for normal conversation."
+    },
+    {
+      "id": "keyboard-focus",
+      "result": "passed",
+      "observed": "Mode/goal input retained focus through updates. Tab from question input reached answer-submit; closing goal dialog returned focus to its opener."
+    },
+    {
+      "id": "width-390",
+      "result": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "documentScrollWidth": 390
+    },
+    {
+      "id": "width-320",
+      "result": "passed",
+      "viewport": {
+        "width": 320,
+        "height": 640
+      },
+      "documentScrollWidth": 320
+    },
+    {
+      "id": "reading-scroll",
+      "result": "passed",
+      "viewport": {
+        "width": 320,
+        "height": 400
+      },
+      "observed": "Before new question: scrollTop=0, clientHeight=264, scrollHeight=356. After arrival: scrollTop=0, scrollHeight=401, focus=conversation, new message button visible. Clicking it moved to 136.5 and hid the button."
+    },
+    {
+      "id": "terminal-control-display",
+      "result": "passed_after_fix",
+      "observed": "Completed run/mode and cancelled mode/goal/cancel disabled in browser. Failed-state disabled rules were inspected in source; no failed-state browser fixture was used."
+    },
+    {
+      "id": "final-console",
+      "result": "passed",
+      "observed": "Final loaded page returned no console errors; desktop viewport reset to 1280x720."
+    }
+  ],
+  "screenshots": [
+    "runtime/evidence/P3-web-browser-desktop.png",
+    "runtime/evidence/P3-web-goal-stale.png",
+    "runtime/evidence/P3-web-browser-390.png",
+    "runtime/evidence/P3-web-browser-320.png"
+  ],
+  "dom": "runtime/evidence/P3-web-browser-final-dom.txt",
+  "setup": "runtime/evidence/P3-web-scroll-setup.json",
+  "limits": [
+    "File-journal browser interaction was not separately run; both backends were exercised by controller and HTTP process-restart integration tests.",
+    "No OS-level Korean IME composition, screen-reader, real Knox, actual model, organization authentication or product computer-use adapter validation.",
+    "Lost accept-response retry identity persists in this page's memory only. A full reload does not restore an unsent request journal.",
+    "Goal editor rechecks goal/control revisions before submission, but the existing goal command has no atomic control-revision predicate across another client's last-instant mode change.",
+    "Additional question for scroll testing was created via the local public runtime command and local conversation/outbox interfaces, not by mutating browser DOM."
+  ],
+  "serverStoppedAfterVerification": true
+}

@@ -1,0 +1,4 @@
+CREATE UNIQUE INDEX "approvals_pending_target_uniq" ON "approvals" USING btree ("action","target_id") WHERE "approvals"."state" = 'pending';--> statement-breakpoint
+ALTER TABLE "approvals" ADD CONSTRAINT "approvals_action_check" CHECK ("approvals"."action" in ('hire','terminate','enable_send','delete_pod','budget_override'));--> statement-breakpoint
+ALTER TABLE "approvals" ADD CONSTRAINT "approvals_state_check" CHECK ("approvals"."state" in ('pending','approved','rejected'));--> statement-breakpoint
+ALTER TABLE "employees" ADD CONSTRAINT "employees_lifecycle_check" CHECK ("employees"."lifecycle" in ('Hired','Provisioning','Running','Paused','Unhealthy','Draining','Terminated'));

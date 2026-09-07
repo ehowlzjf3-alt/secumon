@@ -1,0 +1,21 @@
+
+> long-horizon-runtime@0.1.0 build
+> tsc -p tsconfig.json && node scripts/record-build.mjs
+
+src/application/budget-tools.ts(41,11): error TS2719: Type '(task: import("/Users/seunghanee/Documents/secumon/runtime/src/domain/model", { with: { "resolution-mode": "import" } }).TaskSpec, context: { workId: string; attemptId: string; policy: import("/Users/seunghanee/Documents/secumon/runtime/src/domain/model", { with: { "resolution-mode": "import" } }).Policy; signal: Ab...' is not assignable to type '(task: import("/Users/seunghanee/Documents/secumon/runtime/src/domain/model", { with: { "resolution-mode": "import" } }).TaskSpec, context: { workId: string; attemptId: string; policy: import("/Users/seunghanee/Documents/secumon/runtime/src/domain/model", { with: { "resolution-mode": "import" } }).Policy; signal: Ab...'. Two different types with this name exist, but they are unrelated.
+  Type 'Promise<{ status: "success"; coverage: "complete"; output: Json; error: null; resultId: string; attemptId: string; effectState: "none"; evidence: never[]; artifacts: never[]; cursor: null; } | { status: "failure" | "cancelled"; ... 8 more ...; cursor: null; }>' is not assignable to type 'Promise<ToolResult>'.
+    Type '{ status: "success"; coverage: "complete"; output: Json; error: null; resultId: string; attemptId: string; effectState: "none"; evidence: never[]; artifacts: never[]; cursor: null; } | { status: "failure" | "cancelled"; ... 8 more ...; cursor: null; }' is not assignable to type 'ToolResult'.
+      Type '{ status: "failure" | "cancelled"; coverage: "unknown"; output: null; error: { code: string; retryable: false; }; resultId: string; attemptId: string; effectState: "none"; evidence: never[]; artifacts: never[]; cursor: null; }' is not assignable to type 'ToolResult'.
+        Types of property 'status' are incompatible.
+          Type '"failure" | "cancelled"' is not assignable to type '"error" | "success" | "partial" | "cancelled"'.
+            Type '"failure"' is not assignable to type '"error" | "success" | "partial" | "cancelled"'.
+src/application/peer-agents.ts(2,38): error TS6196: 'ToolResult' is declared but never used.
+src/application/peer-agents.ts(13,24): error TS6133: 'PeerRequest' is declared but its value is never read.
+src/infrastructure/agent-engine-release.ts(61,86): error TS18047: 'config' is possibly 'null'.
+src/infrastructure/agent-lifecycle.ts(37,129): error TS18047: 'header' is possibly 'null'.
+src/infrastructure/agent-lifecycle.ts(41,87): error TS2345: Argument of type 'SQLOutputValue | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/infrastructure/agent-lifecycle.ts(41,125): error TS2345: Argument of type 'SQLOutputValue | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/infrastructure/agent-lifecycle.ts(41,165): error TS2345: Argument of type 'SQLOutputValue | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.

@@ -1,0 +1,89 @@
+{
+  "status": "diagnosed_test_expectation_corrected_not_retested",
+  "recordedAt": "2026-09-07T15:09:10.748711+00:00",
+  "originalEvidence": {
+    "resultPath": "evidence/C05-mcp-collections-new1.json",
+    "resultSha256": "03131a49fd24c8297ad405637683fbfa5a5011344dcdb4fded2c7222f1f1da05",
+    "logPath": "evidence/C05-mcp-collections-new1.log",
+    "logSha256": "21cdaed0dfdc4eaa9f669901c6cec3549d4c012c39432011244592811982c774",
+    "logTotals": {
+      "tests": 110,
+      "pass": 103,
+      "fail": 7,
+      "cancelled": 0
+    },
+    "allEvidencePreserved": true
+  },
+  "scope": "Only the two complete-orphan five-compactions/reopen failures; other five failures are outside this diagnosis.",
+  "failureLocation": {
+    "distTest": "dist/tests/read-collection-context.test.js",
+    "assertionLine": 143,
+    "callSiteLine": 230,
+    "logLines": [
+      192,
+      229
+    ],
+    "actual": false,
+    "expected": true,
+    "check": "Object.hasOwn(row, resumeMode)"
+  },
+  "finding": "Wrong fixture expectation at the canonical runtime recovery view, not a missing marker in the compiler model packet.",
+  "evidenceAndReasoning": [
+    "The stack points to assertMetadata(restored.packet.context, expected, expectedMode), after the five compact cycles and post-reopen compiler.prepare(cycle 6) assertions. Therefore these two runs reached and passed their compiler marker/frontier checks before the failure.",
+    "ContextRecovery.snapshot verifies each canonical collection with ReadCheckpoints.read and builds runtime_resume.context through buildContextPacket(state, tools). It does not invoke ContextCompiler or copy the previously prepared model frame.",
+    "readCollectionContext continues to produce the original attemptId/taskId/attemptStatus/progress tuple. resumeMode is optional model planning annotation introduced only by ContextCompiler after its exact frontier and original checkpoint proof.",
+    "PlanningRuntime reserveModel independently prepares/materializes its actual model context. Workflow recovery does not pass runtime_resume.context directly as that model input.",
+    "The same first log reports all 18 read-resume-options cases passed, including complete marker online/stored-only, final original proof, actual legacy plan adoption and unmarked compatibility. This does not substitute for a rerun of the corrected test."
+  ],
+  "readOnlyCodeAnchors": [
+    {
+      "path": "src/application/context-recovery.ts",
+      "lines": [
+        120,
+        133,
+        204
+      ],
+      "sha256": "c6d179318cc2c660d58b26aa6355e6951cdb5c151abb91d9d5aa09f1cdc2d06a"
+    },
+    {
+      "path": "src/application/context-compiler.ts",
+      "search": "if (this.completeResume(checkpoint, task)) collection.resumeMode",
+      "sha256": "fa558fd30dca1d58606d91ce848c12652a773a3be394202d3d37445c6c55c93c"
+    },
+    {
+      "path": "src/application/planning-runtime.ts",
+      "lines": [
+        294,
+        301
+      ],
+      "sha256": "661af03bf4558cfad3009d3f9cd57f280cee03d20a3fe7846601a966739f091c"
+    },
+    {
+      "path": "src/application/workflow-runtime.ts",
+      "lines": [
+        95,
+        120
+      ],
+      "sha256": "bab17744465210024bbd34827c4ff765dadbc422921e852ca01e80d9684aa737"
+    }
+  ],
+  "change": {
+    "path": "src/tests/read-collection-context.test.ts",
+    "beforeSha256": "98f659ff269d64d7c3bcf3d50e00f7e0fb6eb6fc11b8144cf8b5b798359b28e2",
+    "afterSha256": "a849db1f853148d538a93dec4b2069901adfae16ee6b84d8897265d16ca8e37a",
+    "preservedBeforeCopy": "evidence/C05-mcp-collections-staging/metadata/src/tests/read-collection-context.test.ts",
+    "description": "Only runtime recovery expectation becomes explicit marker absence, plus an additional whole-list deep equality with the canonical expected rows. Compiler five-cycle/reopen required marker, exact four-field/progress/head/frontier, original state/raw and zero invocation checks remain unchanged."
+  },
+  "productChanged": false,
+  "testSourceOnly": true,
+  "stagingPreserved": true,
+  "newTestsAdded": false,
+  "execution": {
+    "build": false,
+    "typecheck": false,
+    "tests": false,
+    "ssh": false,
+    "api": false
+  },
+  "remaining": "Parent must build and rerun the corrected test on the next source/build pin. No corrected pass or entire-unit success is claimed."
+}

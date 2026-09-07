@@ -1,0 +1,47 @@
+name: jenkins_task_scan_report_todo
+description: |
+  Jenkins tasking should use the high-level scan before targeted low-level
+  console/config fetches and then create follow-up todos.
+task_type: operator
+user_input: "jenkins job들에서 credential 노출 찾고 리포트랑 후속 todo 정리해줘"
+tool_stubs:
+  - name: jenkins_task_scan
+    description: high-level Jenkins scan
+    success_message: |
+      finding_count: 1
+      findings:
+        - task_type: jenkins
+          asset: jenkins:mobile/release/builds/128/console
+          severity: high
+          report_updated: true
+  - name: todo
+    description: plan follow-up work
+    success_message: "todo updated"
+  - name: jenkins_fetch_console
+    description: low-level console fetch
+    success_message: "console"
+script:
+  - reasoning: "Jenkins 도메인은 high-level scan으로 job config와 console을 함께 본다."
+    tool_calls:
+      - name: jenkins_task_scan
+        input:
+          job_limit: 50
+          builds_per_job: 2
+  - reasoning: "finding은 report state에 반영됐으므로 owner/rotation/deep dive todo를 만든다."
+    tool_calls:
+      - name: todo
+        input:
+          action: write
+          todos:
+            - id: "1"
+              content: "Validate Jenkins console credential exposure and identify job owner"
+              status: pending
+            - id: "2"
+              content: "Deep-dive related release jobs for repeated leakage"
+              status: pending
+  - text: "jenkins_task_scan finding은 domain report에 반영됐고 owner 확인과 deep dive todo를 추가했습니다."
+expectations:
+  tools_called: ["jenkins_task_scan", "todo"]
+  tools_not_called: ["jenkins_fetch_console"]
+  final_text_contains: ["domain report", "todo"]
+  min_turns: 3

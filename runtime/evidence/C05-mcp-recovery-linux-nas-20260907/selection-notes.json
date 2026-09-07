@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "status": "selected_not_executed",
+  "newFiles": [
+    "dist/tests/stored-tool-results.test.js",
+    "dist/tests/stored-result-runtime.test.js",
+    "dist/tests/mcp-stored-result.test.js",
+    "dist/tests/mcp-stored-result-recovery.test.js",
+    "dist/tests/stored-result-workflow.test.js"
+  ],
+  "groups": [
+    {
+      "name": "MCP original adapters and P3 recovery",
+      "reason": "The plain proof reader changes while collection/wait use adjacent original receipts and old recovery order.",
+      "files": [
+        "dist/tests/mcp-stdio-client.test.js",
+        "dist/tests/mcp-read-tools.test.js",
+        "dist/tests/mcp-read-collections.test.js",
+        "dist/tests/mcp-read-coverage.test.js",
+        "dist/tests/mcp-read-collections-recovery.test.js",
+        "dist/tests/mcp-read-settlement-recovery.test.js",
+        "dist/tests/mcp-read-waits.test.js",
+        "dist/tests/mcp-read-waits-recovery.test.js"
+      ]
+    },
+    {
+      "name": "Current C01 host and public entry",
+      "reason": "The same provider source, profile custody, discovery/close and CLI/Web composition must continue working.",
+      "files": [
+        "dist/tests/host-provider-tools.test.js",
+        "dist/tests/mcp-host-tools.test.js",
+        "dist/tests/mcp-agent-profile.test.js",
+        "dist/tests/mcp-agent-entry.test.js"
+      ]
+    },
+    {
+      "name": "Execution and result authority",
+      "reason": "Internal restored receive must preserve normal owner checks, late result usage, policy/currentness, validation and result reuse.",
+      "files": [
+        "dist/tests/execution.test.js",
+        "dist/tests/recovery.test.js",
+        "dist/tests/tool-result-validation.test.js",
+        "dist/tests/tool-result-reuse.test.js",
+        "dist/tests/execution-authority.test.js",
+        "dist/tests/tool-usage-authority.test.js",
+        "dist/tests/tool-broker-refresh.test.js"
+      ]
+    },
+    {
+      "name": "Contract capture",
+      "reason": "The optional callback uses the existing tool/source snapshot and contract-version lifecycle.",
+      "files": [
+        "dist/tests/tool-catalog-lifecycle.test.js",
+        "dist/tests/host-tools.test.js"
+      ]
+    },
+    {
+      "name": "Workflow and persistent general turn",
+      "reason": "Recovery precedes a new reservation; completion, crash/reopen and a new answer must retain their existing sequence.",
+      "files": [
+        "dist/tests/workflow.test.js",
+        "dist/tests/workflow-crash.test.js",
+        "dist/tests/persistent-workflow.test.js",
+        "dist/tests/agent-turn-flow.test.js"
+      ]
+    },
+    {
+      "name": "Planning and compact ordering",
+      "reason": "A pending stored result must settle before automatic compact or a new model call, including context capacity boundaries.",
+      "files": [
+        "dist/tests/model-runtime.test.js",
+        "dist/tests/session-compact-runtime.test.js",
+        "dist/tests/session-compact-window.test.js",
+        "dist/tests/agent-turn-compact.test.js"
+      ]
+    },
+    {
+      "name": "Disclosure",
+      "reason": "Reopening a stored result does not broaden the existing policy/disclosure surface.",
+      "files": [
+        "dist/tests/disclosure-workflow.test.js"
+      ]
+    }
+  ],
+  "excludedFromRelated": [
+    "Unchanged C01 filesystem/setup/migration and C03 CRUD/UI suites remain covered by the later full suite.",
+    "General UI appearance, model registration/adapter and unrelated computer/board/A2A paths are not reselected without a changed dependency.",
+    "Collection/wait passing does not establish a new general-entry collection/wait implementation."
+  ],
+  "countsMeaning": "File counts only. Actual TAP supplies test/pass/fail counts; these groups are not additive performance or quality evidence.",
+  "fullSuite": "Discover all dist/tests/*.test.js only after the future exact-pin native build.",
+  "selectorSha256": "f0d996aa98ca2eb741b94423cafc74b7591ad820450e63d46452e953caaef2a5"
+}

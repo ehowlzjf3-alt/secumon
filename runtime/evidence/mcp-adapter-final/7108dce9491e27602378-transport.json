@@ -1,0 +1,101 @@
+{
+  "codeDigest": "fdb0a620dc2d3fff2a54f6553c1f34ee2513d2ad750b8392de8383739c9d424a",
+  "test": "MCP client: lost delayed response preserves sent uncertainty and releases the owned process",
+  "mode": "late",
+  "beforeClose": {
+    "endpointId": "local-fixture",
+    "pid": null,
+    "generation": 2,
+    "connected": false,
+    "dirty": true,
+    "closed": false,
+    "activeCalls": 0,
+    "discovering": false,
+    "processStarts": 1,
+    "processCloses": 1,
+    "wireRequests": 4,
+    "toolCalls": 1,
+    "listPages": 1,
+    "requestBytes": 1480,
+    "responseBytes": 1498,
+    "protocolErrors": 0
+  },
+  "snapshot": {
+    "endpointId": "local-fixture",
+    "pid": null,
+    "generation": 3,
+    "connected": false,
+    "dirty": true,
+    "closed": true,
+    "activeCalls": 0,
+    "discovering": false,
+    "processStarts": 1,
+    "processCloses": 1,
+    "wireRequests": 4,
+    "toolCalls": 1,
+    "listPages": 1,
+    "requestBytes": 1480,
+    "responseBytes": 1498,
+    "protocolErrors": 0
+  },
+  "audit": [
+    {
+      "sequence": 1,
+      "event": "start"
+    },
+    {
+      "sequence": 2,
+      "event": "method",
+      "method": "other"
+    },
+    {
+      "sequence": 3,
+      "event": "method",
+      "method": "subscriptions/listen"
+    },
+    {
+      "sequence": 4,
+      "event": "method",
+      "method": "tools/list"
+    },
+    {
+      "sequence": 5,
+      "event": "method",
+      "method": "tools/call"
+    },
+    {
+      "sequence": 6,
+      "event": "call",
+      "tool": "documents.read",
+      "id": "slow"
+    },
+    {
+      "sequence": 7,
+      "event": "handler-ready",
+      "tool": "documents.read",
+      "id": "slow",
+      "cancelled": false
+    },
+    {
+      "sequence": 8,
+      "event": "response-delayed",
+      "tool": "documents.read",
+      "id": "slow"
+    },
+    {
+      "sequence": 9,
+      "event": "method",
+      "method": "notifications/cancelled"
+    },
+    {
+      "sequence": 10,
+      "event": "close",
+      "reason": "stdin-ended"
+    }
+  ],
+  "shutdown": {
+    "pid": null,
+    "ownedProcessStopped": true,
+    "temporaryFilesCleaned": true
+  }
+}

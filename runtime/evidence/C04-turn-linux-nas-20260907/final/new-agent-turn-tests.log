@@ -1,0 +1,610 @@
+TAP version 13
+# Subtest: legacy fact-only goals preserve serialized bytes and the existing completion result
+ok 1 - legacy fact-only goals preserve serialized bytes and the existing completion result
+  ---
+  duration_ms: 11.525692
+  type: 'test'
+  ...
+# Subtest: a response-only goal needs a host-adopted answer, not an empty criterion list or a fabricated fact
+ok 2 - a response-only goal needs a host-adopted answer, not an empty criterion list or a fabricated fact
+  ---
+  duration_ms: 1.89539
+  type: 'test'
+  ...
+# Subtest: only the unique accepted main-turn call with the same input reference can support an answer
+ok 3 - only the unique accepted main-turn call with the same input reference can support an answer
+  ---
+  duration_ms: 3.658659
+  type: 'test'
+  ...
+# Subtest: goal, graph, data generation and each session input identity change invalidate a previously accepted answer
+ok 4 - goal, graph, data generation and each session input identity change invalidate a previously accepted answer
+  ---
+  duration_ms: 1.975044
+  type: 'test'
+  ...
+# Subtest: new, removed, restricted or retracted evidence requires a fresh answer even when it was not cited
+ok 5 - new, removed, restricted or retracted evidence requires a fresh answer even when it was not cited
+  ---
+  duration_ms: 0.851432
+  type: 'test'
+  ...
+# Subtest: model self-review cannot replace independent evidence or dismiss factual counterevidence
+ok 6 - model self-review cannot replace independent evidence or dismiss factual counterevidence
+  ---
+  duration_ms: 0.444843
+  type: 'test'
+  ...
+# Subtest: considered counterarguments are retained while any missing requirement or needs-work verdict blocks completion
+ok 7 - considered counterarguments are retained while any missing requirement or needs-work verdict blocks completion
+  ---
+  duration_ms: 0.307911
+  type: 'test'
+  ...
+# Subtest: result readiness excludes only delivery; response, evidence, effect and budget obligations remain required
+ok 8 - result readiness excludes only delivery; response, evidence, effect and budget obligations remain required
+  ---
+  duration_ms: 0.818391
+  type: 'test'
+  ...
+# Subtest: transient model and tool calls cannot be hidden by an otherwise accepted answer
+ok 9 - transient model and tool calls cannot be hidden by an otherwise accepted answer
+  ---
+  duration_ms: 0.607104
+  type: 'test'
+  ...
+# Subtest: fresh session, memory and hypothesis reviews remain gates before response completion
+ok 10 - fresh session, memory and hypothesis reviews remain gates before response completion
+  ---
+  duration_ms: 2.135219
+  type: 'test'
+  ...
+# Subtest: blocked or no-longer-authorized answer and input artifacts cannot complete a response
+ok 11 - blocked or no-longer-authorized answer and input artifacts cannot complete a response
+  ---
+  duration_ms: 0.714936
+  type: 'test'
+  ...
+# Subtest: fast work progresses from main turn to tool to synthesis without charging a graph replan
+ok 12 - fast work progresses from main turn to tool to synthesis without charging a graph replan
+  ---
+  duration_ms: 1.065526
+  type: 'test'
+  ...
+# Subtest: answer synthesis does not bypass a failed task, unmet factual criteria, allocation gate or deadline
+ok 13 - answer synthesis does not bypass a failed task, unmet factual criteria, allocation gate or deadline
+  ---
+  duration_ms: 0.627378
+  type: 'test'
+  ...
+# Subtest: an accepted satisfied answer cannot complete while planned tasks are unstarted, failed or have no current adopted success
+ok 14 - an accepted satisfied answer cannot complete while planned tasks are unstarted, failed or have no current adopted success
+  ---
+  duration_ms: 1.52304
+  type: 'test'
+  ...
+# Subtest: an explicit validated plan removal preserves the failed attempt and permits a fresh answer at the new plan revision
+ok 15 - an explicit validated plan removal preserves the failed attempt and permits a fresh answer at the new plan revision
+  ---
+  duration_ms: 7.755552
+  type: 'test'
+  ...
+# Subtest: waiting for an answer alone does not expand auto investigation, but current factual counterevidence still does
+ok 16 - waiting for an answer alone does not expand auto investigation, but current factual counterevidence still does
+  ---
+  duration_ms: 0.659858
+  type: 'test'
+  ...
+# Subtest: versioned main prompt fingerprints canonical host profile and preserves model self-review boundaries
+ok 17 - versioned main prompt fingerprints canonical host profile and preserves model self-review boundaries
+  ---
+  duration_ms: 5.747425
+  type: 'test'
+  ...
+# Subtest: main-turn transport receives original conversation and frozen prompt/options once, returning a direct answer with measured usage
+ok 18 - main-turn transport receives original conversation and frozen prompt/options once, returning a direct answer with measured usage
+  ---
+  duration_ms: 15.618874
+  type: 'test'
+  ...
+# Subtest: request estimation includes the fixed prompt, original UTF-8 text and exact tool contracts; byte limit is inclusive
+ok 19 - request estimation includes the fixed prompt, original UTF-8 text and exact tool contracts; byte limit is inclusive
+  ---
+  duration_ms: 7.875739
+  type: 'test'
+  ...
+# Subtest: host prompt changes and another agent session cannot be accepted through caller-supplied digests
+ok 20 - host prompt changes and another agent session cannot be accepted through caller-supplied digests
+  ---
+  duration_ms: 4.524628
+  type: 'test'
+  ...
+# Subtest: destination, disclosure and exact tool permissions are checked before any turn invocation
+ok 21 - destination, disclosure and exact tool permissions are checked before any turn invocation
+  ---
+  duration_ms: 3.043771
+  type: 'test'
+  ...
+# Subtest: strict main results preserve question and plan branches without inventing direct-answer tasks
+ok 22 - strict main results preserve question and plan branches without inventing direct-answer tasks
+  ---
+  duration_ms: 4.309339
+  type: 'test'
+  ...
+# Subtest: unknown result fields, invalid JSON and missing assessment are rejected without repair while usage remains known
+ok 23 - unknown result fields, invalid JSON and missing assessment are rejected without repair while usage remains known
+  ---
+  duration_ms: 6.333517
+  type: 'test'
+  ...
+# Subtest: provider identity, finish status and safe partial usage survive invalid or oversized replies without leaking provider details
+ok 24 - provider identity, finish status and safe partial usage survive invalid or oversized replies without leaking provider details
+  ---
+  duration_ms: 5.501273
+  type: 'test'
+  ...
+# Subtest: early and late cancellation differ in usage; thrown transport errors remain unknown and have no hidden retry
+ok 25 - early and late cancellation differ in usage; thrown transport errors remain unknown and have no hidden retry
+  ---
+  duration_ms: 2.530085
+  type: 'test'
+  ...
+# Subtest: invalid configuration or request contracts cannot invoke the model transport
+ok 26 - invalid configuration or request contracts cannot invoke the model transport
+  ---
+  duration_ms: 1.7553
+  type: 'test'
+  ...
+# Subtest: late received answer cannot override input; measured usage remains settled
+ok 27 - late received answer cannot override input; measured usage remains settled
+  ---
+  duration_ms: 576.401592
+  type: 'test'
+  ...
+# Subtest: late received answer cannot override cancel; measured usage remains settled
+ok 28 - late received answer cannot override cancel; measured usage remains settled
+  ---
+  duration_ms: 378.491437
+  type: 'test'
+  ...
+# Subtest: same provider identity with a changed prompt rejects a stored response without resetting charged usage
+ok 29 - same provider identity with a changed prompt rejects a stored response without resetting charged usage
+  ---
+  duration_ms: 290.417412
+  type: 'test'
+  ...
+# Subtest: repeated unfinished self-review is bounded and never creates a deliverable answer
+ok 30 - repeated unfinished self-review is bounded and never creates a deliverable answer
+  ---
+  duration_ms: 1179.529218
+  type: 'test'
+  ...
+# Subtest: unknown provider usage is retained and prevents an automatic unaccounted retry
+ok 31 - unknown provider usage is retained and prevents an automatic unaccounted retry
+  ---
+  duration_ms: 417.871223
+  type: 'test'
+  ...
+# Subtest: a prior draft disappearing after response reservation prevents accepting a late revision
+ok 32 - a prior draft disappearing after response reservation prevents accepting a late revision
+  ---
+  duration_ms: 622.260346
+  type: 'test'
+  ...
+# Subtest: sqlite: installed chat CLI accepts a plain request, resumes its session and carries actual X replies into Y
+ok 33 - sqlite: installed chat CLI accepts a plain request, resumes its session and carries actual X replies into Y
+  ---
+  duration_ms: 4294.737226
+  type: 'test'
+  ...
+# Subtest: file-journal: installed chat CLI accepts a plain request, resumes its session and carries actual X replies into Y
+ok 34 - file-journal: installed chat CLI accepts a plain request, resumes its session and carries actual X replies into Y
+  ---
+  duration_ms: 5209.214208
+  type: 'test'
+  ...
+# Subtest: chat fast path plans one real fixture read and synthesizes a sourced answer without a graph replan
+ok 35 - chat fast path plans one real fixture read and synthesizes a sourced answer without a graph replan
+  ---
+  duration_ms: 2314.876529
+  type: 'test'
+  ...
+# Subtest: chat followup distinguishes more input from resolving a question and preserves the original requirement
+ok 36 - chat followup distinguishes more input from resolving a question and preserves the original requirement
+  ---
+  duration_ms: 4185.522616
+  type: 'test'
+  ...
+# Subtest: chat step-limited execution resumes in another process without accepting another request
+ok 37 - chat step-limited execution resumes in another process without accepting another request
+  ---
+  duration_ms: 3328.023722
+  type: 'test'
+  ...
+# Subtest: chat session selection prevents displaying or mutating a work from another session or agent
+ok 38 - chat session selection prevents displaying or mutating a work from another session or agent
+  ---
+  duration_ms: 5087.23783
+  type: 'test'
+  ...
+# Subtest: chat requires an explicit provider before creating a profile and prints only concise user-facing messages
+ok 39 - chat requires an explicit provider before creating a profile and prints only concise user-facing messages
+  ---
+  duration_ms: 1820.106807
+  type: 'test'
+  ...
+# Subtest: sqlite: generic correction survives repeated compact as an exact assistant citation and a later command-backed answer
+ok 40 - sqlite: generic correction survives repeated compact as an exact assistant citation and a later command-backed answer
+  ---
+  duration_ms: 4457.628698
+  type: 'test'
+  ...
+# Subtest: file-journal: generic correction survives repeated compact as an exact assistant citation and a later command-backed answer
+ok 41 - file-journal: generic correction survives repeated compact as an exact assistant citation and a later command-backed answer
+  ---
+  duration_ms: 7031.852369
+  type: 'test'
+  ...
+# Subtest: fast general request completes with one model turn, no fake evidence or tools, and next work keeps context
+ok 42 - fast general request completes with one model turn, no fake evidence or tools, and next work keeps context
+  ---
+  duration_ms: 1577.125784
+  type: 'test'
+  ...
+# Subtest: general read uses the existing task executor once and then synthesizes from observed evidence
+ok 43 - general read uses the existing task executor once and then synthesizes from observed evidence
+  ---
+  duration_ms: 1030.242616
+  type: 'test'
+  ...
+# Subtest: question delivery waits and the raw reply resumes the same original response requirement
+ok 44 - question delivery waits and the raw reply resumes the same original response requirement
+  ---
+  duration_ms: 1069.316106
+  type: 'test'
+  ...
+# Subtest: needs_work candidate feeds a later turn and cannot be delivered as a completed answer
+ok 45 - needs_work candidate feeds a later turn and cannot be delivered as a completed answer
+  ---
+  duration_ms: 802.250627
+  type: 'test'
+  ...
+# Subtest: reopening after stored response adopts the original charged call and sends one final answer
+ok 46 - reopening after stored response adopts the original charged call and sends one final answer
+  ---
+  duration_ms: 591.021545
+  type: 'test'
+  ...
+# Subtest: one previous needs-work draft remains verifiable after the current candidate has been replaced
+ok 47 - one previous needs-work draft remains verifiable after the current candidate has been replaced
+  ---
+  duration_ms: 45.372971
+  type: 'test'
+  ...
+# Subtest: previous artifact missing cannot survive as copied text in the next input
+ok 48 - previous artifact missing cannot survive as copied text in the next input
+  ---
+  duration_ms: 2.725466
+  type: 'test'
+  ...
+# Subtest: previous inputArtifact missing cannot survive as copied text in the next input
+ok 49 - previous inputArtifact missing cannot survive as copied text in the next input
+  ---
+  duration_ms: 2.270246
+  type: 'test'
+  ...
+# Subtest: previous replyArtifact missing cannot survive as copied text in the next input
+ok 50 - previous replyArtifact missing cannot survive as copied text in the next input
+  ---
+  duration_ms: 2.125912
+  type: 'test'
+  ...
+# Subtest: previous artifact corrupt cannot survive as copied text in the next input
+ok 51 - previous artifact corrupt cannot survive as copied text in the next input
+  ---
+  duration_ms: 2.056545
+  type: 'test'
+  ...
+# Subtest: previous inputArtifact corrupt cannot survive as copied text in the next input
+ok 52 - previous inputArtifact corrupt cannot survive as copied text in the next input
+  ---
+  duration_ms: 2.232414
+  type: 'test'
+  ...
+# Subtest: previous replyArtifact corrupt cannot survive as copied text in the next input
+ok 53 - previous replyArtifact corrupt cannot survive as copied text in the next input
+  ---
+  duration_ms: 3.416115
+  type: 'test'
+  ...
+# Subtest: previous draft cannot reuse a foreign, blocked or now unauthorized input or body reference
+ok 54 - previous draft cannot reuse a foreign, blocked or now unauthorized input or body reference
+  ---
+  duration_ms: 3.508332
+  type: 'test'
+  ...
+# Subtest: previous call status, identity and current goal or plan cannot be replaced by an accepted body copy
+ok 55 - previous call status, identity and current goal or plan cannot be replaced by an accepted body copy
+  ---
+  duration_ms: 3.296492
+  type: 'test'
+  ...
+# Subtest: previous copied assessment and an alternative current-candidate body ref must match the originals exactly
+ok 56 - previous copied assessment and an alternative current-candidate body ref must match the originals exactly
+  ---
+  duration_ms: 3.820559
+  type: 'test'
+  ...
+# Subtest: no previous draft performs no reads; a prior input names an older draft without recursively reopening that chain
+ok 57 - no previous draft performs no reads; a prior input names an older draft without recursively reopening that chain
+  ---
+  duration_ms: 3.636427
+  type: 'test'
+  ...
+# Subtest: generic profile never silently selects a model provider or initializes an absent directory
+ok 58 - generic profile never silently selects a model provider or initializes an absent directory
+  ---
+  duration_ms: 3.123017
+  type: 'test'
+  ...
+# Subtest: skills off bypasses invalid skill files, preserves C01 profile purpose, and keeps runtime authority host-owned
+ok 59 - skills off bypasses invalid skill files, preserves C01 profile purpose, and keeps runtime authority host-owned
+  ---
+  duration_ms: 200.098769
+  type: 'test'
+  ...
+# Subtest: file-journal plus document memory uses the same generic intake and reopens the original applied conversation
+ok 60 - file-journal plus document memory uses the same generic intake and reopens the original applied conversation
+  ---
+  duration_ms: 307.698882
+  type: 'test'
+  ...
+# Subtest: explicit synthetic compact delegates the existing rules under the single combined provider identity
+ok 61 - explicit synthetic compact delegates the existing rules under the single combined provider identity
+  ---
+  duration_ms: 101.435044
+  type: 'test'
+  ...
+# Subtest: sqlite: original text is durable before normal work and acknowledgement; receipt retry preserves one work
+ok 62 - sqlite: original text is durable before normal work and acknowledgement; receipt retry preserves one work
+  ---
+  duration_ms: 274.903107
+  type: 'test'
+  ...
+# Subtest: sqlite: interruption after receipt publication resumes identical input without a second work or model call
+ok 63 - sqlite: interruption after receipt publication resumes identical input without a second work or model call
+  ---
+  duration_ms: 165.464293
+  type: 'test'
+  ...
+# Subtest: file-journal: original text is durable before normal work and acknowledgement; receipt retry preserves one work
+ok 64 - file-journal: original text is durable before normal work and acknowledgement; receipt retry preserves one work
+  ---
+  duration_ms: 161.600035
+  type: 'test'
+  ...
+# Subtest: file-journal: interruption after receipt publication resumes identical input without a second work or model call
+ok 65 - file-journal: interruption after receipt publication resumes identical input without a second work or model call
+  ---
+  duration_ms: 165.09069
+  type: 'test'
+  ...
+# Subtest: clarifying an actual question advances the applied reply while preserving the original requirement across retry
+ok 66 - clarifying an actual question advances the applied reply while preserving the original requirement across retry
+  ---
+  duration_ms: 171.09563
+  type: 'test'
+  ...
+# Subtest: continue retains work and budget while an explicit accept creates a separate work in the same session
+ok 67 - continue retains work and budget while an explicit accept creates a separate work in the same session
+  ---
+  duration_ms: 110.372745
+  type: 'test'
+  ...
+# Subtest: host authority and explicit input schemas reject injected work, goal and cross-user or cross-session mutations
+ok 68 - host authority and explicit input schemas reject injected work, goal and cross-user or cross-session mutations
+  ---
+  duration_ms: 133.779719
+  type: 'test'
+  ...
+# Subtest: stale or non-resolvable clarification is durably rejected and cannot silently become a new work
+ok 69 - stale or non-resolvable clarification is durably rejected and cannot silently become a new work
+  ---
+  duration_ms: 104.462618
+  type: 'test'
+  ...
+# Subtest: native HTTP general intake acknowledges without inference; explicit execution, reconnect and same-session follow-up preserve the real answer
+ok 70 - native HTTP general intake acknowledges without inference; explicit execution, reconnect and same-session follow-up preserve the real answer
+  ---
+  duration_ms: 2259.568227
+  type: 'test'
+  ...
+# Subtest: native HTTP reading request uses the real task executor once and projects its generated evidence-backed answer
+ok 71 - native HTTP reading request uses the real task executor once and projects its generated evidence-backed answer
+  ---
+  duration_ms: 1204.365449
+  type: 'test'
+  ...
+# Subtest: native HTTP question, explicit original clarification and run resume the same work without pretending the question completed it
+ok 72 - native HTTP question, explicit original clarification and run resume the same work without pretending the question completed it
+  ---
+  duration_ms: 1057.40595
+  type: 'test'
+  ...
+# Subtest: native HTTP another selected conversation cannot read or run a work from the original session
+ok 73 - native HTTP another selected conversation cannot read or run a work from the original session
+  ---
+  duration_ms: 127.414684
+  type: 'test'
+  ...
+# Subtest: native HTTP general requests retain strict actor/policy/scenario rejection and the existing CSRF gate
+ok 74 - native HTTP general requests retain strict actor/policy/scenario rejection and the existing CSRF gate
+  ---
+  duration_ms: 126.054568
+  type: 'test'
+  ...
+# Subtest: generated answer uses verified text and keeps its basis across preparation, delivery and usage accounting
+ok 75 - generated answer uses verified text and keeps its basis across preparation, delivery and usage accounting
+  ---
+  duration_ms: 89.556917
+  type: 'test'
+  ...
+# Subtest: same-length raw artifact corruption cannot prepare or send generated text
+ok 76 - same-length raw artifact corruption cannot prepare or send generated text
+  ---
+  duration_ms: 12.976317
+  type: 'test'
+  ...
+# Subtest: same-length raw inputArtifact corruption cannot prepare or send generated text
+ok 77 - same-length raw inputArtifact corruption cannot prepare or send generated text
+  ---
+  duration_ms: 11.179505
+  type: 'test'
+  ...
+# Subtest: same-length raw replyArtifact corruption cannot prepare or send generated text
+ok 78 - same-length raw replyArtifact corruption cannot prepare or send generated text
+  ---
+  duration_ms: 12.100413
+  type: 'test'
+  ...
+# Subtest: a replacement answer with unchanged evidence gets a new result ID and supersedes the old outbound answer
+ok 79 - a replacement answer with unchanged evidence gets a new result ID and supersedes the old outbound answer
+  ---
+  duration_ms: 23.740634
+  type: 'test'
+  ...
+# Subtest: assessment change cannot reuse the accepted generated candidate
+ok 80 - assessment change cannot reuse the accepted generated candidate
+  ---
+  duration_ms: 12.26213
+  type: 'test'
+  ...
+# Subtest: call change cannot reuse the accepted generated candidate
+ok 81 - call change cannot reuse the accepted generated candidate
+  ---
+  duration_ms: 9.192724
+  type: 'test'
+  ...
+# Subtest: prompt change cannot reuse the accepted generated candidate
+ok 82 - prompt change cannot reuse the accepted generated candidate
+  ---
+  duration_ms: 9.193116
+  type: 'test'
+  ...
+# Subtest: session change cannot reuse the accepted generated candidate
+ok 83 - session change cannot reuse the accepted generated candidate
+  ---
+  duration_ms: 7.845952
+  type: 'test'
+  ...
+# Subtest: business obligation change cannot reuse the accepted generated candidate
+ok 84 - business obligation change cannot reuse the accepted generated candidate
+  ---
+  duration_ms: 7.832775
+  type: 'test'
+  ...
+# Subtest: external session currentness loss after prepare blocks dispatch without a work revision change
+ok 85 - external session currentness loss after prepare blocks dispatch without a work revision change
+  ---
+  duration_ms: 10.265378
+  type: 'test'
+  ...
+# Subtest: external memory currentness loss after prepare blocks dispatch without a work revision change
+ok 86 - external memory currentness loss after prepare blocks dispatch without a work revision change
+  ---
+  duration_ms: 12.143356
+  type: 'test'
+  ...
+# Subtest: external sources currentness loss after prepare blocks dispatch without a work revision change
+ok 87 - external sources currentness loss after prepare blocks dispatch without a work revision change
+  ---
+  duration_ms: 9.303006
+  type: 'test'
+  ...
+# Subtest: outbox rejects a substituted outbound body even when candidate references and response ID match
+ok 88 - outbox rejects a substituted outbound body even when candidate references and response ID match
+  ---
+  duration_ms: 8.680974
+  type: 'test'
+  ...
+# Subtest: delivery rechecks source currentness after claiming and cannot acknowledge a late stale response
+ok 89 - delivery rechecks source currentness after claiming and cannot acknowledge a late stale response
+  ---
+  duration_ms: 13.408613
+  type: 'test'
+  ...
+# Subtest: request source text and bound agent identity are verified independently of a permissive source adapter
+ok 90 - request source text and bound agent identity are verified independently of a permissive source adapter
+  ---
+  duration_ms: 7.29439
+  type: 'test'
+  ...
+# Subtest: needs-work candidates can inform another turn but cannot prepare or deliver a final response
+ok 91 - needs-work candidates can inform another turn but cannot prepare or deliver a final response
+  ---
+  duration_ms: 7.376379
+  type: 'test'
+  ...
+# Subtest: a new prepared answer cannot deliver copied draft text after its prior source is corrupted without a state change
+ok 92 - a new prepared answer cannot deliver copied draft text after its prior source is corrupted without a state change
+  ---
+  duration_ms: 22.503205
+  type: 'test'
+  ...
+# Subtest: a later applied input preserves the first request, and an omitted old raw request still requires original-source validation
+ok 93 - a later applied input preserves the first request, and an omitted old raw request still requires original-source validation
+  ---
+  duration_ms: 5.795261
+  type: 'test'
+  ...
+# Subtest: read-only work view shows the generated body and withholds the old prepared body after candidate replacement
+ok 94 - read-only work view shows the generated body and withholds the old prepared body after candidate replacement
+  ---
+  duration_ms: 27.218667
+  type: 'test'
+  ...
+# Subtest: work view cursor cannot retain a generated response after personal-memory currentness changes externally
+ok 95 - work view cursor cannot retain a generated response after personal-memory currentness changes externally
+  ---
+  duration_ms: 18.279121
+  type: 'test'
+  ...
+# Subtest: explicit synthetic correction and clarification create honest answer artifacts without tools or invented evidence
+ok 96 - explicit synthetic correction and clarification create honest answer artifacts without tools or invented evidence
+  ---
+  duration_ms: 22.192366
+  type: 'test'
+  ...
+# Subtest: arbitrary natural language, quoted old requests and mismatched applied receipts are refused
+ok 97 - arbitrary natural language, quoted old requests and mismatched applied receipts are refused
+  ---
+  duration_ms: 5.605405
+  type: 'test'
+  ...
+# Subtest: synthetic read proposal uses exact permitted tool contract and answers from the returned current evidence value
+ok 98 - synthetic read proposal uses exact permitted tool contract and answers from the returned current evidence value
+  ---
+  duration_ms: 9.937993
+  type: 'test'
+  ...
+# Subtest: read requests without the required tool ask for configuration instead of fabricating a plan or a value
+ok 99 - read requests without the required tool ask for configuration instead of fabricating a plan or a value
+  ---
+  duration_ms: 2.074364
+  type: 'test'
+  ...
+# Subtest: follow-up uses an earlier assistant original or cited accepted-summary view and does not infer omitted prior work
+ok 100 - follow-up uses an earlier assistant original or cited accepted-summary view and does not infer omitted prior work
+  ---
+  duration_ms: 7.092097
+  type: 'test'
+  ...
+1..100
+# tests 100
+# suites 0
+# pass 100
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 28899.108782

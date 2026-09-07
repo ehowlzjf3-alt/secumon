@@ -1,0 +1,677 @@
+{
+  "id": "documents-complex",
+  "family": "document_comparison",
+  "complexity": "complex",
+  "description": "초기 설명, 늦은 반증, 잘못된 원본 대체, 반복 인용, 개정 문서, 사용자 기준 변경.",
+  "synthetic": true,
+  "policy": {
+    "tenantId": "synthetic",
+    "principalId": "learner",
+    "allowedTools": [
+      "fixture.read"
+    ],
+    "allowedLabels": [
+      "synthetic",
+      "public"
+    ],
+    "allowedDestinations": [
+      "local"
+    ],
+    "allowWrites": false
+  },
+  "goal": {
+    "revision": 1,
+    "description": "두 문서의 현행 조건을 개정 이력까지 대조해 근거로 확인해줘",
+    "scope": "docs-complex",
+    "mode": "auto",
+    "criteria": [
+      {
+        "id": "current-period",
+        "description": "근거로 retention.days 확인",
+        "key": "retention.days",
+        "operator": "present",
+        "equals": null,
+        "minIndependentSources": 2,
+        "requireCompleteCoverage": true
+      }
+    ]
+  },
+  "hypotheses": [
+    {
+      "id": "different-scope",
+      "question": "관측 차이를 무엇으로 설명할 수 있는가?",
+      "claim": "적용 범위가 다르다",
+      "predictedObservation": "문서별 적용 조건이 다름",
+      "falsifier": "같은 조건인데 수치가 다름",
+      "status": "open",
+      "supportIds": [
+        "doc-a-old"
+      ],
+      "counterIds": [],
+      "reason": "검증 전 잠정 설명"
+    },
+    {
+      "id": "outdated-revision",
+      "question": "관측 차이를 무엇으로 설명할 수 있는가?",
+      "claim": "한 문서가 구버전이다",
+      "predictedObservation": "개정 이력에 수정 내용 존재",
+      "falsifier": "현행 버전끼리도 차이가 남음",
+      "status": "open",
+      "supportIds": [],
+      "counterIds": [],
+      "reason": "검증 전 잠정 설명"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "doc-a-old",
+      "tenantId": "synthetic",
+      "scope": "docs-complex",
+      "sourceId": "doc-a",
+      "lineageId": "doc-a",
+      "locator": "fixture://doc-a-old",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "retention.days": 90
+      },
+      "artifact": null
+    },
+    {
+      "id": "doc-b",
+      "tenantId": "synthetic",
+      "scope": "docs-complex",
+      "sourceId": "doc-b",
+      "lineageId": "doc-b",
+      "locator": "fixture://doc-b",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "retention.days": 30
+      },
+      "artifact": null
+    },
+    {
+      "id": "doc-a-amendment",
+      "tenantId": "synthetic",
+      "scope": "docs-complex",
+      "sourceId": "doc-a",
+      "lineageId": "doc-a",
+      "locator": "fixture://doc-a-amendment",
+      "observedAt": 1788566401000,
+      "recordedAt": 1788566401000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [
+        "doc-a-old"
+      ],
+      "derivedFrom": [],
+      "facts": {
+        "retention.days": 30
+      },
+      "artifact": null
+    },
+    {
+      "id": "doc-b-copy",
+      "tenantId": "synthetic",
+      "scope": "docs-complex",
+      "sourceId": "doc-b-copy",
+      "lineageId": "doc-b",
+      "locator": "fixture://doc-b-copy",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [
+        "doc-b"
+      ],
+      "facts": {
+        "retention.days": 30
+      },
+      "artifact": null
+    },
+    {
+      "id": "bad-amendment",
+      "tenantId": "synthetic",
+      "scope": "docs-complex",
+      "sourceId": "bad-amendment",
+      "lineageId": "bad-amendment",
+      "locator": "fixture://bad-amendment",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [
+        "doc-a-old"
+      ],
+      "derivedFrom": [],
+      "facts": {
+        "retention.days": 30
+      },
+      "artifact": null
+    },
+    {
+      "id": "export-policy",
+      "tenantId": "synthetic",
+      "scope": "docs-complex",
+      "sourceId": "export-policy",
+      "lineageId": "export-policy",
+      "locator": "fixture://export-policy",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "export.allowed": false
+      },
+      "artifact": null
+    },
+    {
+      "id": "private-doc",
+      "tenantId": "synthetic",
+      "scope": "docs-complex",
+      "sourceId": "private-doc",
+      "lineageId": "private-doc",
+      "locator": "fixture://private-doc",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "restricted"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "retention.days": 30
+      },
+      "artifact": null
+    },
+    {
+      "id": "other-tenant",
+      "tenantId": "another",
+      "scope": "docs-complex",
+      "sourceId": "other-tenant",
+      "lineageId": "other-tenant",
+      "locator": "fixture://other-tenant",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "retention.days": 30
+      },
+      "artifact": null
+    }
+  ],
+  "checkpoints": [
+    {
+      "name": "초기 문서 하나",
+      "evidenceIds": [
+        "doc-a-old"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "continue",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-a-old"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "늦은 반증",
+      "evidenceIds": [
+        "doc-a-old",
+        "doc-b"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "unresolved_counterevidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "replan",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "기존 자료 조회는 끝났으며 새 반증을 판별할 작업이 아직 없다",
+          "tasks": []
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "타 원본의 대체 주장 거부",
+      "evidenceIds": [
+        "doc-a-old",
+        "doc-b",
+        "bad-amendment"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "unresolved_counterevidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "continue",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-a-old"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "반복 인용은 독립 근거 아님",
+      "evidenceIds": [
+        "doc-b",
+        "doc-b-copy"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "continue",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-a-old"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "권한 밖 원본은 답 근거에 포함 불가",
+      "evidenceIds": [
+        "doc-b",
+        "private-doc",
+        "other-tenant"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "continue",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-a-old"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "개정 이력 반영",
+      "evidenceIds": [
+        "doc-a-old",
+        "doc-b",
+        "doc-a-amendment"
+      ],
+      "obligations": [],
+      "expectedComplete": true,
+      "expectedReasons": [],
+      "expectedEvidenceIds": [
+        "doc-b",
+        "doc-a-amendment"
+      ],
+      "goalOverride": null,
+      "expectedControl": "complete",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-a-old"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "답변 대기 의무",
+      "evidenceIds": [
+        "doc-b",
+        "doc-a-amendment"
+      ],
+      "obligations": [
+        {
+          "id": "owner-reply",
+          "kind": "response",
+          "reason": "완료 전에 확인할 응답 또는 효과",
+          "status": "pending",
+          "wakeKey": "owner-reply",
+          "dueAt": 1788566460000
+        }
+      ],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "pending_obligation:owner-reply"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "wait",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-a-old"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "사용자가 내보내기 기준 추가",
+      "evidenceIds": [
+        "doc-b",
+        "doc-a-amendment"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": {
+        "revision": 2,
+        "description": "두 문서의 현행 조건을 개정 이력까지 대조해 근거로 확인해줘",
+        "scope": "docs-complex",
+        "mode": "auto",
+        "criteria": [
+          {
+            "id": "current-period",
+            "description": "근거로 retention.days 확인",
+            "key": "retention.days",
+            "operator": "present",
+            "equals": null,
+            "minIndependentSources": 2,
+            "requireCompleteCoverage": true
+          },
+          {
+            "id": "export-rule",
+            "description": "근거로 export.allowed 확인",
+            "key": "export.allowed",
+            "operator": "present",
+            "equals": null,
+            "minIndependentSources": 1,
+            "requireCompleteCoverage": true
+          }
+        ]
+      },
+      "expectedControl": "replan",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-a-old"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "변경된 목표에서 부정 답도 유효",
+      "evidenceIds": [
+        "doc-b",
+        "doc-a-amendment",
+        "export-policy"
+      ],
+      "obligations": [],
+      "expectedComplete": true,
+      "expectedReasons": [],
+      "expectedEvidenceIds": [
+        "export-policy"
+      ],
+      "goalOverride": {
+        "revision": 2,
+        "description": "두 문서의 현행 조건을 개정 이력까지 대조해 근거로 확인해줘",
+        "scope": "docs-complex",
+        "mode": "auto",
+        "criteria": [
+          {
+            "id": "current-period",
+            "description": "근거로 retention.days 확인",
+            "key": "retention.days",
+            "operator": "present",
+            "equals": null,
+            "minIndependentSources": 2,
+            "requireCompleteCoverage": true
+          },
+          {
+            "id": "export-rule",
+            "description": "근거로 export.allowed 확인",
+            "key": "export.allowed",
+            "operator": "present",
+            "equals": null,
+            "minIndependentSources": 1,
+            "requireCompleteCoverage": true
+          }
+        ]
+      },
+      "expectedControl": "complete",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-a-old"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    }
+  ]
+}

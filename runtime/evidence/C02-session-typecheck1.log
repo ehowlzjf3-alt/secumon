@@ -1,0 +1,50 @@
+
+> long-horizon-runtime@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+src/application/contracts.ts(158,14): error TS2375: Type 'ZodObject<{ schemaVersion: ZodLiteral<1>; id: ZodString; revision: ZodNumber; goal: ZodType<Goal, unknown, $ZodTypeInternals<Goal, unknown>>; ... 29 more ...; deadlineAt: ZodNumber; }, $strict>' is not assignable to type 'ZodType<WorkState, unknown, $ZodTypeInternals<WorkState, unknown>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  The types of '_output.conversation' are incompatible between these types.
+    Type '{ bindings: { id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }[]; ... 4 more ...; sessionReviewRequired?: boolean | undefined; } | null' is not assignable to type 'ConversationState | null'.
+      Type '{ bindings: { id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }[]; ... 4 more ...; sessionReviewRequired?: boolean | undefined; }' is not assignable to type 'ConversationState' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+        Types of property 'bindings' are incompatible.
+          Type '{ id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }[]' is not assignable to type 'ConversationBinding[]'.
+            Type '{ id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }' is not assignable to type 'ConversationBinding' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+              Types of property 'session' are incompatible.
+                Type 'SessionScope | undefined' is not assignable to type 'SessionScope'.
+                  Type 'undefined' is not assignable to type 'SessionScope'.
+src/application/conversation-service.ts(61,5): error TS2375: Type '{ id: string; tenantId: string; channel: "cli" | "web" | "knox" | "test"; principalId: string; destination: string; conversationId: string; recipientId: string; session?: SessionScope | undefined; }' is not assignable to type 'ConversationBinding' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'session' are incompatible.
+    Type 'SessionScope | undefined' is not assignable to type 'SessionScope'.
+      Type 'undefined' is not assignable to type 'SessionScope'.
+src/application/recovery-contracts.ts(12,14): error TS2375: Type 'ZodObject<{ schemaVersion: ZodLiteral<1>; kind: ZodLiteral<"runtime_resume">; builderRevision: ZodLiteral<"1">; workId: ZodString; stateRevision: ZodNumber; ... 6 more ...; deliveries: ZodArray<...>; }, $strict>' is not assignable to type 'ZodType<ResumePacket, unknown, $ZodTypeInternals<ResumePacket, unknown>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  The types of '_output.runtime' are incompatible between these types.
+    Type '{ status: "ready" | "running" | "failed" | "cancelled" | "waiting" | "blocked" | "paused" | "completed"; statusReason: string; budget: { limits: { toolCalls: number; modelCalls: number; tokens: number; replans: number; wallTimeMs: number; }; used: { ...; }; reservedToolCalls: number; reservedModelCalls: number; rese...' is not assignable to type 'Pick<WorkState, "artifacts" | "status" | "deadlineAt" | "budget" | "hypothesisAssessment" | "computerContinuations" | "computerReconciliations" | "executionControl" | ... 6 more ... | "workspaceCheckpoints"> & { ...; }'.
+      Type '{ status: "ready" | "running" | "failed" | "cancelled" | "waiting" | "blocked" | "paused" | "completed"; statusReason: string; budget: { limits: { toolCalls: number; modelCalls: number; tokens: number; replans: number; wallTimeMs: number; }; used: { ...; }; reservedToolCalls: number; reservedModelCalls: number; rese...' is not assignable to type 'Pick<WorkState, "artifacts" | "status" | "deadlineAt" | "budget" | "hypothesisAssessment" | "computerContinuations" | "computerReconciliations" | "executionControl" | ... 6 more ... | "workspaceCheckpoints">'.
+        Types of property 'conversation' are incompatible.
+          Type '{ bindings: { id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }[]; ... 4 more ...; sessionReviewRequired?: boolean | undefined; } | null' is not assignable to type 'ConversationState | null'.
+            Type '{ bindings: { id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }[]; ... 4 more ...; sessionReviewRequired?: boolean | undefined; }' is not assignable to type 'ConversationState' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+              Types of property 'bindings' are incompatible.
+                Type '{ id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }[]' is not assignable to type 'ConversationBinding[]'.
+                  Type '{ id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }' is not assignable to type 'ConversationBinding' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+                    Types of property 'session' are incompatible.
+                      Type 'SessionScope | undefined' is not assignable to type 'SessionScope'.
+                        Type 'undefined' is not assignable to type 'SessionScope'.
+src/application/store-contract.ts(11,14): error TS2375: Type 'ZodObject<{ id: ZodString; workId: ZodString; goalRevision: ZodNumber; destination: ZodString; kind: ZodEnum<{ ack: "ack"; question: "question"; result: "result"; failure: "failure"; }>; ... 4 more ...; dispatch: ZodDefault<...>; }, $strict>' is not assignable to type 'ZodType<Delivery, unknown, $ZodTypeInternals<Delivery, unknown>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  The types of '_output.context' are incompatible between these types.
+    Type '{ binding: { id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }; ... 7 more ...; dataGeneration?: number | undefined; } | null' is not assignable to type 'DeliveryContext | null'.
+      Type '{ binding: { id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }; ... 7 more ...; dataGeneration?: number | undefined; }' is not assignable to type 'DeliveryContext'.
+        The types of 'binding.session' are incompatible between these types.
+          Type 'SessionScope | undefined' is not assignable to type 'SessionScope'.
+            Type 'undefined' is not assignable to type 'SessionScope'.
+src/presentation/local-workbench.ts(59,5): error TS2375: Type '{ id: string; channel: "cli" | "web" | "knox" | "test"; conversationId: string; recipientId: string; destination: string; tenantId: string; principalId: string; session?: SessionScope | undefined; }' is not assignable to type 'ConversationBinding' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'session' are incompatible.
+    Type 'SessionScope | undefined' is not assignable to type 'SessionScope'.
+      Type 'undefined' is not assignable to type 'SessionScope'.
+src/presentation/web/client.ts(3,100): error TS6196: 'WebConversation' is declared but never used.
+src/presentation/web/client.ts(3,117): error TS6196: 'WebInput' is declared but never used.
+src/presentation/web/client.ts(22,7): error TS6133: 'inputIdentity' is declared but its value is never read.
+src/presentation/web/client.ts(23,5): error TS6133: 'historyCursor' is declared but its value is never read.
+src/presentation/web/client.ts(23,46): error TS6133: 'historyReading' is declared but its value is never read.
+src/presentation/web/client.ts(277,28): error TS2304: Cannot find name 'loadHistory'.
+src/presentation/web/client.ts(306,65): error TS2304: Cannot find name 'loadHistory'.
+src/presentation/web/client.ts(437,30): error TS2304: Cannot find name 'loadHistory'.

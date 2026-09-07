@@ -1,0 +1,14 @@
+
+> long-horizon-runtime@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+src/application/contracts.ts(21,14): error TS2375: Type 'ZodObject<{ revision: ZodNumber; description: ZodString; scope: ZodString; mode: ZodEnum<{ auto: "auto"; fast: "fast"; deep: "deep"; }>; criteria: ZodArray<ZodObject<{ id: ZodString; ... 6 more ...; requireCollection: ZodOptional<...>; }, $strict>>; }, $strict>' is not assignable to type 'ZodType<Goal, unknown, $ZodTypeInternals<Goal, unknown>>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  The types of '_output.criteria' are incompatible between these types.
+    Type '{ id: string; description: string; key: string; operator: "equals" | "present"; equals: string | number | boolean | null; minIndependentSources: number; requireCompleteCoverage: boolean; requireCollection?: { ...; } | undefined; }[]' is not assignable to type 'Criterion[]'.
+      Type '{ id: string; description: string; key: string; operator: "equals" | "present"; equals: string | number | boolean | null; minIndependentSources: number; requireCompleteCoverage: boolean; requireCollection?: { ...; } | undefined; }' is not assignable to type 'Criterion'.
+        Types of property 'requireCollection' are incompatible.
+          Type '{ queryDigest: string; snapshot?: string | undefined; } | undefined' is not assignable to type '{ queryDigest: string; snapshot?: string; } | undefined'.
+            Type '{ queryDigest: string; snapshot?: string | undefined; }' is not assignable to type '{ queryDigest: string; snapshot?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+              Types of property 'snapshot' are incompatible.
+                Type 'string | undefined' is not assignable to type 'string'.
+                  Type 'undefined' is not assignable to type 'string'.

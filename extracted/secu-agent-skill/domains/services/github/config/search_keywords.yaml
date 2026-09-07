@@ -1,0 +1,80 @@
+# GitHub Enterprise 전역 코드검색 발견 큐 시드(github_repo_target).
+#
+# 배경: 지금까지 github 타깃은 Splunk 프록시 로그(devops_discovery)로만 채워졌다. 프록시는
+# "누가 방문한 URL"이라 **GitHub API 를 한 번도 안 부르므로 visibility 를 알 방법이 없고**,
+# 그래서 접근 불가 private repo 가 큐의 64% 를 차지한 채 무한 재순환했다.
+# 전역 `/search/code` 는 **토큰이 읽을 수 있는 repo 만** 인덱스에서 돌려주므로
+# visibility 문제가 구조적으로 사라진다(실측: 결과 repo 전수 /repos API 200).
+#
+# 동기화: `python -m service.agents.github_discovery_agent --search-sync`
+#   또는 env override: GITHUB_SEARCH_KEYWORDS="a,b,c" / GITHUB_SEARCH_KEYWORDS_FILE=<path>
+#
+# scope(선택): 특정 org/repo 로 좁히려면 항목에 `qualifiers` 를 준다(없으면 전역).
+#   - keyword: password
+#     qualifiers: ["org:myorg", "language:yaml"]
+#
+# 키워드 원칙:
+#   1) **값 접두**(ghp_/AKIA/xoxb-)가 최우선 — 오탐이 거의 없고 신호가 확실하다.
+#      실측: `AKIA` 531건, `"BEGIN RSA PRIVATE KEY"` 5,014건.
+#   2) `password` 같은 **일반 어휘는 넣지 않는다** — 검색결과가 수만 건이라 큐가 의미 없이
+#      부풀고, 어차피 repo 단위 스캔에서 detector 가 잡는다. 여기 목적은 **repo 발견**이지
+#      hit 수집이 아니다. (confluence 는 페이지 단위라 일반 어휘가 유효했지만 여기는 다르다)
+#   3) 연속 호출은 **secondary rate limit(403)** 을 부른다. code_search 백오프가 처리하지만
+#      키워드를 무한정 늘리지 말 것 — 한 사이클에 소화 가능한 규모로 유지한다.
+#
+# exclude_repos: 발견 단계에서 큐에 넣지 않을 repo. 소문자 비교, glob(`*`) 가능.
+#   시크릿 스캐너/샘플 저장소는 **정상적으로** `ghp_`/`AKIA` 픽스처를 갖고 있어서
+#   값 접두 키워드에 100% 걸린다(드라이런에서 `aiplatform-external/gitleaks` 포착).
+#   secret_gate 가 tests//fixtures/ 경로를 거르지만 리포 루트의 샘플은 통과할 수 있으므로
+#   **오탐의 근원을 큐에서 끊는다**. 여기 넣은 repo 는 스캔 자체를 안 한다.
+#   v3.92: 이 목록은 **두 발견 경로 모두**에 적용된다(코드검색 + 프록시 로그 등재).
+version: "2026-07-29.1"
+exclude_repos:
+  - "*/gitleaks"
+  - "*/trufflehog"
+  - "*/truffleHog"
+  - "*/detect-secrets"
+  - "*/gitrob"
+  - "*/git-secrets"
+  - "*/shhgit"
+  - "*/secretlint"
+  - "*/noseyparker"
+  - "*/ggshield"
+  - "*/whispers"
+  - "*/secret-scanner*"
+  - "*/*-secrets-sample*"
+  # 자사 보안도구 org — 우리가 만든 스캐너를 우리 스캐너가 훑는 꼴이라 픽스처 시크릿만 나온다.
+  # (실측: 큐 감사에서 readable 4건 secu-agent/secu-agent-skill/ai-auditor/AI-Security-EDU 가
+  #  전부 여기였다. 지금은 private 이라 범위 규칙에도 걸리지만, internal 전환 대비 명시한다)
+  - "ai-for-security/*"
+  # 코드 코퍼스 덤프 org — `python_2023_10`/`java_2021_5th` 처럼 **월별 자동 이름** repo 185개,
+  # 개당 10~17MB, 설명 없음, 2024-09 이후 정지. 남의 공개 코드를 긁어 모은 데이터셋이라
+  # 시크릿이 나와도 **우리 자산이 아니고 담당자도 없다**. 워커 1회 ≈ 6분이라 그냥 두면
+  # 큐의 절반을 남의 코드 스캔에 쓴다(실측: 21키워드 적재분 274건 중 51건이 여기였다).
+  - "code-search/*"
+keywords:
+  # ── 값 접두: 토큰/키 (고신호·저오탐)
+  - keyword: ghp_                      # GitHub PAT (classic)
+  - keyword: github_pat_               # GitHub PAT (fine-grained)
+  - keyword: gho_                      # GitHub OAuth
+  - keyword: xoxb-                     # Slack bot token
+  - keyword: xoxp-                     # Slack user token
+  - keyword: AKIA                      # AWS access key id
+  - keyword: ASIA                      # AWS temporary access key id
+  - keyword: sk_live_                  # Stripe live secret
+  - keyword: AIza                      # Google API key
+  - keyword: glpat-                    # GitLab PAT
+  # ── 값 접두: 개인키/인증서 블록
+  - keyword: "BEGIN RSA PRIVATE KEY"
+  - keyword: "BEGIN OPENSSH PRIVATE KEY"
+  - keyword: "BEGIN DSA PRIVATE KEY"
+  - keyword: "BEGIN EC PRIVATE KEY"
+  - keyword: "BEGIN PGP PRIVATE KEY BLOCK"
+  - keyword: "BEGIN ENCRYPTED PRIVATE KEY"
+  # ── 접속문자열: 값 안에 자격증명이 박히는 형태
+  - keyword: "jdbc mysql password"
+  - keyword: "mongodb+srv"
+  - keyword: "postgres://"
+  - keyword: "Data Source=localhost"
+  # ── 사내 자산 노출 지표(내부 호스트가 코드에 박힌 경우)
+  - keyword: samsungds.net

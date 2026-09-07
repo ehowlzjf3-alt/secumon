@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "ready": true,
+  "backlogRevision": "v0.39",
+  "expectedInnerFiles": 98,
+  "dependencyChange": {
+    "reason": "Add pinned official MCP client 2.0.0 for the read-only stdio adapter and server 2.0.0 for the local SDK fixture.",
+    "expectedNewPackageSha256": "fe41ce0f1ac437a1853bb662557a50858083dd586e0978096351d9f31dc65f18",
+    "expectedNewLockSha256": "97fc5bb6298f85d2e5d1d84584fb7a260c04eed89722e615040ac8574846ff10",
+    "allowedDirectChanges": [
+      {
+        "category": "dependencies",
+        "name": "@modelcontextprotocol/client",
+        "before": null,
+        "after": "2.0.0"
+      },
+      {
+        "category": "devDependencies",
+        "name": "@modelcontextprotocol/server",
+        "before": null,
+        "after": "2.0.0"
+      }
+    ],
+    "reviewedModifiedExistingPackages": [],
+    "reviewedRemovedExistingPackages": [],
+    "installRuns": [
+      {
+        "command": "npm install --save-exact --ignore-scripts --no-audit --no-fund @modelcontextprotocol/client@2.0.0",
+        "log": "runtime/evidence/P3-mcp-adapter-client-install.log",
+        "exitCode": 0
+      },
+      {
+        "command": "npm install --save-dev --save-exact --ignore-scripts --no-audit --no-fund @modelcontextprotocol/server@2.0.0",
+        "log": "runtime/evidence/P3-mcp-adapter-server-install.log",
+        "exitCode": 0
+      }
+    ]
+  },
+  "verify": {
+    "command": "npm run verify",
+    "log": "runtime/evidence/P3-mcp-adapter-verify-final.log",
+    "exitCode": 0,
+    "testsPassed": 1992,
+    "testsSkipped": 0
+  },
+  "targeted": {
+    "command": "SECUMON_MCP_EVIDENCE_DIR=\"$PWD/evidence/mcp-adapter-final-v2\" node --test dist/tests/mcp-read-tools.test.js dist/tests/mcp-stdio-client.test.js dist/tests/tool-broker-refresh.test.js",
+    "log": "runtime/evidence/P3-mcp-adapter-targeted-final-v2.log",
+    "exitCode": 0,
+    "testsPassed": 58,
+    "testsSkipped": 0
+  },
+  "acceptanceEvidence": [
+    "runtime/evidence/P3-mcp-adapter-boundary-review.md",
+    "runtime/evidence/P3-mcp-adapter-fixture-final-review.md",
+    "runtime/evidence/P3-mcp-adapter-proof-review.md",
+    "runtime/evidence/P3-mcp-adapter-final-audit.md"
+  ],
+  "protocol": {
+    "status": "passed",
+    "summary": "runtime/evidence/P3-mcp-adapter-protocol-final.json",
+    "logs": [
+      "runtime/evidence/P3-mcp-adapter-targeted-final-v2.log",
+      "runtime/evidence/P3-mcp-adapter-summary-final.log"
+    ],
+    "sourceDigestPointer": "/codeDigest",
+    "checks": [
+      {
+        "pointer": "/checks/normalReadCells",
+        "equals": 4
+      },
+      {
+        "pointer": "/checks/negotiatedVersionCheckedByTests",
+        "equals": "2026-07-28"
+      },
+      {
+        "pointer": "/checks/allRecordedCallCountsMatchFixture",
+        "equals": true
+      }
+    ],
+    "observation": {
+      "transport": "stdio",
+      "effects": "read-only",
+      "actualLocalSdkServer": true,
+      "negotiatedProtocolVersion": "2026-07-28",
+      "backends": [
+        "sqlite",
+        "file-journal"
+      ],
+      "actualModelCalls": 0,
+      "externalServiceCalls": 0,
+      "httpOrOAuthVerified": false,
+      "readCollectionResumeVerified": false,
+      "writeEffectsVerified": false,
+      "costDenominators": {
+        "cells": [
+          {
+            "adapter": "file-journal",
+            "family": "documents",
+            "logicalToolCalls": 1,
+            "mcpToolCalls": 1,
+            "allRequestFrames": 4,
+            "listPages": 1,
+            "requestFrameBytes": 1156,
+            "decodedListAndCallBytes": 1764,
+            "serverHandlerCalls": 1,
+            "actualModelCalls": 0
+          },
+          {
+            "adapter": "file-journal",
+            "family": "observations",
+            "logicalToolCalls": 1,
+            "mcpToolCalls": 1,
+            "allRequestFrames": 4,
+            "listPages": 1,
+            "requestFrameBytes": 1159,
+            "decodedListAndCallBytes": 1771,
+            "serverHandlerCalls": 1,
+            "actualModelCalls": 0
+          },
+          {
+            "adapter": "sqlite",
+            "family": "documents",
+            "logicalToolCalls": 1,
+            "mcpToolCalls": 1,
+            "allRequestFrames": 4,
+            "listPages": 1,
+            "requestFrameBytes": 1156,
+            "decodedListAndCallBytes": 1764,
+            "serverHandlerCalls": 1,
+            "actualModelCalls": 0
+          },
+          {
+            "adapter": "sqlite",
+            "family": "observations",
+            "logicalToolCalls": 1,
+            "mcpToolCalls": 1,
+            "allRequestFrames": 4,
+            "listPages": 1,
+            "requestFrameBytes": 1159,
+            "decodedListAndCallBytes": 1771,
+            "serverHandlerCalls": 1,
+            "actualModelCalls": 0
+          }
+        ],
+        "measuredFixtureRows": 44,
+        "modelCalls": 0,
+        "singleExecutionPerNormalCell": true
+      }
+    }
+  },
+  "recovery": {
+    "status": "passed",
+    "summary": "runtime/evidence/P3-mcp-adapter-recovery-final.json",
+    "logs": [
+      "runtime/evidence/P3-mcp-adapter-targeted-final-v2.log",
+      "runtime/evidence/P3-mcp-adapter-summary-final.log"
+    ],
+    "sourceDigestPointer": "/codeDigest",
+    "checks": [
+      {
+        "pointer": "/checks/hiddenCallRetriesInTestedScenarios",
+        "equals": 0
+      },
+      {
+        "pointer": "/checks/storedResultReopenCases",
+        "equals": 2
+      },
+      {
+        "pointer": "/checks/cleanupFailureRetainsSent",
+        "equals": true
+      }
+    ],
+    "observation": {
+      "cancellationIsNotRemoteCompletion": true,
+      "hiddenCallRetries": 0,
+      "storedResultDoesNotRecallServer": true
+    }
+  },
+  "shutdown": {
+    "status": "passed",
+    "summary": "runtime/evidence/P3-mcp-adapter-shutdown-final.json",
+    "logs": [
+      "runtime/evidence/P3-mcp-adapter-targeted-final-v2.log",
+      "runtime/evidence/P3-mcp-adapter-summary-final.log"
+    ],
+    "checks": [
+      {
+        "pointer": "/checks/allOwnedProcessesStopped",
+        "equals": true
+      },
+      {
+        "pointer": "/checks/allTemporaryDirectoriesRemoved",
+        "equals": true
+      },
+      {
+        "pointer": "/checks/observedChildStarts",
+        "equals": 45
+      },
+      {
+        "pointer": "/checks/observedChildCloses",
+        "equals": 45
+      }
+    ],
+    "observation": {
+      "ownedProcessesStopped": true,
+      "temporaryFilesCleaned": true
+    }
+  },
+  "additionalArtifacts": [
+    "runtime/evidence/P3-mcp-adapter-boundary-review.md",
+    "runtime/evidence/P3-mcp-adapter-build-1.log",
+    "runtime/evidence/P3-mcp-adapter-build-2.log",
+    "runtime/evidence/P3-mcp-adapter-build-3.log",
+    "runtime/evidence/P3-mcp-adapter-build-4.log",
+    "runtime/evidence/P3-mcp-adapter-build-5.log",
+    "runtime/evidence/P3-mcp-adapter-build-6.log",
+    "runtime/evidence/P3-mcp-adapter-client-install.log",
+    "runtime/evidence/P3-mcp-adapter-dependency-before.json",
+    "runtime/evidence/P3-mcp-adapter-final-audit.md",
+    "runtime/evidence/P3-mcp-adapter-finalize.cjs",
+    "runtime/evidence/P3-mcp-adapter-finalize.log",
+    "runtime/evidence/P3-mcp-adapter-fixture-final-review.md",
+    "runtime/evidence/P3-mcp-adapter-fixture-review.md",
+    "runtime/evidence/P3-mcp-adapter-interrupted-shutdown.json",
+    "runtime/evidence/P3-mcp-adapter-proof-review.md",
+    "runtime/evidence/P3-mcp-adapter-protocol-final.json",
+    "runtime/evidence/P3-mcp-adapter-protocol-verification.json",
+    "runtime/evidence/P3-mcp-adapter-read-targeted-1.log",
+    "runtime/evidence/P3-mcp-adapter-read-targeted-2.log",
+    "runtime/evidence/P3-mcp-adapter-read-targeted-3.log",
+    "runtime/evidence/P3-mcp-adapter-read-targeted-4.log",
+    "runtime/evidence/P3-mcp-adapter-record.cjs",
+    "runtime/evidence/P3-mcp-adapter-recovery-final.json",
+    "runtime/evidence/P3-mcp-adapter-recovery-review.md",
+    "runtime/evidence/P3-mcp-adapter-recovery-verification.json",
+    "runtime/evidence/P3-mcp-adapter-server-install.log",
+    "runtime/evidence/P3-mcp-adapter-shutdown-final.json",
+    "runtime/evidence/P3-mcp-adapter-shutdown-verification.json",
+    "runtime/evidence/P3-mcp-adapter-summarize-final.cjs",
+    "runtime/evidence/P3-mcp-adapter-summarize.cjs",
+    "runtime/evidence/P3-mcp-adapter-summary-final.log",
+    "runtime/evidence/P3-mcp-adapter-summary.log",
+    "runtime/evidence/P3-mcp-adapter-targeted-1.log",
+    "runtime/evidence/P3-mcp-adapter-targeted-final-v2.log",
+    "runtime/evidence/P3-mcp-adapter-targeted-final.log",
+    "runtime/evidence/P3-mcp-adapter-typecheck-1.log",
+    "runtime/evidence/P3-mcp-adapter-verification-plan.md",
+    "runtime/evidence/P3-mcp-adapter-verify-final-exit.json",
+    "runtime/evidence/P3-mcp-adapter-verify-final.log",
+    "runtime/evidence/P3-mcp-adapter-verify-interruption.json",
+    "runtime/evidence/P3-mcp-adapter-verify.log",
+    "runtime/evidence/mcp-adapter-final-v2/11d851ff170579a76934-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/304a791f463e39fcbbdf-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/334dc0d35b20bccfdeb4-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/3de44c082cb75041435f-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/43be4fc96741bd362f63-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/49a7289ebc5f53a6dc18-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/4daf128e5225776f7213-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/501afc3a71e514650dd9-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/53b4e22c3ab7b23ffb8d-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/706b569495bc119a0584-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/709bed00c057ef186893-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/7108dce9491e27602378-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/7578ead5704279fabc51-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/7781b585a6d8214ed437-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/7e31e5d02a22eec15f27-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/7fec65c03cdf289fd290-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/87bac68d15239d6a59d6-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/898e018dd7904809d2bc-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/9381028a13d02b3b3898-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/9a0cd00103c38db26cf9-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/9f49442097bf39e4bb6d-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/a17e1d9c1820cba740b3-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/a32c075cdd47fbf4b637-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/a3cf9b636344459553c5-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/b33b7720461570388cf1-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/b3c23f20457d72248350-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/b81b09c4d4b394987664-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/bb66fc64137053ff2b8a-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/bd4e574a7d73a2558004-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/bf07ee4b261036447ac2-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/c2fac5abd2546cfcd6bc-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/c7319a9fba7a27af474e-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/ca3688021befba62dd87-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/cd2af48a72e6de2fef78-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/cf48630037a7537fc076-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/dda0ac29aad4dcf05d53-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/e1ebec411ead37149b41-transport.json",
+    "runtime/evidence/mcp-adapter-final-v2/e90db55d7f26462af924-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/ec8645b51bc377e05533-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/ee1d53a5f30568bfbb5a-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/f6f18fba7962bc0161a0-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/fa093ce69940628e23df-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/fae141d3b6ae51c8b4cb-read.json",
+    "runtime/evidence/mcp-adapter-final-v2/fbff3dc676929b14ccd7-transport.json"
+  ],
+  "knownLimits": [
+    "MCP batch/page mapping to existing ReadCollections, cursor/snapshot persistence and explicit partial resume",
+    "Rate-limit/cooldown and original collection coverage semantics",
+    "Host-approved protocol profiles including legacy compatibility when needed",
+    "Actual internal MCP specification, credentials, scope and G-DATA; HTTP/OAuth and write-effect proof",
+    "Actual model and production operations remain unverified; the user cancelled the API experiment",
+    "Decoded SDK JSON, not packet capture; strictly compiled common JSON-schema subset only",
+    "Same-process repository reopen and new validator reconstruction; no MCP worker SIGKILL/power-loss test",
+    "Late response was delayed then lost; no late response receipt claimed",
+    "InputRequired auto-fulfil disabled in configuration; actual input_required exchange not tested",
+    "Raw artifact corruption also blocks the rejection-state commit until integrity/lifecycle repair",
+    "Stdio child is not an OS sandbox; commands/args/environment require host review",
+    "No atomic transaction between remote send and policy change",
+    "Raw fixture measurements: 44 rows/45 children; these are not 44 unique tests or the entire suite process count",
+    "The separate browser gate from v0.38 was not rerun for the MCP change"
+  ]
+}

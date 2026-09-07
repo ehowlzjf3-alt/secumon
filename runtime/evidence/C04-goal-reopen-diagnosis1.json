@@ -1,0 +1,338 @@
+{
+  "node": "v24.20.0",
+  "result": {
+    "control": {
+      "kind": "blocked",
+      "reason": "agent_turn_input_changed"
+    },
+    "steps": 1,
+    "reason": "agent_turn_input_changed",
+    "stateRevision": 27,
+    "goalRevision": 2,
+    "checkpoint": {
+      "id": "e748d988b1836c8c80b389557d1e471ecb338de6290076ac25ecd776b4390dff",
+      "sha256": "088daf14a1552ed4fc52826fcc96ae84438a67add49da6247dce61defb7ff316",
+      "byteLength": 17075,
+      "mediaType": "application/json",
+      "tenantId": "local",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    },
+    "resumeDisposition": "created"
+  },
+  "status": "blocked",
+  "reason": "agent_turn_input_changed",
+  "goal": {
+    "revision": 2,
+    "description": "[합성 주턴] 이 문장을 교정해 줘: 오늘 회의는 세시에 시작됍니다.",
+    "scope": "agent:5265cccf-1cf7-4854-ae5b-d2988600abd2",
+    "mode": "auto",
+    "criteria": [],
+    "responseRequirement": {
+      "version": 1,
+      "requestMessageId": "rewrite-goal",
+      "requestTextDigest": "f57893903086495e6cdefdfe54e530323a87546f318f94a4610059936c681c88",
+      "format": "text"
+    }
+  },
+  "plan": {
+    "revision": 1,
+    "goalRevision": 1,
+    "reason": "명시된 합성 요청의 자료 한 건을 허용된 읽기 도구로 확인한다.",
+    "tasks": [
+      {
+        "id": "synthetic-read-current",
+        "description": "명시된 doc-current 합성 자료 조회",
+        "dependsOn": [],
+        "toolId": "fixture.read",
+        "toolVersion": "1",
+        "input": {
+          "evidenceIds": [
+            "doc-current"
+          ]
+        },
+        "effect": "read",
+        "maxAttempts": 1,
+        "satisfies": []
+      }
+    ]
+  },
+  "calls": [
+    {
+      "id": "model-26ee81e2-7909-4239-8d6b-041f2e3f7463",
+      "goalRevision": 1,
+      "status": "accepted",
+      "reason": "plan",
+      "usageStatus": "reported"
+    },
+    {
+      "id": "model-e9a86c80-a3e2-4509-8760-d96d8a8589fa",
+      "goalRevision": 1,
+      "status": "accepted",
+      "reason": "agent_answer_stored",
+      "usageStatus": "reported"
+    }
+  ],
+  "budget": {
+    "limits": {
+      "toolCalls": 30,
+      "modelCalls": 16,
+      "tokens": 1000000,
+      "replans": 8,
+      "wallTimeMs": 3600000
+    },
+    "used": {
+      "toolCalls": 1,
+      "modelCalls": 2,
+      "tokens": 0,
+      "replans": 0,
+      "unmeasuredModelCalls": 0
+    },
+    "reservedToolCalls": 0,
+    "reservedModelCalls": 0,
+    "reservedTokens": 0
+  },
+  "events": [
+    {
+      "type": "model_reply_received",
+      "at": 1788767614471,
+      "data": {
+        "payload": {
+          "callId": "model-e9a86c80-a3e2-4509-8760-d96d8a8589fa",
+          "outcome": "ok"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 16,
+      "sequence": 16,
+      "commandId": "model-receive:model-e9a86c80-a3e2-4509-8760-d96d8a8589fa"
+    },
+    {
+      "type": "model_turn_accepted",
+      "at": 1788767614500,
+      "data": {
+        "payload": {
+          "callId": "model-e9a86c80-a3e2-4509-8760-d96d8a8589fa",
+          "kind": "answer"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 17,
+      "sequence": 17,
+      "commandId": "model-adopt:model-e9a86c80-a3e2-4509-8760-d96d8a8589fa"
+    },
+    {
+      "type": "response_prepared",
+      "at": 1788767614513,
+      "data": {
+        "payload": {
+          "responseId": "result-45ec7880f767e5b71ca84094dc432ffde1ddae9413c5035e51071b90db3468f6",
+          "kind": "result"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 18,
+      "sequence": 18,
+      "commandId": "prepare:result-45ec7880f767e5b71ca84094dc432ffde1ddae9413c5035e51071b90db3468f6:17"
+    },
+    {
+      "type": "delivery_claimed",
+      "at": 1788767614525,
+      "data": {
+        "payload": {
+          "deliveryId": "result-45ec7880f767e5b71ca84094dc432ffde1ddae9413c5035e51071b90db3468f6",
+          "status": "sending",
+          "externalId": null,
+          "attempt": 1,
+          "owner": "agent-turn-worker-48bed4b3-1948-4e3a-8c41-23377a41812c"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 19,
+      "sequence": 19,
+      "commandId": "delivery-claim:result-45ec7880f767e5b71ca84094dc432ffde1ddae9413c5035e51071b90db3468f6:1"
+    },
+    {
+      "type": "delivery_settled",
+      "at": 1788767614533,
+      "data": {
+        "payload": {
+          "deliveryId": "result-45ec7880f767e5b71ca84094dc432ffde1ddae9413c5035e51071b90db3468f6",
+          "status": "delivered",
+          "externalId": "local-5b390c86c0a48d319a098db6033925570f18fb2bd898017c5dd05ec7dee6f539",
+          "attempt": 1,
+          "owner": "agent-turn-worker-48bed4b3-1948-4e3a-8c41-23377a41812c"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 20,
+      "sequence": 20,
+      "commandId": "delivery-settle:result-45ec7880f767e5b71ca84094dc432ffde1ddae9413c5035e51071b90db3468f6:1:delivered:19"
+    },
+    {
+      "type": "control_selected",
+      "at": 1788767614536,
+      "data": {
+        "payload": {
+          "kind": "complete",
+          "reason": "criteria_verified"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 21,
+      "sequence": 21,
+      "commandId": "control:20"
+    },
+    {
+      "type": "user_command",
+      "at": 1788767614570,
+      "data": {
+        "payload": {
+          "actor": {
+            "tenantId": "local",
+            "principalId": "operator",
+            "allowedTools": [
+              "fixture.read",
+              "core.catalog.search",
+              "core.catalog.get",
+              "core.evidence.find",
+              "core.evidence.get",
+              "core.calls.find",
+              "core.calls.get",
+              "core.guidance.find",
+              "core.guidance.load",
+              "core.memory.get",
+              "core.memory.search"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "expectedGoalRevision": 1,
+          "command": {
+            "kind": "goal",
+            "goal": {
+              "revision": 2,
+              "description": "[합성 주턴] 이 문장을 교정해 줘: 오늘 회의는 세시에 시작됍니다.",
+              "scope": "agent:5265cccf-1cf7-4854-ae5b-d2988600abd2",
+              "mode": "auto",
+              "criteria": [],
+              "responseRequirement": {
+                "version": 1,
+                "requestMessageId": "rewrite-goal",
+                "requestTextDigest": "f57893903086495e6cdefdfe54e530323a87546f318f94a4610059936c681c88",
+                "format": "text"
+              }
+            },
+            "expectedControlRevision": 1,
+            "expectedSessionInput": {
+              "messageId": "request",
+              "sequence": 1,
+              "digest": "0c85cfa574ad42ff0916802ef28d9339fbb5f55a93d5167df9f95de0c2a0ca42"
+            },
+            "expectedPolicyDigest": "158106947272c0ee62cb8796d3a119303db975cb59bb62953b876d9accbaadcc"
+          },
+          "sessionInput": {
+            "scope": {
+              "tenantId": "local",
+              "agentId": "5265cccf-1cf7-4854-ae5b-d2988600abd2",
+              "principalId": "operator",
+              "sessionId": "94ed2b31-3cfc-4b4b-89d3-a6d4627ffe81"
+            },
+            "input": {
+              "messageId": "rewrite-goal",
+              "sequence": 4,
+              "digest": "bba53d378e4fdd89f07bd4b0ccf78c3548039cae25f4ac84dad87265db0af605"
+            }
+          }
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 22,
+      "sequence": 22,
+      "commandId": "session-command:2d6d2ef423d7b6b4fdefecab38a3725747fb6c78e88755a74f841dca9fc693e8"
+    },
+    {
+      "type": "control_selected",
+      "at": 1788767614599,
+      "data": {
+        "payload": {
+          "kind": "replan",
+          "reason": "session_input_requires_review"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 23,
+      "sequence": 23,
+      "commandId": "control:22"
+    },
+    {
+      "type": "model_gate_rejected",
+      "at": 1788767614640,
+      "data": {
+        "payload": {
+          "code": "agent_turn_input_changed"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 24,
+      "sequence": 24,
+      "commandId": "model-gate:22"
+    },
+    {
+      "type": "response_prepared",
+      "at": 1788767614643,
+      "data": {
+        "payload": {
+          "responseId": "failure-759a7fbb9ebd7fd64936141d41841f7453a24c5db84b71149202ed945c64ce21",
+          "kind": "failure"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 25,
+      "sequence": 25,
+      "commandId": "prepare:failure-759a7fbb9ebd7fd64936141d41841f7453a24c5db84b71149202ed945c64ce21:24"
+    },
+    {
+      "type": "delivery_claimed",
+      "at": 1788767614645,
+      "data": {
+        "payload": {
+          "deliveryId": "failure-759a7fbb9ebd7fd64936141d41841f7453a24c5db84b71149202ed945c64ce21",
+          "status": "sending",
+          "externalId": null,
+          "attempt": 1,
+          "owner": "agent-turn-worker-48bed4b3-1948-4e3a-8c41-23377a41812c"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 26,
+      "sequence": 26,
+      "commandId": "delivery-claim:failure-759a7fbb9ebd7fd64936141d41841f7453a24c5db84b71149202ed945c64ce21:1"
+    },
+    {
+      "type": "delivery_settled",
+      "at": 1788767614647,
+      "data": {
+        "payload": {
+          "deliveryId": "failure-759a7fbb9ebd7fd64936141d41841f7453a24c5db84b71149202ed945c64ce21",
+          "status": "delivered",
+          "externalId": "local-75c54da96aa17b1b6723fd1cbc0aee46a55ab2342f0d5bd64a7ca120583746b7",
+          "attempt": 1,
+          "owner": "agent-turn-worker-48bed4b3-1948-4e3a-8c41-23377a41812c"
+        }
+      },
+      "workId": "work-62b737109e84f98ec3868ce7df239edd0809d8ebf2cacb8375a8170f2d5f4d2b",
+      "revision": 27,
+      "sequence": 27,
+      "commandId": "delivery-settle:failure-759a7fbb9ebd7fd64936141d41841f7453a24c5db84b71149202ed945c64ce21:1:delivered:26"
+    }
+  ]
+}

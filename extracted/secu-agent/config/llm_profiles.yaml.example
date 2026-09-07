@@ -1,0 +1,147 @@
+# 사내 LLM 게이트웨이 프로필 — ai-sandbox/ai-soc과 동일 포맷.
+# ${VAR}는 .env에서 interpolation.
+#
+# ★ 이 파일이 로스터의 **커밋 기록**이다. 실물 `config/llm_profiles.yaml` 은 gitignore
+#   대상이라(.gitignore:12) 이력에 안 남는다 — 재설치하면 여기 있는 것만 복원된다.
+#   실물에 프로파일을 추가하면 **여기에도 넣어라.** 2026-08-22 에 실제로 갈라져 있었다:
+#   워커가 도는 deepseek 과 리드가 도는 codex 가 둘 다 이 파일에 없었다
+#   (tests/test_llm_profile_presets.py 가 이제 그 갈라짐을 잡는다).
+#
+# 역할별로 어느 프로파일을 쓰는지 = `.env` (SA_CHAT_PROFILE / SA_LEAD_PROFILE).
+# 프리셋과 전환 방법은 `.env.example` 의 "역할별 LLM 프로파일" 블록에 있다.
+
+profiles:
+  # 같은 security 게이트웨이가 이미 서빙 중(/v1/models: internal-gemma4)인데 엔진
+  # 설정에만 없어서, 쓰려면 스킬이 전체 사본을 SA_CHAT_PROFILES_PATH 로 들고 있어야
+  # 했다(드리프트 위험) → 여기로 단일소스화.
+  # vision 수용 실측(2026-08-20, docs/probes/vision_probe.py): 16x16 PNG → '빨강' 응답.
+  # ⇒ **vision 대체 슬롯**이다. 이미지가 근거인 워커(smb·dev_web)는 전역 프로파일이
+  #    이미지를 못 받으면 이걸로 대체된다(skill runtime._build_client).
+  gemma:
+    base_url: https://gateway.security.samsungds.net/v1
+    model: openai/Gemma4-260430
+    auth:
+      mode: api_key
+      api_key: ${LITELLM_API_KEY}
+    proxy: null
+    verify_ssl: false
+    timeout: 300
+    trust_env: false
+    reasoning_effort: medium
+
+    # v3.87 Front-D: 하네스 등급 — **생산성 loop-guard(반복실패/무진척) 임계값만** 이
+    # 값으로 조절(frontier=느슨/small=엄격/mid·미설정=무변). 안전 불변식(url_safety·마스킹·
+    # egress·권한·파괴적 게이트)은 이 값을 절대 읽지 않는다. 기본 None.
+    # harness_tier: frontier
+
+  # 사설 DGX Spark 2노드(GB10) vLLM 배포. 같은 security 게이트웨이에 등록돼 있다.
+  # 서빙 구성·운영은 AI-for-Security/private-llm-hands-on 의 serve-two-sparks 참조.
+  #
+  # ⚠️ model 에 `openai/` 접두를 붙이면 게이트웨이가 400 "Invalid model name" 을 낸다
+  #    (gemma/gauss 는 별칭과 실모델명이 둘 다 등록돼 있어 접두가 통하지만 이건 별칭뿐이다).
+  # 실측(2026-08-20, 게이트웨이 경유): 27.3 tok/s, tool_call 1턴 4.2s, 컨텍스트 1,048,576.
+  # tool calling 정식 지원(--tool-call-parser deepseek_v4) — 필수필드 충족·교정지시 순응 확인.
+  # ⚠️ vision 미지원 — `deepseek-v4-flash is not a multimodal model` (400, 2026-08-20 실측).
+  #    이미지 증거가 필요한 도메인(smb/dev_web)은 gemma 로 대체된다(runtime._build_client).
+  # ⚠️ 서빙이 --max-num-seqs 16 이라 팬아웃 병렬도를 그 아래로 잡는다.
+  deepseek:
+    base_url: https://gateway.security.samsungds.net/v1
+    model: private-deepseek-v4-seunghanee
+    auth:
+      mode: api_key
+      api_key: ${LITELLM_API_KEY}
+    proxy: null
+    verify_ssl: false
+    timeout: 300
+    trust_env: false
+    reasoning_effort: medium
+
+  # v3.56: 사내 enterprise codex (ChatGPT) — OAuth(~/.codex/auth.json) Responses API.
+  # 토큰은 YAML/.env 가 아니라 auth.json 에서 런타임 resolve/refresh (password_ref 정책).
+  # 외부 egress: MWG proxy(trust_env) + verify=false.
+  # ★ 이게 **리드(판단자)** 프로파일이다 — SA_LEAD_PROFILE=codex.
+  #   리드는 좌표(IP·경로·repo·크기)만 보고 본문·크리덴셜 값·PII 값은 못 본다.
+  #   경계는 프롬프트가 아니라 세 겹이다: 도구 등록 + 닫힌 봉투 + 마스킹.
+  codex:
+    base_url: https://chatgpt.com/backend-api/codex
+    model: gpt-5.5
+    transport: codex_responses
+    auth:
+      mode: oauth_codex
+      token_path: ~/.codex/auth.json
+    proxy: null
+    verify_ssl: false
+    trust_env: true
+    timeout: 600
+    reasoning_effort: xhigh
+
+  # External baseline profile for comparing against internal setups.
+  # Values come from .env so the same profile can be reused for o4-mini-compatible
+  # OpenAI-compatible endpoints. (SA_JUDGE_PROFILE / SA_SUMMARIZER_PROFILE 후보)
+  o4-mini:
+    base_url: ${OPENAI_BASE_URL}
+    model: ${OPENAI_MODEL}
+    auth:
+      mode: api_key
+      api_key: ${OPENAI_API_KEY}
+    proxy: null
+    # 사내 MWG proxy 가 TLS 가로채기(MITM) — verify=True 면 CERTIFICATE_VERIFY_FAILED.
+    # trust_env=true 로 env https_proxy(MWG) 를 타고, verify=false 로 검증 우회(사내 정책).
+    verify_ssl: false
+    timeout: 300
+    trust_env: true
+    reasoning_effort: medium
+
+  llama-4-maverick:
+    base_url: http://apigw.samsungds.net:8000/llama4/1/llama/aiserving/llama-4/maverick/v1
+    model: meta-llama/llama-4-maverick-17b-128e-instruct
+    auth:
+      mode: headers
+    headers:
+      x-dep-ticket: ${OPENAI_CRED_KEY}
+      Send-System-Name: SIEM
+      User-Id: ${SOC_USER_ID}
+      User-Type: ${SOC_USER_ID}
+    proxy: null
+    verify_ssl: false
+    timeout: 300
+    trust_env: false
+    reasoning_effort: high
+
+  gaussO4:
+    base_url: http://apigw.samsungds.net:8000/model-25/1/gausso4-vl/v1
+    model: GaussO4-VL
+    auth:
+      mode: headers
+    headers:
+      x-dep-ticket: ${OPENAI_CRED_KEY}
+      Send-System-Name: SIEM
+      User-Id: ${SOC_USER_ID}
+      User-Type: ${SOC_USER_ID}
+    proxy: null
+    verify_ssl: false
+    timeout: 300
+    trust_env: false
+    reasoning_effort: high
+
+  # v3.32: 사내 vLLM 직접 endpoint — 게이트웨이 헤더 (x-dep-ticket 등) 안 씀.
+  # Qwen3 의 thinking 모드는 비활성화 (chat 응답 지연 + reasoning trace 와 충돌).
+  qwen:
+    base_url: http://12.23.72.66:9810/v1
+    model: Qwen3.5-27B-FP8
+    auth:
+      mode: api_key
+      api_key: dummy
+    proxy: null
+    verify_ssl: false
+    timeout: 600
+    trust_env: false
+    reasoning_effort_supported: false
+    extra_body:
+      chat_template_kwargs:
+        enable_thinking: false
+
+# 은퇴(2026-08-20, 19cde9b): gauss-o32 · gpt-oss · gauss-o41.
+#   되살리려면 git 이력에서 프로필 정의부터 복원해야 한다. 이름만 env 에 써도
+#   `_profile_names_from_env` 가 **조용히 버리고** 사내 기본으로 떨어진다.
+#   (구 `gauss`(GAUSS41_*) 블록도 실물에 없어 함께 제거했다.)

@@ -1,0 +1,49 @@
+✔ agent setup preserves files, creates private identity/config and reopens without a model (80.02375ms)
+✔ status and invalid initialization options do not create files (3.443333ms)
+✔ separate directories get distinct IDs and moving a directory preserves its identity (180.593417ms)
+✔ initialization can finish after a process stops between identity and config publication (128.276833ms)
+✔ missing identity uses explicit repair with the existing config; missing completed config is not reset (120.494083ms)
+✔ completed layout repairs missing directories only with explicit repair and preserves existing state (170.45225ms)
+✔ unknown data without identity is not assigned a new ID (4.630958ms)
+✔ config identity mismatch, unsupported versions and malformed documents are preserved (89.6545ms)
+✔ metadata symlinks and external hard links cannot be used for setup (81.946459ms)
+✔ managed directory links and writable/public metadata are rejected without changing permissions (81.854ms)
+✔ engine overlap and nested agent registration are rejected (95.499167ms)
+✔ CLI first call, status, version and invalid commands expose readiness without claiming runtime execution (450.208791ms)
+✖ separate CLI processes initializing concurrently settle on exactly one identity (304.877708ms)
+✔ two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen (443.359084ms)
+✔ agent work files cannot traverse into engine or another agent and remain separate (484.688667ms)
+✔ copying another agents database is detected by its durable owner before runtime access (275.562ms)
+✔ unowned existing databases are not silently adopted (165.497333ms)
+✔ symlink database and sidecar destinations cannot overwrite another file (79.440792ms)
+✔ configured but not yet connected backend is not replaced by SQLite (118.672042ms)
+✔ CLI resumes across processes, keeps conversation/work identities and separates disconnect, pause and cancel (2847.393083ms)
+✔ CLI human output is reception plus result, with no internal events or ANSI: documents-simple (326.297834ms)
+✔ CLI human output is reception plus result, with no internal events or ANSI: observations-simple (327.957416ms)
+✔ CLI goal changes require an explicit revision and failures have no success JSON on stdout (557.810292ms)
+✔ CLI checkpoint is a derived reference and an old resume file does not reverse a paused work (1292.753458ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5409.818584
+
+✖ failing tests:
+
+test at dist/tests/agent-profile.test.js:213:1
+✖ separate CLI processes initializing concurrently settle on exactly one identity (304.877708ms)
+  Error: ENOTEMPTY, Directory not empty: /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-gSMQqH '/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-gSMQqH'
+      at rmSync (node:fs:1283:18)
+      at Object.close (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-profile.test.js:16:110)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-profile.test.js:223:11)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    errno: 66,
+    code: 'ENOTEMPTY',
+    path: '/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-gSMQqH',
+    syscall: 'rm'
+  }

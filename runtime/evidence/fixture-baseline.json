@@ -1,0 +1,644 @@
+{
+  "createdAt": "2026-09-07T15:12:16.304Z",
+  "node": "v24.20.0",
+  "evaluation": "deterministic_contract_baseline",
+  "passed": true,
+  "scenarios": 4,
+  "checkpoints": 22,
+  "elapsedMs": 10.356417,
+  "actualModelCalls": 0,
+  "actualToolCalls": 0,
+  "actualTokenUsage": null,
+  "results": [
+    {
+      "id": "documents-complex",
+      "family": "document_comparison",
+      "complexity": "complex",
+      "checks": [
+        {
+          "checkpoint": "초기 문서 하나",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "current-period",
+                "met": false,
+                "evidenceIds": [
+                  "doc-a-old"
+                ],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "continue",
+            "action": "reserve",
+            "id": "next-source",
+            "reason": "task_ready"
+          }
+        },
+        {
+          "checkpoint": "늦은 반증",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "current-period",
+                "met": false,
+                "evidenceIds": [
+                  "doc-a-old",
+                  "doc-b"
+                ],
+                "reasons": [
+                  "unresolved_counterevidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "replan",
+            "reason": "plan_cannot_complete_goal"
+          }
+        },
+        {
+          "checkpoint": "타 원본의 대체 주장 거부",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "current-period",
+                "met": false,
+                "evidenceIds": [
+                  "doc-a-old",
+                  "doc-b",
+                  "bad-amendment"
+                ],
+                "reasons": [
+                  "unresolved_counterevidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "continue",
+            "action": "reserve",
+            "id": "next-source",
+            "reason": "task_ready"
+          }
+        },
+        {
+          "checkpoint": "반복 인용은 독립 근거 아님",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "current-period",
+                "met": false,
+                "evidenceIds": [
+                  "doc-b",
+                  "doc-b-copy"
+                ],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "continue",
+            "action": "reserve",
+            "id": "next-source",
+            "reason": "task_ready"
+          }
+        },
+        {
+          "checkpoint": "권한 밖 원본은 답 근거에 포함 불가",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "current-period",
+                "met": false,
+                "evidenceIds": [
+                  "doc-b"
+                ],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "continue",
+            "action": "reserve",
+            "id": "next-source",
+            "reason": "task_ready"
+          }
+        },
+        {
+          "checkpoint": "개정 이력 반영",
+          "passed": true,
+          "result": {
+            "complete": true,
+            "criteria": [
+              {
+                "id": "current-period",
+                "met": true,
+                "evidenceIds": [
+                  "doc-b",
+                  "doc-a-amendment"
+                ],
+                "reasons": []
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "complete",
+            "reason": "criteria_verified"
+          }
+        },
+        {
+          "checkpoint": "답변 대기 의무",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "current-period",
+                "met": true,
+                "evidenceIds": [
+                  "doc-b",
+                  "doc-a-amendment"
+                ],
+                "reasons": []
+              }
+            ],
+            "blockers": [
+              "pending_obligation:owner-reply"
+            ]
+          },
+          "control": {
+            "kind": "wait",
+            "reason": "pending_obligation",
+            "wakeAt": 1788566460000
+          }
+        },
+        {
+          "checkpoint": "사용자가 내보내기 기준 추가",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "current-period",
+                "met": true,
+                "evidenceIds": [
+                  "doc-b",
+                  "doc-a-amendment"
+                ],
+                "reasons": []
+              },
+              {
+                "id": "export-rule",
+                "met": false,
+                "evidenceIds": [],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "replan",
+            "reason": "plan_required"
+          }
+        },
+        {
+          "checkpoint": "변경된 목표에서 부정 답도 유효",
+          "passed": true,
+          "result": {
+            "complete": true,
+            "criteria": [
+              {
+                "id": "current-period",
+                "met": true,
+                "evidenceIds": [
+                  "doc-b",
+                  "doc-a-amendment"
+                ],
+                "reasons": []
+              },
+              {
+                "id": "export-rule",
+                "met": true,
+                "evidenceIds": [
+                  "export-policy"
+                ],
+                "reasons": []
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "complete",
+            "reason": "criteria_verified"
+          }
+        }
+      ]
+    },
+    {
+      "id": "documents-simple",
+      "family": "document_comparison",
+      "complexity": "simple",
+      "checks": [
+        {
+          "checkpoint": "처음에는 자료 없음",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "retention",
+                "met": false,
+                "evidenceIds": [],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "continue",
+            "action": "reserve",
+            "id": "next-source",
+            "reason": "task_ready"
+          }
+        },
+        {
+          "checkpoint": "부분 추출만으로 완료 금지",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "retention",
+                "met": false,
+                "evidenceIds": [],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "continue",
+            "action": "reserve",
+            "id": "next-source",
+            "reason": "task_ready"
+          }
+        },
+        {
+          "checkpoint": "현행 문서 확보",
+          "passed": true,
+          "result": {
+            "complete": true,
+            "criteria": [
+              {
+                "id": "retention",
+                "met": true,
+                "evidenceIds": [
+                  "doc-current"
+                ],
+                "reasons": []
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "complete",
+            "reason": "criteria_verified"
+          }
+        }
+      ]
+    },
+    {
+      "id": "observations-complex",
+      "family": "observation_review",
+      "complexity": "complex",
+      "checks": [
+        {
+          "checkpoint": "변화 관측만 확보",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": true,
+                "evidenceIds": [
+                  "signal"
+                ],
+                "reasons": []
+              },
+              {
+                "id": "approval",
+                "met": false,
+                "evidenceIds": [],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "continue",
+            "action": "reserve",
+            "id": "next-source",
+            "reason": "task_ready"
+          }
+        },
+        {
+          "checkpoint": "변경 기록 조회 대기",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": true,
+                "evidenceIds": [
+                  "signal"
+                ],
+                "reasons": []
+              },
+              {
+                "id": "approval",
+                "met": false,
+                "evidenceIds": [],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": [
+              "pending_obligation:change-record"
+            ]
+          },
+          "control": {
+            "kind": "wait",
+            "reason": "pending_obligation",
+            "wakeAt": 1788566460000
+          }
+        },
+        {
+          "checkpoint": "승인 근거로 대안 확인",
+          "passed": true,
+          "result": {
+            "complete": true,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": true,
+                "evidenceIds": [
+                  "signal"
+                ],
+                "reasons": []
+              },
+              {
+                "id": "approval",
+                "met": true,
+                "evidenceIds": [
+                  "maintenance-ticket"
+                ],
+                "reasons": []
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "complete",
+            "reason": "criteria_verified"
+          }
+        },
+        {
+          "checkpoint": "철회된 근거는 재사용 불가",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": true,
+                "evidenceIds": [
+                  "signal"
+                ],
+                "reasons": []
+              },
+              {
+                "id": "approval",
+                "met": false,
+                "evidenceIds": [],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "continue",
+            "action": "reserve",
+            "id": "next-source",
+            "reason": "task_ready"
+          }
+        },
+        {
+          "checkpoint": "미승인이라는 결론도 완료 가능",
+          "passed": true,
+          "result": {
+            "complete": true,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": true,
+                "evidenceIds": [
+                  "signal"
+                ],
+                "reasons": []
+              },
+              {
+                "id": "approval",
+                "met": true,
+                "evidenceIds": [
+                  "denied-ticket"
+                ],
+                "reasons": []
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "complete",
+            "reason": "criteria_verified"
+          }
+        },
+        {
+          "checkpoint": "외부 효과가 불명확하면 완료 보류",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": true,
+                "evidenceIds": [
+                  "signal"
+                ],
+                "reasons": []
+              },
+              {
+                "id": "approval",
+                "met": true,
+                "evidenceIds": [
+                  "maintenance-ticket"
+                ],
+                "reasons": []
+              }
+            ],
+            "blockers": [
+              "pending_obligation:effect-check"
+            ]
+          },
+          "control": {
+            "kind": "blocked",
+            "reason": "effect_unknown"
+          }
+        },
+        {
+          "checkpoint": "사용자 취소 뒤 미완료 의무 보존",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": true,
+                "evidenceIds": [
+                  "signal"
+                ],
+                "reasons": []
+              },
+              {
+                "id": "approval",
+                "met": false,
+                "evidenceIds": [],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": [
+              "pending_obligation:cancellation-reconcile"
+            ]
+          },
+          "control": {
+            "kind": "cancelled",
+            "reason": "user_cancelled"
+          }
+        }
+      ]
+    },
+    {
+      "id": "observations-simple",
+      "family": "observation_review",
+      "complexity": "simple",
+      "checks": [
+        {
+          "checkpoint": "조회 오류로 자료가 없음",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": false,
+                "evidenceIds": [],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "blocked",
+            "reason": "tool_budget_exhausted"
+          }
+        },
+        {
+          "checkpoint": "페이지 일부만 수집",
+          "passed": true,
+          "result": {
+            "complete": false,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": false,
+                "evidenceIds": [],
+                "reasons": [
+                  "insufficient_independent_evidence"
+                ]
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "continue",
+            "action": "reserve",
+            "id": "next-source",
+            "reason": "task_ready"
+          }
+        },
+        {
+          "checkpoint": "범위 수집 완료",
+          "passed": true,
+          "result": {
+            "complete": true,
+            "criteria": [
+              {
+                "id": "coverage",
+                "met": true,
+                "evidenceIds": [
+                  "collection-complete"
+                ],
+                "reasons": []
+              }
+            ],
+            "blockers": []
+          },
+          "control": {
+            "kind": "complete",
+            "reason": "criteria_verified"
+          }
+        }
+      ]
+    }
+  ]
+}

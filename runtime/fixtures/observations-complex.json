@@ -1,0 +1,488 @@
+{
+  "id": "observations-complex",
+  "family": "observation_review",
+  "complexity": "complex",
+  "description": "합성 자산의 관측 변화와 변경 기록을 대조한다. 실제 네트워크 접속이나 조치는 없다.",
+  "synthetic": true,
+  "policy": {
+    "tenantId": "synthetic",
+    "principalId": "learner",
+    "allowedTools": [
+      "fixture.read"
+    ],
+    "allowedLabels": [
+      "synthetic",
+      "public"
+    ],
+    "allowedDestinations": [
+      "local"
+    ],
+    "allowWrites": false
+  },
+  "goal": {
+    "revision": 1,
+    "description": "관측 변화의 승인 여부를 근거로 판단하고 수집 범위를 확인해줘",
+    "scope": "obs-complex",
+    "mode": "auto",
+    "criteria": [
+      {
+        "id": "coverage",
+        "description": "근거로 collection.complete 확인",
+        "key": "collection.complete",
+        "operator": "equals",
+        "equals": true,
+        "minIndependentSources": 1,
+        "requireCompleteCoverage": true
+      },
+      {
+        "id": "approval",
+        "description": "근거로 change.approved 확인",
+        "key": "change.approved",
+        "operator": "present",
+        "equals": null,
+        "minIndependentSources": 1,
+        "requireCompleteCoverage": true
+      }
+    ]
+  },
+  "hypotheses": [
+    {
+      "id": "unapproved-change",
+      "question": "관측 차이를 무엇으로 설명할 수 있는가?",
+      "claim": "미승인 변경 가능성",
+      "predictedObservation": "정합한 변경 기록이 없음",
+      "falsifier": "관측 범위와 일치하는 승인 기록 존재",
+      "status": "open",
+      "supportIds": [
+        "signal"
+      ],
+      "counterIds": [],
+      "reason": "검증 전 잠정 설명"
+    },
+    {
+      "id": "planned-maintenance",
+      "question": "관측 차이를 무엇으로 설명할 수 있는가?",
+      "claim": "계획된 유지보수 가능성",
+      "predictedObservation": "시간/대상이 일치하는 변경 기록 존재",
+      "falsifier": "승인 범위와 관측 대상이 다름",
+      "status": "open",
+      "supportIds": [],
+      "counterIds": [],
+      "reason": "검증 전 잠정 설명"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "signal",
+      "tenantId": "synthetic",
+      "scope": "obs-complex",
+      "sourceId": "signal",
+      "lineageId": "signal",
+      "locator": "fixture://signal",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "collection.complete": true,
+        "volume.changed": true
+      },
+      "artifact": null
+    },
+    {
+      "id": "maintenance-ticket",
+      "tenantId": "synthetic",
+      "scope": "obs-complex",
+      "sourceId": "maintenance-ticket",
+      "lineageId": "maintenance-ticket",
+      "locator": "fixture://maintenance-ticket",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "change.approved": true
+      },
+      "artifact": null
+    },
+    {
+      "id": "revoked-ticket",
+      "tenantId": "synthetic",
+      "scope": "obs-complex",
+      "sourceId": "revoked-ticket",
+      "lineageId": "revoked-ticket",
+      "locator": "fixture://revoked-ticket",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "retracted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "change.approved": true
+      },
+      "artifact": null
+    },
+    {
+      "id": "denied-ticket",
+      "tenantId": "synthetic",
+      "scope": "obs-complex",
+      "sourceId": "denied-ticket",
+      "lineageId": "denied-ticket",
+      "locator": "fixture://denied-ticket",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "change.approved": false
+      },
+      "artifact": null
+    }
+  ],
+  "checkpoints": [
+    {
+      "name": "변화 관측만 확보",
+      "evidenceIds": [
+        "signal"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "continue",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "signal"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "변경 기록 조회 대기",
+      "evidenceIds": [
+        "signal"
+      ],
+      "obligations": [
+        {
+          "id": "change-record",
+          "kind": "evidence",
+          "reason": "완료 전에 확인할 응답 또는 효과",
+          "status": "pending",
+          "wakeKey": "change-record",
+          "dueAt": 1788566460000
+        }
+      ],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "pending_obligation:change-record"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "wait",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "signal"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "승인 근거로 대안 확인",
+      "evidenceIds": [
+        "signal",
+        "maintenance-ticket"
+      ],
+      "obligations": [],
+      "expectedComplete": true,
+      "expectedReasons": [],
+      "expectedEvidenceIds": [
+        "maintenance-ticket"
+      ],
+      "goalOverride": null,
+      "expectedControl": "complete",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "signal"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "철회된 근거는 재사용 불가",
+      "evidenceIds": [
+        "signal",
+        "revoked-ticket"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "continue",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "signal"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "미승인이라는 결론도 완료 가능",
+      "evidenceIds": [
+        "signal",
+        "denied-ticket"
+      ],
+      "obligations": [],
+      "expectedComplete": true,
+      "expectedReasons": [],
+      "expectedEvidenceIds": [
+        "denied-ticket"
+      ],
+      "goalOverride": null,
+      "expectedControl": "complete",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "signal"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "외부 효과가 불명확하면 완료 보류",
+      "evidenceIds": [
+        "signal",
+        "maintenance-ticket"
+      ],
+      "obligations": [
+        {
+          "id": "effect-check",
+          "kind": "effect_reconciliation",
+          "reason": "완료 전에 확인할 응답 또는 효과",
+          "status": "pending",
+          "wakeKey": "effect-check",
+          "dueAt": 1788566460000
+        }
+      ],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "pending_obligation:effect-check"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "blocked",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "signal"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "사용자 취소 뒤 미완료 의무 보존",
+      "evidenceIds": [
+        "signal"
+      ],
+      "obligations": [
+        {
+          "id": "cancellation-reconcile",
+          "kind": "effect_reconciliation",
+          "reason": "완료 전에 확인할 응답 또는 효과",
+          "status": "pending",
+          "wakeKey": "cancellation-reconcile",
+          "dueAt": 1788566460000
+        }
+      ],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "pending_obligation:cancellation-reconcile"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "cancelled",
+      "execution": {
+        "at": 1788566400000,
+        "status": "cancelled",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "signal"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    }
+  ]
+}

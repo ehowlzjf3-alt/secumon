@@ -1,0 +1,136 @@
+# M3.4 §3-8 claim-lock 실검증 스캐폴딩 — 2개 워커 파드가 threat_hunter의 동일 share를 두고 경합할 때
+# state_domain claim-lock으로 중복 점검(task)이 없음을 실검증한다. 엔진+스킬 무수정, §6 런타임 강제.
+#
+# 【사전 준비 — 사용자】 자격증명 Secret은 안전상 사용자님이 직접 생성(값은 Claude가 안 봄):
+#   NS=de-claim
+#   kubectl create ns $NS 2>/dev/null
+#   kubectl label ns $NS pod-security.kubernetes.io/enforce=restricted --overwrite
+#   # ★ 06ca136 이후 이미지에는 .env 가 없다. 예전엔 baked /skill/.env 가 런타임에 38키를 먹여줬으므로
+#   #   engine/.env 만 넣으면 skill 쪽 32키(splunk MCP·메일 egress·SMB_HUNT_*…)가 조용히 사라진다.
+#   #   runtime-env.sh 가 skill+engine 을 코어와 같은 우선순위로 합치고, 따옴표를 벗기고(kubectl 도
+#   #   docker 도 안 벗긴다 → SMB auth 조용한 실패), 컨테이너에서 깨지는 호스트경로 키를 빼준다.
+#   ENVFILE=$(deploy/engine/runtime-env.sh)          # 값은 Claude 컨텍스트에 안 들어옴
+#   # DSN host는 파드에서 못 닿는 localhost 대신 **172.30.0.1**(kind 게이트웨이=호스트) 로 override:
+#   kubectl -n $NS create secret generic engine-creds \
+#     --from-env-file="$ENVFILE" \
+#     --from-literal=SECU_AGENT_PG_DSN='postgresql://<USER>:<PASS>@172.30.0.1:5432/threat_hunter'
+#   shred -u "$ENVFILE"
+#   (SMB_HOST/타깃도 .env 기준. 로컬 SMB는 파드에서 172.30.0.1:445 로 접근되도록 스킬 타깃 설정 확인.)
+#   # 이미지 pull secret(Harbor private, 값=로봇토큰 Claude 미열람):
+#   kubectl -n $NS create secret docker-registry harbor-pull \
+#     --docker-server=harbor.security.samsungds.net \
+#     --docker-username='robot$digital-employee+digital-employee' --docker-password="$HARBOR_TOKEN"
+#
+# 【실행 — 사용자 확인 하에】 아래 파드의 command(도메인 fanout task)는 threat_hunter/스킬 설정에 맞게
+# 사용자님이 지정. 예: ["task","<smb 도메인 점검 goal>"]. 실 LLM·SMB 접속(§6 읽기전용) 발생 = 실행 승인 필요.
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: de-claim
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+    app.kubernetes.io/managed-by: digisecu-smoke
+---
+# deny-all + egress-allow: DNS + 호스트(threat_hunter 5432·SMB 445) + 사내 프록시(LLM egress).
+# FQDN(직접 LLM 도메인) 정밀 허용은 vanilla NetworkPolicy 한계 → 프록시 IP만 허용(§6 egress-allowlist 유지).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: de-claim-deny-all, namespace: de-claim }
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: de-claim-egress-allow, namespace: de-claim }
+spec:
+  podSelector: { matchLabels: { runtime.digisecu.local/role: employee } }
+  policyTypes: [Egress]
+  egress:
+    - to: # DNS
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: kube-system } }
+          podSelector: { matchLabels: { k8s-app: kube-dns } }
+      ports: [{ protocol: UDP, port: 53 }, { protocol: TCP, port: 53 }]
+    - to: # 호스트(kind 게이트웨이) = threat_hunter DB + 로컬 SMB
+        - ipBlock: { cidr: 172.30.0.1/32 }
+      ports: [{ protocol: TCP, port: 5432 }, { protocol: TCP, port: 445 }, { protocol: TCP, port: 139 }]
+    - to: # 사내 프록시(LLM egress). LLM이 프록시 경유가 아니면 사용자님이 대상 CIDR 조정.
+        - ipBlock: { cidr: 12.26.204.100/32 }
+      ports: [{ protocol: TCP, port: 8080 }]
+---
+# 워커 파드 2개(동일 도메인 fanout → 동일 share pool claim 경합). 하드닝·§6 안전 env.
+# command는 사용자님이 도메인 점검 task로 지정(placeholder=doctor로 두어 기본은 안전 no-op).
+apiVersion: v1
+kind: Pod
+metadata: { name: claim-worker-a, namespace: de-claim, labels: { runtime.digisecu.local/role: employee, claim-test: "a" } }
+spec:
+  automountServiceAccountToken: false
+  restartPolicy: Never
+  imagePullSecrets: [{ name: harbor-pull }] # Harbor(private) pull — 사용자가 de-claim ns 에 생성
+  securityContext: { runAsNonRoot: true, runAsUser: 10001, seccompProfile: { type: RuntimeDefault } }
+  containers:
+    - name: engine
+      image: harbor.security.samsungds.net/digital-employee/engine-worker:smoke
+      imagePullPolicy: IfNotPresent
+      args: ["doctor"] # ← 사용자: ["task","<smb 점검 task goal>"] 등으로 교체(실행 승인 하에)
+      envFrom: [{ secretRef: { name: engine-creds } }]
+      env:
+        - { name: SA_SCHEDULER, value: "off" }
+        - { name: SA_WEB_REQUIRE_SCOPE, value: "true" }
+        - { name: SA_SKILLS_DIRS, value: /skill/domains/smb/skills } # 도메인 TaskPlan 로드(미설정=능력 0)
+        - { name: SA_ENGINE_DIR, value: /app } # 이미지 내 엔진 루트(config/llm_profiles.yaml 이 여기)
+        - { name: XDG_CACHE_HOME, value: /home/engine/.cache }
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 10001
+        capabilities: { drop: ["ALL"] }
+        seccompProfile: { type: RuntimeDefault }
+      volumeMounts:
+        - { name: results, mountPath: /results }
+        - { name: tmp, mountPath: /tmp }
+        - { name: home, mountPath: /home/engine }
+  volumes:
+    - { name: results, emptyDir: { sizeLimit: 1Gi } }
+    - { name: tmp, emptyDir: { sizeLimit: 512Mi } }
+    - { name: home, emptyDir: { sizeLimit: 512Mi } }
+---
+apiVersion: v1
+kind: Pod
+metadata: { name: claim-worker-b, namespace: de-claim, labels: { runtime.digisecu.local/role: employee, claim-test: "b" } }
+spec:
+  automountServiceAccountToken: false
+  restartPolicy: Never
+  imagePullSecrets: [{ name: harbor-pull }] # Harbor(private) pull — 사용자가 de-claim ns 에 생성
+  securityContext: { runAsNonRoot: true, runAsUser: 10001, seccompProfile: { type: RuntimeDefault } }
+  containers:
+    - name: engine
+      image: harbor.security.samsungds.net/digital-employee/engine-worker:smoke
+      imagePullPolicy: IfNotPresent
+      args: ["doctor"] # ← 사용자: worker-a와 동일 goal로 교체(동일 share pool 경합 유도)
+      envFrom: [{ secretRef: { name: engine-creds } }]
+      env:
+        - { name: SA_SCHEDULER, value: "off" }
+        - { name: SA_WEB_REQUIRE_SCOPE, value: "true" }
+        - { name: SA_SKILLS_DIRS, value: /skill/domains/smb/skills } # 도메인 TaskPlan 로드(미설정=능력 0)
+        - { name: SA_ENGINE_DIR, value: /app } # 이미지 내 엔진 루트(config/llm_profiles.yaml 이 여기)
+        - { name: XDG_CACHE_HOME, value: /home/engine/.cache }
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 10001
+        capabilities: { drop: ["ALL"] }
+        seccompProfile: { type: RuntimeDefault }
+      volumeMounts:
+        - { name: results, mountPath: /results }
+        - { name: tmp, mountPath: /tmp }
+        - { name: home, mountPath: /home/engine }
+  volumes:
+    - { name: results, emptyDir: { sizeLimit: 1Gi } }
+    - { name: tmp, emptyDir: { sizeLimit: 512Mi } }
+    - { name: home, emptyDir: { sizeLimit: 512Mi } }

@@ -1,0 +1,13 @@
+name: smoke_greeting
+description: |
+  에이전트에이전트 단순 인사 — 도구 호출 없이 text-only 응답 끝.
+  eval harness 자체가 살아있는지 확인하는 smoke 테스트.
+task_type: operator
+user_input: "안녕"
+script:
+  - text: "안녕하세요. 에이전트에이전트입니다. 어떤 task 를 도와드릴까요?"
+expectations:
+  tools_called: []
+  final_text_contains: ["에이전트에이전트"]
+  final_text_not_contains: ["error", "panic"]
+  max_turns: 2

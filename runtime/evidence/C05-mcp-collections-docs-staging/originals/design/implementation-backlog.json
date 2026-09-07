@@ -1,0 +1,4422 @@
+{
+  "revision": "v0.66",
+  "kind": "implementation_tracking",
+  "phase_order": [
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6"
+  ],
+  "phases": [
+    {
+      "id": "P0",
+      "title": "계약·합성 기준선·구현 선택",
+      "exit_intent": "외부 명세 미확인은 대역과 의존 조건으로 기록하고 코어 진행을 막지 않음",
+      "status": "verified",
+      "work_items": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04"
+      ]
+    },
+    {
+      "id": "P1",
+      "title": "저장소 독립적인 최소 코어",
+      "exit_intent": "첫 요청의 접수·계획/가설·실행·근거·재개·답변을 하나로 검증",
+      "status": "in_progress",
+      "work_items": [
+        "P1-01",
+        "P1-02",
+        "P1-03",
+        "P1-04",
+        "P1-05",
+        "P1-06",
+        "P1-07"
+      ]
+    },
+    {
+      "id": "P2",
+      "title": "기억·컨텍스트·효율·경계",
+      "exit_intent": "저장소 교체와 반복 compact 뒤에도 품질/의무/권한 유지",
+      "status": "in_progress",
+      "work_items": [
+        "P2-01",
+        "P2-02",
+        "P2-03",
+        "P2-04",
+        "P2-05",
+        "P2-06"
+      ]
+    },
+    {
+      "id": "P3",
+      "title": "단일 에이전트 도구·채널·컴퓨터 유즈",
+      "exit_intent": "실제 adapter 계약과 조용한 CLI/Web/Knox, 선택 GUI 경로 검증",
+      "status": "in_progress",
+      "work_items": [
+        "P3-01",
+        "P3-02",
+        "P3-03",
+        "P3-04",
+        "P3-05"
+      ]
+    },
+    {
+      "id": "P4",
+      "title": "협업·A2A·상시 임무",
+      "exit_intent": "두 역할의 근거 결합·비용 통제·사건 기반 재개",
+      "status": "not_started",
+      "work_items": [
+        "P4-01",
+        "P4-02",
+        "P4-03",
+        "P4-04"
+      ]
+    },
+    {
+      "id": "P5",
+      "title": "범용 업무 배치·변경 관리",
+      "exit_intent": "같은 코어의 두 업무 모듈과 검토된 bundle 배치",
+      "status": "not_started",
+      "work_items": [
+        "P5-01",
+        "P5-02"
+      ]
+    },
+    {
+      "id": "P6",
+      "title": "복원·시범·운영",
+      "exit_intent": "보존/복구/용량/권한·효과 대조를 확인하고 제한된 도입",
+      "status": "not_started",
+      "work_items": [
+        "P6-01",
+        "P6-02",
+        "P6-03"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R01",
+      "title": "범용 코어와 두 업무군 검증",
+      "design_docs": [
+        "design/02-target-design.md",
+        "design/08-core-framework.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-01",
+        "P1-01",
+        "P1-07",
+        "P2-05",
+        "P4-01",
+        "P5-01",
+        "P6-02"
+      ],
+      "execution_chapters": [
+        "C04",
+        "C06",
+        "C08"
+      ]
+    },
+    {
+      "id": "R02",
+      "title": "TypeScript 중심/Python 없는 신규 제품 비교와 선택 Rust",
+      "design_docs": [
+        "design/06-language-and-migration.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "verified",
+      "work_items": [
+        "P0-03",
+        "P1-01"
+      ],
+      "execution_chapters": [
+        "C01"
+      ]
+    },
+    {
+      "id": "R03",
+      "title": "기존 도구·계약·fixture 재사용 판정",
+      "design_docs": [
+        "design/01-current-analysis.md",
+        "design/13-tool-catalog.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-04",
+        "P2-04",
+        "P3-01",
+        "P3-04",
+        "P5-01",
+        "P6-03"
+      ],
+      "execution_chapters": [
+        "C05",
+        "C10"
+      ]
+    },
+    {
+      "id": "R04",
+      "title": "저장소 독립성과 두 영속 구현의 교체 검증",
+      "design_docs": [
+        "design/16-storage-and-recovery.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-02",
+        "P0-03",
+        "P1-01",
+        "P1-02",
+        "P2-01",
+        "P2-05",
+        "P6-01"
+      ],
+      "execution_chapters": [
+        "C01",
+        "C03",
+        "C07",
+        "C10"
+      ]
+    },
+    {
+      "id": "R05",
+      "title": "goal/state·planner·validator·task graph·실행·상태 갱신·완료",
+      "design_docs": [
+        "design/08-core-framework.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-01",
+        "P0-02",
+        "P1-03",
+        "P1-06",
+        "P1-07"
+      ],
+      "execution_chapters": [
+        "C02",
+        "C04"
+      ]
+    },
+    {
+      "id": "R06",
+      "title": "가설·지지/반증·판별 질문·근거 기반 재계획",
+      "design_docs": [
+        "design/08-core-framework.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-01",
+        "P1-06",
+        "P1-07",
+        "P2-02",
+        "P4-01",
+        "P4-04"
+      ],
+      "execution_chapters": [
+        "C04",
+        "C08"
+      ]
+    },
+    {
+      "id": "R07",
+      "title": "내구성·중복 방지·대기·취소·unknown 효과",
+      "design_docs": [
+        "design/08-core-framework.md",
+        "design/16-storage-and-recovery.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-02",
+        "P1-02",
+        "P1-03",
+        "P1-05",
+        "P1-07",
+        "P2-01",
+        "P3-01",
+        "P3-03",
+        "P3-04",
+        "P3-05",
+        "P4-02",
+        "P4-03",
+        "P6-01",
+        "P6-03"
+      ],
+      "execution_chapters": [
+        "C02",
+        "C04",
+        "C09",
+        "C10"
+      ]
+    },
+    {
+      "id": "R08",
+      "title": "도구 호출 장부·재사용·batch·동시성·오류/비용",
+      "design_docs": [
+        "design/09-tools-memory-methods.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P1-04",
+        "P2-04",
+        "P2-05",
+        "P3-01"
+      ],
+      "execution_chapters": [
+        "C05"
+      ]
+    },
+    {
+      "id": "R09",
+      "title": "도구 카탈로그·검색·선택 로딩·버전·폐기",
+      "design_docs": [
+        "design/13-tool-catalog.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-04",
+        "P1-04",
+        "P2-03",
+        "P2-04",
+        "P3-01"
+      ],
+      "execution_chapters": [
+        "C05"
+      ]
+    },
+    {
+      "id": "R10",
+      "title": "개인/조직 기억·직접 조회·검색·정정/삭제",
+      "design_docs": [
+        "design/09-tools-memory-methods.md",
+        "design/16-storage-and-recovery.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P1-04",
+        "P2-02",
+        "P4-01",
+        "P4-03"
+      ],
+      "execution_chapters": [
+        "C03",
+        "C05",
+        "C07"
+      ]
+    },
+    {
+      "id": "R11",
+      "title": "compact·snapshot·재개 packet·필수 정보 보존",
+      "design_docs": [
+        "design/08-core-framework.md",
+        "design/15-context-lifecycle.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P1-07",
+        "P2-03",
+        "P2-05"
+      ],
+      "execution_chapters": [
+        "C02",
+        "C05"
+      ]
+    },
+    {
+      "id": "R12",
+      "title": "미사용 도구/내용 정리·재로딩·컨텍스트 예산",
+      "design_docs": [
+        "design/15-context-lifecycle.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P2-03",
+        "P2-04",
+        "P2-05"
+      ],
+      "execution_chapters": [
+        "C02",
+        "C05"
+      ]
+    },
+    {
+      "id": "R13",
+      "title": "skill·방법론·역할 배치와 버전 관리",
+      "design_docs": [
+        "design/09-tools-memory-methods.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-04",
+        "P1-04",
+        "P2-03",
+        "P2-04",
+        "P4-01",
+        "P5-01",
+        "P5-02"
+      ],
+      "execution_chapters": [
+        "C05",
+        "C06"
+      ]
+    },
+    {
+      "id": "R14",
+      "title": "모델 gateway·자동/빠르게/깊게·예산·무진전 제어",
+      "design_docs": [
+        "design/11-execution-modes.md",
+        "design/14-scope-and-priorities.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-03",
+        "P1-03",
+        "P1-06",
+        "P2-05",
+        "P3-05",
+        "P4-04",
+        "P6-02"
+      ],
+      "execution_chapters": [
+        "C02",
+        "C04",
+        "C08"
+      ]
+    },
+    {
+      "id": "R15",
+      "title": "사람 대화 역할·조용한 CLI/Web/Knox·전달 복구",
+      "design_docs": [
+        "design/07-conversation-agent.md",
+        "design/10-chat-and-channels.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-04",
+        "P1-05",
+        "P1-07",
+        "P3-02",
+        "P3-03",
+        "P3-05",
+        "P5-01",
+        "P6-02"
+      ],
+      "execution_chapters": [
+        "C02",
+        "C06"
+      ]
+    },
+    {
+      "id": "R16",
+      "title": "컴퓨터 유즈 관찰/행동/확인·세션·묶음·효율",
+      "design_docs": [
+        "design/12-computer-use-tools.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-04",
+        "P2-04",
+        "P3-04",
+        "P3-05"
+      ],
+      "execution_chapters": [
+        "C05"
+      ]
+    },
+    {
+      "id": "R17",
+      "title": "담당 에이전트·게시판·공유 근거·협업 제어",
+      "design_docs": [
+        "design/02-target-design.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "not_started",
+      "work_items": [
+        "P4-01",
+        "P4-02",
+        "P4-03",
+        "P4-04"
+      ],
+      "execution_chapters": [
+        "C07",
+        "C08",
+        "C09"
+      ]
+    },
+    {
+      "id": "R18",
+      "title": "A2A·예약/사건 기반 재개·상시 관찰",
+      "design_docs": [
+        "design/02-target-design.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-04",
+        "P4-02",
+        "P4-03",
+        "P4-04"
+      ],
+      "execution_chapters": [
+        "C09"
+      ]
+    },
+    {
+      "id": "R19",
+      "title": "리드 원문 접근 대안·인증·권한·목적지·자료 경계",
+      "design_docs": [
+        "design/05-data-boundary-options.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-02",
+        "P1-04",
+        "P1-06",
+        "P2-02",
+        "P2-06",
+        "P3-01",
+        "P3-03",
+        "P3-04",
+        "P3-05",
+        "P4-02",
+        "P5-02",
+        "P6-01",
+        "P6-02"
+      ],
+      "execution_chapters": [
+        "C03",
+        "C06",
+        "C07",
+        "C08",
+        "C10"
+      ]
+    },
+    {
+      "id": "R20",
+      "title": "artifact·작업 공간·저장 원자성·백업/복원",
+      "design_docs": [
+        "design/16-storage-and-recovery.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-02",
+        "P1-02",
+        "P2-01",
+        "P2-02",
+        "P2-06",
+        "P5-02",
+        "P6-01",
+        "P6-03"
+      ],
+      "execution_chapters": [
+        "C01",
+        "C03",
+        "C10"
+      ]
+    },
+    {
+      "id": "R21",
+      "title": "진단 manifest·replay·품질/성능/회귀 평가",
+      "design_docs": [
+        "design/14-scope-and-priorities.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P0-01",
+        "P0-03",
+        "P1-01",
+        "P1-06",
+        "P1-07",
+        "P2-05",
+        "P2-06",
+        "P3-02",
+        "P3-05",
+        "P4-04",
+        "P6-01",
+        "P6-02"
+      ],
+      "execution_chapters": [
+        "C04",
+        "C05",
+        "C09",
+        "C10"
+      ]
+    },
+    {
+      "id": "R22",
+      "title": "배포 bundle·변경 승격·운영 용량·rollback",
+      "design_docs": [
+        "design/14-scope-and-priorities.md",
+        "design/16-storage-and-recovery.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "not_started",
+      "work_items": [
+        "P5-01",
+        "P5-02",
+        "P6-01",
+        "P6-02",
+        "P6-03"
+      ],
+      "execution_chapters": [
+        "C01",
+        "C06",
+        "C10"
+      ]
+    },
+    {
+      "id": "R23",
+      "title": "담당 디렉터리·지속 ID·최초 설정과 설치형 배치",
+      "design_docs": [
+        "design/chapters/workspace-agent-defaults.md",
+        "design/chapters/installation-and-versioning.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P1-01",
+        "P2-01",
+        "P2-02",
+        "P3-02",
+        "P5-01",
+        "P2-03",
+        "P2-06",
+        "P3-03",
+        "P3-05",
+        "P5-02",
+        "P6-01",
+        "P6-02",
+        "P6-03"
+      ],
+      "execution_chapters": [
+        "C01",
+        "C03",
+        "C06",
+        "C10"
+      ]
+    },
+    {
+      "id": "R24",
+      "title": "작업 간 지속 세션과 담당별 문맥·기억 격리",
+      "design_docs": [
+        "design/chapters/workspace-agent-defaults.md",
+        "design/chapters/agent-lifecycle-and-memory-boundaries.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "not_started",
+      "work_items": [
+        "P1-05",
+        "P1-07",
+        "P2-03",
+        "P2-05",
+        "P2-01",
+        "P2-02",
+        "P2-06",
+        "P3-02",
+        "P3-03",
+        "P3-05",
+        "P5-01"
+      ],
+      "execution_chapters": [
+        "C02",
+        "C03",
+        "C06"
+      ]
+    },
+    {
+      "id": "R25",
+      "title": "범용 메인 프롬프트·자체/독립 반론·실제 판단 품질",
+      "design_docs": [
+        "design/chapters/prompt-generality-review.md",
+        "design/chapters/reasoning-critique-proposal.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "in_progress",
+      "work_items": [
+        "P1-03",
+        "P1-04",
+        "P1-06",
+        "P1-07",
+        "P2-05",
+        "P4-01",
+        "P4-04",
+        "P2-06"
+      ],
+      "execution_chapters": [
+        "C04",
+        "C08"
+      ],
+      "implementation_note": {
+        "implemented": "범용 메인 프롬프트·주턴 답변/질문/계획·모델 자체 검토와 복합 반증/부분 재계획을 기존 코어에 연결하고 합성 제공자로 검증했다.",
+        "remaining": "독립 반론 에이전트는 C08에 남으며 실제 모델 판단·의미 보존·응답 품질은 API 시험 중단으로 미검증이다. 자체 검토는 독립 근거가 아니다.",
+        "evidence": [
+          "design/chapters/C04-general-turn-result.md",
+          "design/chapters/C04-complex-turn-result.md",
+          "design/chapters/C04-goal-change-result.md"
+        ],
+        "status": "partial_implementation_not_whole_requirement_complete"
+      }
+    },
+    {
+      "id": "R26",
+      "title": "선택 게시판·아카이브와 조회/개인 기억 등록 분리",
+      "design_docs": [
+        "design/chapters/agent-lifecycle-and-memory-boundaries.md",
+        "design/chapters/P4-design-reconciliation.md"
+      ],
+      "design_status": "documented",
+      "implementation_status": "not_started",
+      "work_items": [
+        "P2-01",
+        "P2-02",
+        "P2-03",
+        "P2-06",
+        "P4-01"
+      ],
+      "execution_chapters": [
+        "C03",
+        "C07"
+      ]
+    }
+  ],
+  "work_items": [
+    {
+      "id": "P0-01",
+      "phase": "P0",
+      "title": "대표 업무와 합성 기준선",
+      "status": "verified",
+      "depends_on": [],
+      "outcome": "공개 문서 비교와 합성 관측 검토의 목표·완료 조건·반증·대기·실패 fixture를 정의한다.",
+      "acceptance": [
+        "단순/복잡한 업무를 같은 범용 개념으로 표현",
+        "초기 성공·잘못된 완료·비용/지연 측정 기준을 기록"
+      ],
+      "requirements": [
+        "R01",
+        "R05",
+        "R06",
+        "R21"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P0-verification.json",
+        "chapter": "design/chapters/P0-result.md",
+        "scope": "contract_baseline_and_implementation_choice"
+      },
+      "reconciliation_chapters": [
+        "C04"
+      ]
+    },
+    {
+      "id": "P0-02",
+      "phase": "P0",
+      "title": "코어·저장·정책의 최소 계약",
+      "status": "verified",
+      "depends_on": [
+        "P0-01"
+      ],
+      "outcome": "상태/근거/계획·저장 포트·모델/도구 결과·사용자 입력·예산·정보 경계의 최소 계약을 정의한다.",
+      "acceptance": [
+        "상태/사건/의무의 원자적 커밋 경계와 부분 실패 의미 명시",
+        "SQL/ORM이 없는 계약, id/revision·시각·오류·부분 결과 fixture"
+      ],
+      "requirements": [
+        "R04",
+        "R05",
+        "R07",
+        "R19",
+        "R20"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P0-verification.json",
+        "chapter": "design/chapters/P0-result.md",
+        "scope": "contract_baseline_and_implementation_choice"
+      },
+      "reconciliation_chapters": [
+        "C01"
+      ]
+    },
+    {
+      "id": "P0-03",
+      "phase": "P0",
+      "title": "구현 기준과 짧은 적합성 결정",
+      "status": "verified",
+      "depends_on": [
+        "P0-02"
+      ],
+      "outcome": "언어·실행 관리자·첫 영속 adapter·모델 adapter·지원 버전을 비교해 첫 구현의 ADR을 남긴다.",
+      "acceptance": [
+        "TS/Python 없는 제품 범위와 외부 서비스 의존성을 구분",
+        "작은 복구/대기 시나리오로 후보를 평가하고 제품 경로 하나 선택"
+      ],
+      "requirements": [
+        "R02",
+        "R04",
+        "R14",
+        "R21"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P0-verification.json",
+        "chapter": "design/chapters/P0-result.md",
+        "scope": "contract_baseline_and_implementation_choice"
+      },
+      "reconciliation_chapters": [
+        "C01"
+      ]
+    },
+    {
+      "id": "P0-04",
+      "phase": "P0",
+      "title": "재사용 후보와 외부 계약 목록",
+      "status": "verified",
+      "depends_on": [
+        "P0-01"
+      ],
+      "outcome": "첫 업무에 필요한 도구·지침만 선별하고 유지/재구현/기존 MCP 연결의 근거를 기록한다.",
+      "acceptance": [
+        "정적 160개 선언 중 테스트 40개와 후보 120개를 구분",
+        "Knox/SIEM/EDR/OS 계약의 확인/미확인과 대역을 기록; 명세 부재를 구현된 기능으로 표시하지 않음"
+      ],
+      "requirements": [
+        "R03",
+        "R09",
+        "R13",
+        "R15",
+        "R16",
+        "R18"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P0-verification.json",
+        "chapter": "design/chapters/P0-result.md",
+        "scope": "contract_baseline_and_implementation_choice"
+      },
+      "reconciliation_chapters": [
+        "C05"
+      ]
+    },
+    {
+      "id": "P1-01",
+      "phase": "P1",
+      "title": "코어 구성과 대역",
+      "status": "verified",
+      "depends_on": [
+        "P0-02",
+        "P0-03"
+      ],
+      "outcome": "코어와 바깥 adapter의 주입 경계, schema 검증, fake model/tool/clock/sink를 만든다.",
+      "acceptance": [
+        "DB/ORM/채널 SDK 없이 코어 규칙 시험 가능",
+        "두 업무군 fixture를 같은 도메인 타입으로 읽음"
+      ],
+      "requirements": [
+        "R01",
+        "R02",
+        "R04",
+        "R21"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P1-foundation-verification.json",
+        "scope": "core_ports_and_injected_doubles"
+      },
+      "reconciliation_chapters": [
+        "C01"
+      ]
+    },
+    {
+      "id": "P1-02",
+      "phase": "P1",
+      "title": "영속 상태·원본·장부",
+      "status": "verified",
+      "depends_on": [
+        "P1-01"
+      ],
+      "outcome": "첫 영속 adapter와 artifact backend에 상태/사건/실행 의도/결과·outbox를 저장한다.",
+      "acceptance": [
+        "상태/사건 동시 커밋과 요청/결과 중복 방지",
+        "원본 저장-DB 참조 사이 장애·깨진 참조·재시작 처리"
+      ],
+      "requirements": [
+        "R04",
+        "R07",
+        "R20"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P1-foundation-verification.json",
+        "scope": "state_artifact_intent_result_storage"
+      },
+      "reconciliation_chapters": [
+        "C01"
+      ]
+    },
+    {
+      "id": "P1-03",
+      "phase": "P1",
+      "title": "결정적인 최소 실행 루프",
+      "status": "verified",
+      "depends_on": [
+        "P1-02"
+      ],
+      "outcome": "scripted planner로 계획 검증·배정·실행·결과 수락·상태 변경·제어 분기를 연결한다.",
+      "acceptance": [
+        "무효 DAG/낡은 plan revision/완료 조건 누락 거부",
+        "continue/replan/wait/blocked/complete, 예산·취소·unknown 효과를 구분"
+      ],
+      "requirements": [
+        "R05",
+        "R07",
+        "R14"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P1-execution-verification.json",
+        "scope": "deterministic_plan_execution_control_with_scripted_planner"
+      },
+      "reconciliation_chapters": [
+        "C04"
+      ]
+    },
+    {
+      "id": "P1-04",
+      "phase": "P1",
+      "title": "작은 도구·지침·근거 경로",
+      "status": "verified",
+      "depends_on": [
+        "P1-03",
+        "P0-04"
+      ],
+      "outcome": "작은 catalog와 Broker/호출 장부, 근거 ID 조회, 지침 하나의 선택 로딩을 연결한다.",
+      "acceptance": [
+        "정확한 ID/제한된 검색과 schema·권한·version 검증",
+        "단순 업무는 필요한 method만 선택; tool/skill/권한의 역할 구분"
+      ],
+      "requirements": [
+        "R08",
+        "R09",
+        "R10",
+        "R13",
+        "R19"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P1-resources-verification.json",
+        "scope": "small_catalog_broker_work_resource_queries_and_selected_guidance"
+      },
+      "reconciliation_chapters": [
+        "C04"
+      ]
+    },
+    {
+      "id": "P1-05",
+      "phase": "P1",
+      "title": "CLI와 대화/전달 의미",
+      "status": "verified",
+      "depends_on": [
+        "P1-04"
+      ],
+      "outcome": "접수 저장→짧은 접수 응답→상태 조회/변경/취소→최종 답변을 CLI와 가짜 채널에 연결한다.",
+      "acceptance": [
+        "conversation/work ID 분리, 닫기와 취소 구분",
+        "내부 이벤트마다 새 말풍선 없음; result_ready/완료/전달 분리"
+      ],
+      "requirements": [
+        "R07",
+        "R15"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P1-conversation-verification.json",
+        "scope": "synthetic_cli_conversation_and_local_delivery_with_process_recovery"
+      },
+      "reconciliation_chapters": [
+        "C02"
+      ]
+    },
+    {
+      "id": "P1-06",
+      "phase": "P1",
+      "title": "실제 모델과 가설·계획 변경",
+      "status": "in_progress",
+      "depends_on": [
+        "P1-05"
+      ],
+      "outcome": "선택한 모델 adapter에서 합성 입력으로 가설·판별 질문·계획 변경을 제안하고 코어 검증에 연결한다.",
+      "acceptance": [
+        "늦은 반증으로 영향받는 가설/계획 수정, 유효 계획은 continue",
+        "단순 경로의 추가 critic/가설 생략, usage/잘림/오류와 모델 목적지 기록"
+      ],
+      "requirements": [
+        "R05",
+        "R06",
+        "R14",
+        "R19",
+        "R21"
+      ],
+      "required": true,
+      "verification": {
+        "record": "runtime/evidence/P1-model-local-verification.json",
+        "scope": "local_model_call_ledger_hypotheses_plan_update_and_structured_transport_contracts",
+        "local_contracts": "verified",
+        "actual_model": "not_run"
+      },
+      "remaining": [
+        "Actual provider transport and capability contract",
+        "Real model hypothesis/plan quality and usage conformance using an explicitly configured authorized endpoint"
+      ],
+      "reconciliation_chapters": [
+        "C04"
+      ]
+    },
+    {
+      "id": "P1-07",
+      "phase": "P1",
+      "title": "첫 전체 경로와 최소 재개 패킷",
+      "status": "in_progress",
+      "depends_on": [
+        "P1-06"
+      ],
+      "outcome": "한 업무의 접수부터 결과까지와 중단/재개·사용자 변경·구조화 ContextPacket 복원을 완성한다.",
+      "acceptance": [
+        "실행 전/외부 결과 수신 후 저장 전/저장 후 응답 전 장애 구간 시험",
+        "목표·반증·의무·원본 참조 복원, fake sink 중복 효과와 잘못된 완료 없음"
+      ],
+      "requirements": [
+        "R01",
+        "R05",
+        "R06",
+        "R07",
+        "R11",
+        "R15",
+        "R21"
+      ],
+      "required": true,
+      "local_scope": "state_based_context_packet_and_local_workflow_recovery",
+      "plan": "design/chapters/P1-recovery-plan.md",
+      "verification": {
+        "record": "runtime/evidence/P1-recovery-local-verification.json",
+        "local_contracts": "verified",
+        "actual_model": "not_run"
+      },
+      "remaining": [
+        "P1-06 actual provider transport and real model quality/usage conformance",
+        "Full request-to-result path with an explicitly configured authorized real model"
+      ],
+      "reconciliation_chapters": [
+        "C02",
+        "C04"
+      ]
+    },
+    {
+      "id": "P2-01",
+      "phase": "P2",
+      "title": "두 번째 영속 adapter 적합성",
+      "status": "in_progress",
+      "depends_on": [
+        "P1-07"
+      ],
+      "outcome": "다른 종류의 영속 구현을 제한된 범위로 연결해 저장소 독립성을 확인한다.",
+      "acceptance": [
+        "코어 코드 수정 없이 동일 대표 시나리오/저장 계약 시험",
+        "각 구현에서 재시작·충돌·중복·원자적 경계 보장 확인; 대역 통과와 구분"
+      ],
+      "requirements": [
+        "R04",
+        "R07",
+        "R20"
+      ],
+      "required": true,
+      "plan": "design/chapters/P2-storage-plan.md",
+      "verification": {
+        "document": "design/chapters/P2-storage-result.md",
+        "record": "runtime/evidence/P2-storage-local-verification.json",
+        "local_contracts": "verified",
+        "persistent_backends": [
+          "sqlite",
+          "file-journal"
+        ],
+        "core_source_unchanged": true,
+        "actual_model": "not_run"
+      },
+      "remaining": [
+        "P1-06/P1-07 real model prerequisites remain unmet; the local storage conformance pass does not complete those gates"
+      ],
+      "reconciliation_chapters": [
+        "C01",
+        "C03"
+      ]
+    },
+    {
+      "id": "P2-02",
+      "phase": "P2",
+      "title": "기억·근거 수명과 조회",
+      "status": "in_progress",
+      "depends_on": [
+        "P1-07"
+      ],
+      "outcome": "개인/조직 기억·lineage·직접/조건 검색·색인 지연·정정/삭제·작업 공간 체크포인트를 구현한다.",
+      "acceptance": [
+        "새 근거를 색인 전 ID로 읽고 신선도/범위 표시",
+        "정정/권한 철회가 요약·검색·캐시·관련 의무에 반영"
+      ],
+      "requirements": [
+        "R06",
+        "R10",
+        "R19",
+        "R20"
+      ],
+      "required": true,
+      "plan": "design/chapters/P2-memory-plan.md",
+      "verification": {
+        "document": "design/chapters/P2-memory-result.md",
+        "record": "runtime/evidence/P2-memory-local-verification.json",
+        "local_contracts": "verified",
+        "persistent_backends": [
+          "sqlite",
+          "file-journal"
+        ],
+        "actual_model": "not_run"
+      },
+      "remaining": [
+        "P1-06/P1-07 real model prerequisites remain unmet; local lifecycle and retrieval contracts do not verify actual model memory use",
+        "Physical retention/backup purge and distributed effect fencing require the later deployment contracts"
+      ],
+      "reconciliation_chapters": [
+        "C01",
+        "C03",
+        "C07"
+      ]
+    },
+    {
+      "id": "P2-03",
+      "phase": "P2",
+      "title": "컨텍스트 수명과 compact",
+      "status": "in_progress",
+      "depends_on": [
+        "P2-02"
+      ],
+      "outcome": "미사용 명세/내용 정리와 검증된 snapshot/packet 교체, 선택 재로딩을 구현한다.",
+      "acceptance": [
+        "반복 context 교체 후 중요한 반증·제약·대기/unknown 의무 복원",
+        "저장 후 참조화, tool-call 쌍·revision 검증, 재로딩 진동과 실제 입력 비용 기록"
+      ],
+      "requirements": [
+        "R09",
+        "R11",
+        "R12",
+        "R13"
+      ],
+      "required": true,
+      "plan": "design/chapters/P2-context-plan.md",
+      "verification": {
+        "document": "design/chapters/P2-context-result.md",
+        "record": "runtime/evidence/P2-context-local-verification.json",
+        "local_contracts": "verified",
+        "persistent_backends": [
+          "sqlite",
+          "file-journal"
+        ],
+        "actual_model": "not_run"
+      },
+      "remaining": [
+        "P1-06/P1-07 actual model prerequisites remain unmet; local context contracts do not establish model reasoning quality or actual token/cost savings",
+        "Incremental source reads and catalog refresh were locally verified in P2-04; deployment-level fencing and physical retention remain separate"
+      ],
+      "reconciliation_chapters": [
+        "C02",
+        "C03",
+        "C05"
+      ]
+    },
+    {
+      "id": "P2-04",
+      "phase": "P2",
+      "title": "도구·지침 호출 효율",
+      "status": "in_progress",
+      "depends_on": [
+        "P2-03"
+      ],
+      "outcome": "유효 결과 재사용·in-flight dedup·batch·페이지/증분·명세 예산·catalog 갱신을 최적화한다.",
+      "acceptance": [
+        "권한/버전/효과에 맞는 캐시·재시도·폐기; 목록 부분 실패 구분",
+        "모델/MCP 왕복·내부 연산·이미지·대기 비용을 구분한 비교"
+      ],
+      "requirements": [
+        "R03",
+        "R08",
+        "R09",
+        "R12",
+        "R13",
+        "R16"
+      ],
+      "required": true,
+      "plan": "design/chapters/P2-efficiency-plan.md",
+      "verification": {
+        "document": "design/chapters/P2-internal-io-result.md",
+        "record": "runtime/evidence/P2-internal-io-local-verification.json",
+        "local_contracts": "verified",
+        "verified_slices": [
+          "same-work durable read reuse and invocation cost records",
+          "same-facade work/attempt in-flight join",
+          "provider snapshots, catalog paging and current source contracts",
+          "guidance listing/body lifecycle and current original checks in load/history/context/model dispatch",
+          "pure batch/page collection reducer and accepted-response identity",
+          "durable collection intents/checkpoints, original response custody, explicit resume with inherited budgets and process restart recovery",
+          "canonical checkpoint proof at result receive/adopt/history/context and mandatory resume tips through five compactions",
+          "incremental v2 checkpoint records, bounded legacy/current materialization and source/receipt parsing reuse with current original revalidation",
+          "twelve frozen-v024 comparisons with exact normalized source/result/evidence semantics and measured artifact file read/hash/write reductions"
+        ],
+        "persistent_backends": [
+          "sqlite",
+          "file-journal"
+        ],
+        "actual_model": "not_run",
+        "prior_records": [
+          "runtime/evidence/P2-efficiency-local-verification.json",
+          "runtime/evidence/P2-guidance-collections-local-verification.json",
+          "runtime/evidence/P2-durable-collections-local-verification.json"
+        ]
+      },
+      "remaining": [
+        "P1-06/P1-07 actual model prerequisites remain unmet; synthetic replay and I/O savings do not establish actual reasoning quality or billing savings",
+        "Actual MCP/Knox/computer-use transport, image, wait and integration performance remain at their real integration gates"
+      ],
+      "reconciliation_chapters": [
+        "C05"
+      ]
+    },
+    {
+      "id": "P2-05",
+      "phase": "P2",
+      "title": "모드·예산·무진전과 평가",
+      "status": "in_progress",
+      "depends_on": [
+        "P2-01",
+        "P2-02",
+        "P2-03",
+        "P2-04"
+      ],
+      "outcome": "자동/빠르게/깊게와 무진전 제어를 보정하고 고정 세트로 전체 품질/비용을 비교한다.",
+      "acceptance": [
+        "명시 상한·부모/자식 예약/사용액·재시도 총기한 보존",
+        "저장 결과 replay와 새 추론 구분, 완료율/잘못된 완료/재조회/지연 비교"
+      ],
+      "requirements": [
+        "R01",
+        "R04",
+        "R08",
+        "R11",
+        "R12",
+        "R14",
+        "R21"
+      ],
+      "required": true,
+      "plan": "design/chapters/P2-modes-plan.md",
+      "verification": {
+        "document": "design/chapters/P2-evaluation-result.md",
+        "record": "runtime/evidence/P2-evaluation-local-verification.json",
+        "local_contracts": "verified",
+        "verified_slices": [
+          "revisioned mode control independent of goal/source identity and bounded fast allocations",
+          "pending mode application after stored results and usage settle, including legacy model input and concurrent controls",
+          "semantic progress and retry ledger in the same settlement CAS, persistent runnable backoff and small context/resume summaries",
+          "explicit preparation novelty for catalog/schema/guidance and rejection of empty, repeated or copied progress",
+          "CLI initial/change mode, current execution snapshot and both persistent backend regressions",
+          "parent escrow, pending child genesis, idempotent activation and narrowed authority at actual allocation boundaries",
+          "durable child fence, unsent reservation cancellation and cumulative usage settlement without refunding unknown usage",
+          "fresh sibling exposure at final tool/model entry, nested delegation, replan allowance and small stored context/resume summaries",
+          "58 runtime cases and 18 real subprocess SIGKILL/reopen cases across SQLite and file-journal, plus 14 pure budget contracts",
+          "192 pinned scripted full executions and 192 read-only receipt/artifact replays across two workloads, two state backends and three modes",
+          "Independent original/fact/hypothesis oracle, all committed completion/result observations, explicit success denominators, usage and latency comparisons",
+          "Received-model/tool reopen, next-day waiting, post-compact assessment, cancellation with late usage, immutable case/code/build pins and stale/orphan output rejection"
+        ],
+        "persistent_backends": [
+          "sqlite",
+          "file-journal"
+        ],
+        "actual_model": "not_run",
+        "prior_documents": [
+          "design/chapters/P2-modes-result.md",
+          "design/chapters/P2-budget-result.md"
+        ]
+      },
+      "remaining": [
+        "P1-06/P1-07 actual model prerequisites remain unmet"
+      ],
+      "budget_plan": "design/chapters/P2-budget-plan.md",
+      "evaluation_plan": "design/chapters/P2-evaluation-plan.md",
+      "reconciliation_chapters": [
+        "C02",
+        "C04",
+        "C08"
+      ]
+    },
+    {
+      "id": "P2-06",
+      "phase": "P2",
+      "title": "정보 경계 대안과 공개 정책",
+      "status": "in_progress",
+      "depends_on": [
+        "P2-02",
+        "P2-03",
+        "P1-06"
+      ],
+      "outcome": "전체 내부/외부 리드+게이트/내부 주도+자문을 합성 자료로 비교하고 실제 배치에 적용할 경계 정책을 정한다.",
+      "acceptance": [
+        "원문·요약·검색 카드·로그/화면·artifact·채널·모델 목적지 권한 검증",
+        "도구/A2A 본문이 사용자 지시/권한으로 승격되지 않음; 금지 fixture의 outbound 노출 검사"
+      ],
+      "requirements": [
+        "R19",
+        "R20",
+        "R21"
+      ],
+      "required": true,
+      "external_preconditions": [
+        "실제 자료 연결 전 조직 자료 등급·주체·모델 목적지·보존 정책 결정"
+      ],
+      "completion_note": "합성 평가와 실제 배치 정책 결정의 상태를 별도로 기록한다.",
+      "plan": "design/chapters/P2-boundary-plan.md",
+      "verification": {
+        "document": "design/chapters/P2-boundary-result.md",
+        "record": "runtime/evidence/P2-boundary-local-verification.json",
+        "local_contracts": "verified",
+        "verified_slices": [
+          "Destination/surface/label disclosure checks before model estimation and invocation, tool entry, channel send and full-body lookup",
+          "Monotonic classification across work/context/artifacts and child delegation; missing history and empty classification rejected",
+          "Finite trusted projections with current original/derived source and knowledge checks, persistent policy/rule/proof/payload binding and cumulative release limits",
+          "Release retries, response loss, reopen, source restriction/retraction/supersession/deletion, current policy/goal and receiver entry checks",
+          "Preserved source basis and derivation through public views; strict proposal rejection of data-supplied authority",
+          "Durable workflow blocked/yield and checkpoint on disclosure denial, known-unused model reservation settlement and explicit resume",
+          "Twelve A/B/C scripted transport comparisons across two workloads and two persistent backends; required facts, lineage, source leakage and actual request-byte checks"
+        ],
+        "persistent_backends": [
+          "sqlite",
+          "file-journal"
+        ],
+        "actual_model": "not_run",
+        "comparison_scope": "transport_contracts_not_full_role_workflows",
+        "comparison_report": "runtime/evidence/disclosure-final/report.json"
+      },
+      "remaining": [
+        "P1-06/P1-07 actual model prerequisites and model-quality comparison remain unmet",
+        "Organization classification, recipient/model destinations, retention policy and A/B/C deployment choice remain undecided",
+        "Actual non-model adapters and full role/A2A workflows are verified at P3/P4; process/network isolation and deployment policy at P5/P6"
+      ],
+      "reconciliation_chapters": [
+        "C03",
+        "C07",
+        "C08"
+      ]
+    },
+    {
+      "id": "P3-01",
+      "phase": "P3",
+      "title": "기존 MCP의 실제 adapter",
+      "status": "in_progress",
+      "depends_on": [
+        "P2-05",
+        "P2-06",
+        "P0-04"
+      ],
+      "outcome": "확인된 기존 MCP의 작은 기능 집합을 단일 에이전트에서 연결한다.",
+      "acceptance": [
+        "auth/scope·version·pagination·rate limit·취소·늦은 결과·부분/unknown 시험",
+        "요청/결과/수집 cursor/효과 상태가 공통 장부에 반영"
+      ],
+      "requirements": [
+        "R03",
+        "R07",
+        "R08",
+        "R09",
+        "R19"
+      ],
+      "required": true,
+      "external_preconditions": [
+        "실제 MCP 명세와 전용 연동 환경·접근 범위",
+        "사내 자료를 쓰는 경로는 G-DATA 통과"
+      ],
+      "plan": "design/chapters/P3-mcp-settlement-plan.md",
+      "result": "design/chapters/P3-mcp-settlement-result.md",
+      "verification": {
+        "local_contracts": "partially_verified",
+        "actual_mcp": "local_stdio_verified",
+        "actual_model": "not_run",
+        "record": "runtime/evidence/P3-mcp-settlement-local-verification.json",
+        "tests_passed": 2117,
+        "additional_tests": 28,
+        "new_test_groups": {
+          "coverageDomain": 10,
+          "coverageIntegration": 7,
+          "storedResponseRecovery": 11
+        },
+        "targeted_tests": 154,
+        "protocol": "2026-07-28",
+        "sdk_client": "2.0.0",
+        "sdk_server": "2.0.0",
+        "actual_internal_service": "not_run",
+        "read_collection_resume": "local_stdio_verified",
+        "actual_owned_worker_sigkill_cases": 11,
+        "rate_limit_wait_and_resume": "local_stdio_verified",
+        "background_scheduler": "not_implemented",
+        "local_read_contracts": "verified",
+        "separately_recorded_recovery_cases": 6,
+        "finite_manifest_coverage": "local_stdio_verified",
+        "stored_response_recovery": "local_stdio_verified"
+      },
+      "remaining": [
+        "Actual internal MCP specification, credentials, scope and G-DATA; HTTP/OAuth and write-effect proof",
+        "HTTP Retry-After and endpoint-wide quota profiles; background wake driver belongs to P4-03",
+        "Host-approved protocol profiles including legacy compatibility only when required",
+        "Unknown-universe search completeness needs a source-specific contract; finite-manifest coverage does not invent absence facts",
+        "Actual model and production operations remain unverified; the user cancelled the API experiment"
+      ],
+      "reconciliation_chapters": [
+        "C05"
+      ]
+    },
+    {
+      "id": "P3-02",
+      "phase": "P3",
+      "title": "Web과 CLI 업무 화면",
+      "status": "in_progress",
+      "depends_on": [
+        "P1-07",
+        "P2-03"
+      ],
+      "outcome": "같은 공개 상태를 CLI/Web에 표시하고 snapshot/cursor 재접속·상세 근거·진단을 연결한다.",
+      "acceptance": [
+        "접수·결과·필수 질문, 현재 상태 갱신과 상세 보기 구분",
+        "다중 업무·변경/취소·재접속·키보드 초점·좁은 화면 검수"
+      ],
+      "requirements": [
+        "R15",
+        "R21"
+      ],
+      "required": true,
+      "plan": "design/chapters/P3-query-control-plan.md",
+      "remaining": [
+        "P1-06/P1-07 and P2-03 actual model prerequisites remain unmet; local UI verification does not complete those gates",
+        "Actual MCP/Knox and organization deployment prerequisites remain distinct"
+      ],
+      "verification": {
+        "document": "design/chapters/P3-query-control-result.md",
+        "record": "runtime/evidence/P3-query-control-local-verification.json",
+        "local_contracts": "verified",
+        "verified_slices": [
+          "Read-only route/actor/disclosure-bound current snapshots and opaque level-bound cursors",
+          "Current originals, derived ancestors, hypothesis-only basis, knowledge and response validation before unchanged; stale result and hypothesis suppression",
+          "Explicit bounded details and diagnostics with independent trusted log permission; no raw tool inputs/outputs or model context",
+          "Additive local CLI work-view command, subprocess reconnect, multiple work/conversation separation, goal change/cancel and delivery-status formatting",
+          "Local synthetic Web controller, durable accept/run request identities, atomic initial question and independent run/pause/cancel controls",
+          "Loopback-only HTTP bootstrap/session/CSRF, strict inputs, bounded readonly SSE and physical read admission",
+          "Web task list, current conversation, explicit details/diagnostics, draft-safe optimistic editing and CLI/Web observation",
+          "Actual browser normal/question/control/reload, cross-channel stale draft, keyboard focus, history scroll and 390/320px checks; measured three-frame SSE read cost",
+          "Metadata-only revision-bounded event tails, one candidate page, instance-scoped opaque cursor with expiry/eviction, current disclosure rechecks",
+          "SQLite v3 indexed projections and legacy-writer triggers; journal verified-prefix reuse with retained full-body integrity and separately measured costs",
+          "Atomic goal/control revision guard across CLI/Web and CAS retries; 8 targeted browser observations including empty-page continuation and explicit stale-draft rebase"
+        ],
+        "persistent_backends": [
+          "sqlite",
+          "file-journal"
+        ],
+        "actual_model": "not_run",
+        "web_transport": "verified_local_synthetic",
+        "browser_verification": "15_prior_and_8_targeted_local_observations_sqlite_with_recorded_build_scope",
+        "known_limits": [
+          "Journal historical body read/hash and root directory metadata enumeration remain linear; serialized cache bytes are not a process heap cap",
+          "Instance-bound list cursors expire after 15 minutes or eviction/restart; adapter order and live keyset traversal do not provide a cross-work snapshot",
+          "Actual organization SSO, IME/screenreader, distributed worker and external channel deployment are not verified"
+        ]
+      },
+      "reconciliation_chapters": [
+        "C01",
+        "C06"
+      ]
+    },
+    {
+      "id": "P3-03",
+      "phase": "P3",
+      "title": "Knox 대화 연결",
+      "status": "not_started",
+      "depends_on": [
+        "P3-01",
+        "P3-02"
+      ],
+      "outcome": "확인된 Knox 계약으로 수신→접수→최종 답변을 연결한다.",
+      "acceptance": [
+        "인증된 사람/방/work 연결과 답변 대상 권한 확인",
+        "불명확 발송 대조·중복 방지; 수정/스레드/버튼/읽음은 실제 지원만 사용"
+      ],
+      "requirements": [
+        "R07",
+        "R15",
+        "R19"
+      ],
+      "required": true,
+      "external_preconditions": [
+        "Knox MCP의 수신 경로·인증·메시지 ID·발송/오류/대조 계약",
+        "전용 대상과 메시지 전달 범위"
+      ],
+      "reconciliation_chapters": [
+        "C06"
+      ]
+    },
+    {
+      "id": "P3-04",
+      "phase": "P3",
+      "title": "컴퓨터 유즈 adapter",
+      "status": "in_progress",
+      "depends_on": [
+        "P2-04",
+        "P2-06"
+      ],
+      "outcome": "로컬 합성 UI부터 관찰/행동+확인·짧은 묶음·조건 대기·세션 소유권을 구현하고 선택 환경에 연결한다.",
+      "acceptance": [
+        "stale 화면·창/초점 변경·부분 효과·사용자 인계·재시작 검증",
+        "같은 목표의 성공률·왕복·이미지·총 지연을 기존 단일 행동 기준선과 비교"
+      ],
+      "requirements": [
+        "R03",
+        "R07",
+        "R16",
+        "R19"
+      ],
+      "required": true,
+      "external_preconditions": [
+        "첫 지원 OS/앱/브라우저와 기존 driver 계약 선택",
+        "실제 사내 화면은 G-DATA 통과"
+      ],
+      "completion_note": "합성 브라우저와 선택한 실제 환경의 검증 범위를 구분한다. 모든 OS 구현을 요구하지 않는다.",
+      "plan": "design/chapters/P3-local-web-driver-plan.md",
+      "local_scope": "instrumented_local_web_dom_driver_and_same_goal_comparison",
+      "verification": {
+        "local_contracts": "partially_verified",
+        "actual_driver": "locally_verified_instrumented_web",
+        "actual_model": "not_run",
+        "record": "runtime/evidence/P3-local-web-driver-local-verification.json",
+        "tests_passed": 1950,
+        "additional_tests": 20,
+        "previous_records": [
+          "runtime/evidence/P3-computer-use-local-verification.json",
+          "runtime/evidence/P3-computer-receipts-local-verification.json",
+          "runtime/evidence/P3-runtime-reconciliation-local-verification.json",
+          "runtime/evidence/P3-continuation-boundary-local-verification.json",
+          "runtime/evidence/P3-continuation-runner-local-verification.json"
+        ],
+        "new_test_groups": {
+          "inputAssurance": 6,
+          "instrumentedWebAdapter": 14
+        },
+        "separate_browser_tests": 17,
+        "separate_browser_record": "runtime/evidence/P3-local-web-driver-browser-verification.json"
+      },
+      "remaining": [
+        "Actual OS/app/browser/driver choice, internal-screen G-DATA and production ownership/deployment gates",
+        "Shared query-wide custody budget/cache and source-owner namespace/reviewer reauthentication require later capability and efficiency work",
+        "Observation-only crash before any input intent remains conservatively unknown; explicit no-input settlement and bounded deep-lineage proof-read efficiency remain follow-up work",
+        "Instrumented DOM app scope does not cover native OS input or generic sites; no server SIGKILL/fsync fault, cross-process ownership or long-lived receipt-retention proof was established by this browser gate"
+      ],
+      "result": "design/chapters/P3-local-web-driver-result.md",
+      "completed_local_slices": [
+        "Typed synthetic observation/action/confirmation and durable intent/outcome checkpoints",
+        "Current authorization at delayed input boundary, original proof and retained knowledge checks",
+        "Two-store partial/unknown settlement, provider proof changes, repeated compaction and SIGKILL recovery",
+        "Four equivalent synthetic runs comparing batched and separate typed actions without real model or GUI",
+        "Atomic bounded operation receipts and read-only same-work lookup across attempts/epochs; v1 migration and actual SIGKILL/storage failure regression",
+        "Explicit budgeted receipt lookup and immutable original input with durable request/response/settlement provenance; late returns, ACK loss, SIGKILL and current proof gates across execution/context/models/completion/screen/delivery",
+        "Immutable single-successor claim/CAS and protected v1 context references with explicit execution denial before runner support; retained effect proof and bounded source-work knowledge custody across resource/disclosure/memory/outbox consumers",
+        "Actual continue and zero-input verify with v2 lineage, immutable single-successor reservation, fresh frontier observations, original effect proof lifetime, context preservation and six process-kill recovery cases; verified reconciliation updates progress without duplicate credit",
+        "Real Chrome instrumented Web DOM adapter with contract-pinned input assurance, typed bridge, SQLite/file-journal same-goal 8-cell comparison, exact old receipt/epoch handling, response-loss reconciliation and zero-input verify; human dirty/serialized writes and in-app/mobile UI verified"
+      ],
+      "reconciliation_chapters": [
+        "C05"
+      ]
+    },
+    {
+      "id": "P3-05",
+      "phase": "P3",
+      "title": "단일 에이전트 연동 통합",
+      "status": "not_started",
+      "depends_on": [
+        "P3-01",
+        "P3-02",
+        "P3-03",
+        "P3-04"
+      ],
+      "outcome": "CLI/Web/Knox와 선택 도구/컴퓨터 유즈를 같은 업무 상태·권한·전달 계약으로 통합 검수한다.",
+      "acceptance": [
+        "모드 변경·취소·재접속·목표 변경 뒤 늦은 응답 일치",
+        "fake/실제 연결 결과를 구분하고 미확인 채널을 통과로 보고하지 않음"
+      ],
+      "requirements": [
+        "R07",
+        "R14",
+        "R15",
+        "R16",
+        "R19",
+        "R21"
+      ],
+      "required": true,
+      "reconciliation_chapters": [
+        "C06"
+      ]
+    },
+    {
+      "id": "P4-01",
+      "phase": "P4",
+      "title": "두 에이전트와 게시판",
+      "status": "in_progress",
+      "depends_on": [
+        "P2-05",
+        "P2-06",
+        "P3-01"
+      ],
+      "outcome": "지속되는 역할 ID·개인 관측·공유 entity·게시판을 두 역할로 연결한다.",
+      "acceptance": [
+        "같은 원본의 중복 인용을 독립 근거로 세지 않음",
+        "의무/권한·근거 충돌·철회·대화/위임 상한·교착/무진전 처리",
+        "에이전트가 배정·추가 요청·회수/재배정을 판단하고 런타임이 사용량 기록·정산·반환을 자동 집행하며 중복 소비·중복 반환을 방지"
+      ],
+      "requirements": [
+        "R01",
+        "R06",
+        "R10",
+        "R13",
+        "R17"
+      ],
+      "required": true,
+      "plan": "design/chapters/P4-board-plan.md",
+      "verification": {
+        "local_contracts": "partially_verified",
+        "board_foundation": "verified",
+        "actual_model": "not_run",
+        "record": "runtime/evidence/P4-board-budget-authority-local-verification.json",
+        "tests_passed": 2416,
+        "additional_tests": 62,
+        "targeted_tests": 168,
+        "role_family_storage_cases": 4,
+        "actual_owned_worker_sigkill_cases": 2,
+        "runtime_tool_integration": "read_publish_retract_requests_discovery_and_work_wake_verified",
+        "work_obligation_integration": "not_implemented",
+        "foundation_record": "runtime/evidence/P4-board-local-verification.json",
+        "bounded_board_pages": "verified",
+        "unsupported_hypothesis_drafts": "verified",
+        "retained_board_input_validation": "verified",
+        "board_tests": 63,
+        "board_page_family_storage_cases": 4,
+        "board_pages_record": "runtime/evidence/P4-board-pages-local-verification.json",
+        "input_graph": "verified",
+        "memory_custody_graph": "verified",
+        "memory_tool_custody_cancellation": "verified",
+        "mixed_effect_collection_input_closure": "memory_collection_board_verified_effect_combination_pending",
+        "cross_owner_current_grant_resolution": "verified_for_board_and_memory",
+        "graph_tests": 18,
+        "memory_tool_cancellation_tests": 2,
+        "board_runtime_tests": 34,
+        "missing_nested_validator_tests": 2,
+        "runtime_reopen_family_storage_cases": 4,
+        "input_graph_record": "runtime/evidence/P4-board-input-graph-local-verification.json",
+        "board_read_inputs_record": "runtime/evidence/P4-board-inputs-local-verification.json",
+        "board_write_receipts": "verified",
+        "board_write_tests": 40,
+        "board_write_record": "runtime/evidence/P4-board-writes-local-verification.json",
+        "board_request_tools": "verified",
+        "board_work_obligations": "verified",
+        "board_request_record": "runtime/evidence/P4-board-obligations-local-verification.json",
+        "request_discovery": "verified",
+        "board_event_wake": "host_refresh_verified",
+        "role_dispatcher": "not_implemented",
+        "board_wake_record": "runtime/evidence/P4-board-wake-local-verification.json",
+        "cross_role_budget_authority": "host_port_verified",
+        "cross_role_budget_settlement": "verified",
+        "role_runtime_routing": "verified",
+        "board_funding_policy": "not_implemented",
+        "agent_budget_tools": "not_implemented",
+        "budget_authority_record": "runtime/evidence/P4-board-budget-authority-local-verification.json"
+      },
+      "result": "design/chapters/P4-budget-authority-result.md",
+      "remaining": [
+        "Simplify board posts to a shared participant audience with separate source access; reject unreadable normal answers before publishing and connect explicit response or blocked states without routine human post approval",
+        "Connect board funding policy and bounded preparation/acceptance authority to the verified cross-role grant and settlement path",
+        "Connect agent-directed allocation, additional requests, safe active-grant adjustment and automatic partial reservation return with durable recovery",
+        "Connect fair host role dispatch and bounded wake polling; define new mission policy after per-work subscriptions close",
+        "Evaluate two-runtime counterevidence, hypothesis/replan and compact/reopen to completion; actual model validation remains separate",
+        "Exercise computer-effect and board input closure together; bound retained effect metadata and input bundles without losing custody"
+      ],
+      "runtime_plan": "design/chapters/P4-board-runtime-plan.md",
+      "input_validation_plan": "design/chapters/P4-input-validation-plan.md",
+      "write_plan": "design/chapters/P4-board-writes-plan.md",
+      "obligations_plan": "design/chapters/P4-board-obligations-plan.md",
+      "wake_plan": "design/chapters/P4-board-wake-plan.md",
+      "budget_plan": "design/chapters/P4-board-budget-plan.md",
+      "funding_plan": "design/chapters/P4-board-funding-plan.md",
+      "shared_board_plan": "design/chapters/P4-shared-board-simplification.md",
+      "board_design_revision": "shared_audience_default_separate_source_access_no_routine_post_approval",
+      "design_review": {
+        "status": "discussion_only",
+        "reason": "User requested consolidation before further implementation changes",
+        "document": "design/chapters/P4-design-reconciliation.md",
+        "product_changes": "on_hold_for_current_discussion",
+        "proposals_are_adopted": false
+      },
+      "reconciliation_chapters": [
+        "C07",
+        "C08"
+      ]
+    },
+    {
+      "id": "P4-02",
+      "phase": "P4",
+      "title": "A2A 업무 계약",
+      "status": "not_started",
+      "depends_on": [
+        "P4-01"
+      ],
+      "outcome": "외부 동료와 task/status/artifact·version·deadline·cancel을 교환하는 adapter를 만든다.",
+      "acceptance": [
+        "상대 ID/권한·오류·부분 결과·늦은 결과·재전달 검증",
+        "상대 메시지가 루트 목표/권한을 임의 변경하지 않음"
+      ],
+      "requirements": [
+        "R07",
+        "R17",
+        "R18",
+        "R19"
+      ],
+      "required": true,
+      "external_preconditions": [
+        "선택한 A2A 상대의 계약과 전용 상호운용 환경"
+      ],
+      "reconciliation_chapters": [
+        "C09"
+      ]
+    },
+    {
+      "id": "P4-03",
+      "phase": "P4",
+      "title": "상시 임무와 사건 기반 재개",
+      "status": "not_started",
+      "depends_on": [
+        "P4-01",
+        "P3-01"
+      ],
+      "outcome": "예약/관측/회신 대기와 durable wake, 증분 수집·게시판 구독을 연결한다.",
+      "acceptance": [
+        "fake clock 장기 대기와 별도 실제 시간 재개 시험",
+        "수집/집계와 추론 분리, 중복 wake·cursor·fan-out 예산·취소 처리"
+      ],
+      "requirements": [
+        "R07",
+        "R10",
+        "R17",
+        "R18"
+      ],
+      "required": true,
+      "reconciliation_chapters": [
+        "C09"
+      ]
+    },
+    {
+      "id": "P4-04",
+      "phase": "P4",
+      "title": "협업 통합과 비용 검증",
+      "status": "not_started",
+      "depends_on": [
+        "P4-01",
+        "P4-02",
+        "P4-03"
+      ],
+      "outcome": "한 에이전트와 두 에이전트의 같은 문제를 비교해 협업 품질과 비용을 검증한다.",
+      "acceptance": [
+        "늦은 반증·부분 자료·충돌·권한 철회·부모 취소 전파",
+        "더 많은 메시지/역할 수를 개선으로 간주하지 않고 완료 품질·비용 비교"
+      ],
+      "requirements": [
+        "R06",
+        "R14",
+        "R17",
+        "R18",
+        "R21"
+      ],
+      "required": true,
+      "reconciliation_chapters": [
+        "C08",
+        "C09"
+      ]
+    },
+    {
+      "id": "P5-01",
+      "phase": "P5",
+      "title": "두 업무 모듈의 배치 bundle",
+      "status": "not_started",
+      "depends_on": [
+        "P4-04",
+        "P3-02",
+        "P3-04"
+      ],
+      "outcome": "공개 문서 업무와 보안 관측 업무를 역할·도구·skill/방법·완료 기준·평가 fixture로 배치한다.",
+      "acceptance": [
+        "두 번째 업무군 추가에 공통 루프/저장소/게시판 복제나 보안 전용 코어 분기 없음",
+        "사람 대화 역할 공통 사용; 지침/도구/모델 revision 기록"
+      ],
+      "requirements": [
+        "R01",
+        "R03",
+        "R13",
+        "R15",
+        "R22"
+      ],
+      "required": true,
+      "reconciliation_chapters": [
+        "C01",
+        "C06"
+      ]
+    },
+    {
+      "id": "P5-02",
+      "phase": "P5",
+      "title": "배치 정책과 변경 승격",
+      "status": "not_started",
+      "depends_on": [
+        "P5-01",
+        "P2-06"
+      ],
+      "outcome": "모듈·지침·도구 변경의 검증/제한 평가/승격/rollback과 실제 배치 정보 경계를 검수한다.",
+      "acceptance": [
+        "진행 중 업무의 버전 고정/명시 이행과 긴급 권한 철회 처리",
+        "원문/검색/trace/화면/백업/채널 목적지 정책을 실제 배치 범위로 검증"
+      ],
+      "requirements": [
+        "R13",
+        "R19",
+        "R20",
+        "R22"
+      ],
+      "required": true,
+      "reconciliation_chapters": [
+        "C10"
+      ]
+    },
+    {
+      "id": "P6-01",
+      "phase": "P6",
+      "title": "운영 복원·용량·장애",
+      "status": "not_started",
+      "depends_on": [
+        "P5-02",
+        "P3-05"
+      ],
+      "outcome": "격리 환경에서 DB/artifact/키/정책·삭제 이력 복원과 중복 효과 대조, 용량/큐/지출 한도를 검증한다.",
+      "acceptance": [
+        "저장소/원본 참조 정합성·unknown 의무·삭제/철회 재적용",
+        "정한 RPO/RTO 측정, backlog/과부하 중 사용자 취소·상태 조회"
+      ],
+      "requirements": [
+        "R04",
+        "R07",
+        "R19",
+        "R20",
+        "R21",
+        "R22"
+      ],
+      "required": true,
+      "reconciliation_chapters": [
+        "C10"
+      ]
+    },
+    {
+      "id": "P6-02",
+      "phase": "P6",
+      "title": "제한된 시범과 확대",
+      "status": "not_started",
+      "depends_on": [
+        "P6-01",
+        "P4-04"
+      ],
+      "outcome": "저장 자료 replay→효과 없는 shadow→범위 있는 시범 순으로 운용하고 품질/비용 기준에 따라 확대한다.",
+      "acceptance": [
+        "범위/소유권/롤백 경로가 있는 시범 결과",
+        "완료율·잘못된 완료·개입률·비용/지연·전달/복원 증거 기록"
+      ],
+      "requirements": [
+        "R01",
+        "R14",
+        "R15",
+        "R19",
+        "R21",
+        "R22"
+      ],
+      "required": true,
+      "external_preconditions": [
+        "시범 업무·대상·자료/모델/메신저 권한·운영 범위 확정"
+      ],
+      "reconciliation_chapters": [
+        "C10"
+      ]
+    },
+    {
+      "id": "P6-03",
+      "phase": "P6",
+      "title": "기존 운영 업무의 선택 이관",
+      "status": "conditional_not_started",
+      "depends_on": [
+        "P6-02"
+      ],
+      "outcome": "기존 진행 업무를 옮기기로 결정한 경우에만 ID/근거/상태 이관과 단일 실행 소유권 전환을 수행한다.",
+      "acceptance": [
+        "in-flight 효과 대조와 신구 중복 배정 방지",
+        "DB 과거 덮어쓰기 없이 상태/근거 보존 후 소유권 rollback"
+      ],
+      "requirements": [
+        "R03",
+        "R07",
+        "R20",
+        "R22"
+      ],
+      "required": false,
+      "condition": "legacy_work_migration_explicitly_selected",
+      "reconciliation_chapters": [
+        "C10"
+      ]
+    }
+  ],
+  "next_work_item": null,
+  "plan_document": "design/03-migration-plan.md",
+  "dependency_rules": [
+    "execution_chapters dependencies define the current sequence; historical P work_items dependencies do not impose collaboration as a prerequisite for a standalone agent deployment",
+    "depends_on lists prerequisite work items; phase numbers describe integration milestones rather than a mandatory global barrier",
+    "External preconditions block only dependent real integrations; fake tests are not counted as real integration passes",
+    "G-DATA: selected deployment policy and source/recipient/model permissions validated before real internal data access",
+    "Statuses reflect verified evidence; model/fake/real integration evidence remain distinct",
+    "P6-03 is conditional and excluded from the required phase gate unless selected"
+  ],
+  "historical_phase_mapping": {
+    "P3_before_v012": "Internal collaboration moved to P4",
+    "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
+    "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
+  },
+  "next_local_work_item": {
+    "id": "C05",
+    "id_kind": "execution_chapter",
+    "scope": "mcp_collection_general_entry_connection",
+    "next_design": "design/chapters/C05-mcp-collections-entry-notes.md",
+    "prerequisite_note": "Preserve verified plain-read stored-only CLI/HTTP resume and explicit online reopen. Review bounded collection/page/wait general-entry connection next; no new contracts inferred from stored data. C05 and the overall goal remain incomplete.",
+    "status": "next_unit_review_notes_product_not_started",
+    "cost_review": "design/chapters/C05-context-cost-review.md"
+  },
+  "active_sequence": "execution_chapters",
+  "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
+  "execution_state": "implementation_active",
+  "scope_note": "All discussed capabilities remain in scope; optional means deploy-time opt-in, not omitted implementation.",
+  "execution_chapters": [
+    {
+      "id": "C01",
+      "title": "담당 디렉터리·식별·최초 설정",
+      "depends_on": [],
+      "legacy_work_items": [
+        "P1-01",
+        "P2-01",
+        "P2-02",
+        "P3-02",
+        "P5-01",
+        "P0-02",
+        "P0-03",
+        "P1-02"
+      ],
+      "requirements": [
+        "R02",
+        "R04",
+        "R20",
+        "R22",
+        "R23"
+      ],
+      "scope": [
+        "공통 TypeScript 실행기와 담당 디렉터리를 분리하고 최소 CLI 진입점·설정 탐색·버전 표시를 만든다.",
+        "지속 담당 ID, 설정·스킬·기억·작업 영역, 기본 SQLite/파일 구성을 연결한다. 경로 이동과 새 담당 복제를 구분한다.",
+        "신규 setup·정상 이어가기·부분 설정 복구·버전 불일치를 처리하고 모델 연결은 나중에 설정할 수 있게 한다."
+      ],
+      "acceptance": [
+        "서로 다른 두 디렉터리의 담당 생성·재호출·이동·복제 등록에서 ID와 기록이 의도대로 유지/분리된다.",
+        "동시 초기화·깨진/누락된 설정을 복구하고 기존 자료를 덮어쓰지 않는다.",
+        "일반 담당 실행이 공통 엔진이나 다른 담당의 저장 공간을 수정하지 못하는 실제 경계를 확인한다. 전역 명령 등록만으로 보호를 주장하지 않는다.",
+        "Linux와 네이티브 Windows에서 해당 파일/프로세스/설치/연동 계약을 검증한다. macOS 또는 WSL 결과로 대체하지 않는다."
+      ],
+      "subunits": [
+        "실행 진입점과 identity",
+        "setup 및 복구",
+        "쓰기 경계와 격리 검증"
+      ],
+      "status": "in_progress",
+      "plan": "design/chapters/C01-workspace-plan.md",
+      "result": "design/chapters/C01-workspace-result.md",
+      "local_progress": {
+        "scope": "workspace_identity_setup_and_default_sqlite_composition",
+        "implementation": "partial",
+        "verification": "local_scope_verified",
+        "targetedTests": {
+          "pass": 24,
+          "fail": 0
+        },
+        "platform": "darwin",
+        "node": "24.20.0",
+        "unimplemented": [
+          "windows_filesystem_permissions_and_durability",
+          "file_journal_profile_binding"
+        ],
+        "unverified": [
+          "native_windows",
+          "full_c01_completion"
+        ],
+        "fullVerification": "runtime/evidence/C01-workspace-local-verification.json",
+        "fullTests": {
+          "tests": 2479,
+          "pass": 2479,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "record_scope": "historical_first_unit_macos_source_0f49c4c"
+      },
+      "platform_work": {
+        "linux": "posix_setup_mutation_lifecycle_verified_partial_chapter",
+        "windows": "independent_native_addon_implemented_cross_target_checked_not_linked_or_executed_on_windows",
+        "windows_plan": "design/chapters/C01-windows-file-boundary-plan.md",
+        "linux_plan": "design/chapters/C01-linux-nas-validation.md",
+        "portability_result": "design/chapters/C01-portability-result.md",
+        "clone_plan": "design/chapters/C01-clone-plan.md",
+        "linux_evidence": "runtime/evidence/C01-setup-mutations-verification.json",
+        "linux_tests": {
+          "tests": 2737,
+          "pass": 2737,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "linux_source_digest": "7224d97d9706d38fe4930d375ad74ccb1eb32ed3a8accfb6e3472ed4bb6fea6e",
+        "linux_scope": "Debian_12_x64_ext4_current_runtime_contracts_not_installation_or_production",
+        "clone_result": "design/chapters/C01-clone-result.md",
+        "file_journal_plan": "design/chapters/C01-file-journal-binding-plan.md",
+        "file_journal_result": "design/chapters/C01-file-journal-binding-result.md",
+        "file_boundary_extraction_plan": "design/chapters/C01-file-boundary-extraction-plan.md",
+        "file_boundary_extraction_result": "design/chapters/C01-file-boundary-extraction-result.md",
+        "journal_directory_boundary_plan": "design/chapters/C01-journal-directory-boundary-plan.md",
+        "journal_directory_sync_result": "design/chapters/C01-journal-directory-sync-result.md",
+        "workspace_file_boundary_plan": "design/chapters/C01-workspace-file-boundary-plan.md",
+        "workspace_directory_lock_sync_result": "design/chapters/C01-workspace-directory-lock-sync-result.md",
+        "workspace_read_boundary_plan": "design/chapters/C01-workspace-read-boundary-plan.md",
+        "workspace_stable_read_result": "design/chapters/C01-workspace-stable-read-result.md",
+        "host_file_mutations_plan": "design/chapters/C01-host-file-mutations-plan.md",
+        "windows_native_result": "design/chapters/C01-windows-native-progress.md",
+        "windows_native_evidence": "runtime/native/windows-files/evidence/verification.json",
+        "setup_mutations_result": "design/chapters/C01-setup-mutations-result.md"
+      },
+      "clone_progress": {
+        "implementation": "complete_for_posix_scope",
+        "verification": "clone_scope_verified_partial_chapter",
+        "result": "design/chapters/C01-clone-result.md",
+        "evidence": "runtime/evidence/C01-clone-verification.json",
+        "sourceAndBuild": {
+          "sourceDigest": "fee85e7d0de7caa73c40491b231b1c65edbe2250c029ec23a95254b493a5da1a",
+          "filesDigest": "c645b1ac1df1d3612df294e2fc20a43f535908d66047a9de36a4c15fcb7a504e",
+          "fileCount": 1035
+        },
+        "macosTargeted": {
+          "tests": 56,
+          "pass": 56,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxFull": {
+          "tests": 2523,
+          "pass": 2523,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxTargeted": {
+          "tests": 138,
+          "pass": 138,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "newTests": 32,
+        "actualProcessTerminationRecoveryCases": 10
+      },
+      "remaining_implementation": [
+        "windows_file_permissions_handles_and_durability",
+        "manual_folder_copy_duplicate_identity_runtime_detection",
+        "host_execution_write_boundary"
+      ],
+      "file_journal_progress": {
+        "implementation": "complete_for_posix_scope",
+        "verification": "journal_binding_scope_verified_partial_chapter",
+        "result": "design/chapters/C01-file-journal-binding-result.md",
+        "evidence": "runtime/evidence/C01-journal-binding-verification.json",
+        "sourceAndBuild": {
+          "sourceDigest": "80a2d62de7204e09a82e53dbf24a3e9e02cab00899f68dd59ade42fd9e848b80",
+          "filesDigest": "6acbc8d1a3c801fe85ea36e2ffd11789c92b529fab1b3cb25fd5d66cef0ea10b",
+          "fileCount": 1065
+        },
+        "macosTargeted": {
+          "tests": 192,
+          "pass": 192,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxFull": {
+          "tests": 2580,
+          "pass": 2580,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxTargeted": {
+          "tests": 192,
+          "pass": 192,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "newTests": 57,
+        "actualProcessTerminationCases": {
+          "automaticResume": 10,
+          "preservationAndRefusal": 2,
+          "total": 12
+        },
+        "remaining": [
+          "first_setup_cli_backend_selection_C06",
+          "explicit_owned_recovery_and_backend_migration_C03_C10",
+          "native_windows"
+        ]
+      },
+      "metadata_boundary_progress": {
+        "implementation": "complete_for_posix_metadata_scope",
+        "verification": "metadata_boundary_scope_verified_partial_chapter",
+        "plan": "design/chapters/C01-file-boundary-extraction-plan.md",
+        "result": "design/chapters/C01-file-boundary-extraction-result.md",
+        "sourceAndBuild": {
+          "sourceDigest": "19d00585bc77e36ea6c077777b51eb02f9231ada99bd27afad75ad4f4564a2d9",
+          "filesDigest": "489027e6df022b14e1b2ac30f4f231ded8547208e91d771a3299f7696f40922d",
+          "fileCount": 1086
+        },
+        "macosTargeted": {
+          "tests": 227,
+          "pass": 227,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxRun": "runtime/evidence/C01-metadata-boundary-linux-nas-20260907/run-metadata.json",
+        "nextPlan": "design/chapters/C01-journal-directory-boundary-plan.md",
+        "evidence": "runtime/evidence/C01-metadata-boundary-verification.json",
+        "nativeLinuxFull": {
+          "tests": 2615,
+          "pass": 2615,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxTargeted": {
+          "tests": 227,
+          "pass": 227,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "newTests": {
+          "commonBoundary": 26,
+          "profileWrappers": 5,
+          "profileConcurrency": 4,
+          "total": 35
+        }
+      },
+      "journal_directory_progress": {
+        "implementation": "root_work_connected",
+        "verification": "local_scope_verified_and_combined_full_verified",
+        "plan": "design/chapters/C01-journal-directory-boundary-plan.md",
+        "scope": "root_work_references_and_observed_directory_race_guards",
+        "evidence": "runtime/evidence/C01-journal-directory-verification.json",
+        "sourceAndBuild": {
+          "sourceDigest": "658bca43c0959d14434a1ebfa67591fa20dfb305680321ab1136d7890975c383",
+          "filesDigest": "6a27197893c1e5a832fd23e1a79658ec9eb8a8725f104dd1e3e2a50eedb343c5",
+          "fileCount": 1101
+        },
+        "macosTargeted": {
+          "tests": 151,
+          "pass": 151,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nextPlan": "design/chapters/C01-journal-sync-boundary-plan.md",
+        "combinedVerification": "runtime/evidence/C01-journal-sync-verification.json",
+        "intermediateRecordScope": "root_work_source_before_sync_connection"
+      },
+      "journal_sync_progress": {
+        "implementation": "complete_for_posix_journal_scope",
+        "verification": "journal_directory_and_sync_scope_verified_partial_chapter",
+        "plan": "design/chapters/C01-journal-sync-boundary-plan.md",
+        "result": "design/chapters/C01-journal-directory-sync-result.md",
+        "sourceAndBuild": {
+          "sourceDigest": "07bc725fa221ab3f9b9932d90044a44174c08f117795c7e0427d5bb388e37899",
+          "filesDigest": "269e60def932d32739e12f3ac1c241832bb80bf1c1e8018ca7444ac104b011a0",
+          "fileCount": 1113
+        },
+        "macosTargeted": {
+          "tests": 166,
+          "pass": 166,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxRun": "runtime/evidence/C01-journal-sync-linux-nas-20260907/run-metadata.json",
+        "evidence": "runtime/evidence/C01-journal-sync-verification.json",
+        "nativeLinuxFull": {
+          "tests": 2638,
+          "pass": 2638,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxTargeted": {
+          "tests": 166,
+          "pass": 166,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "newTests": {
+          "directoryReferencesAndRaces": 8,
+          "commonSyncObserver": 7,
+          "journalSync": 8,
+          "total": 23
+        },
+        "nextPlan": "design/chapters/C01-workspace-file-boundary-plan.md"
+      },
+      "workspace_boundary_progress": {
+        "implementation": "complete_for_posix_workspace_scope",
+        "verification": "workspace_directory_lock_and_sync_scope_verified_partial_chapter",
+        "plan": "design/chapters/C01-workspace-file-boundary-plan.md",
+        "sourceAndBuild": {
+          "sourceDigest": "a6b89d53b8193ee71e6077c7f9192e008fd5a51225e35de26bc6a6bb7e71abd0",
+          "filesDigest": "a198150280bc635ae6b7e4dbe75ec2c73604fcf4a2bc8735d32eff3186019eeb",
+          "fileCount": 1131
+        },
+        "macosTargeted": {
+          "tests": 122,
+          "pass": 122,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxRun": "runtime/evidence/C01-workspace-boundary-linux-nas-20260907/run-metadata.json",
+        "newTests": {
+          "directoryReferencesAndLocks": 17,
+          "syncAndCleanup": 11,
+          "actualProcessInterruptions": 3,
+          "total": 31
+        },
+        "result": "design/chapters/C01-workspace-directory-lock-sync-result.md",
+        "nextPlan": "design/chapters/C01-workspace-read-boundary-plan.md",
+        "evidence": "runtime/evidence/C01-workspace-boundary-verification.json",
+        "nativeLinuxFull": {
+          "tests": 2669,
+          "pass": 2669,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxTargeted": {
+          "tests": 122,
+          "pass": 122,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      "workspace_read_progress": {
+        "implementation": "complete_for_posix_workspace_scope",
+        "verification": "workspace_stable_read_scope_verified_partial_chapter",
+        "plan": "design/chapters/C01-workspace-read-boundary-plan.md",
+        "sourceAndBuild": {
+          "sourceDigest": "835c88d22dd3b1896b55bb68d228c06c7449faed3e0787f226801db353d69b86",
+          "filesDigest": "149aa7f3a6ad9721689aac26fe2fdd696141c4dfd35e51b9844b9c3107a0f19c",
+          "fileCount": 1140
+        },
+        "macosTargeted": {
+          "tests": 163,
+          "pass": 163,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "newTests": {
+          "stableReadingAndFaults": 19,
+          "recordValidationAndCompatibility": 22,
+          "total": 41
+        },
+        "nativeLinuxRun": "runtime/evidence/C01-workspace-read-linux-nas-20260907/run-metadata.json",
+        "localIO": "runtime/evidence/C01-workspace-read-io/local-results.md",
+        "result": "design/chapters/C01-workspace-stable-read-result.md",
+        "evidence": "runtime/evidence/C01-workspace-read-verification.json",
+        "nativeLinuxFull": {
+          "tests": 2710,
+          "pass": 2710,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxTargeted": {
+          "tests": 163,
+          "pass": 163,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativePairedIO": "runtime/evidence/C01-workspace-read-linux-nas-20260907/final/linux-paired-measurement.json",
+        "nextPlan": "design/chapters/C01-host-file-mutations-plan.md"
+      },
+      "host_file_mutations_progress": {
+        "status": "posix_setup_mutation_lifecycle_verified_partial_chapter",
+        "plan": "design/chapters/C01-host-file-mutations-plan.md",
+        "nextUnit": "A_posix_profile_creation_publication_and_resume",
+        "parallelUnit": "B_native_windows_setup",
+        "deploymentGate": "C_remaining_store_mutations_and_native_acceptance",
+        "note": "A verified on supported POSIX; move to C02. Native Windows prerequisite module verified only for portable tests/macOS addon/Windows target check, not native runtime acceptance.",
+        "sourceAndBuild": {
+          "sourceDigest": "7224d97d9706d38fe4930d375ad74ccb1eb32ed3a8accfb6e3472ed4bb6fea6e",
+          "filesDigest": "dcb50d2ce1523f9200fc7e3b27c383b5780c13ab95a162a354df61b3b44bc7c7",
+          "fileCount": 1158
+        },
+        "macosTargeted": {
+          "tests": 133,
+          "pass": 133,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxRun": "runtime/evidence/C01-setup-mutations-linux-nas-20260907/run-metadata.json",
+        "result": "design/chapters/C01-setup-mutations-result.md",
+        "verification": "posix_setup_mutation_lifecycle_verified_partial_chapter",
+        "evidence": "runtime/evidence/C01-setup-mutations-verification.json",
+        "nativeLinuxFull": {
+          "tests": 2737,
+          "pass": 2737,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nativeLinuxTargeted": {
+          "tests": 133,
+          "pass": 133,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "nextPlan": "design/chapters/C02-persistent-session-plan.md"
+      },
+      "database_presence_race_regression": {
+        "result": "runtime/evidence/C02-compact-owner-result.md",
+        "evidence": "runtime/evidence/C02-compact-verification.json",
+        "scope": "reobserve initially absent main with unchanged path and owner validation after concurrent SQLite creation",
+        "newTests": 5,
+        "localTests": 43,
+        "sourceAndBuild": {
+          "sourceDigest": "2193685e0a64d0f88e40113b2838afc03c8c24b8430d6a6c36847613b77e0967",
+          "filesDigest": "a8ffa413f7bef69302103f3f39bbf1738dfa74756d47d6435ff1404e0bb04d70",
+          "fileCount": 1248
+        },
+        "nativeFullTests": {
+          "tests": 2836,
+          "pass": 2836,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      "follow_up_observations": [
+        {
+          "source": "C03_drafts_initialization_diagnosis",
+          "item": "build3의 첫 관련 시험(target2)에서 기존 concurrent CLI first storage opens(SQLite) 4개 중 1개가 agent_storage_path_unsafe로 실패했다. 정확한 throw 원인은 미확정이다. 독립 API 10묶음·40 worker와 원 CLI 경로를 관측한 관련 재시험 target3(299/299)에서는 재현하지 못했다. 원인 추측으로 파일·소유권 검사를 완화하거나 초기화 코드를 변경하지 않았다. 이 비결정적 macOS 초기화 실패는 미해결 관측으로 남기며 재발 시 원 stack/메타데이터를 확인한다.",
+          "evidence": "runtime/evidence/C03-drafts-initialization-diagnosis.json",
+          "status": "bounded_limitation"
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "title": "작업을 가로지르는 지속 대화와 compact",
+      "depends_on": [
+        "C01"
+      ],
+      "legacy_work_items": [
+        "P1-05",
+        "P1-07",
+        "P2-03",
+        "P2-05"
+      ],
+      "requirements": [
+        "R05",
+        "R07",
+        "R11",
+        "R12",
+        "R14",
+        "R15",
+        "R24"
+      ],
+      "scope": [
+        "담당 ID·세션 ID·작업 ID의 책임을 구분하고 세션이 여러 작업의 문맥을 이어받도록 한다.",
+        "작업별 목표·계획·자원 장부를 유지하면서 X 완료 뒤 Y 요청에도 같은 대화 문맥을 사용한다.",
+        "가벼운 문맥 정리·compact·체크포인트·재시작·사건 재개를 연결하고, 같은 세션의 동시 갱신과 새 지시/취소를 처리한다."
+      ],
+      "acceptance": [
+        "X 완료→Y 후속 요청·반복 compact·프로세스 재시작에서 필요한 문맥과 참조가 이어진다. 새 작업을 문맥 초기화 조건으로 쓰지 않는다.",
+        "명시적 새 대화와 별도 사용자의 대화가 분리되고 중복 접수·동시 입력은 한 번씩 반영된다.",
+        "compact/모델/도구 실행 도중 수정·취소가 도착해도 낡은 결과가 최신 목표를 덮어쓰지 않는다. 소비한 자원은 compact로 초기화되지 않는다.",
+        "미완료 의무·반증·원본 참조·미확정 외부 효과를 복구하며 세션을 유지하기 위해 모델을 계속 호출하지 않는다."
+      ],
+      "subunits": [
+        "세션과 작업 연결",
+        "증분 문맥 및 compact",
+        "동시 입력·취소·복구"
+      ],
+      "status": "in_progress",
+      "reuse_audit": "design/chapters/C02-reuse-audit.md",
+      "prerequisite_gate": {
+        "chapter": "C01",
+        "scope": "verified_profile_identity_storage_and_setup_mutation_lifecycle_A_on_supported_POSIX",
+        "wholeChapterCompletionRequired": false,
+        "remainingPlatformWork": "Native Windows B/C and host execution ownership remain required for their deployment; not a block on independent C02 development.",
+        "plan": "design/chapters/C01-host-file-mutations-plan.md",
+        "satisfiedForSupportedPOSIX": true,
+        "evidence": "runtime/evidence/C01-setup-mutations-verification.json"
+      },
+      "plan": "design/chapters/C02-persistent-session-plan.md",
+      "persistent_session_progress": {
+        "status": "persistent_session_first_flow_verified_partial_chapter",
+        "plan": "design/chapters/C02-persistent-session-plan.md",
+        "result": "design/chapters/C02-persistent-session-result.md",
+        "evidence": "runtime/evidence/C02-session-verification.json",
+        "scope": "C01-owned CLI/Web intake, durable session/transcript/head, across-work context, interrupted intake/delivery recovery and applied-input model validation",
+        "sourceAndBuild": {
+          "sourceDigest": "18c2aa2f2e37330790863da365c115548fc4d73cfe13c310f5cb985ad96d63d5",
+          "filesDigest": "ca20f6b00d71ecdf50f0fe70306098d3fa5d7015361f0a14264ea8b386ac5630",
+          "fileCount": 1200
+        },
+        "nativeLinux": {
+          "tests": {
+            "tests": 2785,
+            "pass": 2785,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "targeted": {
+            "tests": 48,
+            "pass": 48,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "finishedAt": "2026-09-06T22:00:56.986Z"
+        },
+        "browserEvidence": "runtime/evidence/C02-session-browser-verification.json",
+        "compact": "not_implemented_in_this_unit",
+        "realModelCalls": false,
+        "checkpoint": 228
+      },
+      "nextPlan": "design/chapters/C03-personal-memory-plan.md",
+      "compact_progress": {
+        "status": "repeated_session_compact_verified_partial_chapter",
+        "plan": "design/chapters/C02-session-compact-plan.md",
+        "result": "design/chapters/C02-session-compact-result.md",
+        "evidence": "runtime/evidence/C02-compact-verification.json",
+        "scope": "Persistent session compact lifecycle, source validation, accepted summary plus raw tail, CLI/Web synthetic flow, and current registered runtime suite on native Linux.",
+        "sourceAndBuild": {
+          "sourceDigest": "2193685e0a64d0f88e40113b2838afc03c8c24b8430d6a6c36847613b77e0967",
+          "filesDigest": "a8ffa413f7bef69302103f3f39bbf1738dfa74756d47d6435ff1404e0bb04d70",
+          "fileCount": 1248
+        },
+        "nativeLinux": {
+          "tests": {
+            "tests": 2836,
+            "pass": 2836,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "targeted": {
+            "tests": 46,
+            "pass": 46,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "finishedAt": "2026-09-06T23:09:07.190Z"
+        },
+        "browserEvidence": "runtime/evidence/C02-compact-browser-verification.json",
+        "measurement": "runtime/evidence/C02-compact-measurement1.json",
+        "realModelCalls": false,
+        "checkpoint": 234
+      }
+    },
+    {
+      "id": "C03",
+      "title": "개인 기억·이력 분리와 저장 어댑터",
+      "depends_on": [
+        "C01",
+        "C02"
+      ],
+      "legacy_work_items": [
+        "P2-01",
+        "P2-02",
+        "P2-03",
+        "P2-06"
+      ],
+      "requirements": [
+        "R04",
+        "R10",
+        "R19",
+        "R20",
+        "R23",
+        "R24",
+        "R26"
+      ],
+      "scope": [
+        "단기 문맥·개인 장기기억·대화 기록·실행 복구 상태를 분리하고 담당의 지속 ID를 저장/검색/캐시 경계에 연결한다.",
+        "SQLite를 기본값으로 두고 문서 디렉터리 기반 기억·파일 저널·PostgreSQL을 같은 용도별 저장 계약의 어댑터로 지원한다.",
+        "파일 경로나 DB 주소에 직접 결합되지 않은 논리 참조, 직접 조회/검색, 선별 등록·정정·삭제, 출처/버전/신선도를 구현한다."
+      ],
+      "acceptance": [
+        "같은 사용자·모델·공유 DB에서도 담당 A의 문맥·검색·요약·캐시·체크포인트가 B와 섞이지 않는다. 같은 담당 안의 별도 대화 범위도 보존한다.",
+        "같은 담당의 후속 작업은 허용된 기억을 공유하고, 아카이브 자료를 읽었다는 이유만으로 개인 기억에 자동 등록하지 않는다.",
+        "SQLite·파일·설정된 PostgreSQL의 지원 계약을 시험한다. PostgreSQL 미등록 때 서버를 요구하지 않고, 등록된 정본의 장애 때 임의 로컬 정본을 만들지 않는다.",
+        "기억 정정/삭제가 관련 검색·요약에 반영되고 사라진 참조는 부재로 표시한다. DB와 편집 문서를 각각 독립 정본으로 운영하지 않는다.",
+        "Linux와 네이티브 Windows에서 해당 파일/프로세스/설치/연동 계약을 검증한다. macOS 또는 WSL 결과로 대체하지 않는다."
+      ],
+      "subunits": [
+        "담당 범위와 기본 SQLite",
+        "문서/파일 어댑터",
+        "PostgreSQL 등록과 적합성",
+        "기억 선별·정정·격리"
+      ],
+      "status": "in_progress",
+      "follow_up_observations": [
+        {
+          "source": "C01_journal_binding_owner_recovery",
+          "item": "Read-only SQLite owner inspection may need hot-journal recovery first and can create WAL coordination sidecars. Preserve original DB/journal and return agent_storage_recovery_required when owner cannot be read; implement explicit verifiable recovery/migration without adopting foreign data. Backend marker records assignment, not initialization or migration completion.",
+          "plan": "design/chapters/C01-file-journal-binding-plan.md"
+        }
+      ],
+      "plan": "design/chapters/C03-personal-memory-plan.md",
+      "prerequisite_gate": {
+        "chapters": [
+          "C01",
+          "C02"
+        ],
+        "wholeChapterCompletionRequired": false,
+        "scope": "verified supported-POSIX agent identity/storage plus applied raw receipts and repeated synthetic session compact",
+        "satisfiedForSupportedPOSIX": true,
+        "evidence": "runtime/evidence/C02-compact-verification.json",
+        "remaining": "C01 native Windows/host isolation and real-model quality remain separate deployment/evaluation gates; no API tests resumed"
+      },
+      "personal_memory_progress": {
+        "status": "explicit_personal_memory_verified_partial_chapter",
+        "plan": "design/chapters/C03-personal-memory-plan.md",
+        "progress": "design/chapters/C03-personal-memory-progress.md",
+        "previousVerification": "runtime/evidence/C02-compact-verification.json",
+        "verifiedCurrentChanges": true,
+        "checkpoint": 240,
+        "result": "design/chapters/C03-personal-memory-result.md",
+        "sourceAndBuild": {
+          "sourceDigest": "658c9bd59fc1c1be7c8e71969082ae811839cfb8554634d255cb2a098ab1b824",
+          "filesDigest": "c6a2ce1cbabe723eb92c0ee46e80a08bf88e2af16f1c426e2bab8c5e0a9f914d",
+          "fileCount": 1296
+        },
+        "local": {
+          "build": "passed",
+          "core": "passed",
+          "architecture": {
+            "inspected": 143,
+            "failures": 0
+          },
+          "targeted": {
+            "tests": 52,
+            "pass": 52,
+            "fail": 0
+          }
+        },
+        "nativeLinux": {
+          "status": "passed",
+          "sessionId": 29539,
+          "tests": {
+            "tests": 2888,
+            "pass": 2888,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "targeted": {
+            "tests": 52,
+            "pass": 52,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "finishedAt": "2026-09-07T00:11:56.350Z",
+          "sshClosed": true,
+          "ownedProcesses": 0
+        },
+        "browserEvidence": "runtime/evidence/C03-personal-browser-verification.json",
+        "measurement": "runtime/evidence/C03-personal-measurement1.json",
+        "evidence": "runtime/evidence/C03-personal-verification.json",
+        "chapterComplete": false,
+        "goalComplete": false
+      },
+      "nextPlan": "design/chapters/C03-postgres-adapter-notes.md",
+      "adapterNotes": "design/chapters/C03-postgres-adapter-notes.md",
+      "document_memory_progress": {
+        "status": "document_backend_verified_partial_chapter",
+        "chapterComplete": false,
+        "goalComplete": false,
+        "checkpoint": 245,
+        "plan": "design/chapters/C03-document-memory-plan.md",
+        "scope": "new_explicit_document_personal_backend_existing_memory_service_and_flow",
+        "currentVerification": "runtime/evidence/C03-documents-verification.json",
+        "recoveryReview": "immutable_external_publication_witness_required_to_detect_tail_or_namespace_removal",
+        "remaining": [
+          "postgres",
+          "native_windows",
+          "read_efficiency"
+        ],
+        "sourceAndBuild": {
+          "sourceDigest": "f50ac21e0cebb54efbc55921f62076737e29e9ce679fab18ee9cd44f055e6034",
+          "filesDigest": "0118e8db9c0050c93e54362c9f4814c2e92a0c9237851adc5d59c827fc827687",
+          "fileCount": 1338
+        },
+        "nativeLinux": {
+          "status": "passed",
+          "sessionId": 63469,
+          "tests": {
+            "tests": 2941,
+            "pass": 2941,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "targeted": {
+            "tests": 199,
+            "pass": 199,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "finishedAt": "2026-09-07T01:04:59.248Z",
+          "sshClosed": true,
+          "ownedProcesses": 0
+        },
+        "result": "design/chapters/C03-document-memory-result.md",
+        "local": {
+          "platform": "darwin",
+          "arch": "arm64",
+          "node": "v24.20.0",
+          "build": "passed",
+          "targeted": {
+            "tests": 199,
+            "pass": 199,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "core": {
+            "status": "passed",
+            "sourceScope": "core2_before_infrastructure_only_pending_retry_fix_core_source_unchanged"
+          },
+          "architecture": {
+            "inspected": 143,
+            "failures": [],
+            "sourceScope": "architecture1_before_infrastructure_only_pending_retry_fix_inner_files_unchanged"
+          },
+          "fullTests": "not_run"
+        },
+        "costNotes": "design/chapters/C03-document-memory-cost-notes.md"
+      },
+      "document_draft_progress": {
+        "status": "document_draft_verified_partial_chapter",
+        "checkpoint": 257,
+        "plan": "design/chapters/C03-document-draft-plan.md",
+        "next": "D3_explicit_personal_memory_migration",
+        "previousVerification": "runtime/evidence/C03-documents-verification.json",
+        "verifiedCurrentChanges": true,
+        "chapterComplete": false,
+        "goalComplete": false,
+        "sourceAndBuild": {
+          "sourceDigest": "3fc910d23cc423708a8fd97feb6244c1df2dacf048e7e202e6502822e2f2fc42",
+          "filesDigest": "115d241665f123c7fe720d64576bf0fa94b64de894536978bd4996a6a9c58cc5",
+          "fileCount": 1380
+        },
+        "currentVerification": "runtime/evidence/C03-drafts-verification.json",
+        "local": {
+          "platform": "darwin",
+          "arch": "arm64",
+          "node": "v24.20.0",
+          "build": "passed",
+          "targeted": {
+            "tests": 306,
+            "pass": 306,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "core": "passed",
+          "architecture": {
+            "inspected": 144,
+            "failures": []
+          },
+          "fullTests": "not_run",
+          "coreArchitectureSourceScope": "before_infrastructure_narrowing_and_presentation_contention_retry_same_inner_source"
+        },
+        "nativeLinux": {
+          "status": "passed",
+          "sessionId": 4062,
+          "attempt": 4,
+          "startedAt": "2026-09-07T02:42:06.390Z",
+          "finishedAt": "2026-09-07T02:56:35.548Z",
+          "environment": {
+            "platform": "linux",
+            "arch": "x64",
+            "node": "v24.20.0",
+            "kernel": "6.12.30+",
+            "osRelease": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\nOS_VERSION=1.17.0.0095\nOS_IS_BETA=False\n",
+            "cpus": 6,
+            "totalMemoryBytes": 16530345984,
+            "testConcurrency": 2,
+            "umask": "0022",
+            "temporaryDirectory": "/home/shaneee/secumon-linux-test.pCJ0bd/tmp"
+          },
+          "tests": {
+            "tests": 3000,
+            "pass": 3000,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "targeted": {
+            "tests": 306,
+            "pass": 306,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "targetedFiles": 34,
+          "architecture": {
+            "inspected": 144,
+            "failures": []
+          },
+          "steps": [
+            {
+              "name": "build",
+              "status": "passed",
+              "exitCode": 0
+            },
+            {
+              "name": "drafts-targeted",
+              "status": "passed",
+              "exitCode": 0
+            },
+            {
+              "name": "typecheck-core",
+              "status": "passed",
+              "exitCode": 0
+            },
+            {
+              "name": "architecture",
+              "status": "passed",
+              "exitCode": 0
+            },
+            {
+              "name": "architecture-cli-fixtures",
+              "status": "passed",
+              "exitCode": 0
+            },
+            {
+              "name": "all-tests",
+              "status": "passed",
+              "exitCode": 0
+            },
+            {
+              "name": "fixtures",
+              "status": "passed",
+              "exitCode": 0
+            }
+          ],
+          "staticAssets": [
+            {
+              "path": "evidence/internal-io/v024-original-metrics.json",
+              "sha256": "6c46bb940bb981a738ca72f7c7bfe99630d96bf75cc564a8565b7689cd216c54"
+            },
+            {
+              "path": "evidence/internal-io/v024-instrumented-metrics.json",
+              "sha256": "3e1c4c6f0c001ee9c4c8565149014a1ef7178432e6f6910cb142fe2194f367b1"
+            },
+            {
+              "path": "evidence/internal-io/v024-snapshot-manifest.json",
+              "sha256": "dc3a32a845192825e002d5f4863e206c947a2b1be8fb5f65ba739a36fabdb1d1"
+            },
+            {
+              "path": "evidence/internal-io/v024-instrumented-manifest.json",
+              "sha256": "5f09ea9071f3cbd056ae0bba25b7d66714f7f84034d1370b4b0b67495aef99a2"
+            },
+            {
+              "path": "evidence/internal-io/instrumented-file-artifacts.js",
+              "sha256": "0a92314eea2befcc8d7ce03bf04821afc5773536911a9ddee1e00baa6d0bb9d1"
+            },
+            {
+              "path": "guidance/catalog.json",
+              "sha256": "f1b628d9d062d9d9c3ac2eadb2e962fcf46fd0c9b6e0fb1ffee96d4084add1fa"
+            },
+            {
+              "path": "guidance/evidence-review.md",
+              "sha256": "e3c770b05cef3d9e96c5992d399d3c8eef0a238ab03cd8f9bd5c57bd47b81315"
+            }
+          ],
+          "sourceAndBuild": {
+            "sourceDigest": "3fc910d23cc423708a8fd97feb6244c1df2dacf048e7e202e6502822e2f2fc42",
+            "filesDigest": "115d241665f123c7fe720d64576bf0fa94b64de894536978bd4996a6a9c58cc5",
+            "fileCount": 1380
+          },
+          "collectedFiles": 8,
+          "cleanup": {
+            "verifiedAt": "2026-09-07T02:58:16.922Z",
+            "ownedProcesses": 0,
+            "observedOwnedProcesses": 0,
+            "ownedPids": [],
+            "observedProcesses": [],
+            "inaccessiblePeers": [
+              {
+                "pid": 259855,
+                "visiblePaths": {},
+                "unavailableFields": [
+                  {
+                    "field": "exe",
+                    "code": "EACCES"
+                  },
+                  {
+                    "field": "cwd",
+                    "code": "EACCES"
+                  }
+                ],
+                "scope": "unresolved"
+              },
+              {
+                "pid": 259878,
+                "visiblePaths": {},
+                "unavailableFields": [
+                  {
+                    "field": "exe",
+                    "code": "EACCES"
+                  },
+                  {
+                    "field": "cwd",
+                    "code": "EACCES"
+                  }
+                ],
+                "scope": "unresolved"
+              }
+            ],
+            "unresolved": [
+              {
+                "pid": 259855,
+                "visiblePaths": {},
+                "unavailableFields": [
+                  {
+                    "field": "exe",
+                    "code": "EACCES"
+                  },
+                  {
+                    "field": "cwd",
+                    "code": "EACCES"
+                  }
+                ],
+                "reason": "scope_not_proven_from_accessible_paths"
+              },
+              {
+                "pid": 259878,
+                "visiblePaths": {},
+                "unavailableFields": [
+                  {
+                    "field": "exe",
+                    "code": "EACCES"
+                  },
+                  {
+                    "field": "cwd",
+                    "code": "EACCES"
+                  }
+                ],
+                "reason": "scope_not_proven_from_accessible_paths"
+              }
+            ],
+            "auditErrors": [],
+            "globalProcessAbsenceProven": false,
+            "processAudit": "all_comm_names_same_uid_observable_proc_executable_or_working_directory_within_dedicated_root_excluding_audit_self",
+            "processAuditScope": "Same-UID observable exe/cwd paths; inaccessible peers retain unresolved scope and do not establish global process absence. No comm, cmdline, or environ filter/read.",
+            "realRoot": "/home/shaneee/secumon-linux-test.pCJ0bd",
+            "rootMode": "700",
+            "defaultNode": "v18.20.4",
+            "tmp": [
+              "node-compile-cache",
+              "secumon-mcp-read-c0PPSV"
+            ],
+            "filesystem": "ext4   rw,nosuid,nodev,noatime,nobarrier,quota,usrquota,grpquota,prjquota",
+            "sshClosed": true
+          },
+          "executionLimits": {
+            "nodeTestTimeoutMs": 60000,
+            "fullStageDeadlineMs": 900000,
+            "otherStageDeadlineMs": 180000,
+            "terminationGraceMs": 5000,
+            "postKillObservationMs": 5000,
+            "logFlushDeadlineMs": 5000
+          },
+          "mcpTrace": {
+            "preload": "/home/shaneee/secumon-linux-test.pCJ0bd/mcp-phase-trace.mjs",
+            "sha256": "2e53d80341c0a3f418eae62f65d2f3743ef6785e41999beeb8f5dbda2f16773e",
+            "directory": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence-drafts-c03/mcp-trace",
+            "activation": "mcp-read-tools.test.js child only; preload leaves other test files unchanged",
+            "limitation": "Evidence-only instrumentation adds observation/timing overhead, has bounded detail, and does not establish the cause of the prior stalled run."
+          },
+          "stepProcessResults": [
+            {
+              "name": "build",
+              "timedOut": false,
+              "terminationReason": null,
+              "finalGroupState": "absent",
+              "groupAbsentConfirmed": true,
+              "leaderExit": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:42:20.980Z"
+              },
+              "stdioClose": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:42:20.986Z"
+              }
+            },
+            {
+              "name": "drafts-targeted",
+              "timedOut": false,
+              "terminationReason": null,
+              "finalGroupState": "absent",
+              "groupAbsentConfirmed": true,
+              "leaderExit": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:44:01.968Z"
+              },
+              "stdioClose": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:44:01.968Z"
+              }
+            },
+            {
+              "name": "typecheck-core",
+              "timedOut": false,
+              "terminationReason": null,
+              "finalGroupState": "absent",
+              "groupAbsentConfirmed": true,
+              "leaderExit": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:44:08.914Z"
+              },
+              "stdioClose": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:44:08.918Z"
+              }
+            },
+            {
+              "name": "architecture",
+              "timedOut": false,
+              "terminationReason": null,
+              "finalGroupState": "absent",
+              "groupAbsentConfirmed": true,
+              "leaderExit": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:44:09.654Z"
+              },
+              "stdioClose": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:44:09.655Z"
+              }
+            },
+            {
+              "name": "architecture-cli-fixtures",
+              "timedOut": false,
+              "terminationReason": null,
+              "finalGroupState": "absent",
+              "groupAbsentConfirmed": true,
+              "leaderExit": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:44:10.336Z"
+              },
+              "stdioClose": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:44:10.340Z"
+              }
+            },
+            {
+              "name": "all-tests",
+              "timedOut": false,
+              "terminationReason": null,
+              "finalGroupState": "absent",
+              "groupAbsentConfirmed": true,
+              "leaderExit": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:56:35.120Z"
+              },
+              "stdioClose": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:56:35.120Z"
+              }
+            },
+            {
+              "name": "fixtures",
+              "timedOut": false,
+              "terminationReason": null,
+              "finalGroupState": "absent",
+              "groupAbsentConfirmed": true,
+              "leaderExit": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:56:35.396Z"
+              },
+              "stdioClose": {
+                "code": 0,
+                "signal": null,
+                "at": "2026-09-07T02:56:35.396Z"
+              }
+            }
+          ]
+        },
+        "localChangesVerified": true,
+        "localTargetSession": null,
+        "diagnostic": {
+          "apiBatches": 10,
+          "workers": 40,
+          "observedFailure": false,
+          "resolved": false,
+          "preloadTarget": 3
+        },
+        "initializationDiagnosis": "runtime/evidence/C03-drafts-initialization-diagnosis.json",
+        "activeDiagnostic": null,
+        "mcpDiagnostic": {
+          "status": "passed_not_reproduced",
+          "sessionId": 24110,
+          "tests": 28,
+          "pass": 28,
+          "fail": 0,
+          "collected": true,
+          "finishedAt": "2026-09-07T02:12:42.214Z",
+          "causeKnown": false,
+          "sourceChanged": false
+        },
+        "mcpDiagnosis": "runtime/evidence/C03-drafts-mcp-diagnosis.json",
+        "documentConcurrencyDiagnosis": "runtime/evidence/C03-drafts-native-attempt3-diagnosis.json",
+        "result": "design/chapters/C03-document-draft-result.md"
+      },
+      "personal_memory_migration_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "plan": "design/chapters/C03-personal-memory-migration-plan.md",
+        "review": "design/chapters/C03-personal-memory-migration-review.md",
+        "previousVerification": "runtime/evidence/C03-drafts-verification.json",
+        "chapterComplete": false,
+        "checkpoint": 265,
+        "currentVerification": "runtime/evidence/C03-migration-verification.json",
+        "result": "design/chapters/C03-personal-memory-migration-result.md",
+        "sourceAndBuild": {
+          "sourceDigest": "ec05dcfed7b088acb215327038a0f5fe98a9a7191f4f306274872c0252b1cfa7",
+          "filesDigest": "b2121d43b479389f3541dbcbfea5b7f79e12480ef3bac9a1719ebe258a5f46ef",
+          "fileCount": 1437
+        },
+        "local": {
+          "platform": "darwin",
+          "node": "v24.20.0",
+          "newTests": {
+            "tests": 38,
+            "pass": 38,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "timeoutFailures": 0
+          },
+          "relatedTests": {
+            "tests": 315,
+            "pass": 315,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "timeoutFailures": 0
+          },
+          "fullTests": "not_run"
+        },
+        "nativeLinux": {
+          "status": "passed",
+          "attempt": 1,
+          "finishedAt": "2026-09-07T04:05:40.422Z",
+          "tests": {
+            "tests": 3038,
+            "pass": 3038,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "timeoutFailures": 0
+          },
+          "newTests": {
+            "tests": 38,
+            "pass": 38,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "timeoutFailures": 0
+          },
+          "relatedTests": {
+            "tests": 315,
+            "pass": 315,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "timeoutFailures": 0
+          },
+          "sshClosed": true,
+          "observedOwnedProcesses": 0
+        },
+        "syntheticMigrationExecuted": true,
+        "userDatabaseMigrationExecuted": false,
+        "goalComplete": false
+      },
+      "remainingReview": "design/chapters/C03-remaining-acceptance-review.md"
+    },
+    {
+      "id": "C04",
+      "title": "범용 메인 프롬프트·모델 연결·단일 실행 루프",
+      "depends_on": [
+        "C02",
+        "C03"
+      ],
+      "legacy_work_items": [
+        "P1-03",
+        "P1-04",
+        "P1-06",
+        "P1-07",
+        "P2-05",
+        "P0-01"
+      ],
+      "requirements": [
+        "R01",
+        "R05",
+        "R06",
+        "R07",
+        "R14",
+        "R21",
+        "R25"
+      ],
+      "scope": [
+        "공통 행동 원칙·담당 설정·현재 세션/작업·필요한 지침을 조합하고 사용자 요청을 새 작업/기존 작업 변경/대화 응답으로 연결한다.",
+        "goal/state→필요한 가설→계획→계획 검사→작업 그래프→실행→근거/결과 평가→상태 갱신→계속/재계획/대기/완료를 기존 코어와 연결한다.",
+        "직접 답변·자동/빠르게/깊게, 자체 반론 검토, 실패/무진전/불확실성 처리, 자연스러운 최종 응답을 설계·구현한다.",
+        "모델별 구조화 출력·도구 호출·취소·입출력 한도·usage 차이를 어댑터로 흡수한다. 사내 모델 사용과 역할 배치는 독립시킨다."
+      ],
+      "acceptance": [
+        "단순 질문, 글 작성/수정, 자료 변환·비교, 모순 조사, 도구 실패 후 회복을 같은 본체로 표현한다. 모든 업무에 가설/스킬/긴 계획을 강제하지 않는다.",
+        "가설·반론을 판별 작업과 관측으로 연결하고 필요한 부분만 재계획한다. 반론 그 자체나 다수결을 증거로 취급하지 않는다.",
+        "계획자의 목표 무단 변경 금지와 사용자의 목표 변경을 구분한다. 도구 성공·산출물 완성·목표 완료를 구분하고 의미 평가가 필요한 업무를 사실 키 비교로 제한하지 않는다.",
+        "대역의 계약/오류 검증과 실제 모델의 판단/응답 품질을 따로 기록한다. 중단된 API/모델 시험을 자동 재개하지 않는다."
+      ],
+      "subunits": [
+        "프롬프트 조합과 입력 해석",
+        "기존 루프 연결",
+        "자체 반론·완료 판단·응답",
+        "모델별 적합성 및 품질 평가"
+      ],
+      "status": "in_progress",
+      "follow_up_observations": [
+        {
+          "source": "C02_compact_model_window_allocation",
+          "plan": "design/chapters/C02-session-compact-plan.md",
+          "item": "Historical observation before the C04 window unit: Current compact segment sizing uses initial byte/token heuristics and the normal reservation path rejects an oversized actual estimate. Connect model-specific estimation, required work-state/tool/output space and bounded segment resizing before provider calls; do not claim every small-model window is already supported. Real-model/API experiments remain paused.",
+          "status": "addressed_by_context_window_unit_on_supported_posix",
+          "addressed_by": "design/chapters/C04-context-window-result.md",
+          "current_remaining": "Model window, registered profile, complex investigation and explicit goal changes are verified with deterministic providers on supported POSIX. Real-model semantics, usage, cancellation, tokenizer and summary quality remain unverified; model/API tests stay paused. C05 starts with trusted host read tools and actor/policy composition."
+        }
+      ],
+      "plan": "design/chapters/C04-general-turn-plan.md",
+      "prerequisite_gate": {
+        "wholeChapterCompletionRequired": false,
+        "satisfiedForSupportedPOSIX": true,
+        "scope": "verified agent-owned raw sessions, repeated compact, personal-memory currentness and D3 storage routing",
+        "evidence": "runtime/evidence/C03-migration-verification.json",
+        "remaining": "C03 PostgreSQL and C01/C03 Windows runtime binding/native tests remain explicit outstanding work; model/API tests remain cancelled"
+      },
+      "current_implementation": "Explicit goal changes reuse durable session commands, raw receipts, control/input/policy comparisons, prior-answer invalidation and compact recovery; complex acceptance is included in the final supported POSIX run.",
+      "general_turn_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "checkpoint": 270,
+        "plan": "design/chapters/C04-general-turn-plan.md",
+        "currentVerification": "runtime/evidence/C04-turn-linux-nas-20260907/verification.json",
+        "result": "design/chapters/C04-general-turn-result.md",
+        "usage": "design/chapters/C04-general-turn-usage.md",
+        "sourceAndBuild": {
+          "sourceDigest": "8441f542d0c7394474524ff8e46f30d99b3ed8fc86a7dece153e22cd035647a3",
+          "filesDigest": "f96274dbbb1cc7d14f82c71cb7dd1b43b1e228054114d803cf42327c17f68667",
+          "fileCount": 1521
+        },
+        "local": {
+          "platform": "darwin",
+          "newTests": {
+            "tests": 100,
+            "pass": 100,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "relatedTests": {
+            "tests": 636,
+            "pass": 636,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "fullTests": "not_run",
+          "testNodeVersion": "not_captured_in_selected_local_results"
+        },
+        "nativeLinux": {
+          "status": "passed",
+          "sessionId": 17226,
+          "attempt": 1,
+          "finishedAt": "2026-09-07T05:11:09.973Z",
+          "tests": {
+            "tests": 3138,
+            "pass": 3138,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "newTests": {
+            "tests": 100,
+            "pass": 100,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "relatedTests": {
+            "tests": 636,
+            "pass": 636,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "sshClosed": true,
+          "observedOwnedProcesses": 0
+        },
+        "browser": "not_executed_mac_locked",
+        "chapterComplete": false,
+        "goalComplete": false,
+        "realModelApi": "cancelled"
+      },
+      "nextPlan": "design/chapters/C05-host-tools-plan.md",
+      "context_window_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "currentVerification": "runtime/evidence/C04-window-linux-nas-20260907/verification.json",
+        "result": "design/chapters/C04-context-window-result.md",
+        "usage": "design/chapters/C04-context-window-usage.md",
+        "sourceAndBuild": {
+          "sourceDigest": "fe041beb923c764099302efda684399933a39ea076fc3f75a39509ae9bf79357",
+          "filesDigest": "48cc235bca0faf0be804deef570319fde24ab5ad3948a406f076a2a41a5985c4",
+          "fileCount": 1572
+        },
+        "local": {
+          "node": "v24.20.0",
+          "newTests": 71,
+          "relatedTests": 704,
+          "fullTests": "not_run"
+        },
+        "nativeLinux": {
+          "node": "v24.20.0",
+          "sessionId": 13419,
+          "finishedAt": "2026-09-07T06:16:53.423Z",
+          "tests": 3209,
+          "newTests": 71,
+          "relatedTests": 704,
+          "sshClosed": true,
+          "observedOwnedProcesses": 0
+        },
+        "chapterComplete": false,
+        "goalComplete": false,
+        "realModelApi": "cancelled",
+        "browser": "not_executed_for_this_unit"
+      },
+      "registered_model_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "currentVerification": "runtime/evidence/C04-registered-linux-nas-20260907/verification.json",
+        "proofSha256": "7b1dba98ec791c41b4f5426cd164fdd29a92c1752bad88e470f14cbe7d286133",
+        "result": "design/chapters/C04-registered-model-result.md",
+        "usage": "design/chapters/C04-registered-model-usage.md",
+        "sourceAndBuild": {
+          "sourceDigest": "5fbcaf2a9e041479f06230548332db0860f91132a3ff2d366d7c9d69ca93f150",
+          "filesDigest": "566f1372854a1399e2600c90d632ff97e320a0888606ff5bd890e0095b992b8a",
+          "fileCount": 1611
+        },
+        "local": {
+          "platform": "darwin",
+          "testNodeVersions": {
+            "newTests": "v24.20.0",
+            "relatedTests": "v24.20.0"
+          },
+          "newTests": 44,
+          "relatedTests": 245,
+          "fullTests": "not_run_for_this_final_source_locally"
+        },
+        "nativeLinux": {
+          "node": "v24.20.0",
+          "attempt": 1,
+          "finishedAt": "2026-09-07T07:17:21.980Z",
+          "tests": 3253,
+          "newTests": 44,
+          "relatedTests": 245,
+          "sshClosed": true,
+          "observedOwnedProcesses": 0,
+          "unresolvedPeers": 2,
+          "globalProcessAbsenceProven": false
+        },
+        "initializationDiagnosis": {
+          "path": "runtime/evidence/C04-registered-profile-diagnosis.json",
+          "sha256": "6e0fae9ee271997f45a9aa095b7887004cf58d5e692a0979fd88e08f65c5f210",
+          "status": "unresolved_existing_initialization_observation",
+          "original": {
+            "stage": "related1",
+            "exitCode": 1,
+            "signal": null,
+            "counts": {
+              "tests": 245,
+              "pass": 244,
+              "fail": 1,
+              "cancelled": 0
+            },
+            "test": "separate CLI processes initializing concurrently settle on exactly one identity",
+            "testFile": "runtime/src/tests/agent-profile.test.ts",
+            "testLine": 139,
+            "workers": 8,
+            "errorCode": "agent_storage_path_unsafe",
+            "preciseThrowKnown": false,
+            "sourceUnchanged": true,
+            "buildBefore": {
+              "sourceDigest": "5fbcaf2a9e041479f06230548332db0860f91132a3ff2d366d7c9d69ca93f150",
+              "filesDigest": "566f1372854a1399e2600c90d632ff97e320a0888606ff5bd890e0095b992b8a",
+              "fileCount": 1611
+            },
+            "buildAfterCaptured": false,
+            "startedAt": "2026-09-07T06:56:47.534Z",
+            "finishedAt": "2026-09-07T06:57:33.195Z"
+          },
+          "boundedRepeat": {
+            "stage": "new-profile-diagnostic1",
+            "exitCode": 0,
+            "signal": null,
+            "counts": {
+              "tests": 1,
+              "pass": 1,
+              "fail": 0,
+              "cancelled": 0
+            },
+            "workersInsideTest": 8,
+            "sourceUnchanged": true,
+            "buildBefore": {
+              "sourceDigest": "5fbcaf2a9e041479f06230548332db0860f91132a3ff2d366d7c9d69ca93f150",
+              "filesDigest": "566f1372854a1399e2600c90d632ff97e320a0888606ff5bd890e0095b992b8a",
+              "fileCount": 1611
+            },
+            "buildAfter": {
+              "sourceDigest": "5fbcaf2a9e041479f06230548332db0860f91132a3ff2d366d7c9d69ca93f150",
+              "filesDigest": "566f1372854a1399e2600c90d632ff97e320a0888606ff5bd890e0095b992b8a",
+              "fileCount": 1611
+            },
+            "startedAt": "2026-09-07T06:58:22.525Z",
+            "finishedAt": "2026-09-07T06:58:23.189Z",
+            "interpretation": "Non-reproduction on the same build; not a root-cause diagnosis or fix."
+          },
+          "relatedRepeat": {
+            "stage": "related2",
+            "exitCode": 0,
+            "signal": null,
+            "counts": {
+              "tests": 245,
+              "pass": 245,
+              "fail": 0,
+              "cancelled": 0
+            },
+            "testConcurrency": 1,
+            "workersInsideAffectedTest": 8,
+            "sourceUnchanged": true,
+            "buildBefore": {
+              "sourceDigest": "5fbcaf2a9e041479f06230548332db0860f91132a3ff2d366d7c9d69ca93f150",
+              "filesDigest": "566f1372854a1399e2600c90d632ff97e320a0888606ff5bd890e0095b992b8a",
+              "fileCount": 1611
+            },
+            "buildAfter": {
+              "sourceDigest": "5fbcaf2a9e041479f06230548332db0860f91132a3ff2d366d7c9d69ca93f150",
+              "filesDigest": "566f1372854a1399e2600c90d632ff97e320a0888606ff5bd890e0095b992b8a",
+              "fileCount": 1611
+            },
+            "startedAt": "2026-09-07T06:59:37.526Z",
+            "finishedAt": "2026-09-07T07:00:37.253Z",
+            "interpretation": "Same frozen source/build passes a bounded related-suite rerun; the original failure remains unresolved, not fixed."
+          }
+        },
+        "priorAttempts": [],
+        "historicalEvidence": [
+          {
+            "path": "runtime/evidence/C04-window-linux-nas-20260907/verification.json",
+            "sha256": "da092df6da0c3be7bcc8b12da9c5e9fdea58c8ebf1ca3a04fce88a95de9614b9",
+            "status": "verified_supported_local_posix_partial_chapter",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          }
+        ],
+        "chapterComplete": false,
+        "goalComplete": false,
+        "realModelApi": "cancelled",
+        "browser": "not_claimed_by_this_proof",
+        "remainingReview": "design/chapters/C04-after-registration-review.md"
+      },
+      "complex_turn_progress": {
+        "status": "verified_local_acceptance_tests",
+        "currentVerification": "runtime/evidence/C04-complex-verification.json",
+        "proofSha256": "63a5bcfd5c5f2ed0a8e95eabfd3e67d96c51b47f7e8ca7fb5874adc3075a0384",
+        "result": "design/chapters/C04-complex-turn-result.md",
+        "plan": "design/chapters/C04-complex-turn-plan.md",
+        "sourceAndBuild": {
+          "sourceDigest": "796377707bc7063c9ef162414257cfb4f668a6564806bbc508763ecb1b3cf347",
+          "filesDigest": "e6a7294a0de921476f184c16cbd361f8fc03809347c5add5dab5adbddcd7318c",
+          "fileCount": 1614
+        },
+        "productChanges": [],
+        "addedTestFiles": [
+          "runtime/src/tests/complex-agent-turn.test.ts"
+        ],
+        "local": {
+          "platform": "darwin",
+          "node": "v24.20.0",
+          "build": {
+            "stage": "build4",
+            "sessionId": 10902,
+            "exitCode": 0
+          },
+          "newTests": {
+            "tests": 2,
+            "pass": 2,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "relatedTests": {
+            "tests": 43,
+            "pass": 43,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0
+          },
+          "newObservation": "runtime/evidence/C04-complex-new3.json",
+          "relatedObservation": "runtime/evidence/C04-complex-related1.json"
+        },
+        "assertions": {
+          "success": {
+            "sourceReads": 3,
+            "modelCalls": 5,
+            "planRevision": 2,
+            "replans": 1,
+            "resultDeliveries": 1
+          },
+          "discriminatingReadFailure": {
+            "sourceReads": 3,
+            "modelCalls": 4,
+            "planRevision": 2,
+            "replans": 1,
+            "control": "wait",
+            "reason": "pending_obligation",
+            "questionDeliveries": 1
+          },
+          "successfulSourceRereads": 0,
+          "originalCriteriaPreservedEmpty": true,
+          "failedOriginalAndReopenedAttemptsVerified": true,
+          "interpretation": "Assertions in the executed deterministic acceptance tests; not real-model reasoning-quality evidence."
+        },
+        "priorFailures": [
+          {
+            "stage": "build1",
+            "reason": "unused test type import corrected"
+          },
+          {
+            "stage": "new1",
+            "reason": "test mutated saved answer evidence ordering with sort; failed attempt was incorrectly expected to be adopted; test-only corrections"
+          }
+        ],
+        "nativeLinux": {
+          "status": "not_run",
+          "nextValidation": "with_next_goal_change_product_integration",
+          "historicalRegisteredSource": {
+            "proof": "runtime/evidence/C04-registered-linux-nas-20260907/verification.json",
+            "tests": 3253,
+            "sourceDigest": "5fbcaf2a9e041479f06230548332db0860f91132a3ff2d366d7c9d69ca93f150",
+            "interpretation": "Historical registered-model source; not a native run of this new acceptance test"
+          }
+        },
+        "fullSuite": "not_repeated_for_test_only_change",
+        "realModelApi": "paused",
+        "nativeWindows": "unverified",
+        "browser": "not_executed",
+        "chapterComplete": false,
+        "goalComplete": false,
+        "nextPlan": "design/chapters/C04-goal-change-plan.md"
+      },
+      "goal_change_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "currentVerification": "runtime/evidence/C04-goal-linux-nas-20260907/verification.json",
+        "proofSha256": "77c47342f9fd89f5593a8eb791d58f3d7eb2d9651c5b90a3610217caf23d19be",
+        "result": "design/chapters/C04-goal-change-result.md",
+        "usage": "design/chapters/C04-goal-change-cli-usage.md",
+        "sourceAndBuild": {
+          "sourceDigest": "0eafcde9ae793c33e22d14a427b7897b94f4b98ee8ecf813db1cda10088fa84b",
+          "filesDigest": "3aa61ccf91a9fc8cba255e06c0a54b72ca078675363fb6015fa2a36ca088f692",
+          "fileCount": 1623
+        },
+        "local": {
+          "platform": "darwin",
+          "newTests": 57,
+          "relatedTests": 249,
+          "newTestNode": "v24.20.0",
+          "relatedTestNode": "v24.20.0",
+          "fullTests": "not_run_for_this_final_source_locally"
+        },
+        "nativeLinux": {
+          "newTests": 57,
+          "relatedTests": 249,
+          "tests": 3284,
+          "node": "v24.20.0",
+          "finishedAt": "2026-09-07T08:39:52.164Z",
+          "complexAcceptanceIncluded": true,
+          "observedOwnedProcesses": 0,
+          "sshClosed": true,
+          "unresolvedPeers": 2,
+          "globalProcessAbsenceProven": false
+        },
+        "browser": {
+          "evidence": "runtime/evidence/C04-goal-browser-attempt.json",
+          "sha256": "0d3b48c9d405c52de905ebf7b85766f5f85d77830ac0cf243e4a52ac1bf13e0f",
+          "status": "not_executed_host_locked",
+          "renderChecked": false,
+          "interactionsChecked": false
+        },
+        "priorAttempts": [],
+        "historicalEvidence": [
+          {
+            "path": "runtime/evidence/C04-registered-linux-nas-20260907/verification.json",
+            "sha256": "7b1dba98ec791c41b4f5426cd164fdd29a92c1752bad88e470f14cbe7d286133",
+            "status": "verified_supported_local_posix_partial_chapter",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          },
+          {
+            "path": "runtime/evidence/C04-registered-profile-diagnosis.json",
+            "sha256": "6e0fae9ee271997f45a9aa095b7887004cf58d5e692a0979fd88e08f65c5f210",
+            "status": "unresolved_existing_initialization_observation",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          },
+          {
+            "path": "runtime/evidence/C04-complex-verification.json",
+            "sha256": "63a5bcfd5c5f2ed0a8e95eabfd3e67d96c51b47f7e8ca7fb5874adc3075a0384",
+            "status": "verified_local_acceptance_tests",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          },
+          {
+            "path": "runtime/evidence/C04-goal-new1.json",
+            "sha256": "2bd3dcac8e05be68293cf8027d20743b4ac78ae5c78b7c2f30218cdc5721ac7e",
+            "status": null,
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          },
+          {
+            "path": "runtime/evidence/C04-goal-new2.json",
+            "sha256": "0d3392dfb68d460ab40bdd40bb81f5f4e966ed6f5f239fdd135aa4f32a0bd835",
+            "status": null,
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          },
+          {
+            "path": "runtime/evidence/C04-goal-new3.json",
+            "sha256": "4f753e4940e2bef7873dff16b2c4c9c8e83931785c686b9257ad25291b625f20",
+            "status": null,
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          },
+          {
+            "path": "runtime/evidence/C04-goal-reopen-diagnosis1.json",
+            "sha256": "f0abc4c26f6c1adc94831972ebc16e778036400a174a516af45e8a2f6621c873",
+            "status": "blocked",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          },
+          {
+            "path": "runtime/evidence/C04-goal-reopen-diagnosis-review.json",
+            "sha256": "b5bfff3791cc05631dfb47782ced12ce3f26e19c8d8b6874a67c2f2ecf4a1a31",
+            "status": null,
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          },
+          {
+            "path": "runtime/evidence/C04-goal-cli-fast-diagnosis.json",
+            "sha256": "4db0d0c51ff091c62726dd0daa13e49450f542a8d22f6cc127539ea44e609baf",
+            "status": "observed",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C04 run."
+          }
+        ],
+        "chapterComplete": false,
+        "goalComplete": false,
+        "realModelApi": "paused",
+        "remaining": "실제 모델/API 시험은 중단 상태다. 실제 모델의 의미 판단·usage·취소·tokenizer 적합성과 native Windows runtime/file 연결·PostgreSQL·사내 연동·C08 독립 반론 협업은 남아 있다. C04 전체와 전체 goal은 미완료다.",
+        "nextPlan": "design/chapters/C05-host-tools-plan.md"
+      }
+    },
+    {
+      "id": "C05",
+      "title": "도구·메모리·스킬 호출과 컴퓨터 유즈 효율",
+      "depends_on": [
+        "C04"
+      ],
+      "legacy_work_items": [
+        "P0-04",
+        "P2-03",
+        "P2-04",
+        "P3-01",
+        "P3-04"
+      ],
+      "requirements": [
+        "R03",
+        "R08",
+        "R09",
+        "R10",
+        "R11",
+        "R12",
+        "R13",
+        "R16",
+        "R21"
+      ],
+      "scope": [
+        "기존 catalog·정확한 계약 조회·호출 장부·결과 재사용·진행 중 중복 합류·batch/page/증분 조회를 재사용하고 필요한 개선을 연결한다.",
+        "스킬의 비활성/명시 호출/필요 시 선택 정책과 업무 방법 선택을 지원한다. 전체 목록/본문 상시 로딩과 반복 재로딩을 피한다.",
+        "장기 미사용 도구/내용을 의존성·재조회 가능성에 따라 활성 문맥에서 정리하고 필요 시 다시 읽는다.",
+        "컴퓨터 유즈는 가능한 구조화 도구/API와 UI 작업을 선택하고 관찰→행동 묶음→결과 확인·대기·복구로 실행한다."
+      ],
+      "acceptance": [
+        "직접 참조와 검색 선택, 이미 확보한 자료 재사용, 최신성이 필요한 재조회, 권한/버전 변경과 캐시 폐기를 확인한다.",
+        "스킬이 꺼져 있거나 하나도 없어도 기본 업무가 진행되고, 필요한 지침만 선택 로딩·해제·복원한다.",
+        "선택한 UI 환경에서 화면 재사용·영역/요약·행동 묶음의 효과와 부분 성공·응답 유실·중복 행동 방지를 확인한다. 지원하지 않은 OS/앱까지 확장해 주장하지 않는다.",
+        "같은 업무의 결과 품질과 입력량·모델/도구/기억/스킬 호출·이미지·재시도·지연을 비교한다. 측정하지 않은 절감률을 약속하지 않는다.",
+        "Linux와 네이티브 Windows에서 해당 파일/프로세스/설치/연동 계약을 검증한다. macOS 또는 WSL 결과로 대체하지 않는다."
+      ],
+      "subunits": [
+        "카탈로그·MCP 재사용",
+        "기억/스킬 선택 로딩",
+        "컨텍스트 정리",
+        "컴퓨터 유즈 환경별 검증",
+        "동일 업무 효율 비교"
+      ],
+      "status": "in_progress",
+      "follow_up_observations": [
+        {
+          "source": "C02_compact_source_revalidation_measurement",
+          "evidence": "runtime/evidence/C02-compact-measurement1.json",
+          "item": "Three synthetic compact reserve/execute/adopt lifecycles read session history 95 times and return 691214 JSON bytes; whole measured flow including inspection reads 187 times/1535589 bytes. Model input shrinks but source revalidation has separate cost. Measure long histories and remove redundant reads within a verified snapshot while preserving policy/source/receipt change detection and pre-effect validation. Do not infer real-model token savings or replace source checks with a permissive TTL cache."
+        },
+        {
+          "source": "C03_personal_memory_measurement",
+          "item": "One selected 105-byte memory yields 256 state.get, 69 knowledge.get, 228 session.input and 75 history observations during context.prepare (one includes measuring caller state read). Candidate cache only removes one query and CLI/Web use fresh services per request. Reduce phase-local redundant validation while preserving final freshness and race rejection; no throughput or token-savings claim.",
+          "evidence": "runtime/evidence/C03-personal-measurement1.json",
+          "analysis": "design/chapters/C03-personal-memory-cost-notes.md"
+        },
+        {
+          "source": "C03_document_memory_measurement",
+          "item": "105B fixture context prepare observed 1104 common metadata opens and 378810 read bytes; preserve source/currentness/witness recovery while reducing repeated I/O. Concurrent single run is not a benchmark.",
+          "plan": "design/chapters/C03-document-memory-cost-notes.md"
+        },
+        {
+          "source": "C03_document_drafts",
+          "item": "Draft origin/intent namespaces currently scan bounded files on every operation. Reduce repeated I/O without weakening owner/immutable-intent/currentness checks; draft retention needs C10 policy. No speed or token reduction claim.",
+          "plan": "design/chapters/C03-document-draft-result.md"
+        },
+        {
+          "source": "C03_drafts_MCP_stall",
+          "item": "NAS 전체 attempt2의 MCP read-tools 파일은 17개 자연 완료 뒤 약336초 정체하여 정확한 자식 PID를 진단용 SIGTERM으로 종료했다. 전체2982/2983·실패1을 보존했다. 같은 build3 단독 관측시험은28/28로 자연 완료했다. 이후 문서 목록 경합을 수정한 build4의 최종 NAS 전체3000/3000·관련306/306도 통과했으며 MCP 종료 시 미완료 phase/FS는 없었다. 원 MCP 정체 원인은 여전히 미확정이다. MCP/SDK 코드를 추측으로 수정하지 않았고, 관측 preload의 타이밍 영향과 상세 로그 한도를 유지해 기록한다.",
+          "evidence": "runtime/evidence/C03-drafts-mcp-diagnosis.json",
+          "status": "bounded_limitation"
+        },
+        {
+          "source": "C03_D3_import_validation_cost",
+          "item": "Activated document profiles currently validate complete immutable import prefixes. Measure repeated read/hash cost before optimizing; retain owner, seed, witness and currentness checks.",
+          "plan": "design/chapters/C03-personal-memory-migration-result.md"
+        }
+      ],
+      "nextPlan": "design/chapters/C05-mcp-collections-entry-notes.md",
+      "entry_preparation": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "plan": "design/chapters/C05-host-tools-plan.md",
+        "prerequisite": "runtime/evidence/C04-goal-linux-nas-20260907/verification.json",
+        "wholeC04CompletionRequired": false,
+        "checkpoint": "runtime/evidence/C05-host-implementation-checkpoint.json",
+        "result": "design/chapters/C05-host-tools-result.md",
+        "currentVerification": "runtime/evidence/C05-host-linux-nas-20260907/verification.json"
+      },
+      "host_tools_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "currentVerification": "runtime/evidence/C05-host-linux-nas-20260907/verification.json",
+        "proofSha256": "6ff54f755b983c007ab7a541496f64500294086f86b0ac9a21f1445b8ee3ac5f",
+        "result": "design/chapters/C05-host-tools-result.md",
+        "usage": "design/chapters/C05-host-tools-usage.md",
+        "sourceAndBuild": {
+          "sourceDigest": "da1b2da2fb712caf48753afac5dc3d78822fd636d324455a080a7c8c2eebbdf4",
+          "filesDigest": "61e8cf8b24b4230e9899af6106b5c1e17f1d89b1667c63b685574a0289414b4e",
+          "fileCount": 1650
+        },
+        "local": {
+          "platform": "darwin",
+          "newTests": 54,
+          "relatedTests": 356,
+          "newTestNode": "v24.20.0",
+          "relatedTestNode": "v24.20.0",
+          "fullTests": "not_run_for_this_final_source_locally"
+        },
+        "nativeLinux": {
+          "newTests": 54,
+          "relatedTests": 356,
+          "tests": 3338,
+          "node": "v24.20.0",
+          "finishedAt": "2026-09-07T10:33:02.838Z",
+          "observedOwnedProcesses": 0,
+          "sshClosed": true,
+          "unresolvedPeers": 2,
+          "globalProcessAbsenceProven": false
+        },
+        "priorAttempts": [],
+        "historicalEvidence": [
+          {
+            "path": "runtime/evidence/C04-goal-linux-nas-20260907/verification.json",
+            "sha256": "77c47342f9fd89f5593a8eb791d58f3d7eb2d9651c5b90a3610217caf23d19be",
+            "status": "verified_supported_local_posix_partial_chapter",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C05 run."
+          }
+        ],
+        "chapterComplete": false,
+        "goalComplete": false,
+        "realModelApi": "paused",
+        "browser": "not_checked_by_this_document_update",
+        "remaining": "C05 전체와 전체 goal은 미완료다. 실제 모델/API 시험은 중단 상태이며 모델 판단·usage·취소·tokenizer 적합성, 사내 MCP·Knox, native Windows 연결·PostgreSQL·운영 배포는 미검증 또는 후속 구현 항목이다.",
+        "nextPlan": "design/chapters/C05-mcp-host-plan.md",
+        "costReview": "design/chapters/C05-context-cost-review.md",
+        "followUpReview": "design/chapters/C05-after-host-review.md"
+      },
+      "current_implementation": "Explicit host stored_only registration reuses stored-response custody, usage and current body proof without opening an MCP peer. General CLI/HTTP can restore saved plain-read responses; uncalled tasks wait without new reservations, preserve existing lease expiry, and resume the same work after explicit online reopen. Current contract and authority checks remain distinct from new execution availability.",
+      "mcp_host_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "currentVerification": "runtime/evidence/C05-mcp-linux-nas-20260907/verification.json",
+        "proofSha256": "c04e4cb45e98716b5c5f003c2609c627711100a4e018cb501c5811708f0e2226",
+        "result": "design/chapters/C05-mcp-host-result.md",
+        "usage": "design/chapters/C05-mcp-host-usage.md",
+        "sourceAndBuild": {
+          "sourceDigest": "45f9b1a119186cf5da63139145ab1c48f11c32491a46e2c717519114de7172cd",
+          "filesDigest": "a0f873e8bcb9721d672911c149b49df5f7b9256093a774e9544aec4afe8c0f83",
+          "fileCount": 1668
+        },
+        "local": {
+          "platform": "darwin",
+          "newTests": 30,
+          "relatedTests": 572,
+          "newTestNode": "v24.20.0",
+          "relatedTestNode": "v24.20.0",
+          "fullTests": "not_run_for_this_final_source_locally"
+        },
+        "nativeLinux": {
+          "newTests": 30,
+          "relatedTests": 572,
+          "tests": 3368,
+          "node": "v24.20.0",
+          "finishedAt": "2026-09-07T11:16:55.467Z",
+          "observedOwnedProcesses": 0,
+          "sshClosed": true,
+          "inaccessiblePeers": 2,
+          "unresolvedPeers": 2,
+          "globalProcessAbsenceProven": false
+        },
+        "priorAttempts": [],
+        "historicalEvidence": [
+          {
+            "path": "runtime/evidence/C05-host-linux-nas-20260907/verification.json",
+            "sha256": "6ff54f755b983c007ab7a541496f64500294086f86b0ac9a21f1445b8ee3ac5f",
+            "status": "verified_supported_local_posix_partial_chapter",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C05 run."
+          }
+        ],
+        "chapterComplete": false,
+        "goalComplete": false,
+        "realModelApi": "paused",
+        "browser": "not_checked_by_this_document_update",
+        "offlineGeneralEntry": false,
+        "rawBeforeReceivedRecovery": "next_unit_not_implemented",
+        "postSendAuthorityReceiptRecovery": "required_followup",
+        "collectionWaitGeneralEntry": "required_followup",
+        "remaining": "C05 전체와 전체 goal은 미완료다. 실제 모델/API 시험은 중단 상태이며 모델 판단·usage·취소·tokenizer 적합성, 사내 MCP·Knox, native Windows runtime/file 연결·PostgreSQL·운영 배포는 미검증 또는 후속 구현 항목이다.",
+        "nextPlan": "design/chapters/C05-mcp-response-recovery-plan.md",
+        "costReview": "design/chapters/C05-context-cost-review.md"
+      },
+      "mcp_recovery_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "currentVerification": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/verification.json",
+        "proofSha256": "f2fbe8a2e971f29bf182a9cf018d8122ef38b1c7996628e4e6b8da1b4e926960",
+        "result": "design/chapters/C05-mcp-response-recovery-result.md",
+        "usage": "design/chapters/C05-mcp-host-usage.md",
+        "sourceAndBuild": {
+          "sourceDigest": "7c5cd5006af1585384976447f317eb9ce49f2f1fe9683bb0d593ed62dc011a4b",
+          "filesDigest": "1d8f4845eb2aacf325e2aff6245b36273f6e5b728fc4dd071c7dde33cac882e0",
+          "fileCount": 1692
+        },
+        "local": {
+          "platform": "darwin",
+          "newTests": 55,
+          "relatedTests": 421,
+          "newTestNode": "v24.20.0",
+          "relatedTestNode": "v24.20.0",
+          "fullTests": "not_run_for_this_final_source_locally"
+        },
+        "nativeLinux": {
+          "newTests": 55,
+          "relatedTests": 421,
+          "tests": 3423,
+          "node": "v24.20.0",
+          "finishedAt": "2026-09-07T12:02:55.086Z",
+          "observedOwnedProcesses": 0,
+          "sshClosed": true,
+          "inaccessiblePeers": 2,
+          "unresolvedPeers": 2,
+          "globalProcessAbsenceProven": false
+        },
+        "priorAttempts": [],
+        "historicalEvidence": [
+          {
+            "path": "runtime/evidence/C05-mcp-linux-nas-20260907/verification.json",
+            "sha256": "c04e4cb45e98716b5c5f003c2609c627711100a4e018cb501c5811708f0e2226",
+            "status": "verified_supported_local_posix_partial_chapter",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C05 run."
+          }
+        ],
+        "chapterComplete": false,
+        "goalComplete": false,
+        "realModelApi": "paused",
+        "browser": "not_checked_by_this_document_update",
+        "plainStoredResponseRecovery": "verified_bounded_same_attempt",
+        "ordering": "receive_and_adopt_or_reject_settle_then_required_compact_then_context_checkpoint_restore_then_following_work",
+        "rawOnlyIntentOnly": "blocked_without_hidden_retry",
+        "offlineGeneralEntry": false,
+        "postSendAuthorityReceiptRecovery": "next_unit_not_implemented",
+        "collectionWaitGeneralEntry": "required_followup",
+        "clockMeaning": "Original capture and transaction preparation observations; not physical commit completion or cross-restart monotonic time.",
+        "remaining": "C05 전체와 전체 goal은 미완료다. 실제 모델/API 시험은 중단 상태이며 모델 판단·usage·취소·tokenizer 적합성, 사내 MCP·Knox·운영 배포는 미검증이다. native Windows runtime/file 연결과 PostgreSQL의 잔여 구현·검증도 남아 있다.",
+        "nextPlan": "design/chapters/C05-mcp-sent-authority-plan.md",
+        "mcpSequence": "design/chapters/C05-mcp-host-plan.md",
+        "costReview": "design/chapters/C05-context-cost-review.md"
+      },
+      "mcp_custody_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "currentVerification": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/verification.json",
+        "proofSha256": "3783a0a1f5ba3a4eea5a9a2231d5def3dbaf44a163c4444b8e559642283e463c",
+        "result": "design/chapters/C05-mcp-sent-authority-result.md",
+        "plan": "design/chapters/C05-mcp-sent-authority-plan.md",
+        "usage": "design/chapters/C05-mcp-host-usage.md",
+        "sourceAndBuild": {
+          "sourceDigest": "d662de55a414015e5fb4f26b189cc6ec3874d222c68736fd38eec53fa5402580",
+          "filesDigest": "c2831de467ff14f3843203000d1141f89fec691208b6fb5864e72c6e2eb70c69",
+          "fileCount": 1743
+        },
+        "local": {
+          "platform": "darwin",
+          "newTests": 121,
+          "relatedTests": 775,
+          "newTestNode": "v24.20.0",
+          "relatedTestNode": "v24.20.0",
+          "fullTests": "not_run_for_this_final_source_locally"
+        },
+        "nativeLinux": {
+          "newTests": 121,
+          "relatedTests": 775,
+          "tests": 3544,
+          "node": "v24.20.0",
+          "finishedAt": "2026-09-07T13:31:04.906Z",
+          "observedOwnedProcesses": 0,
+          "sshClosed": true,
+          "inaccessiblePeers": 2,
+          "unresolvedPeers": 2,
+          "globalProcessAbsenceProven": false
+        },
+        "priorAttempts": [],
+        "historicalEvidence": [
+          {
+            "path": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/verification.json",
+            "sha256": "f2fbe8a2e971f29bf182a9cf018d8122ef38b1c7996628e4e6b8da1b4e926960",
+            "status": "verified_supported_local_posix_partial_chapter",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C05 run."
+          }
+        ],
+        "retainedLocalStages": [
+          {
+            "stage": "new3",
+            "path": "runtime/evidence/C05-mcp-custody-new3",
+            "tests": 120,
+            "pass": 113,
+            "fail": 7,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "sourceAndBuild": {
+              "sourceDigest": "a85b2ce7e8c6a172afb0a869bbca70b41d54dac986865d5ea8ef97cb7c2cc8d2",
+              "filesDigest": "dcf66e91b472228531794d86e2ea7333e2bf0de3215198b2bf7518aba0540d4a",
+              "fileCount": 1743
+            },
+            "finishedAt": "2026-09-07T13:02:53.664Z"
+          },
+          {
+            "stage": "new4",
+            "path": "runtime/evidence/C05-mcp-custody-new4",
+            "tests": 121,
+            "pass": 116,
+            "fail": 5,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "sourceAndBuild": {
+              "sourceDigest": "20d33aec5bc56093d68eca58b4cb5c0e6e6d7f653d73f039bcd5fdd7a41568df",
+              "filesDigest": "b62b2b4c44ebe450ad7be8b5b929995416acc4cf30222ffb8782f7eab0a857be",
+              "fileCount": 1743
+            },
+            "finishedAt": "2026-09-07T13:06:31.118Z"
+          },
+          {
+            "stage": "related-entry1",
+            "path": "runtime/evidence/C05-mcp-custody-related-entry1",
+            "tests": 5,
+            "pass": 5,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "sourceAndBuild": {
+              "sourceDigest": "d662de55a414015e5fb4f26b189cc6ec3874d222c68736fd38eec53fa5402580",
+              "filesDigest": "c2831de467ff14f3843203000d1141f89fec691208b6fb5864e72c6e2eb70c69",
+              "fileCount": 1743
+            },
+            "finishedAt": "2026-09-07T13:07:26.135Z"
+          }
+        ],
+        "chapterComplete": false,
+        "goalComplete": false,
+        "realModelApi": "paused",
+        "browser": "not_checked_by_this_document_update",
+        "custody": "same_original_attempt_bounded_decoded_response_and_proven_usage_without_current_body_authority",
+        "bodyRecovery": "normal_current_authority_and_provenance_checks_unchanged",
+        "knownUsage": "source_bound_receipt_merge_without_addition_or_unknown_promotion",
+        "metadataSkip": "exact_current_execution_and_recorded_usage_receipt_only_no_raw_read_for_accounting_skip",
+        "ordering": "normal_stored_settlement_then_one_bounded_usage_pass_then_required_compact_then_context_checkpoint",
+        "entry": "explicit_run_or_command_only_read_views_unchanged_original_input_denial_preserved",
+        "rawOnlyIntentOnly": "blocked_without_hidden_retry",
+        "offlineGeneralEntry": false,
+        "collectionWaitGeneralEntry": "required_followup",
+        "pendingClose": "executor_local_default_5_seconds_not_whole_host_close_or_atomic_commit",
+        "clockMeaning": "Original capture and transaction preparation observations; not physical commit completion or cross-restart monotonic time.",
+        "remaining": "C05 전체와 전체 goal은 미완료다. 실제 모델/API 시험은 중단 상태이며 모델 판단·사용량·취소·tokenizer 적합성, 사내 MCP·Knox·운영 배포는 미검증이다. native Windows runtime/file 연결의 미구현·미연결 부분과 검증, PostgreSQL 구현·검증도 남아 있다.",
+        "nextPlan": "design/chapters/C05-mcp-offline-resume-plan.md",
+        "nextPlanStatus": "plan_adopted_product_not_started",
+        "nextPlanningNotes": "design/chapters/C05-mcp-offline-resume-notes.md",
+        "mcpSequence": "design/chapters/C05-mcp-host-plan.md",
+        "costReview": "design/chapters/C05-context-cost-review.md"
+      },
+      "mcp_offline_progress": {
+        "status": "verified_supported_local_posix_partial_chapter",
+        "currentVerification": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/verification.json",
+        "proofSha256": "28cdec0cdcaa8d7e308e8341258218a6b85e31d5053f50cf914e5e6edd7f38b9",
+        "result": "design/chapters/C05-mcp-offline-resume-result.md",
+        "plan": "design/chapters/C05-mcp-offline-resume-plan.md",
+        "usage": "design/chapters/C05-mcp-offline-resume-usage.md",
+        "sourceAndBuild": {
+          "sourceDigest": "fe438a3d25a33c43b3b7403b9b584df78eef86f044aadf9c7102cd6969798a15",
+          "filesDigest": "f6c07038312ab9a9db5b94f70ef3caa106ee104d12aaa00146dc29d47c3d745f",
+          "fileCount": 1758
+        },
+        "local": {
+          "platform": "darwin",
+          "newTests": 145,
+          "relatedTests": 847,
+          "newTestNode": "v24.20.0",
+          "relatedTestNode": "v24.20.0",
+          "fullTests": "not_run_for_this_final_source_locally"
+        },
+        "nativeLinux": {
+          "newTests": 145,
+          "relatedTests": 847,
+          "tests": 3601,
+          "node": "v24.20.0",
+          "finishedAt": "2026-09-07T14:48:57.769Z",
+          "observedOwnedProcesses": 0,
+          "sshClosed": true,
+          "inaccessiblePeers": 2,
+          "unresolvedPeers": 2,
+          "globalProcessAbsenceProven": false
+        },
+        "priorAttempts": [
+          {
+            "nativeAttempt": 1,
+            "sourceAndBuild": {
+              "sourceDigest": "761bfb504e747fea69af87527cb727f9aad8816374ecda9cc2179fcaefd66fb8",
+              "filesDigest": "88524788c9306dee0acdf77b1c485c34d1699f452d4793a79e9a0f4e780e8248",
+              "fileCount": 1758
+            },
+            "finishedAt": "2026-09-07T14:18:41.404Z",
+            "evidence": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/attempt-1/result.json",
+            "status": "failed"
+          }
+        ],
+        "historicalEvidence": [
+          {
+            "path": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/verification.json",
+            "sha256": "3783a0a1f5ba3a4eea5a9a2231d5def3dbaf44a163c4444b8e559642283e463c",
+            "status": "verified_supported_local_posix_partial_chapter",
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C05 run."
+          },
+          {
+            "path": "runtime/evidence/C05-mcp-offline-first-validation.json",
+            "sha256": "58666cad0b7ec08f4467c4e105b4041f9a20c39ffc0b0378abcf70087dd25a68",
+            "status": null,
+            "interpretation": "Operator-selected historical evidence; retained without promoting its pin, counts or diagnosis to this C05 run."
+          }
+        ],
+        "retainedLocalStages": [
+          {
+            "stage": "new1",
+            "path": "runtime/evidence/C05-mcp-offline-new1",
+            "tests": 143,
+            "pass": 143,
+            "fail": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "sourceAndBuild": {
+              "sourceDigest": "5be670d9bfdefbc5cc54d96b267b78131e05ffb7464ed335406c52601ebc51b4",
+              "filesDigest": "0a3a3214ef6c4e5f6ff81251d5cf8198056bd14475ab1e37d150ba4346c36ef6",
+              "fileCount": 1758
+            },
+            "finishedAt": "2026-09-07T13:44:16.846Z"
+          },
+          {
+            "stage": "related1",
+            "path": "runtime/evidence/C05-mcp-offline-related1",
+            "tests": 847,
+            "pass": 833,
+            "fail": 14,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "sourceAndBuild": {
+              "sourceDigest": "5be670d9bfdefbc5cc54d96b267b78131e05ffb7464ed335406c52601ebc51b4",
+              "filesDigest": "0a3a3214ef6c4e5f6ff81251d5cf8198056bd14475ab1e37d150ba4346c36ef6",
+              "fileCount": 1758
+            },
+            "finishedAt": "2026-09-07T13:47:30.565Z"
+          }
+        ],
+        "chapterComplete": false,
+        "goalComplete": false,
+        "realModelApi": "paused",
+        "browser": "not_checked_by_this_document_update",
+        "offlineGeneralEntry": true,
+        "entryCases": {
+          "cli": 2,
+          "http": 4,
+          "storage": [
+            "sqlite",
+            "file-journal"
+          ],
+          "evidence": "runtime/evidence/C05-mcp-offline-linux-nas-20260907/final/new-mcp-offline-tests.log"
+        },
+        "offline": "explicit_host_registered_stored_only_without_peer_discovery_or_new_call_not_automatic_fallback",
+        "onlineReopen": "same_owner_session_work_goal_plan_task_one_real_call_then_idempotent_command",
+        "storedProof": "current_authority_definition_version_original_receipts_and_artifact_proof_preserved",
+        "connectionWait": "no_new_reservation_or_logical_call_existing_untransmitted_lease_preserved_expiry_first_independent_tasks_continue",
+        "rawOnlyIntentOnly": "no_invented_receipt_or_retransmission",
+        "collectionWaitGeneralEntry": "required_followup",
+        "nextPlan": "design/chapters/C05-mcp-collections-entry-notes.md",
+        "nextPlanStatus": "review_notes_product_not_started",
+        "mcpSequence": "design/chapters/C05-mcp-host-plan.md",
+        "costReview": "design/chapters/C05-context-cost-review.md",
+        "remaining": "C05 전체와 C01~C10 전체 goal은 미완료다. 실제 모델/API 시험은 중단 상태이며 모델 의미 품질·사용량·취소·tokenizer 적합성, 사내 MCP·Knox·운영 배포는 미검증이다. native Windows runtime/file의 미구현·미연결 부분과 검증, PostgreSQL 구현·검증도 남아 있다."
+      }
+    },
+    {
+      "id": "C06",
+      "title": "CLI·Web·Knox 대화와 최소 설치·업무 배치",
+      "depends_on": [
+        "C04",
+        "C05"
+      ],
+      "legacy_work_items": [
+        "P3-02",
+        "P3-03",
+        "P3-05",
+        "P5-01"
+      ],
+      "requirements": [
+        "R01",
+        "R13",
+        "R15",
+        "R19",
+        "R22",
+        "R23",
+        "R24"
+      ],
+      "scope": [
+        "접수 사실·필요 질문·의미 있는 진행 변화·최종 결과 중심의 지속 대화를 CLI/Web/Knox에 연결한다. 세부 실행 기록은 펼쳐서 본다.",
+        "채널 재접속·전달 중복 방지·상태/취소·사용자/세션 라우팅을 구현하고 Knox MCP의 실제 지원 능력에 맞춘다.",
+        "최소 전역 명령 설치·버전 표시·담당 디렉터리 연결을 제공하고, 문서 업무와 관측 분석 업무를 설정/도구/스킬로 배치한다."
+      ],
+      "acceptance": [
+        "도구 호출마다 말풍선이 늘지 않고 응답 유실·재접속에서도 접수/결과가 중복 전달되지 않는다. 대기 중 상태 조회·취소가 가능하다.",
+        "두 업무 배치를 위해 공통 루프·저장소·프롬프트 본체에 보안 전용 분기를 추가하지 않는다. 사람 대화 역할은 어느 업무에도 쓸 수 있다.",
+        "게시판·아카이브·협업 없이 단일 담당을 설치/호출할 수 있다. 실제 Knox 연결과 가짜 채널 시험을 구분한다.",
+        "패키지 생성·격리 설치와 공개 배포를 구분하고, 제거/재설치가 담당 자료를 삭제하지 않게 한다.",
+        "Linux와 네이티브 Windows에서 해당 파일/프로세스/설치/연동 계약을 검증한다. macOS 또는 WSL 결과로 대체하지 않는다."
+      ],
+      "subunits": [
+        "공통 대화 표시",
+        "CLI/Web",
+        "Knox 연결",
+        "최소 설치와 두 업무 배치"
+      ],
+      "status": "planned",
+      "follow_up_observations": [
+        {
+          "source": "C01_linux_nas_preparation",
+          "item": "Package and hash required product assets including guidance; verification bundles must also include the five frozen internal-io provenance assets. Current source/build pin does not include these non-code assets.",
+          "status": "open"
+        },
+        {
+          "source": "C01_journal_binding_setup_selection",
+          "item": "Expose state backend selection before the first storage open in CLI/setup. Default sqlite; optional file-journal. Persist the initial choice through interrupted setup. Existing CLI init immediately creates sqlite, so config edits after init are not a migration path.",
+          "plan": "design/chapters/C01-file-journal-binding-plan.md"
+        },
+        {
+          "source": "C03_personal_memory_browser",
+          "item": "Stale memory selection currently yields generic permission error and empty work list; reselect/clear restores work but prior error/connection text remains until reload. Distinguish source freshness from access errors and absent work, clear resolved notices, and restore selected work after reconnect.",
+          "evidence": "runtime/evidence/C03-personal-browser-verification.json"
+        }
+      ]
+    },
+    {
+      "id": "C07",
+      "title": "선택 게시판·아카이브와 저장소 연결",
+      "depends_on": [
+        "C03",
+        "C06"
+      ],
+      "legacy_work_items": [
+        "P4-01",
+        "P2-02",
+        "P2-06"
+      ],
+      "requirements": [
+        "R04",
+        "R10",
+        "R17",
+        "R19",
+        "R26"
+      ],
+      "scope": [
+        "게시판을 경험 질문/답변 공간으로 구현하고 관측글의 선택 반응과 명시 질문의 응답 책임을 나눈다.",
+        "아카이브는 성공/실패/대화 사례 저장소나 기존 시스템의 조회 기능을 연결한다. 조회 전용/조회·등록 등 공급자 능력을 반영한다.",
+        "기본 비활성이고 배치별로 켤 수 있게 한다. 공유 글의 접근 범위와 연결 원문의 접근 범위를 분리한다."
+      ],
+      "acceptance": [
+        "허용된 참여자가 게시글을 읽고 답하며 일반 글마다 숨김/사람 승인/가공 절차를 강제하지 않는다.",
+        "질문은 수락/거절/답변/추가 정보/근거 부족/미응답 상태로 이어지고 모든 글을 모든 담당에게 방송하지 않는다.",
+        "아카이브 조회와 개인 기억 등록을 분리하고 중복 사례·출처 버전·정정/삭제·조회 전용 공급자를 처리한다.",
+        "두 기능이 꺼져 있어도 세션·개인 기억·실행 복구 상태가 정상 동작한다."
+      ],
+      "subunits": [
+        "게시판 정상 읽기/답변",
+        "응답 의무와 알림",
+        "아카이브 포트와 공급자",
+        "선택 활성화 검증"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "C08",
+      "title": "동료·임시 서브에이전트·독립 반론·자원",
+      "depends_on": [
+        "C04",
+        "C06"
+      ],
+      "legacy_work_items": [
+        "P4-01",
+        "P4-04",
+        "P2-05",
+        "P2-06"
+      ],
+      "requirements": [
+        "R01",
+        "R06",
+        "R14",
+        "R17",
+        "R19",
+        "R25"
+      ],
+      "scope": [
+        "같은 범용 본체를 상주 담당과 임시 검토/실행 역할로 사용하고 업무별 동적 역할을 지원한다. 협업 경로는 게시판에 종속시키지 않는다.",
+        "중요한 불확실성·충돌·진전 정체 등에 선택적으로 별도 문맥의 반론 검토자를 호출한다. 검토 결과는 판별 작업과 근거 평가로 연결한다.",
+        "에이전트가 자원 배정·추가 요청·회수/재배정을 판단하고 런타임이 예약·사용량 정산·미사용 반환을 집행한다. 수락 판단용 자원과 실제 수행 자원을 구분한다."
+      ],
+      "acceptance": [
+        "A→B와 B→A 요청, 독립 자원으로 응답, 명시 위임 자원으로 수행을 모두 확인한다. 모든 질문에 새 자식 작업/배정을 강제하지 않는다.",
+        "협업 관계·비용 부담·자료 접근·모델 위치를 각각 설정하고 모든 역할이 사내 모델을 사용할 수 있는 계약을 유지한다.",
+        "반론의 대상·대안·근거/근거 없음·판별 질문·영향·버전을 남긴다. 같은 모델의 여러 답변을 독립 증거로 세지 않는다.",
+        "반환/정산은 한 번만 반영하고 늦은 사용량·취소·권한 철회·compact 후에도 장부를 유지한다. 작업 완료나 임시 역할 종료가 상주 담당의 세션을 종료하지 않는다."
+      ],
+      "subunits": [
+        "직접 동료/임시 역할",
+        "독립 반론 연결",
+        "에이전트 자원 도구",
+        "위임·정산·복구 검증"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "C09",
+      "title": "A2A·사건 재개·상시 임무와 협업 평가",
+      "depends_on": [
+        "C07",
+        "C08"
+      ],
+      "legacy_work_items": [
+        "P4-02",
+        "P4-03",
+        "P4-04"
+      ],
+      "requirements": [
+        "R07",
+        "R17",
+        "R18",
+        "R21"
+      ],
+      "scope": [
+        "외부 에이전트와 업무/상태/산출물·오류·취소를 교환하는 A2A 어댑터를 구현한다.",
+        "예약·변화 관측·게시판 구독·회신 대기를 영속 사건/커서와 연결하고 필요한 시점에만 담당을 깨운다.",
+        "단일 에이전트와 협업의 품질·지연·비용을 같은 문제에서 비교한다."
+      ],
+      "acceptance": [
+        "중복/늦은 알림·부분 답변·취소·재전달·상대 장애에서 상태와 의무를 유지한다.",
+        "상주 담당의 identity/세션 수명과 프로세스/모델 호출 수명을 구분하며 대기 중 추론을 반복하지 않는다.",
+        "원인 없이 늘어나는 대화/재계획/호출을 감지하고 무진전·중복 fan-out을 제어한다.",
+        "A2A 실제 상호운용과 fake clock/합성 협업 시험을 구분하고 협업이 필요한 경우의 추가 가치를 평가한다.",
+        "Linux와 네이티브 Windows에서 해당 파일/프로세스/설치/연동 계약을 검증한다. macOS 또는 WSL 결과로 대체하지 않는다."
+      ],
+      "subunits": [
+        "A2A 어댑터",
+        "예약·관측·알림 재개",
+        "상시 실행 복구",
+        "단독/협업 비교"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "C10",
+      "title": "설치·버전 이행·운영 복원·시범과 선택 이관",
+      "depends_on": [
+        "C06"
+      ],
+      "conditional_dependencies": [
+        {
+          "when": "협업/A2A/상시 임무를 배포하는 경우",
+          "chapters": [
+            "C07",
+            "C08",
+            "C09"
+          ]
+        }
+      ],
+      "legacy_work_items": [
+        "P5-02",
+        "P6-01",
+        "P6-02",
+        "P6-03"
+      ],
+      "requirements": [
+        "R03",
+        "R04",
+        "R07",
+        "R19",
+        "R20",
+        "R21",
+        "R22",
+        "R23"
+      ],
+      "scope": [
+        "공통 엔진의 설치형 배포, 사내/오프라인 배포 경로, 엔진/설정/저장/확장 버전 호환, 담당별 버전 고정과 명시 업데이트를 구현한다.",
+        "체크포인트·진행 효과 대조 후 버전을 전환하고 데이터 이행·지원되는 되돌리기·제거/재설치 보존을 검증한다.",
+        "등록된 저장소/모델/도구/채널 배치의 복원·용량·오류·자료 정책을 확인하고 제한된 시범을 수행한다. 기존 운영 이관은 선택한 경우 수행한다."
+      ],
+      "acceptance": [
+        "업데이트 후 같은 담당·세션·기억이 이어지고 지원하지 않는 저장 버전은 명확히 처리한다. 엔진 되돌리기와 과거 DB 복원의 데이터 손실/외부 효과 차이를 구분한다.",
+        "로컬 기본·PostgreSQL·파일 저장의 지원 범위에서 복원/정합성/삭제·철회 반영과 재실행 중복 방지를 확인한다.",
+        "실제 사용하는 구성의 검증을 통과한 경우만 배포 범위에 포함한다. 단일 담당 배포는 C07~C09 전체 완료를 기다릴 필요가 없다.",
+        "시범의 자료/주체/모델/전달 범위·용량·복원 목표를 확정하고 결과를 기록한다. P6-03 운영 이관은 별도 선택이며 자동 실행하지 않는다.",
+        "Linux와 네이티브 Windows에서 해당 파일/프로세스/설치/연동 계약을 검증한다. macOS 또는 WSL 결과로 대체하지 않는다."
+      ],
+      "subunits": [
+        "설치·배포 패키지",
+        "버전 고정·호환·이행",
+        "복원·용량·자료 경계",
+        "시범·선택 운영 이관"
+      ],
+      "status": "planned",
+      "follow_up_observations": [
+        {
+          "source": "C01_portability_static_review",
+          "item": "Evaluate locale-independent build manifest file ordering when non-ASCII filenames are introduced. Current macOS/Linux source and build digests match; no current mismatch was observed.",
+          "status": "open"
+        },
+        {
+          "source": "C01_journal_binding_owner_recovery",
+          "item": "Read-only SQLite owner inspection may need hot-journal recovery first and can create WAL coordination sidecars. Preserve original DB/journal and return agent_storage_recovery_required when owner cannot be read; implement explicit verifiable recovery/migration without adopting foreign data. Backend marker records assignment, not initialization or migration completion.",
+          "plan": "design/chapters/C01-file-journal-binding-plan.md"
+        }
+      ],
+      "workspace_recovery_followup": {
+        "status": "not_implemented",
+        "source": "design/chapters/C01-workspace-file-boundary-plan.md",
+        "requirements": [
+          "distinguish_checkpoint_receipts_from_lock_ownership_and_partial_file_publication",
+          "preserve_originals_when_lock_owner_or_publication_outcome_is_unknown",
+          "define_explicit_recovery_for_interrupted_workspace_writes_without_stealing_live_locks"
+        ],
+        "dependency": "C01_host_execution_ownership_and_C03_storage_recovery"
+      }
+    }
+  ],
+  "legacy_next_work_item": "P1-06",
+  "next_execution_chapter": "C05",
+  "reconciliation_documents": [
+    "design/chapters/workspace-agent-defaults.md",
+    "design/chapters/agent-lifecycle-and-memory-boundaries.md",
+    "design/chapters/reasoning-critique-proposal.md",
+    "design/chapters/P4-design-reconciliation.md",
+    "design/chapters/prompt-generality-review.md",
+    "design/chapters/installation-and-versioning.md"
+  ],
+  "deployment_targets": {
+    "required": [
+      "linux",
+      "windows"
+    ],
+    "development_host": "macos",
+    "verification": {
+      "linux": "explicit_personal_memory_verified_partial_chapter",
+      "windows": "not_run",
+      "macos": "local_development_only"
+    },
+    "note": "User clarified actual deployment targets are Linux and Windows. Native Windows is a target; WSL/macOS results are not substitutes.",
+    "linux_evidence": "runtime/evidence/C03-personal-verification.json"
+  }
+}

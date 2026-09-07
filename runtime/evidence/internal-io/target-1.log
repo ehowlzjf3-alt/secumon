@@ -1,0 +1,161 @@
+✔ artifact I/O: metrics snapshots are independent and reset does not modify stored artifacts (25.546542ms)
+✔ artifact I/O: first put counts its missing existence probe, exact UTF-8 hashes, and two atomic file writes (29.201209ms)
+✔ artifact I/O: duplicate put verifies the existing body and performs no file writes (38.74225ms)
+✔ artifact I/O: put repairs a corrupt existing object after counting the failed verification (80.836042ms)
+✔ artifact I/O: get and exists each perform independent metadata, body, and integrity work under concurrent reads (31.123333ms)
+✔ artifact I/O: tenant and label denials count API calls without opening or hashing files (63.128458ms)
+✔ artifact I/O: missing json counts failed opens without claiming unread body bytes (46.912583ms)
+✔ artifact I/O: missing blob counts failed opens without claiming unread body bytes (53.210083ms)
+✔ artifact I/O: invalid metadata is a verification failure after a successful metadata read (24.842416ms)
+✔ artifact I/O: a metadata reference mismatch stops before body read or hashing (35.890083ms)
+✔ artifact I/O: same-size tampering hashes the read body (65.958917ms)
+✔ artifact I/O: length mismatch preserves the existing hash short circuit (49.916583ms)
+✔ artifact I/O: a body symlink remains unreadable and contributes no target bytes (45.025792ms)
+✔ checkpoint record: empty paged root round-trips metadata once without raw reads (6.146417ms)
+✔ checkpoint record: empty batch root round-trips metadata once without raw reads (0.934041ms)
+✔ checkpoint record: multiple normal pages store references rather than repeating large bodies (10.713625ms)
+✔ checkpoint record: partial batch resumes only unfinished items and preserves original successes (8.045375ms)
+✔ checkpoint record: rejected source calls survive explicit resume and consume the operation call limit (1.487ms)
+✔ checkpoint record: a crashed intent becomes one unknown call and is never silently replayed (1.773917ms)
+✔ checkpoint record: complete orphan resume performs no new page read or call (1.96825ms)
+✔ checkpoint record: explicit stop changes only stop metadata and appends its exact base reference (0.758584ms)
+✔ checkpoint record: unchanged fields and inherited dependencies cannot be dropped from an intent (2.330417ms)
+✔ checkpoint record: start rejects retained history, source artifacts, and non-root identity (0.356834ms)
+✔ checkpoint record: intent, settlement, and resume reject invalid request identity or time transitions (1.700167ms)
+✔ checkpoint record: wrong logical digest, wrong base, extra keys, and failed source reads are rejected (3.991166ms)
+✔ checkpoint record: accepted encode defers new raw body, source-ref, and dependency authentication to decode (3.570916ms)
+✔ checkpoint record: conflicting artifact metadata and dropped inherited references are never encoded (1.100333ms)
+✔ checkpoint record: logical checkpoint and referenced response byte limits are enforced before source I/O (0.546417ms)
+✔ checkpoint record: record schema rejects more than 16 MiB of otherwise bounded root metadata (53.065167ms)
+✔ read checkpoint sqlite: a complete checkpoint survives outer-result loss and resumes without another fetch (530.932667ms)
+✔ read checkpoint sqlite: projection preserves original evidence and charges only the successor's raw response (689.185791ms)
+✔ read checkpoint sqlite: missing proof and altered payload are denied while ordinary failures remain valid (618.917917ms)
+✔ read checkpoint sqlite: an indexed forged merged page cannot replace its accepted raw response (631.829083ms)
+✔ read checkpoint sqlite: an unchanged original body cannot authorize a changed request identity (540.237ms)
+✔ read checkpoint sqlite: losing raw-response blocks result history and copied history (638.19475ms)
+✔ read checkpoint sqlite: losing source-artifact blocks result history and copied history (621.64875ms)
+✔ read checkpoint sqlite: severing the parent's exclusive successor claim rejects the child (561.81275ms)
+✔ read checkpoint file-journal: a complete checkpoint survives outer-result loss and resumes without another fetch (1606.430291ms)
+✔ read checkpoint file-journal: projection preserves original evidence and charges only the successor's raw response (2554.741625ms)
+✔ read checkpoint file-journal: missing proof and altered payload are denied while ordinary failures remain valid (1592.047708ms)
+✔ read checkpoint file-journal: an indexed forged merged page cannot replace its accepted raw response (1852.694416ms)
+✔ read checkpoint file-journal: an unchanged original body cannot authorize a changed request identity (1735.39225ms)
+✔ read checkpoint file-journal: losing raw-response blocks result history and copied history (1258.035083ms)
+✔ read checkpoint file-journal: losing source-artifact blocks result history and copied history (1130.162083ms)
+✔ read checkpoint file-journal: severing the parent's exclusive successor claim rejects the child (1034.770917ms)
+✔ read collection context: only visible current goal and scope tips survive; complete unadopted tips remain resumable (5.527375ms)
+✔ read collection context: the common packet removes denied head metadata from both execution and resume projections (3.035917ms)
+✔ read collection context sqlite: five compactions and reopen retain partial resume metadata without page bodies (507.325583ms)
+✔ read collection context sqlite: five compactions and reopen retain complete orphan resume metadata without page bodies (523.3135ms)
+✔ read collection context file-journal: five compactions and reopen retain partial resume metadata without page bodies (2455.773333ms)
+✔ read collection context file-journal: five compactions and reopen retain complete orphan resume metadata without page bodies (1682.143625ms)
+✔ read collection context sqlite: lost derived frame regenerates while lost original raw response blocks context and recovery (379.305ms)
+✔ read collection context file-journal: lost derived frame regenerates while lost original raw response blocks context and recovery (591.667917ms)
+✔ read collection context sqlite: source gate rejects omitted, altered, and canonically inconsistent resume metadata (163.315041ms)
+✔ read collection context file-journal: source gate rejects omitted, altered, and canonically inconsistent resume metadata (490.172042ms)
+✔ read collection context sqlite: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget (144.142916ms)
+✔ read collection context file-journal: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget (396.046041ms)
+✔ read collection context sqlite: source lifecycle change during checkpoint read prevents staged frame publication (152.37225ms)
+✔ read collection context file-journal: source lifecycle change during checkpoint read prevents staged frame publication (346.913583ms)
+✔ read collection context sqlite: contract change during derived resume put is checked before return (251.916709ms)
+✔ read collection context sqlite: original change during derived resume put is checked before return (244.950084ms)
+✔ read collection context file-journal: contract change during derived resume put is checked before return (448.028917ms)
+✔ read collection context file-journal: original change during derived resume put is checked before return (314.7405ms)
+✔ read collection context sqlite: completed adopted output retains original proof requirements after leaving the resume list (187.814291ms)
+✔ read collection context file-journal: completed adopted output retains original proof requirements after leaving the resume list (418.550583ms)
+✔ read collection context sqlite: raw loss during frame staging suppresses completed adopted copies (176.679541ms)
+✔ read collection context file-journal: raw loss during frame staging suppresses completed adopted copies (498.916208ms)
+✔ durable collections sqlite: a process crash after intent becomes an unknown call on explicit resume (689.98075ms)
+✔ durable collections sqlite: a batch retries only unfinished manifest items after reopening (605.720959ms)
+✔ durable collections sqlite: source failures consume the persisted call budget across explicit retries (747.294792ms)
+✔ durable collections sqlite: a source that answers after cancellation cannot commit its late page (195.168083ms)
+✔ durable collections sqlite: policy revocation while the source waits suppresses the response (205.933083ms)
+✔ durable collections file-journal: a process crash after intent becomes an unknown call on explicit resume (2288.789834ms)
+✔ durable collections file-journal: a batch retries only unfinished manifest items after reopening (2296.458542ms)
+✔ durable collections file-journal: source failures consume the persisted call budget across explicit retries (3037.027792ms)
+✔ durable collections file-journal: a source that answers after cancellation cannot commit its late page (372.653125ms)
+✔ durable collections file-journal: policy revocation while the source waits suppresses the response (304.6495ms)
+✔ durable collections: query cannot resume a checkpoint under a changed contract (258.746542ms)
+✔ durable collections: fresh cannot resume a checkpoint under a changed contract (174.673125ms)
+✔ durable collections: same-task-id cannot resume a checkpoint under a changed contract (167.77175ms)
+✔ durable collections: policy cannot resume a checkpoint under a changed contract (234.942792ms)
+✔ durable collections: goal cannot resume a checkpoint under a changed contract (214.909958ms)
+✔ durable collections: generation cannot resume a checkpoint under a changed contract (209.142042ms)
+✔ durable collections sqlite documents-simple: complete pages advance automatically and survive reopening (348.583833ms)
+✔ durable collections sqlite documents-simple: partial stops until a new task explicitly resumes after reopening (757.047125ms)
+✔ durable collections sqlite observations-simple: complete pages advance automatically and survive reopening (335.463916ms)
+✔ durable collections sqlite observations-simple: partial stops until a new task explicitly resumes after reopening (523.342083ms)
+✔ durable collections file-journal documents-simple: complete pages advance automatically and survive reopening (804.26675ms)
+✔ durable collections file-journal documents-simple: partial stops until a new task explicitly resumes after reopening (1349.767083ms)
+✔ durable collections file-journal observations-simple: complete pages advance automatically and survive reopening (736.645875ms)
+✔ durable collections file-journal observations-simple: partial stops until a new task explicitly resumes after reopening (1213.872542ms)
+✔ sqlite: text originals use one verified body read and no cross-call availability cache (170.387ms)
+ℹ {"adapter":"sqlite","operation":"original","name":"original","elapsedMs":0.648333000000008,"artifactApi":{"get":{"calls":1,"requestedBodyBytes":1733,"returnedBodyBytes":1733,"failures":0},"exists":{"calls":0,"referencedBodyBytes":0,"available":0,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":3,"receipt":0,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":1,"existsCalls":0,"putCalls":0,"metadataReadOperations":1,"metadataReadBytes":237,"bodyReadOperations":1,"bodyReadBytes":1733,"hashCalls":1,"hashBytes":1733,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ sqlite: one result materialization deduplicates repeated originals and preserves a final real verification (202.840625ms)
+ℹ {"adapter":"sqlite","operation":"result","name":"result","elapsedMs":2.9938750000000027,"artifactApi":{"get":{"calls":2,"requestedBodyBytes":6315,"returnedBodyBytes":6315,"failures":0},"exists":{"calls":1,"referencedBodyBytes":1733,"available":1,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":6,"receipt":1,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":2,"existsCalls":1,"putCalls":0,"metadataReadOperations":3,"metadataReadBytes":717,"bodyReadOperations":3,"bodyReadBytes":8048,"hashCalls":3,"hashBytes":8048,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ sqlite: a two-copy chain decodes and reads each dispatch once per materialization (322.300667ms)
+ℹ {"adapter":"sqlite","operation":"copy-chain","name":"copy-chain","elapsedMs":2.8255000000000337,"artifactApi":{"get":{"calls":4,"requestedBodyBytes":16962,"returnedBodyBytes":16962,"failures":0},"exists":{"calls":1,"referencedBodyBytes":1733,"available":1,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":6,"receipt":3,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":4,"existsCalls":1,"putCalls":0,"metadataReadOperations":5,"metadataReadBytes":1203,"bodyReadOperations":5,"bodyReadBytes":18695,"hashCalls":5,"hashBytes":18695,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✖ sqlite: context uses verified copy materialization without rereading its dispatch pair (351.594792ms)
+✔ sqlite: cached original is rejected if deleted during a later state read (147.591375ms)
+✔ sqlite: cached original is rejected if corrupted during a later state read (139.811417ms)
+✔ sqlite: context rechecks metadata-reused originals after its staging await (291.852708ms)
+✔ sqlite: final cached-source check retains contract authority handling (165.118708ms)
+✔ sqlite: final cached-source check retains policy authority handling (103.044208ms)
+✔ sqlite: final cached-source check retains unrelated authority handling (150.085958ms)
+✔ file-journal: text originals use one verified body read and no cross-call availability cache (614.500791ms)
+ℹ {"adapter":"file-journal","operation":"original","name":"original","elapsedMs":10.723165999999765,"artifactApi":{"get":{"calls":1,"requestedBodyBytes":1733,"returnedBodyBytes":1733,"failures":0},"exists":{"calls":0,"referencedBodyBytes":0,"available":0,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":3,"receipt":0,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":1,"existsCalls":0,"putCalls":0,"metadataReadOperations":1,"metadataReadBytes":237,"bodyReadOperations":1,"bodyReadBytes":1733,"hashCalls":1,"hashBytes":1733,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ file-journal: one result materialization deduplicates repeated originals and preserves a final real verification (553.214125ms)
+ℹ {"adapter":"file-journal","operation":"result","name":"result","elapsedMs":55.08345799999961,"artifactApi":{"get":{"calls":2,"requestedBodyBytes":6315,"returnedBodyBytes":6315,"failures":0},"exists":{"calls":1,"referencedBodyBytes":1733,"available":1,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":6,"receipt":1,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":2,"existsCalls":1,"putCalls":0,"metadataReadOperations":3,"metadataReadBytes":717,"bodyReadOperations":3,"bodyReadBytes":8048,"hashCalls":3,"hashBytes":8048,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ file-journal: a two-copy chain decodes and reads each dispatch once per materialization (1318.760875ms)
+ℹ {"adapter":"file-journal","operation":"copy-chain","name":"copy-chain","elapsedMs":51.203207999999904,"artifactApi":{"get":{"calls":4,"requestedBodyBytes":16962,"returnedBodyBytes":16962,"failures":0},"exists":{"calls":1,"referencedBodyBytes":1733,"available":1,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":6,"receipt":3,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":4,"existsCalls":1,"putCalls":0,"metadataReadOperations":5,"metadataReadBytes":1203,"bodyReadOperations":5,"bodyReadBytes":18695,"hashCalls":5,"hashBytes":18695,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✖ file-journal: context uses verified copy materialization without rereading its dispatch pair (1403.249459ms)
+✔ file-journal: cached original is rejected if deleted during a later state read (357.161ms)
+✔ file-journal: cached original is rejected if corrupted during a later state read (396.028916ms)
+✔ file-journal: context rechecks metadata-reused originals after its staging await (928.11575ms)
+✔ file-journal: final cached-source check retains contract authority handling (431.091875ms)
+✔ file-journal: final cached-source check retains policy authority handling (470.207459ms)
+✔ file-journal: final cached-source check retains unrelated authority handling (309.099584ms)
+ℹ tests 111
+ℹ suites 0
+ℹ pass 109
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18179.91775
+
+✖ failing tests:
+
+test at dist/tests/resource-io.test.js:175:5
+✖ sqlite: context uses verified copy materialization without rereading its dispatch pair (351.594792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9 !== 8
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/resource-io.test.js:180:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/resource-io.test.js:175:5
+✖ file-journal: context uses verified copy materialization without rereading its dispatch pair (1403.249459ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  9 !== 8
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/resource-io.test.js:180:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 9,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

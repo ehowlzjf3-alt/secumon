@@ -1,0 +1,736 @@
+TAP version 13
+# Subtest: sqlite checkpoint omits only protected MCP raw custody and preserves the authoritative state and receipt across reopen
+ok 1 - sqlite checkpoint omits only protected MCP raw custody and preserves the authoritative state and receipt across reopen
+  ---
+  duration_ms: 357.044771
+  type: 'test'
+  ...
+# Subtest: file-journal checkpoint omits only protected MCP raw custody and preserves the authoritative state and receipt across reopen
+ok 2 - file-journal checkpoint omits only protected MCP raw custody and preserves the authoritative state and receipt across reopen
+  ---
+  duration_ms: 257.532585
+  type: 'test'
+  ...
+# Subtest: the same custody raw cannot be hidden when current evidence or an attempt result requires it
+ok 3 - the same custody raw cannot be hidden when current evidence or an attempt result requires it
+  ---
+  duration_ms: 257.884828
+  type: 'test'
+  ...
+# Subtest: an unrelated forbidden artifact is not hidden alongside authenticated MCP custody
+ok 4 - an unrelated forbidden artifact is not hidden alongside authenticated MCP custody
+  ---
+  duration_ms: 133.938001
+  type: 'test'
+  ...
+# Subtest: a legacy response receipt without the custody-only marker does not authorize hiding its raw reference
+ok 5 - a legacy response receipt without the custody-only marker does not authorize hiding its raw reference
+  ---
+  duration_ms: 128.823544
+  type: 'test'
+  ...
+# Subtest: changed data generation and corrupted custody bytes prevent checkpoint publication
+ok 6 - changed data generation and corrupted custody bytes prevent checkpoint publication
+  ---
+  duration_ms: 273.013989
+  type: 'test'
+  ...
+# Subtest: custody filtering cannot bypass work ownership, a wider persisted policy or a revoked host authority
+ok 7 - custody filtering cannot bypass work ownership, a wider persisted policy or a revoked host authority
+  ---
+  duration_ms: 127.61511
+  type: 'test'
+  ...
+# Subtest: a state commit during raw proof is re-evaluated instead of publishing an earlier custody projection
+ok 8 - a state commit during raw proof is re-evaluated instead of publishing an earlier custody projection
+  ---
+  duration_ms: 280.429495
+  type: 'test'
+  ...
+# Subtest: sqlite: actual stdio SIGKILL after raw preserves cancelled, narrowed custody and accounts only a receipted original
+ok 9 - sqlite: actual stdio SIGKILL after raw preserves cancelled, narrowed custody and accounts only a receipted original
+  ---
+  duration_ms: 1378.421316
+  type: 'test'
+  ...
+# Subtest: sqlite: actual stdio SIGKILL after response preserves cancelled, narrowed custody and accounts only a receipted original
+ok 10 - sqlite: actual stdio SIGKILL after response preserves cancelled, narrowed custody and accounts only a receipted original
+  ---
+  duration_ms: 1290.466828
+  type: 'test'
+  ...
+# Subtest: sqlite: actual stdio SIGKILL after usage preserves cancelled, narrowed custody and accounts only a receipted original
+ok 11 - sqlite: actual stdio SIGKILL after usage preserves cancelled, narrowed custody and accounts only a receipted original
+  ---
+  duration_ms: 1256.493821
+  type: 'test'
+  ...
+# Subtest: file-journal: actual stdio SIGKILL after raw preserves cancelled, narrowed custody and accounts only a receipted original
+ok 12 - file-journal: actual stdio SIGKILL after raw preserves cancelled, narrowed custody and accounts only a receipted original
+  ---
+  duration_ms: 1329.998978
+  type: 'test'
+  ...
+# Subtest: file-journal: actual stdio SIGKILL after response preserves cancelled, narrowed custody and accounts only a receipted original
+ok 13 - file-journal: actual stdio SIGKILL after response preserves cancelled, narrowed custody and accounts only a receipted original
+  ---
+  duration_ms: 1498.165641
+  type: 'test'
+  ...
+# Subtest: file-journal: actual stdio SIGKILL after usage preserves cancelled, narrowed custody and accounts only a receipted original
+ok 14 - file-journal: actual stdio SIGKILL after usage preserves cancelled, narrowed custody and accounts only a receipted original
+  ---
+  duration_ms: 1326.807388
+  type: 'test'
+  ...
+# Subtest: SQLite: CLI resume retains a public original input, projects out protected MCP custody and returns a valid blocked checkpoint
+ok 15 - SQLite: CLI resume retains a public original input, projects out protected MCP custody and returns a valid blocked checkpoint
+  ---
+  duration_ms: 2833.080591
+  type: 'test'
+  ...
+# Subtest: sqlite: CLI status stays read-only; resume accounts once then refuses the now-inaccessible original session input
+ok 16 - sqlite: CLI status stays read-only; resume accounts once then refuses the now-inaccessible original session input
+  ---
+  duration_ms: 3773.523402
+  type: 'test'
+  ...
+# Subtest: sqlite: HTTP view stays read-only and cancel reconciles once while preserving cancelled state across server reopen
+ok 17 - sqlite: HTTP view stays read-only and cancel reconciles once while preserving cancelled state across server reopen
+  ---
+  duration_ms: 1293.717149
+  type: 'test'
+  ...
+# Subtest: file-journal: CLI status stays read-only; resume accounts once then refuses the now-inaccessible original session input
+ok 18 - file-journal: CLI status stays read-only; resume accounts once then refuses the now-inaccessible original session input
+  ---
+  duration_ms: 3165.394695
+  type: 'test'
+  ...
+# Subtest: file-journal: HTTP view stays read-only and cancel reconciles once while preserving cancelled state across server reopen
+ok 19 - file-journal: HTTP view stays read-only and cancel reconciles once while preserving cancelled state across server reopen
+  ---
+  duration_ms: 1039.423389
+  type: 'test'
+  ...
+# Subtest: sqlite: profile close stops the actual MCP peer then drains captured custody before closing C01 stores
+ok 20 - sqlite: profile close stops the actual MCP peer then drains captured custody before closing C01 stores
+  ---
+  duration_ms: 652.167682
+  type: 'test'
+  ...
+# Subtest: file-journal: profile close stops the actual MCP peer then drains captured custody before closing C01 stores
+ok 21 - file-journal: profile close stops the actual MCP peer then drains captured custody before closing C01 stores
+  ---
+  duration_ms: 613.820305
+  type: 'test'
+  ...
+# Subtest: profile close deadline closes C01 stores and a subsequently released raw cannot publish response, usage or receive
+ok 22 - profile close deadline closes C01 stores and a subsequently released raw cannot publish response, usage or receive
+  ---
+  duration_ms: 5497.504204
+  type: 'test'
+  ...
+# Subtest: profile close preserves the first model-close error and MCP cleanup error while still draining raw and closing stores
+ok 23 - profile close preserves the first model-close error and MCP cleanup error while still draining raw and closing stores
+  ---
+  duration_ms: 481.08231
+  type: 'test'
+  ...
+# Subtest: sqlite: reopened usage custody refines the original attempt once without invoking or projecting
+ok 24 - sqlite: reopened usage custody refines the original attempt once without invoking or projecting
+  ---
+  duration_ms: 284.852028
+  type: 'test'
+  ...
+# Subtest: sqlite: two runtime accountants converge through one real usage receipt and never sum a transport measurement
+ok 25 - sqlite: two runtime accountants converge through one real usage receipt and never sum a transport measurement
+  ---
+  duration_ms: 196.694461
+  type: 'test'
+  ...
+# Subtest: sqlite: usage accounting preserves existing received, adopted and failed result bytes and receipts
+ok 26 - sqlite: usage accounting preserves existing received, adopted and failed result bytes and receipts
+  ---
+  duration_ms: 538.37089
+  type: 'test'
+  ...
+# Subtest: file-journal: reopened usage custody refines the original attempt once without invoking or projecting
+ok 27 - file-journal: reopened usage custody refines the original attempt once without invoking or projecting
+  ---
+  duration_ms: 300.39423
+  type: 'test'
+  ...
+# Subtest: file-journal: two runtime accountants converge through one real usage receipt and never sum a transport measurement
+ok 28 - file-journal: two runtime accountants converge through one real usage receipt and never sum a transport measurement
+  ---
+  duration_ms: 251.540883
+  type: 'test'
+  ...
+# Subtest: file-journal: usage accounting preserves existing received, adopted and failed result bytes and receipts
+ok 29 - file-journal: usage accounting preserves existing received, adopted and failed result bytes and receipts
+  ---
+  duration_ms: 692.139455
+  type: 'test'
+  ...
+# Subtest: contradictory known usage refuses accounting without rewriting the result or adding a receipt
+ok 30 - contradictory known usage refuses accounting without rewriting the result or adding a receipt
+  ---
+  duration_ms: 118.090056
+  type: 'test'
+  ...
+# Subtest: execute failure preserves captured known usage while returning only a body-free result under narrower labels or a new goal
+ok 31 - execute failure preserves captured known usage while returning only a body-free result under narrower labels or a new goal
+  ---
+  duration_ms: 250.660373
+  type: 'test'
+  ...
+# Subtest: an explicit cancellation after decoded capture keeps the original usage and stop status without another call
+ok 32 - an explicit cancellation after decoded capture keeps the original usage and stop status without another call
+  ---
+  duration_ms: 249.87268
+  type: 'test'
+  ...
+# Subtest: late receive and adopt preserve an explicit blocked or completed work state and reject body adoption
+ok 33 - late receive and adopt preserve an explicit blocked or completed work state and reject body adoption
+  ---
+  duration_ms: 302.157343
+  type: 'test'
+  ...
+# Subtest: intent alone supplies no received-response usage and does not trigger a replacement call
+ok 34 - intent alone supplies no received-response usage and does not trigger a replacement call
+  ---
+  duration_ms: 92.958146
+  type: 'test'
+  ...
+# Subtest: finishClose waits for a captured raw publication and usage settlement while rejecting new execution
+ok 35 - finishClose waits for a captured raw publication and usage settlement while rejecting new execution
+  ---
+  duration_ms: 140.950536
+  type: 'test'
+  ...
+# Subtest: finishClose timeout revokes custody so releasing an orphan raw cannot publish response or receive afterward
+ok 36 - finishClose timeout revokes custody so releasing an orphan raw cannot publish response or receive afterward
+  ---
+  duration_ms: 159.254645
+  type: 'test'
+  ...
+# Subtest: an untransmitted cancel reservation is not treated as a lost dispatch during reconciliation
+ok 37 - an untransmitted cancel reservation is not treated as a lost dispatch during reconciliation
+  ---
+  duration_ms: 238.813274
+  type: 'test'
+  ...
+# Subtest: an untransmitted expire reservation is not treated as a lost dispatch during reconciliation
+ok 38 - an untransmitted expire reservation is not treated as a lost dispatch during reconciliation
+  ---
+  duration_ms: 133.48282
+  type: 'test'
+  ...
+# Subtest: sqlite: ordinary workflow resume records protected custody once and preserves cancellation without inference
+ok 39 - sqlite: ordinary workflow resume records protected custody once and preserves cancellation without inference
+  ---
+  duration_ms: 251.157207
+  type: 'test'
+  ...
+# Subtest: file-journal: ordinary workflow resume records protected custody once and preserves cancellation without inference
+ok 40 - file-journal: ordinary workflow resume records protected custody once and preserves cancellation without inference
+  ---
+  duration_ms: 411.75852
+  type: 'test'
+  ...
+# Subtest: custody ownership accepts a revoked narrower host while ordinary execution still refuses its broader persisted policy
+ok 41 - custody ownership accepts a revoked narrower host while ordinary execution still refuses its broader persisted policy
+  ---
+  duration_ms: 144.093226
+  type: 'test'
+  ...
+# Subtest: foreign actor, wrong host scope and unissued host authority cannot start a custody proof
+ok 42 - foreign actor, wrong host scope and unissued host authority cannot start a custody proof
+  ---
+  duration_ms: 119.336087
+  type: 'test'
+  ...
+# Subtest: a replaced work incarnation during the proof cannot receive the selected workflow accounting commit
+ok 43 - a replaced work incarnation during the proof cannot receive the selected workflow accounting commit
+  ---
+  duration_ms: 130.307128
+  type: 'test'
+  ...
+# Subtest: a real decoded reply has one immutable request-bound capture and unchanged normal return
+ok 44 - a real decoded reply has one immutable request-bound capture and unchanged normal return
+  ---
+  duration_ms: 294.197059
+  type: 'test'
+  ...
+# Subtest: post-capture abort rejects use but retains the decoded original and local send observation
+ok 45 - post-capture abort rejects use but retains the decoded original and local send observation
+  ---
+  duration_ms: 227.790171
+  type: 'test'
+  ...
+# Subtest: real tools/list_changed preserves the response original with its old session before rejecting use
+ok 46 - real tools/list_changed preserves the response original with its old session before rejecting use
+  ---
+  duration_ms: 183.89777
+  type: 'test'
+  ...
+# Subtest: SDK reject after a real send does not fabricate a decoded response
+ok 47 - SDK reject after a real send does not fabricate a decoded response
+  ---
+  duration_ms: 226.680833
+  type: 'test'
+  ...
+# Subtest: pre-send authority rejection invokes neither the clock nor capture and reports zero send entries
+ok 48 - pre-send authority rejection invokes neither the clock nor capture and reports zero send entries
+  ---
+  duration_ms: 215.657316
+  type: 'test'
+  ...
+# Subtest: the decoded json boundary rejects before capture
+ok 49 - the decoded json boundary rejects before capture
+  ---
+  duration_ms: 253.719624
+  type: 'test'
+  ...
+# Subtest: the decoded bytes boundary rejects before capture
+ok 50 - the decoded bytes boundary rejects before capture
+  ---
+  duration_ms: 263.620886
+  type: 'test'
+  ...
+# Subtest: an invalid observation clock cannot publish a capture
+ok 51 - an invalid observation clock cannot publish a capture
+  ---
+  duration_ms: 247.065198
+  type: 'test'
+  ...
+# Subtest: an invalid async capture is not awaited or treated as a successful response
+ok 52 - an invalid async capture is not awaited or treated as a successful response
+  ---
+  duration_ms: 245.296844
+  type: 'test'
+  ...
+# Subtest: two concurrent real requests retain separate input/session captures when the last observer closes the client
+ok 53 - two concurrent real requests retain separate input/session captures when the last observer closes the client
+  ---
+  duration_ms: 253.433033
+  type: 'test'
+  ...
+# Subtest: capture failure and owned-process close failure preserve both causes without losing the original
+ok 54 - capture failure and owned-process close failure preserve both causes without losing the original
+  ---
+  duration_ms: 250.054199
+  type: 'test'
+  ...
+# Subtest: sqlite: decoded response custody survives authorization change without projecting an answer
+ok 55 - sqlite: decoded response custody survives authorization change without projecting an answer
+  ---
+  duration_ms: 243.280259
+  type: 'test'
+  ...
+# Subtest: sqlite: decoded response custody survives abort change without projecting an answer
+ok 56 - sqlite: decoded response custody survives abort change without projecting an answer
+  ---
+  duration_ms: 138.29335
+  type: 'test'
+  ...
+# Subtest: sqlite: decoded response custody survives policy change without projecting an answer
+ok 57 - sqlite: decoded response custody survives policy change without projecting an answer
+  ---
+  duration_ms: 110.435829
+  type: 'test'
+  ...
+# Subtest: sqlite: decoded response custody survives goal change without projecting an answer
+ok 58 - sqlite: decoded response custody survives goal change without projecting an answer
+  ---
+  duration_ms: 108.767429
+  type: 'test'
+  ...
+# Subtest: file-journal: decoded response custody survives authorization change without projecting an answer
+ok 59 - file-journal: decoded response custody survives authorization change without projecting an answer
+  ---
+  duration_ms: 206.448913
+  type: 'test'
+  ...
+# Subtest: file-journal: decoded response custody survives abort change without projecting an answer
+ok 60 - file-journal: decoded response custody survives abort change without projecting an answer
+  ---
+  duration_ms: 171.255711
+  type: 'test'
+  ...
+# Subtest: file-journal: decoded response custody survives policy change without projecting an answer
+ok 61 - file-journal: decoded response custody survives policy change without projecting an answer
+  ---
+  duration_ms: 172.264493
+  type: 'test'
+  ...
+# Subtest: file-journal: decoded response custody survives goal change without projecting an answer
+ok 62 - file-journal: decoded response custody survives goal change without projecting an answer
+  ---
+  duration_ms: 177.710993
+  type: 'test'
+  ...
+# Subtest: sqlite: policy reduction at afterRaw retains original raw labels through response publication
+ok 63 - sqlite: policy reduction at afterRaw retains original raw labels through response publication
+  ---
+  duration_ms: 157.118612
+  type: 'test'
+  ...
+# Subtest: sqlite: policy reduction at beforeResponseCommit retains original raw labels through response publication
+ok 64 - sqlite: policy reduction at beforeResponseCommit retains original raw labels through response publication
+  ---
+  duration_ms: 136.336834
+  type: 'test'
+  ...
+# Subtest: file-journal: policy reduction at afterRaw retains original raw labels through response publication
+ok 65 - file-journal: policy reduction at afterRaw retains original raw labels through response publication
+  ---
+  duration_ms: 173.381085
+  type: 'test'
+  ...
+# Subtest: file-journal: policy reduction at beforeResponseCommit retains original raw labels through response publication
+ok 66 - file-journal: policy reduction at beforeResponseCommit retains original raw labels through response publication
+  ---
+  duration_ms: 197.695411
+  type: 'test'
+  ...
+# Subtest: custody rejects generation change at afterCapture, including a raw object already written
+ok 67 - custody rejects generation change at afterCapture, including a raw object already written
+  ---
+  duration_ms: 88.491125
+  type: 'test'
+  ...
+# Subtest: custody rejects owner change at afterCapture, including a raw object already written
+ok 68 - custody rejects owner change at afterCapture, including a raw object already written
+  ---
+  duration_ms: 103.508554
+  type: 'test'
+  ...
+# Subtest: custody rejects generation change at afterRaw, including a raw object already written
+ok 69 - custody rejects generation change at afterRaw, including a raw object already written
+  ---
+  duration_ms: 110.64224
+  type: 'test'
+  ...
+# Subtest: custody rejects owner change at afterRaw, including a raw object already written
+ok 70 - custody rejects owner change at afterRaw, including a raw object already written
+  ---
+  duration_ms: 109.327413
+  type: 'test'
+  ...
+# Subtest: custody rejects generation change at beforeResponseCommit, including a raw object already written
+ok 71 - custody rejects generation change at beforeResponseCommit, including a raw object already written
+  ---
+  duration_ms: 88.252718
+  type: 'test'
+  ...
+# Subtest: custody rejects owner change at beforeResponseCommit, including a raw object already written
+ok 72 - custody rejects owner change at beforeResponseCommit, including a raw object already written
+  ---
+  duration_ms: 95.162555
+  type: 'test'
+  ...
+# Subtest: decoded client sent-false preserves only a proven transport count
+ok 73 - decoded client sent-false preserves only a proven transport count
+  ---
+  duration_ms: 108.428817
+  type: 'test'
+  ...
+# Subtest: decoded client sent-true preserves only a proven transport count
+ok 74 - decoded client sent-true preserves only a proven transport count
+  ---
+  duration_ms: 120.713369
+  type: 'test'
+  ...
+# Subtest: decoded client arbitrary-error preserves only a proven transport count
+ok 75 - decoded client arbitrary-error preserves only a proven transport count
+  ---
+  duration_ms: 69.823453
+  type: 'test'
+  ...
+# Subtest: sqlite: captured post-check failure cannot be promoted to a returned body even after reopen
+ok 76 - sqlite: captured post-check failure cannot be promoted to a returned body even after reopen
+  ---
+  duration_ms: 144.511127
+  type: 'test'
+  ...
+# Subtest: file-journal: captured post-check failure cannot be promoted to a returned body even after reopen
+ok 77 - file-journal: captured post-check failure cannot be promoted to a returned body even after reopen
+  ---
+  duration_ms: 163.358818
+  type: 'test'
+  ...
+# Subtest: legacy returned response signature remains readable without upgrading ambiguous failure usage
+ok 78 - legacy returned response signature remains readable without upgrading ambiguous failure usage
+  ---
+  duration_ms: 142.862307
+  type: 'test'
+  ...
+# Subtest: legacy sent-false response signature remains readable without upgrading ambiguous failure usage
+ok 79 - legacy sent-false response signature remains readable without upgrading ambiguous failure usage
+  ---
+  duration_ms: 148.590609
+  type: 'test'
+  ...
+# Subtest: legacy sent-true response signature remains readable without upgrading ambiguous failure usage
+ok 80 - legacy sent-true response signature remains readable without upgrading ambiguous failure usage
+  ---
+  duration_ms: 140.094807
+  type: 'test'
+  ...
+# Subtest: sqlite: a committed usage-only response survives reopen and then follows normal receive/adopt once
+ok 81 - sqlite: a committed usage-only response survives reopen and then follows normal receive/adopt once
+  ---
+  duration_ms: 494.11846
+  type: 'test'
+  ...
+# Subtest: file-journal: a committed usage-only response survives reopen and then follows normal receive/adopt once
+ok 82 - file-journal: a committed usage-only response survives reopen and then follows normal receive/adopt once
+  ---
+  duration_ms: 524.654057
+  type: 'test'
+  ...
+# Subtest: a legacy lease-only failure may gain usage and recover, preserving its original failure receipt
+ok 83 - a legacy lease-only failure may gain usage and recover, preserving its original failure receipt
+  ---
+  duration_ms: 88.628747
+  type: 'test'
+  ...
+# Subtest: usage-only body recovery requires the exact accounting command, digest, original identity and execution
+ok 84 - usage-only body recovery requires the exact accounting command, digest, original identity and execution
+  ---
+  duration_ms: 296.921546
+  type: 'test'
+  ...
+# Subtest: an invoked measurement with no durable accounting receipt remains unproven even if the provider reports the same usage
+ok 85 - an invoked measurement with no durable accounting receipt remains unproven even if the provider reports the same usage
+  ---
+  duration_ms: 34.800659
+  type: 'test'
+  ...
+# Subtest: accounted usage does not revive changed goals, label restrictions, terminal states or already failed results
+ok 86 - accounted usage does not revive changed goals, label restrictions, terminal states or already failed results
+  ---
+  duration_ms: 721.658448
+  type: 'test'
+  ...
+# Subtest: an accounting receipt replaced during result proof is rejected by the final receipt fence
+ok 87 - an accounting receipt replaced during result proof is rejected by the final receipt fence
+  ---
+  duration_ms: 33.828696
+  type: 'test'
+  ...
+# Subtest: changing a current known measurement cannot borrow a valid receipt for a different execution
+ok 88 - changing a current known measurement cannot borrow a valid receipt for a different execution
+  ---
+  duration_ms: 41.9602
+  type: 'test'
+  ...
+# Subtest: stored usage returns only frozen measurements and custody references without writes or result validation
+ok 89 - stored usage returns only frozen measurements and custody references without writes or result validation
+  ---
+  duration_ms: 123.817133
+  type: 'test'
+  ...
+# Subtest: cancelled and completed work with new goals and attempts can account for the original dispatch after authority and deadline expire
+ok 90 - cancelled and completed work with new goals and attempts can account for the original dispatch after authority and deadline expire
+  ---
+  duration_ms: 70.449799
+  type: 'test'
+  ...
+# Subtest: a dispatched attempt whose error shares a reservation code remains eligible for proven accounting
+ok 91 - a dispatched attempt whose error shares a reservation code remains eligible for proven accounting
+  ---
+  duration_ms: 53.822143
+  type: 'test'
+  ...
+# Subtest: responses captured beyond the original lease and deadline retain accounting while impossible time order is rejected
+ok 92 - responses captured beyond the original lease and deadline retain accounting while impossible time order is rejected
+  ---
+  duration_ms: 31.495781
+  type: 'test'
+  ...
+# Subtest: absent receipts are not found by scanning raw artifacts and missing callbacks are not candidates
+ok 93 - absent receipts are not found by scanning raw artifacts and missing callbacks are not candidates
+  ---
+  duration_ms: 23.567015
+  type: 'test'
+  ...
+# Subtest: received and adopted originals stay unchanged and usage-only proofs can distinguish an unobserved response
+ok 94 - received and adopted originals stay unchanged and usage-only proofs can distinguish an unobserved response
+  ---
+  duration_ms: 57.999094
+  type: 'test'
+  ...
+# Subtest: original owner, identity, generation and exact response reference cannot be substituted
+ok 95 - original owner, identity, generation and exact response reference cannot be substituted
+  ---
+  duration_ms: 241.029214
+  type: 'test'
+  ...
+# Subtest: raw hashing and the fixed 512 KiB bound apply even when the current actor cannot read the original
+ok 96 - raw hashing and the fixed 512 KiB bound apply even when the current actor cannot read the original
+  ---
+  duration_ms: 38.905307
+  type: 'test'
+  ...
+# Subtest: fabricated tickets, a changed snapshot, callback race and source receipt replacement never authorize accounting
+ok 97 - fabricated tickets, a changed snapshot, callback race and source receipt replacement never authorize accounting
+  ---
+  duration_ms: 37.80127
+  type: 'test'
+  ...
+# Subtest: registration pins the usage callback receiver and rejects extra body fields or invalid usage without invoking result projection
+ok 98 - registration pins the usage callback receiver and rejects extra body fields or invalid usage without invoking result projection
+  ---
+  duration_ms: 25.786435
+  type: 'test'
+  ...
+# Subtest: provider replacement during usage restoration invalidates the captured callback and nonplain contracts remain excluded
+ok 99 - provider replacement during usage restoration invalidates the captured callback and nonplain contracts remain excluded
+  ---
+  duration_ms: 25.569403
+  type: 'test'
+  ...
+# Subtest: nullable usage is recognized repeatedly with one events read and no raw, restore or mutation per lookup
+ok 100 - nullable usage is recognized repeatedly with one events read and no raw, restore or mutation per lookup
+  ---
+  duration_ms: 127.405783
+  type: 'test'
+  ...
+# Subtest: no execution-bearing candidate avoids the events query entirely
+ok 101 - no execution-bearing candidate avoids the events query entirely
+  ---
+  duration_ms: 42.418594
+  type: 'test'
+  ...
+# Subtest: malformed event payload, command or time metadata is not accepted as an accounting record
+ok 102 - malformed event payload, command or time metadata is not accepted as an accounting record
+  ---
+  duration_ms: 189.334641
+  type: 'test'
+  ...
+# Subtest: missing, forged, differently attributed or differently measured receipts fall back to ordinary proof
+ok 103 - missing, forged, differently attributed or differently measured receipts fall back to ordinary proof
+  ---
+  duration_ms: 168.520993
+  type: 'test'
+  ...
+# Subtest: already accounted statistics remain recognizable when raw is unavailable after a later goal, restriction and cancellation
+ok 104 - already accounted statistics remain recognizable when raw is unavailable after a later goal, restriction and cancellation
+  ---
+  duration_ms: 26.916003
+  type: 'test'
+  ...
+# Subtest: work, principal, tenant or incarnation mixing fails closed instead of suppressing a necessary proof
+ok 105 - work, principal, tenant or incarnation mixing fails closed instead of suppressing a necessary proof
+  ---
+  duration_ms: 74.323693
+  type: 'test'
+  ...
+# Subtest: an actual state commit during the events or receipt await invalidates the captured accounting snapshot
+ok 106 - an actual state commit during the events or receipt await invalidates the captured accounting snapshot
+  ---
+  duration_ms: 49.835687
+  type: 'test'
+  ...
+# Subtest: duplicate event entries do not duplicate receipt reads and a changed known execution is not skipped
+ok 107 - duplicate event entries do not duplicate receipt reads and a changed known execution is not skipped
+  ---
+  duration_ms: 25.748447
+  type: 'test'
+  ...
+# Subtest: one attempt unknown measurements are refined without summing repeats or erasing known values
+ok 108 - one attempt unknown measurements are refined without summing repeats or erasing known values
+  ---
+  duration_ms: 3.994575
+  type: 'test'
+  ...
+# Subtest: conflicting known measurements and incompatible invocation modes are refused instead of combined
+ok 109 - conflicting known measurements and incompatible invocation modes are refused instead of combined
+  ---
+  duration_ms: 0.930512
+  type: 'test'
+  ...
+# Subtest: malformed reported and prior measurements never become valid usage through merge
+ok 110 - malformed reported and prior measurements never become valid usage through merge
+  ---
+  duration_ms: 1.712993
+  type: 'test'
+  ...
+# Subtest: plain proof read receives a read-only custody callback; current policy restrictions remain execution restrictions
+ok 111 - plain proof read receives a read-only custody callback; current policy restrictions remain execution restrictions
+  ---
+  duration_ms: 142.983921
+  type: 'test'
+  ...
+# Subtest: abort, elapsed lease/deadline and changed goal/plan do not erase an already entered original call
+ok 112 - abort, elapsed lease/deadline and changed goal/plan do not erase an already entered original call
+  ---
+  duration_ms: 68.975313
+  type: 'test'
+  ...
+# Subtest: terminal or explicitly blocked work preserves custody but does not grant execution authority
+ok 113 - terminal or explicitly blocked work preserves custody but does not grant execution authority
+  ---
+  duration_ms: 53.389575
+  type: 'test'
+  ...
+# Subtest: original catalog entry can be removed or replaced after entry without changing old raw custody
+ok 114 - original catalog entry can be removed or replaced after entry without changing old raw custody
+  ---
+  duration_ms: 32.718853
+  type: 'test'
+  ...
+# Subtest: non-plain definitions and a reused result do not receive a custody callback
+ok 115 - non-plain definitions and a reused result do not receive a custody callback
+  ---
+  duration_ms: 2016.08849
+  type: 'test'
+  ...
+# Subtest: custody rejects changed tenant/principal, removed attempt and immutable attempt identity without writing
+ok 116 - custody rejects changed tenant/principal, removed attempt and immutable attempt identity without writing
+  ---
+  duration_ms: 143.348524
+  type: 'test'
+  ...
+# Subtest: data deletion generation invalidates custody even when tenant and dispatch still match
+ok 117 - data deletion generation invalidates custody even when tenant and dispatch still match
+  ---
+  duration_ms: 10.003423
+  type: 'test'
+  ...
+# Subtest: missing or altered dispatch is rejected at custody recheck and corrupt original dispatch prevents entry
+ok 118 - missing or altered dispatch is rejected at custody recheck and corrupt original dispatch prevents entry
+  ---
+  duration_ms: 37.589382
+  type: 'test'
+  ...
+# Subtest: custody remains bound to the original state port and closes after success or original failure
+ok 119 - custody remains bound to the original state port and closes after success or original failure
+  ---
+  duration_ms: 14.600884
+  type: 'test'
+  ...
+# Subtest: custody already waiting on storage is revoked when the execute promise finishes
+ok 120 - custody already waiting on storage is revoked when the execute promise finishes
+  ---
+  duration_ms: 8.709326
+  type: 'test'
+  ...
+# Subtest: revocation while reading dispatch/current state is checked after the last await
+ok 121 - revocation while reading dispatch/current state is checked after the last await
+  ---
+  duration_ms: 9.245359
+  type: 'test'
+  ...
+1..121
+# tests 121
+# suites 0
+# pass 121
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26263.679776

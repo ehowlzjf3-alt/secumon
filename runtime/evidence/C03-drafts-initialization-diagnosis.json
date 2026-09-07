@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "status": "bounded_limitation",
+  "recordedAt": "2026-09-07T01:42:58.616Z",
+  "sourceAndBuild": {
+    "sourceDigest": "6ba26f7b1f070e6429c16644b5af2a196582613125bdcc71dba8fb529d9f2f92",
+    "filesDigest": "b35876061e1db51fe1d97a6525db03c8d27cbfdfc2bb9acd3a98f9da483b5e53",
+    "fileCount": 1377
+  },
+  "summary": "build3의 첫 관련 시험(target2)에서 기존 concurrent CLI first storage opens(SQLite) 4개 중 1개가 agent_storage_path_unsafe로 실패했다. 정확한 throw 원인은 미확정이다. 독립 API 10묶음·40 worker와 원 CLI 경로를 관측한 관련 재시험 target3(299/299)에서는 재현하지 못했다. 원인 추측으로 파일·소유권 검사를 완화하거나 초기화 코드를 변경하지 않았다. 이 비결정적 macOS 초기화 실패는 미해결 관측으로 남기며 재발 시 원 stack/메타데이터를 확인한다.",
+  "original": {
+    "targetAttempt": 2,
+    "tests": 299,
+    "pass": 298,
+    "fail": 1,
+    "platform": "darwin",
+    "failure": "agent_storage_path_unsafe",
+    "preciseCauseKnown": false
+  },
+  "boundedApi": {
+    "batches": 10,
+    "workers": 40,
+    "observedFailure": false,
+    "cleanup": true
+  },
+  "originalCliObserved": {
+    "targetAttempt": 3,
+    "sessionId": 50381,
+    "tests": 299,
+    "pass": 299,
+    "fail": 0
+  },
+  "initializationCodeChanged": false,
+  "privateFileGuardsRelaxed": false,
+  "sourceResultUnchanged": true,
+  "evidence": [
+    "runtime/evidence/C03-drafts-owner-open-diagnostic.mjs",
+    "runtime/evidence/C03-drafts-owner-open-diagnostic1.json",
+    "runtime/evidence/C03-drafts-owner-open-diagnostic1.stderr.log",
+    "runtime/evidence/C03-drafts-owner-open-diagnostic2.json",
+    "runtime/evidence/C03-drafts-owner-open-diagnostic2.stderr.log",
+    "runtime/evidence/C03-drafts-owner-cli-trace.mjs"
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "status": "verified_matching_routes_original_cause_not_exclusive",
+  "recordedAt": "2026-09-07T02:35:37.247Z",
+  "sourceAndBuild": {
+    "sourceDigest": "6ba26f7b1f070e6429c16644b5af2a196582613125bdcc71dba8fb529d9f2f92",
+    "filesDigest": "b35876061e1db51fe1d97a6525db03c8d27cbfdfc2bb9acd3a98f9da483b5e53",
+    "fileCount": 1377
+  },
+  "native": {
+    "attempt": 3,
+    "sessionId": 7550,
+    "finishedAt": "2026-09-07T02:27:39.892Z",
+    "tests": 299,
+    "pass": 297,
+    "fail": 2,
+    "fullTestsRun": false,
+    "stageTimedOut": false,
+    "forcedTermination": false,
+    "directGroupsAbsent": true
+  },
+  "registration": {
+    "observedError": "document_knowledge_registration_cleanup_required",
+    "nestedCauseInOriginal": false,
+    "deterministicMatchingRoute": {
+      "baseline": "runtime/evidence/C03-drafts-owner-registration-baseline2.json",
+      "cause": "unsafe_read_after_canonical_hardlink_changes_directory_names",
+      "exclusiveOriginalCauseProven": false
+    },
+    "correction": "on_unsafe_read_with_observed_changed_names_restart_full_caller_validation_preserving_cause",
+    "verification": "local_and_native_passed"
+  },
+  "writerWait": {
+    "observedError": "ABORT_ERR_after_12s_message_wait",
+    "originalChildFailureNotRecorded": true,
+    "preciseOriginalCauseKnown": false,
+    "oneBoundedPairReproduced": false,
+    "deterministicMatchingRoute": {
+      "baseline": "runtime/evidence/C03-drafts-namespace-stale-list-probe.json",
+      "cause": "namespace_pending_read_unsafe_after_canonical_link_changes_names"
+    },
+    "correction": "same_DocumentFiles_read_reobservation_plus_test_IPC_queue_and_early_close_stderr_diagnostics",
+    "verification": "local_and_native_passed"
+  },
+  "evidence": [
+    "runtime/evidence/C03-drafts-linux-nas-20260907/attempt-3-collection.json",
+    "runtime/evidence/C03-drafts-linux-nas-20260907/attempt-3/result.json",
+    "runtime/evidence/C03-drafts-linux-nas-20260907/attempt-3/drafts-targeted.log",
+    "runtime/evidence/C03-drafts-owner-registration-baseline2.json",
+    "runtime/evidence/C03-drafts-namespace-stale-list-probe.json",
+    "runtime/evidence/C03-drafts-namespace-stale-list-probe.mjs",
+    "runtime/evidence/C03-drafts-namespace-worker-diagnostic.json",
+    "runtime/evidence/C03-drafts-namespace-worker-diagnostic.mjs",
+    "runtime/evidence/C03-drafts-owner-registration-review.md",
+    "runtime/evidence/C03-drafts-owner-registration-probe.mjs",
+    "runtime/evidence/C03-drafts-owner-registration-baseline.json",
+    "runtime/evidence/C03-drafts-namespace-worker-diagnosis.md",
+    "runtime/evidence/C03-drafts-stale-list-review.json"
+  ],
+  "correctedSourceAndBuild": {
+    "sourceDigest": "3fc910d23cc423708a8fd97feb6244c1df2dacf048e7e202e6502822e2f2fc42",
+    "filesDigest": "115d241665f123c7fe720d64576bf0fa94b64de894536978bd4996a6a9c58cc5",
+    "fileCount": 1380
+  },
+  "verification": {
+    "status": "passed",
+    "localTargetAttempt": 4,
+    "localTests": 306,
+    "localPass": 306,
+    "localFail": 0,
+    "nativeAttempt": 4,
+    "sessionId": 4062,
+    "nativeTargeted": 306,
+    "nativePass": 3000,
+    "nativeTests": 3000,
+    "nativeFail": 0,
+    "finishedAt": "2026-09-07T02:56:35.548Z"
+  },
+  "finalizedAt": "2026-09-07T02:58:16.801Z",
+  "summary": "세 번째 NAS 관련시험은297/299로 실패했다. 원 등록 오류의 중첩 cause와 writer 대기의 자식 오류는 원로그에 없어 두 실패의 유일한 원인을 단정하지 않는다. 별도 고정 재현에서는 정상 canonical hardlink 게시 후 낡은 pending-only 목록으로 owner와 namespace를 읽으면 unsafe/read가 발생함을 각각 확인했다. 공통 읽기 경계는 같은 checked 디렉터리의 제한된 이름 목록이 실제 달라질 때만 원 cause를 보존한 changed/read로 전체 재검증한다. 링크·소유자 허용 조건과 재시도 상한은 유지했다. 자식 IPC/조기 종료의 원 stderr 진단도 보강했고, 신규7개 회귀를 포함한 로컬306/306·최종NAS관련306/306·전체3000/3000을 확인했다."
+}

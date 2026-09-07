@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secu-agent-confluence-web
+  namespace: secu-agent
+  labels:
+    app.kubernetes.io/name: secu-agent-confluence
+    app.kubernetes.io/component: web
+    secu-agent.io/domain: confluence
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: secu-agent-confluence
+      app.kubernetes.io/component: web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: secu-agent-confluence
+        app.kubernetes.io/component: web
+        secu-agent.io/domain: confluence
+    spec:
+      serviceAccountName: secu-agent-domain
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: web
+          image: secu-agent-skill:local
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command: ["python", "-m", "domains.services.confluence.webapp.app"]
+          ports:
+            - name: http
+              containerPort: 8773
+          envFrom:
+            - configMapRef:
+                name: secu-agent-runtime
+            - secretRef:
+                name: secu-agent-runtime
+                optional: true
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: evidence
+              mountPath: /var/lib/secu-agent/evidence
+      volumes:
+        - name: evidence
+          persistentVolumeClaim:
+            claimName: secu-agent-evidence
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secu-agent-confluence-web
+  namespace: secu-agent
+  labels:
+    app.kubernetes.io/name: secu-agent-confluence
+    app.kubernetes.io/component: web
+    secu-agent.io/domain: confluence
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: secu-agent-confluence
+    app.kubernetes.io/component: web
+  ports:
+    - name: http
+      port: 8773
+      targetPort: http

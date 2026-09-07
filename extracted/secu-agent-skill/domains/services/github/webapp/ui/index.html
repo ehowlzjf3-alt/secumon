@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GitHub E2E Pipeline</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#0a0d0f;--band:#111719;--panel:#151c20;--panel2:#1b2429;
+      --line:#303d43;--muted:#91a2aa;--text:#eef6f8;--soft:#cbd8dd;
+      --accent:#4fc3a1;--warn:#d7a64b;--bad:#e66c78;--ok:#86d78d;
+      font-family:Inter,ui-sans-serif,system-ui,"Segoe UI",sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-size:14px}
+    header{height:58px;background:var(--band);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 18px;position:sticky;top:0;z-index:2}
+    h1{font-size:16px;margin:0}
+    nav{display:flex;gap:8px;flex-wrap:wrap}
+    nav button,.act{min-height:32px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--soft);padding:6px 11px;cursor:pointer}
+    nav button.active,.act.primary{background:var(--accent);border-color:var(--accent);color:#061511;font-weight:800}
+    main{max-width:1500px;margin:0 auto;padding:18px}
+    .sp{flex:1}.muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:16px}
+    .card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+    .card small{display:block;color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase}
+    .card strong{display:block;margin-top:5px;font-size:26px;line-height:1.1}
+    .pill{display:inline-flex;align-items:center;min-height:21px;border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:11px;color:var(--soft);white-space:nowrap}
+    .pill.live{border-color:var(--ok);color:var(--ok)}.pill.warn{border-color:var(--warn);color:var(--warn)}.pill.bad{border-color:var(--bad);color:var(--bad)}
+    .pill.meta{color:var(--muted)}.pill.signal{border-color:#665b31;color:#e7d37c;background:#201d12}
+    .flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:16px}
+    .stage{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px;display:grid;gap:10px;min-height:245px}
+    .stage.active{border-color:var(--ok)}.stage.waiting{border-color:rgba(230,108,120,.55)}
+    .stage-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+    .stage-title{font-weight:900;font-size:13px;line-height:1.25}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .stat{background:var(--panel2);border-radius:7px;padding:7px;text-align:center}
+    .stat b{display:block;font-size:18px}.stat span{display:block;color:var(--muted);font-size:10px}
+    .targets{background:var(--panel2);border:1px solid var(--line);border-radius:7px;min-height:74px;max-height:112px;overflow:auto;padding:7px;display:grid;gap:5px}
+    .target{font-family:ui-monospace,monospace;color:var(--soft);font-size:12px;display:flex;align-items:center;gap:6px;min-width:0}
+    .target-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+    .target.live{color:var(--ok)}.target.stuck{color:var(--bad)}
+    .mini{min-height:22px;border:1px solid var(--line);border-radius:6px;background:rgba(230,108,120,.08);color:var(--bad);padding:2px 6px;font-size:11px;cursor:pointer;white-space:nowrap}
+    .metric{display:flex;justify-content:space-between;gap:8px;color:var(--soft);font-size:12px;border-top:1px dashed rgba(255,255,255,.08);padding-top:6px}
+    table{width:100%;border-collapse:collapse}
+    th,td{text-align:left;border-bottom:1px solid var(--line);padding:8px;font-size:13px;vertical-align:top}
+    th{color:var(--muted);font-weight:800}
+    tr.clickable{cursor:pointer}tr.clickable:hover td{background:rgba(255,255,255,.035)}
+    code{color:#d8edf7;word-break:break-all}
+    .layout{display:grid;grid-template-columns:minmax(380px,.9fr) minmax(0,1.3fr);gap:12px;align-items:start}
+    .detail{position:sticky;top:76px}
+    .tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+    .summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+    .summary-mini{border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:9px;min-width:0}
+    .summary-mini small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:800}
+    .summary-mini strong{display:block;margin-top:3px;font-size:16px;color:var(--text)}
+    .detail-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px}
+    .detail-title{min-width:0}.detail-title h2{margin:0 0 5px;font-size:16px;overflow-wrap:anywhere}
+    .recheck-list{display:grid;gap:5px;margin:8px 0}
+    .recheck-item{display:flex;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:7px;background:var(--panel2);padding:7px;font-size:12px}
+    .message-list{display:grid;gap:6px;margin:8px 0 12px}
+    .message-item{border:1px solid var(--line);border-radius:7px;background:var(--panel2);padding:8px;font-size:12px;min-width:0}
+    .message-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);margin-bottom:5px}
+    .message-body{color:var(--soft);white-space:pre-wrap;overflow-wrap:anywhere;max-height:128px;overflow:auto}
+    .message-html{height:160px;min-height:120px;max-height:220px;margin:7px 0 0}
+    .message-decision{border-top:1px dashed rgba(255,255,255,.12);margin-top:7px;padding-top:6px;color:var(--muted);overflow-wrap:anywhere}
+    .toolbar{display:grid;grid-template-columns:minmax(220px,1fr) minmax(150px,.42fr) minmax(150px,.42fr);gap:8px;align-items:end;margin:10px 0 12px}
+    .toolbar label{display:grid;gap:4px;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase}
+    .toolbar input,.toolbar select{width:100%;min-height:34px;border:1px solid var(--line);border-radius:7px;background:var(--panel2);color:var(--text);padding:6px 8px}
+    iframe{width:100%;height:min(520px,62vh);min-height:320px;border:1px solid var(--line);border-radius:8px;background:white}
+    @media(max-width:1050px){.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.layout{grid-template-columns:1fr}.detail{position:static}.toolbar{grid-template-columns:1fr 1fr}}
+    @media(max-width:650px){header{height:auto;min-height:58px;align-items:flex-start;flex-wrap:wrap;padding:12px}.flow{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.toolbar{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GitHub E2E Pipeline</h1>
+    <nav>
+      <button data-tab="dash" class="active">Pipeline</button>
+      <button data-tab="reports">Reports</button>
+    </nav>
+    <span class="sp"></span>
+    <span id="clock" class="muted"></span>
+  </header>
+  <main id="view"></main>
+<script>
+const $=s=>document.querySelector(s);
+function api(path,params={}){const u=new URL(path,location.origin);for(const[k,v]of Object.entries(params))u.searchParams.set(k,v);return u}
+async function getJSON(path,params){const r=await fetch(api(path,params));if(!r.ok)throw new Error(r.status);return r.json()}
+async function postJSON(path,body={}){const r=await fetch(api(path),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw new Error(r.status);return r.json()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmt(n){return (Number(n)||0).toLocaleString('en-US')}
+function age(ts){if(!ts)return '-';const sec=Math.max(0,Math.floor(Date.now()/1000-Number(ts)));if(sec<60)return sec+'s';if(sec<3600)return Math.floor(sec/60)+'m';if(sec<86400)return Math.floor(sec/3600)+'h';return Math.floor(sec/86400)+'d'}
+let activeTab='dash';
+let reportState={q:'',status:'',cycleKey:'',threadId:null};
+let reportFilterApplyTimer=null;
+const REPORT_STATUSES=['reported','report_ready','awaiting_owner','recheck_requested','rechecking','partially_remediated','remediated','still_open','exception_review','owner_update_needed','owner_reassignment_review','reassigned','escalated','closed','error'];
+const HITL_STATUSES=new Set(['exception_review','owner_update_needed','owner_reassignment_review','reassigned']);
+const RECHECKABLE_STATUSES=new Set(['report_ready','awaiting_owner','recheck_requested','still_open','partially_remediated','exception_review','owner_update_needed','owner_reassignment_review','reassigned','escalated','error']);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{activeTab=b.dataset.tab;document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===activeTab));render()});
+function option(value,label,current){return `<option value="${esc(value)}" ${current===value?'selected':''}>${esc(label)}</option>`}
+
+function stageTargets(s){
+  const active=((s.targets||{}).active||[]), stuck=((s.targets||{}).stuck||[]), next=((s.targets||{}).next||[]);
+  const rows=[
+    ...active.map(t=>[t,'live']),
+    ...stuck.map(t=>[t,'stuck']),
+    ...(active.length||stuck.length?[]:next.map(t=>[t,'']))
+  ];
+  return rows.slice(0,8).map(([t,cls])=>{
+    const reset=cls==='stuck'&&t.session_ref&&s.control_key?`<button class="mini" onclick="resetClaim('${esc(s.control_key)}','${esc(t.session_ref)}')">Reset</button>`:'';
+    return `<div class="target ${cls}" title="${esc(t.label||t)}"><span class="target-label">${esc(t.label||t)}</span>${reset}</div>`;
+  }).join('')||'<div class="muted">no targets</div>';
+}
+function stageCard(s){
+  const metrics=(s.metrics||[]).slice(0,5).map(m=>`<div class="metric"><span>${esc(m.label)}</span><b>${fmt(m.value)}${esc(m.unit||'')}</b></div>`).join('');
+  const enabled=s.node_enabled!==false;
+  return `<section class="stage ${esc(s.status||'')}">
+    <div class="stage-head"><div><div class="stage-title">${esc(s.label)}</div><div class="muted">${esc(s.owner||'')}</div></div>
+      ${s.control_key?`<button class="act ${enabled?'':'primary'}" onclick="toggle('${esc(s.control_key)}',${enabled?0:1})">${enabled?'ON':'OFF'}</button>`:''}</div>
+    <div class="stats"><div class="stat"><b>${fmt(s.queue)}</b><span>queue</span></div><div class="stat"><b>${fmt(s.processing)}</b><span>active</span></div><div class="stat"><b>${fmt(s.done)}</b><span>done</span></div></div>
+    <div class="targets">${stageTargets(s)}</div>
+    <div>${metrics}</div>
+  </section>`;
+}
+// 하트비트 신선도. detail 은 **마지막 실행 결과가 그대로 박혀 있는 값**이라, 나이를 같이
+// 보여주지 않으면 한 달 전 숫자를 오늘 결과로 읽게 된다(2026-08-16 실측: github.scan 의
+// "errors=5" 가 25일 전 기록이었다). alive 는 API 가 주는 600초 기준이고, 그것만으로는
+// 6시간 cron 이 항상 빨갛게 보이므로 24h/7d 구간을 따로 둔다.
+function hbTier(h){
+  const sec=Math.max(0,Math.floor(Date.now()/1000-Number(h.last_beat||0)));
+  if(!h.last_beat)return {cls:'meta',label:'기록없음'};
+  if(h.alive)return {cls:'live',label:'LIVE'};
+  if(sec<86400)return {cls:'warn',label:'대기'};
+  if(sec<604800)return {cls:'bad',label:'하루+'};
+  return {cls:'bad',label:'★일주일+'};
+}
+function heartbeatRows(d){
+  const rows=Object.entries(d.heartbeats||{})
+    .sort((a,b)=>Number(b[1].last_beat||0)-Number(a[1].last_beat||0));
+  return rows.map(([k,h])=>{
+    const t=hbTier(h);
+    return `<tr><td><code>${esc(k)}</code></td><td><span class="pill ${t.cls}">${t.label}</span></td>`
+      +`<td>${esc(h.phase||'-')}</td><td>${age(h.last_beat)}</td><td class="muted">${esc(h.detail||'')}</td></tr>`;
+  }).join('');
+}
+async function renderDash(){
+  const v=$('#view');v.innerHTML='<p class="muted">Loading...</p>';
+  try{
+    const d=await getJSON('/api/pipeline/overview',{live:1});
+    const by={};(d.stages||[]).forEach(s=>by[s.key]=s);
+    v.innerHTML=`<div class="grid">
+      <div class="card"><small>Queued repos</small><strong>${fmt((by.scan||{}).queue)}</strong></div>
+      <div class="card"><small>GitHub findings</small><strong>${fmt(d.findings_total)}</strong></div>
+      <div class="card"><small>Report queue</small><strong>${fmt((by.report||{}).queue)}</strong></div>
+      <div class="card"><small>Remediated repos</small><strong>${fmt((by.done||{}).done)}</strong></div>
+    </div><div class="flow">${(d.stages||[]).map(stageCard).join('')}</div>
+    <div class="layout"><section class="panel"><div class="section-head"><h2>Heartbeats</h2>
+      <span class="muted">Detail 은 그 시각의 마지막 결과다 — Age 를 같이 볼 것</span></div>
+      <table><thead><tr><th>Agent</th><th>신선도</th><th>Phase</th><th>Age</th><th>Detail</th></tr></thead>
+      <tbody>${heartbeatRows(d)||'<tr><td colspan="5" class="muted">데이터 없음</td></tr>'}</tbody></table>
+    </section></div>`;
+  }catch(e){v.innerHTML='<p class="muted">Load failed: '+esc(e)+'</p>'}
+}
+function severityLabel(s){return ({critical:'심각',high:'높음',medium:'보통',low:'낮음',informational:'정보'})[s]||s||'-'}
+function statusLabel(s){return ({
+  reported:'리포트 대기',
+  report_ready:'리포트 작성',
+  awaiting_owner:'담당자 대기',
+  recheck_requested:'재검증 요청',
+  rechecking:'재검증 중',
+  partially_remediated:'부분 조치',
+  remediated:'조치 완료',
+  still_open:'잔존 노출',
+  exception_review:'업무 예외 검토',
+  owner_update_needed:'담당자 확인',
+  owner_reassignment_review:'담당자 변경 검토',
+  reassigned:'담당자 이관',
+  escalated:'에스컬레이션',
+  closed:'종료',
+  error:'오류'
+})[s]||s||'-'}
+function statusPill(s){const cls=({reported:'warn',report_ready:'live',awaiting_owner:'live',recheck_requested:'warn',rechecking:'warn',partially_remediated:'warn',remediated:'live',still_open:'bad',exception_review:'warn',owner_update_needed:'warn',owner_reassignment_review:'warn',reassigned:'warn',escalated:'bad',closed:'meta',error:'bad'})[s]||'';return `<span class="pill ${cls}">${esc(statusLabel(s))}</span>`}
+function verdictPill(s){const cls=({now_closed:'live',still_open:'bad',unknown:'warn'})[s]||'meta';return `<span class="pill ${cls}">${esc(({now_closed:'닫힘',still_open:'잔존',unknown:'확인불가'})[s]||s||'-')}</span>`}
+function tagPills(items){return `<span class="tag-row">${(items||[]).map(x=>`<span class="pill signal">${esc(x.label||x.key)}</span>`).join('')}</span>`}
+function scanLabel(s){return ({api_code_search_detail_scan:'API detail',api_recent_commit_patch_scan:'Commit patch',api_pull_request_files_scan:'PR files',api_compare_files_scan:'Compare files',clone_worktree_history_scan:'Clone scan',api_head_detail_refetch:'API recheck',clone_head_rescan:'Clone recheck'})[s]||s||'unknown'}
+function scanMethodPills(t){
+  const c=t?.scan_method_counts||((t?.summary||{}).scan_method_counts)||{};
+  const rows=Object.entries(c).filter(([,n])=>Number(n)>0).map(([k,n])=>`<span class="pill meta">${esc(scanLabel(k))} ${fmt(n)}</span>`);
+  return rows.join('');
+}
+function findingScanTrace(f){
+  const meta=(f.extra&&f.extra.metadata)||{}, verification=(f.extra&&f.extra.verification)||{};
+  const method=scanLabel(meta.scan_method||verification.method||'unknown');
+  const source=meta.candidate_source||meta.source||'-';
+  const query=meta.candidate_query||'';
+  const commit=meta.commit?` · ${meta.commit}`:'';
+  return `<span title="${esc(query)}">${esc(method)} · ${esc(source)}${esc(commit)}</span>`;
+}
+function recheckTrace(r){
+  const v=r.verification||{};
+  const method=scanLabel(v.method||'unknown');
+  const matched=r.verdict==='unknown'?'unknown':(v.matched===true?'matched':(v.matched===false?'clean':'unknown'));
+  const head=v.head_sha?String(v.head_sha).slice(0,12):'';
+  const fetched=v.detail_fetched===true?'fetched':(v.detail_fetched===false?'not fetched':'');
+  const status=v.status_code?`HTTP ${v.status_code}`:'';
+  const auth=v.auth_failed?'auth_failed':'';
+  const limited=v.limit_failed?'limit_failed':'';
+  const reason=v.missing_reason||'';
+  const title=[r.error,status,auth,limited,reason,head?`head ${head}`:''].filter(Boolean).join(' · ');
+  const tail=[head,fetched,status,auth,limited].filter(Boolean).join(' · ');
+  return `<span class="pill meta" title="${esc(title)}">${esc(method)} · ${esc(matched)}${tail?` · ${esc(tail)}`:''}</span>`;
+}
+function recheckEvidence(r){
+  const v=r.verification||{};
+  const parts=[];
+  if(v.detail_fetched===false)parts.push('detail not fetched');
+  if(v.missing_reason)parts.push(v.missing_reason);
+  if(v.status_code)parts.push(`HTTP ${v.status_code}`);
+  if(v.auth_failed)parts.push('auth_failed');
+  if(v.limit_failed)parts.push('limit_failed');
+  if(r.error)parts.push(r.error);
+  return parts.join(' · ')||'-';
+}
+function verificationSummary(t){
+  const c=t?.verification_counts||{};
+  const live=c.live_in_HEAD||0, history=c.historical_only||0, unknown=c.unknown||0;
+  return `<span class="pill ${live?'bad':'meta'}">HEAD ${fmt(live)}</span><span class="pill warn">History ${fmt(history)}</span>${unknown?`<span class="pill warn">Unknown ${fmt(unknown)}</span>`:''}`;
+}
+function directionLabel(s){return ({in:'수신',out:'발신',operator:'운영자'})[s]||s||'-'}
+function decisionDetail(m){
+  const owner=(m.extracted_owner||{}).email;
+  const parts=[];
+  if(m.decision_reason)parts.push(esc(m.decision_reason));
+  if(owner)parts.push('owner '+esc(owner));
+  return parts.length?`<div class="message-decision">${parts.join(' · ')}</div>`:'';
+}
+function messageBody(m){
+  if(m.body_html)return `<iframe class="message-html" sandbox="" srcdoc="${esc(m.body_html)}"></iframe>`;
+  return `<div class="message-body">${esc(m.body_excerpt||'')}</div>`;
+}
+function messageRows(items){
+  return (items||[]).slice(-6).map(m=>`<div class="message-item">
+    <div class="message-meta"><span>${esc(directionLabel(m.direction))} · ${esc(m.agent_verdict||'-')}</span><span>${age(m.received_at)}</span></div>
+    <div><code>${esc(m.subject||'(no subject)')}</code></div>
+    <div class="muted">${esc(m.mail_from||'-')} → ${esc(m.mail_to||'-')}</div>
+    ${messageBody(m)}
+    ${decisionDetail(m)}
+  </div>`).join('');
+}
+function scheduleReportFilterApply(){
+  if(reportFilterApplyTimer)clearTimeout(reportFilterApplyTimer);
+  reportFilterApplyTimer=setTimeout(()=>{reportFilterApplyTimer=null;applyReportFilters()},220);
+}
+function applyReportFilters(){reportState.q=($('#rq')?.value||'').trim();reportState.status=$('#rst')?.value||'';reportState.threadId=null;renderReports()}
+function applyReportCycle(){reportState.cycleKey=$('#rcycle')?.value||'';reportState.threadId=null;renderReports()}
+function filterReports(items){
+  const q=String(reportState.q||'').toLowerCase();
+  return (items||[]).filter(t=>{
+    if(reportState.status&&t.status!==reportState.status)return false;
+    if(!q)return true;
+    return [t.repo,t.subject_tag,t.recipient,t.owner_recipient,t.status,t.severity].map(x=>String(x||'').toLowerCase()).join(' ').includes(q);
+  });
+}
+function reportRows(items){
+  return (items||[]).map(t=>`<tr class="clickable" onclick="detail(${esc(t.id)})"><td><code>${esc(t.repo)}</code>${tagPills(t.finding_tags)}</td><td>${statusPill(t.status)}</td><td>${esc(severityLabel(t.severity))}</td><td>${fmt(t.finding_count)}<div class="tag-row">${verificationSummary(t)}${scanMethodPills(t)}</div></td><td>${age(t.updated_at)}</td></tr>`).join('');
+}
+function reportActions(t,id){
+  const canRecheck=t.can_request_recheck??RECHECKABLE_STATUSES.has(t.status);
+  const canReassign=t.can_reassign_owner??HITL_STATUSES.has(t.status);
+  const canClose=t.can_close_exception??t.status==='exception_review';
+  const canReject=t.can_reject_exception??t.status==='exception_review';
+  const base=canRecheck?`<button class="act primary" onclick="requestRecheck(${esc(id)})">Request recheck</button>`:'';
+  if(!canReassign&&!canClose&&!canReject)return base;
+  const exceptionActions=(canClose||canReject)
+    ? `<button class="act" onclick="closeException(${esc(id)})">Approve exception</button>
+       <button class="act" onclick="rejectException(${esc(id)})">Reject exception</button>`
+    : '';
+  return `<div class="tag-row">${base}
+    ${canReassign?`<button class="act" onclick="reassignOwner(${esc(id)})">Reassign owner</button>`:''}
+    ${exceptionActions}</div>`;
+}
+async function renderReports(){
+  const v=$('#view');v.innerHTML='<p class="muted">Loading...</p>';
+  try{
+    const d=await getJSON('/api/reports',{limit:1000,cycle_key:reportState.cycleKey||''});
+    if(!reportState.cycleKey)reportState.cycleKey=d.cycle_key||'';
+    const all=filterReports(d.items||[]);
+    const rows=reportRows(all);
+    const counts=Object.entries(d.status_counts||{}).filter(([,n])=>n).map(([s,n])=>`<span class="pill">${esc(statusLabel(s))} ${fmt(n)}</span>`).join(' ');
+    const cycleOptions=(d.cycles||[]).map(c=>option(c,c,reportState.cycleKey)).join('');
+    v.innerHTML=`<div class="layout"><section class="panel"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><h2 style="margin:0;font-size:16px">Repo Reports</h2><div>${counts}</div></div>
+      <div class="toolbar"><label>Search<input id="rq" value="${esc(reportState.q)}" placeholder="repo, recipient, status" oninput="scheduleReportFilterApply()" onkeydown="if(event.key==='Enter'){event.preventDefault();applyReportFilters()}"></label>
+      <label>Cycle<select id="rcycle" onchange="applyReportCycle()">${cycleOptions}</select></label>
+      <label>Status<select id="rst" onchange="applyReportFilters()">${option('','All statuses',reportState.status)}${REPORT_STATUSES.map(s=>option(s,statusLabel(s),reportState.status)).join('')}</select></label></div>
+      <table><tr><th>Repo</th><th>Status</th><th>Severity</th><th>Findings</th><th>Updated</th></tr>${rows||'<tr><td class="muted" colspan="5">No reports</td></tr>'}</table></section>
+      <aside id="detail" class="panel detail"><p class="muted">Select a repo report.</p></aside></div>`;
+  }catch(e){v.innerHTML='<p class="muted">Load failed: '+esc(e)+'</p>'}
+}
+async function detail(id){
+  reportState.threadId=Number(id);
+  const box=$('#detail');if(!box)return;box.innerHTML='<p class="muted">Loading...</p>';
+  try{
+    const d=await getJSON('/api/reports/'+id,{cycle_key:reportState.cycleKey||''});
+    const t=d.thread||{};
+    const report=t.report||{}, summary=report.summary||{};
+    const findings=(d.findings||[]).map(f=>`<tr><td>${esc(severityLabel(f.severity))}</td><td><code>${esc(f.asset)}</code></td><td>${esc((f.extra&&f.extra.verification&&f.extra.verification.status)||'-')}</td><td>${findingScanTrace(f)}</td><td>${esc(f.summary)}</td></tr>`).join('');
+    const rechecks=(d.rechecks||[]).slice(0,6).map(r=>`<div class="recheck-item"><span><code>${esc(r.path||r.repo||'-')}</code> ${recheckTrace(r)}<div class="muted">${esc(recheckEvidence(r))}</div></span>${verdictPill(r.verdict)}</div>`).join('');
+    const messages=messageRows(d.messages||[]);
+    box.innerHTML=`<div class="detail-head"><div class="detail-title"><h2>${esc(t.repo)}</h2><div class="tag-row">${statusPill(t.status)}${tagPills(t.finding_tags)}${verificationSummary(t)}${scanMethodPills(t)}</div></div>
+      ${reportActions(t,id)}</div>
+      <div class="summary-grid">
+        <div class="summary-mini"><small>HEAD Live</small><strong>${fmt(summary.live_head||(t.verification_counts||{}).live_in_HEAD)}</strong></div>
+        <div class="summary-mini"><small>History Only</small><strong>${fmt(summary.historical_only||(t.verification_counts||{}).historical_only)}</strong></div>
+        <div class="summary-mini"><small>Paths</small><strong>${fmt(summary.unique_paths)}</strong></div>
+      </div>
+      <h3 style="font-size:13px;margin:8px 0">Mail Replies</h3><div class="message-list">${messages||'<div class="muted">No reply mail</div>'}</div>
+      ${rechecks?`<h3 style="font-size:13px;margin:8px 0">Recheck</h3><div class="recheck-list">${rechecks}</div>`:''}
+      ${t.report_html?`<iframe sandbox="" srcdoc="${esc(t.report_html)}"></iframe>`:''}
+      <table><tr><th>Severity</th><th>Asset</th><th>Verification</th><th>Scan</th><th>Summary</th></tr>${findings||'<tr><td class="muted" colspan="5">No findings</td></tr>'}</table>`;
+  }catch(e){box.innerHTML='<p class="muted">Load failed: '+esc(e)+'</p>'}
+}
+async function requestRecheck(id){try{await postJSON('/api/reports/'+id+'/request-recheck');await detail(id)}catch(e){alert('failed: '+e)}}
+async function resetClaim(component,sessionRef){try{await postJSON('/api/pipeline/reset-claim',{component,session_ref:sessionRef,reason:'operator reset from dashboard'});await renderDash()}catch(e){alert('failed: '+e)}}
+async function reassignOwner(id){
+  const recipient=prompt('New owner email');
+  if(!recipient)return;
+  const reason=prompt('Reason','operator reassignment')||'operator reassignment';
+  try{await postJSON('/api/reports/'+id+'/reassign-owner',{recipient,reason});await renderReports();await detail(id)}catch(e){alert('failed: '+e)}
+}
+async function closeException(id){
+  const reason=prompt('Exception approval reason','business exception approved');
+  if(!reason)return;
+  try{await postJSON('/api/reports/'+id+'/close-exception',{reason,approved_by:'operator'});await renderReports();await detail(id)}catch(e){alert('failed: '+e)}
+}
+async function rejectException(id){
+  const reason=prompt('Reject reason','operator rejected exception; recheck requested')||'operator rejected exception; recheck requested';
+  try{await postJSON('/api/reports/'+id+'/reject-exception',{reason});await renderReports();await detail(id)}catch(e){alert('failed: '+e)}
+}
+async function toggle(component,enabled){try{await postJSON('/api/cron/set',{component,enabled:!!enabled});render()}catch(e){alert('failed: '+e)}}
+function render(){activeTab==='reports'?renderReports():renderDash()}
+setInterval(()=>{const c=$('#clock');if(c)c.textContent=new Date().toLocaleTimeString()},1000);
+render();
+setInterval(()=>{if(activeTab==='dash')renderDash()},15000);
+</script>
+</body>
+</html>

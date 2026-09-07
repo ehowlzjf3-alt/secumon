@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "status": "prepared_not_executed",
+  "preparedAt": "2026-09-07T13:05:34.255Z",
+  "files": [
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/configure.mjs",
+      "sourceSha256": "6a11303711b1f4d1d29b65ed844fd9db7cf4cce892c0874a13ee253d80ea3c61",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/configure.mjs",
+      "targetSha256": "806073ee91ed0bf5cebc1536a49023e3e5200a359df0caba8594bbab802bc3c1"
+    },
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/mcp-recovery-c05-common.mjs",
+      "sourceSha256": "81344cadfc6eeb7da1854d96ff0efe4755fe94ab0ad044eb852a927663fec704",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/mcp-custody-c05-common.mjs",
+      "targetSha256": "219b4cca09d6c6def17fc6435497ac5a10dfd6a0a506cb4a7c2310c612c60c32"
+    },
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/preflight.mjs",
+      "sourceSha256": "6a50504d05277aafffa290865072a7b8d7b385d6cb831d12b8b67c4073643546",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/preflight.mjs",
+      "targetSha256": "fc9289bcfe62ace371980455538d02d7cab10569babf71d8bf42b09bbd95c4a1"
+    },
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/prepare-upload.mjs",
+      "sourceSha256": "4f22104f386e34040043bfdc22263d186b50972d694409aa7d6dc04e1daf1aac",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/prepare-upload.mjs",
+      "targetSha256": "4e78a1d869f9a6952870e9b85a9f0b4f3aea74bbd029bd01b82ea7941bd07149"
+    },
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/start-native.mjs",
+      "sourceSha256": "f6681a553ba4eb4740c39dc84a9738973771bc5f89467a047589b856ffc917d6",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/start-native.mjs",
+      "targetSha256": "972957331f71cfb68bd1420d6d2b7a5bec670af13af6774e55ff99608830b9d2"
+    },
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/verify-linux-mcp-recovery-c05.mjs",
+      "sourceSha256": "04f5b8597c635ecf7e08407a1cacae1dfaad7feb0a3f418f8b879d3a96d95f44",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/verify-linux-mcp-custody-c05.mjs",
+      "targetSha256": "afc4700076c5f7858a4c93d8ce2b4b074fe1f46c4d7996d3fe451afabc6ec100"
+    },
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/collect-attempt.mjs",
+      "sourceSha256": "a945b6b49b1c5ffbe5aeb3586a38f6af983634cf3d72fc280c821b9cdcdbc1f5",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/collect-attempt.mjs",
+      "targetSha256": "5e3afc77e445c7691b4710e2ee6d0005606343c7ce7c872a9c3aff3f36df3709"
+    },
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/close-native.mjs",
+      "sourceSha256": "9fddd57fdcfdab50f1432ba03d61f406671b6a27ceeed1e5920a6f88b8f83c39",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/close-native.mjs",
+      "targetSha256": "c60db66404263a43aa3df8acf393352bae9e40eb0f331bba29f075252fa3b91b"
+    },
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-linux-nas-20260907/finalize-evidence.mjs",
+      "sourceSha256": "abc9508213a09a9db106e12439c245d912aaa1d85a4325614e236883a9ac947c",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/finalize-evidence.mjs",
+      "targetSha256": "6be8fb301cbb9126f1137c610b7a6cc6223734692fb34f154d684326f34ca8bc"
+    },
+    {
+      "source": "runtime/evidence/C05-mcp-recovery-select-local.mjs",
+      "sourceSha256": "843a01bf6fd048e45b86d209810a88e1d8542b2c2ee11d6d55419b48ee108da0",
+      "target": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/select-local.mjs",
+      "targetSha256": "18fb95696d8201e8eca2cd89f2936301d5b75cb2daa684f0ff0ad345be34a2c8"
+    }
+  ],
+  "syntaxCheck": {
+    "path": "runtime/evidence/C05-mcp-custody-linux-nas-20260907/syntax-check.json",
+    "sha256": "da963026984156ddb02d0494bc83c06fe308ebb41c65079135a76c017ba8c206",
+    "status": "passed",
+    "files": 10
+  },
+  "scope": "Script adaptation only. No configuration, pin, selection snapshot, connection, upload, native execution or proof has been created.",
+  "transformations": [
+    "Rename only the new unit folder, remote artifact/evidence/backup prefixes and stage names; retain the completed recovery predecessor.",
+    "Read custody selection JSON dynamically at alias selection and upload; require exact successful test argv and preserve SHA plus per-attempt selection snapshot.",
+    "Permit only default Node spec or explicit TAP with fixed timeout/concurrency arguments; require one final six-field summary.",
+    "Keep source/build/evidence hashes, 8 native stages, bounded group shutdown, collection, cleanup and immutable proof checks.",
+    "Relocate the local success selector and its future alias outputs inside this new folder; create no aliases before actual terminal observations.",
+    "Describe CLI/Web accounting separately from original-input permission, offline startup and remote billing."
+  ]
+}

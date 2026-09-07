@@ -1,0 +1,808 @@
+TAP version 13
+# Subtest: file-journal agents separate identical work IDs, events and historical receipts across reopen
+ok 1 - file-journal agents separate identical work IDs, events and historical receipts across reopen
+  ---
+  duration_ms: 224.847912
+  type: 'test'
+  ...
+# Subtest: file-journal state keeps private memory and channel messages in separately owned SQLite databases
+ok 2 - file-journal state keeps private memory and channel messages in separately owned SQLite databases
+  ---
+  duration_ms: 149.363196
+  type: 'test'
+  ...
+# Subtest: a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+ok 3 - a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+  ---
+  duration_ms: 211.925814
+  type: 'test'
+  ...
+# Subtest: copying another agents complete journal is rejected before binding a new backend marker
+ok 4 - copying another agents complete journal is rejected before binding a new backend marker
+  ---
+  duration_ms: 128.420018
+  type: 'test'
+  ...
+# Subtest: file-journal selection does not bypass foreign memory or channel SQLite ownership
+ok 5 - file-journal selection does not bypass foreign memory or channel SQLite ownership
+  ---
+  duration_ms: 259.624978
+  type: 'test'
+  ...
+# Subtest: empty and populated legacy v1 journals are not automatically adopted by an agent
+ok 6 - empty and populated legacy v1 journals are not automatically adopted by an agent
+  ---
+  duration_ms: 173.397878
+  type: 'test'
+  ...
+# Subtest: changing config between SQLite and file-journal never creates a replacement state store
+ok 7 - changing config between SQLite and file-journal never creates a replacement state store
+  ---
+  duration_ms: 265.630906
+  type: 'test'
+  ...
+# Subtest: an owned legacy SQLite agent gains only its backend marker and preserves historical data
+ok 8 - an owned legacy SQLite agent gains only its backend marker and preserves historical data
+  ---
+  duration_ms: 99.967886
+  type: 'test'
+  ...
+# Subtest: an unowned legacy SQLite database is preserved without creating a backend marker
+ok 9 - an unowned legacy SQLite database is preserved without creating a backend marker
+  ---
+  duration_ms: 96.3921
+  type: 'test'
+  ...
+# Subtest: copying another agents backend marker is rejected before creating any state or private databases
+ok 10 - copying another agents backend marker is rejected before creating any state or private databases
+  ---
+  duration_ms: 82.766998
+  type: 'test'
+  ...
+# Subtest: malformed, unsupported or linked backend markers cannot initialize state stores
+ok 11 - malformed, unsupported or linked backend markers cannot initialize state stores
+  ---
+  duration_ms: 191.704494
+  type: 'test'
+  ...
+# Subtest: ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+ok 12 - ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+  ---
+  duration_ms: 91.793818
+  type: 'test'
+  ...
+# Subtest: concurrent CLI first storage opens retain one agent, backend selection and journal identity
+ok 13 - concurrent CLI first storage opens retain one agent, backend selection and journal identity
+  ---
+  duration_ms: 1024.73786
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at setup-operation.json
+ok 14 - clone resumes with one identity after actual process termination at setup-operation.json
+  ---
+  duration_ms: 381.248768
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at setup.json
+ok 15 - clone resumes with one identity after actual process termination at setup.json
+  ---
+  duration_ms: 336.285011
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at identity.json
+ok 16 - clone resumes with one identity after actual process termination at identity.json
+  ---
+  duration_ms: 338.204586
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at config.json
+ok 17 - clone resumes with one identity after actual process termination at config.json
+  ---
+  duration_ms: 300.478393
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at skill
+ok 18 - clone resumes with one identity after actual process termination at skill
+  ---
+  duration_ms: 341.097916
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at before-complete
+ok 19 - clone resumes with one identity after actual process termination at before-complete
+  ---
+  duration_ms: 403.018717
+  type: 'test'
+  ...
+# Subtest: a published completion survives process termination and later source/skill edits do not trigger recopy
+ok 20 - a published completion survives process termination and later source/skill edits do not trigger recopy
+  ---
+  duration_ms: 416.712381
+  type: 'test'
+  ...
+# Subtest: source changes and target conflicts are preserved during explicit clone resume
+ok 21 - source changes and target conflicts are preserved during explicit clone resume
+  ---
+  duration_ms: 413.410031
+  type: 'test'
+  ...
+# Subtest: pending clone blocks nested setup and CLI repair explains explicit clone resume
+ok 22 - pending clone blocks nested setup and CLI repair explains explicit clone resume
+  ---
+  duration_ms: 986.514208
+  type: 'test'
+  ...
+# Subtest: general initialization keeps its selected identity after interruption at the operation marker
+ok 23 - general initialization keeps its selected identity after interruption at the operation marker
+  ---
+  duration_ms: 225.543732
+  type: 'test'
+  ...
+# Subtest: competing clone commands never assign two identities to the same destination
+ok 24 - competing clone commands never assign two identities to the same destination
+  ---
+  duration_ms: 332.626689
+  type: 'test'
+  ...
+# Subtest: initialization and clone contention leave a single coherent ready profile
+ok 25 - initialization and clone contention leave a single coherent ready profile
+  ---
+  duration_ms: 271.685872
+  type: 'test'
+  ...
+# Subtest: a target config changed during skill publication cannot be marked clone-complete
+ok 26 - a target config changed during skill publication cannot be marked clone-complete
+  ---
+  duration_ms: 299.62755
+  type: 'test'
+  ...
+# Subtest: legacy v1 setup without an operation marker reopens untouched and repairs with its existing identity
+ok 27 - legacy v1 setup without an operation marker reopens untouched and repairs with its existing identity
+  ---
+  duration_ms: 100.324175
+  type: 'test'
+  ...
+# Subtest: pending filenames cannot hide data in clone memory, workspace or artifact directories
+ok 28 - pending filenames cannot hide data in clone memory, workspace or artifact directories
+  ---
+  duration_ms: 286.244164
+  type: 'test'
+  ...
+# Subtest: one interrupted publication at the entries boundary can resume with its safe pending file
+ok 29 - one interrupted publication at the entries boundary can resume with its safe pending file
+  ---
+  duration_ms: 1874.490194
+  type: 'test'
+  ...
+# Subtest: one interrupted publication at the bytes boundary can resume with its safe pending file
+ok 30 - one interrupted publication at the bytes boundary can resume with its safe pending file
+  ---
+  duration_ms: 747.557053
+  type: 'test'
+  ...
+# Subtest: clone creates a fresh identity while preserving reusable configuration and the original files
+ok 31 - clone creates a fresh identity while preserving reusable configuration and the original files
+  ---
+  duration_ms: 144.300264
+  type: 'test'
+  ...
+# Subtest: clone copies skill bytes, nested empty directories and executable bits without linking source files
+ok 32 - clone copies skill bytes, nested empty directories and executable bits without linking source files
+  ---
+  duration_ms: 127.777875
+  type: 'test'
+  ...
+# Subtest: clone starts with independent empty stores despite source work, memory, conversation and artifacts
+ok 33 - clone starts with independent empty stores despite source work, memory, conversation and artifacts
+  ---
+  duration_ms: 222.522908
+  type: 'test'
+  ...
+# Subtest: ordinary clone never overwrites an existing empty, populated or initialized destination
+ok 34 - ordinary clone never overwrites an existing empty, populated or initialized destination
+  ---
+  duration_ms: 101.875671
+  type: 'test'
+  ...
+# Subtest: clone rejects source overlap, nested agents and engine destinations without changing either tree
+ok 35 - clone rejects source overlap, nested agents and engine destinations without changing either tree
+  ---
+  duration_ms: 50.163884
+  type: 'test'
+  ...
+# Subtest: clone rejects missing or malformed sources and invalid options without creating a destination
+ok 36 - clone rejects missing or malformed sources and invalid options without creating a destination
+  ---
+  duration_ms: 56.356344
+  type: 'test'
+  ...
+# Subtest: clone rejects skill file and directory symlinks without modifying their outside targets
+ok 37 - clone rejects skill file and directory symlinks without modifying their outside targets
+  ---
+  duration_ms: 42.657795
+  type: 'test'
+  ...
+# Subtest: clone rejects hard-linked skill files and leaves both links unchanged
+ok 38 - clone rejects hard-linked skill files and leaves both links unchanged
+  ---
+  duration_ms: 38.529163
+  type: 'test'
+  ...
+# Subtest: clone rejects a POSIX FIFO skill instead of blocking on its contents
+ok 39 - clone rejects a POSIX FIFO skill instead of blocking on its contents
+  ---
+  duration_ms: 331.653099
+  type: 'test'
+  ...
+# Subtest: clone permits a four-MiB skill file and rejects a file exceeding that limit
+ok 40 - clone permits a four-MiB skill file and rejects a file exceeding that limit
+  ---
+  duration_ms: 207.018071
+  type: 'test'
+  ...
+# Subtest: clone enforces snapshot entry, total-byte and directory-depth limits
+ok 41 - clone enforces snapshot entry, total-byte and directory-depth limits
+  ---
+  duration_ms: 330.303287
+  type: 'test'
+  ...
+# Subtest: pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+ok 42 - pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+  ---
+  duration_ms: 244.962335
+  type: 'test'
+  ...
+# Subtest: pending clone preserves target file conflicts instead of overwriting or accepting them
+ok 43 - pending clone preserves target file conflicts instead of overwriting or accepting them
+  ---
+  duration_ms: 224.385076
+  type: 'test'
+  ...
+# Subtest: finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+ok 44 - finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+  ---
+  duration_ms: 111.796566
+  type: 'test'
+  ...
+# Subtest: CLI clone reports the new ready profile and supports explicit completed-clone resume
+ok 45 - CLI clone reports the new ready profile and supports explicit completed-clone resume
+  ---
+  duration_ms: 1069.692949
+  type: 'test'
+  ...
+# Subtest: initialization joins the same identity published after its first empty metadata observation
+ok 46 - initialization joins the same identity published after its first empty metadata observation
+  ---
+  duration_ms: 420.258905
+  type: 'test'
+  ...
+# Subtest: initialization reobserves malformed metadata after a concurrent publication and refuses without replacement
+ok 47 - initialization reobserves malformed metadata after a concurrent publication and refuses without replacement
+  ---
+  duration_ms: 399.222999
+  type: 'test'
+  ...
+# Subtest: initialization reobserves mismatch metadata after a concurrent publication and refuses without replacement
+ok 48 - initialization reobserves mismatch metadata after a concurrent publication and refuses without replacement
+  ---
+  duration_ms: 418.206266
+  type: 'test'
+  ...
+# Subtest: reobserving genuinely unowned metadata or memory still refuses assignment and preserves every original file
+ok 49 - reobserving genuinely unowned metadata or memory still refuses assignment and preserves every original file
+  ---
+  duration_ms: 26.084146
+  type: 'test'
+  ...
+# Subtest: agent setup preserves files, creates private identity/config and reopens without a model
+ok 50 - agent setup preserves files, creates private identity/config and reopens without a model
+  ---
+  duration_ms: 98.961618
+  type: 'test'
+  ...
+# Subtest: status and invalid initialization options do not create files
+ok 51 - status and invalid initialization options do not create files
+  ---
+  duration_ms: 2.799095
+  type: 'test'
+  ...
+# Subtest: separate directories get distinct IDs and moving a directory preserves its identity
+ok 52 - separate directories get distinct IDs and moving a directory preserves its identity
+  ---
+  duration_ms: 86.819584
+  type: 'test'
+  ...
+# Subtest: initialization can finish after a process stops between identity and config publication
+ok 53 - initialization can finish after a process stops between identity and config publication
+  ---
+  duration_ms: 73.50444
+  type: 'test'
+  ...
+# Subtest: missing identity uses explicit repair with the existing config; missing completed config is not reset
+ok 54 - missing identity uses explicit repair with the existing config; missing completed config is not reset
+  ---
+  duration_ms: 95.633737
+  type: 'test'
+  ...
+# Subtest: completed layout repairs missing directories only with explicit repair and preserves existing state
+ok 55 - completed layout repairs missing directories only with explicit repair and preserves existing state
+  ---
+  duration_ms: 83.10431
+  type: 'test'
+  ...
+# Subtest: unknown data without identity is not assigned a new ID
+ok 56 - unknown data without identity is not assigned a new ID
+  ---
+  duration_ms: 7.466123
+  type: 'test'
+  ...
+# Subtest: config identity mismatch, unsupported versions and malformed documents are preserved
+ok 57 - config identity mismatch, unsupported versions and malformed documents are preserved
+  ---
+  duration_ms: 55.268518
+  type: 'test'
+  ...
+# Subtest: metadata symlinks and external hard links cannot be used for setup
+ok 58 - metadata symlinks and external hard links cannot be used for setup
+  ---
+  duration_ms: 43.972055
+  type: 'test'
+  ...
+# Subtest: managed directory links and writable/public metadata are rejected without changing permissions
+ok 59 - managed directory links and writable/public metadata are rejected without changing permissions
+  ---
+  duration_ms: 48.792093
+  type: 'test'
+  ...
+# Subtest: engine overlap and nested agent registration are rejected
+ok 60 - engine overlap and nested agent registration are rejected
+  ---
+  duration_ms: 48.684784
+  type: 'test'
+  ...
+# Subtest: CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+ok 61 - CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+  ---
+  duration_ms: 920.111996
+  type: 'test'
+  ...
+# Subtest: separate CLI processes initializing concurrently settle on exactly one identity
+ok 62 - separate CLI processes initializing concurrently settle on exactly one identity
+  ---
+  duration_ms: 803.403855
+  type: 'test'
+  ...
+# Subtest: setup mutations: a new private root syncs its unchanged 0755 parent before publishing ownership
+ok 63 - setup mutations: a new private root syncs its unchanged 0755 parent before publishing ownership
+  ---
+  duration_ms: 232.679679
+  type: 'test'
+  ...
+# Subtest: setup mutations: a failed new-root parent barrier reports creation uncertainty and a retry finishes the existing directory
+ok 64 - setup mutations: a failed new-root parent barrier reports creation uncertainty and a retry finishes the existing directory
+  ---
+  duration_ms: 264.633136
+  type: 'test'
+  ...
+# Subtest: setup mutations: write-failure before identity publication preserves the original I/O cause and resumes the same operation
+ok 65 - setup mutations: write-failure before identity publication preserves the original I/O cause and resumes the same operation
+  ---
+  duration_ms: 199.210864
+  type: 'test'
+  ...
+# Subtest: setup mutations: file-sync-failure before identity publication preserves the original I/O cause and resumes the same operation
+ok 66 - setup mutations: file-sync-failure before identity publication preserves the original I/O cause and resumes the same operation
+  ---
+  duration_ms: 236.822127
+  type: 'test'
+  ...
+# Subtest: setup mutations: link-after-failure reports published uncertainty with the original cause and can re-observe the same identity
+ok 67 - setup mutations: link-after-failure reports published uncertainty with the original cause and can re-observe the same identity
+  ---
+  duration_ms: 213.848964
+  type: 'test'
+  ...
+# Subtest: setup mutations: unlink-failure reports published uncertainty with the original cause and can re-observe the same identity
+ok 68 - setup mutations: unlink-failure reports published uncertainty with the original cause and can re-observe the same identity
+  ---
+  duration_ms: 201.186294
+  type: 'test'
+  ...
+# Subtest: setup mutations: directory-sync-failure reports published uncertainty with the original cause and can re-observe the same identity
+ok 69 - setup mutations: directory-sync-failure reports published uncertainty with the original cause and can re-observe the same identity
+  ---
+  duration_ms: 536.235005
+  type: 'test'
+  ...
+# Subtest: setup mutations: swap-parent after a candidate fsync rejects substitution without cleaning foreign names
+ok 70 - setup mutations: swap-parent after a candidate fsync rejects substitution without cleaning foreign names
+  ---
+  duration_ms: 376.070589
+  type: 'test'
+  ...
+# Subtest: setup mutations: swap-root after a candidate fsync rejects substitution without cleaning foreign names
+ok 71 - setup mutations: swap-root after a candidate fsync rejects substitution without cleaning foreign names
+  ---
+  duration_ms: 168.604714
+  type: 'test'
+  ...
+# Subtest: setup mutations: swap-metadata after a candidate fsync rejects substitution without cleaning foreign names
+ok 72 - setup mutations: swap-metadata after a candidate fsync rejects substitution without cleaning foreign names
+  ---
+  duration_ms: 195.198937
+  type: 'test'
+  ...
+# Subtest: setup mutations: the engine boundary rejects before any mutation scope can create a target
+ok 73 - setup mutations: the engine boundary rejects before any mutation scope can create a target
+  ---
+  duration_ms: 147.156942
+  type: 'test'
+  ...
+# Subtest: setup mutations: actual SIGKILL at kill-identity-synced preserves the published operation and resumes without reallocating identity
+ok 74 - setup mutations: actual SIGKILL at kill-identity-synced preserves the published operation and resumes without reallocating identity
+  ---
+  duration_ms: 263.484997
+  type: 'test'
+  ...
+# Subtest: setup mutations: actual SIGKILL at kill-config-linked preserves the published operation and resumes without reallocating identity
+ok 75 - setup mutations: actual SIGKILL at kill-config-linked preserves the published operation and resumes without reallocating identity
+  ---
+  duration_ms: 243.881127
+  type: 'test'
+  ...
+# Subtest: setup mutations: actual SIGKILL at kill-receipt-linked preserves the published operation and resumes without reallocating identity
+ok 76 - setup mutations: actual SIGKILL at kill-receipt-linked preserves the published operation and resumes without reallocating identity
+  ---
+  duration_ms: 234.475559
+  type: 'test'
+  ...
+# Subtest: two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+ok 77 - two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+  ---
+  duration_ms: 202.238656
+  type: 'test'
+  ...
+# Subtest: agent work files cannot traverse into engine or another agent and remain separate
+ok 78 - agent work files cannot traverse into engine or another agent and remain separate
+  ---
+  duration_ms: 164.633177
+  type: 'test'
+  ...
+# Subtest: copying another agents database is detected by its durable owner before runtime access
+ok 79 - copying another agents database is detected by its durable owner before runtime access
+  ---
+  duration_ms: 139.038019
+  type: 'test'
+  ...
+# Subtest: unowned existing databases are not silently adopted
+ok 80 - unowned existing databases are not silently adopted
+  ---
+  duration_ms: 91.667209
+  type: 'test'
+  ...
+# Subtest: symlink database and sidecar destinations cannot overwrite another file
+ok 81 - symlink database and sidecar destinations cannot overwrite another file
+  ---
+  duration_ms: 77.868812
+  type: 'test'
+  ...
+# Subtest: changing config after SQLite initialization cannot replace it with an empty journal
+ok 82 - changing config after SQLite initialization cannot replace it with an empty journal
+  ---
+  duration_ms: 99.786474
+  type: 'test'
+  ...
+# Subtest: file mutations: an absent root can be created privately under a public parent without changing its permissions
+ok 83 - file mutations: an absent root can be created privately under a public parent without changing its permissions
+  ---
+  duration_ms: 13.058859
+  type: 'test'
+  ...
+# Subtest: file mutations: publication never replaces an existing target and produces private executable or empty files
+ok 84 - file mutations: publication never replaces an existing target and produces private executable or empty files
+  ---
+  duration_ms: 21.180249
+  type: 'test'
+  ...
+# Subtest: file mutations: scope references cannot cross scopes, escape by leaf syntax or survive scope close
+ok 85 - file mutations: scope references cannot cross scopes, escape by leaf syntax or survive scope close
+  ---
+  duration_ms: 4.665671
+  type: 'test'
+  ...
+# Subtest: file mutations: canonical forbidden ancestors, descendants and aliases are refused before creation
+ok 86 - file mutations: canonical forbidden ancestors, descendants and aliases are refused before creation
+  ---
+  duration_ms: 3.112078
+  type: 'test'
+  ...
+# Subtest: file mutations: an ancestor replacement is rejected even when the same root object is moved back under it
+ok 87 - file mutations: an ancestor replacement is rejected even when the same root object is moved back under it
+  ---
+  duration_ms: 5.184342
+  type: 'test'
+  ...
+# Subtest: file mutations: write failure cleans its candidate and still synchronizes the directory
+ok 88 - file mutations: write failure cleans its candidate and still synchronizes the directory
+  ---
+  duration_ms: 61.354283
+  type: 'test'
+  ...
+# Subtest: file mutations: a link that succeeds before throwing retains published evidence rather than reporting no effect
+ok 89 - file mutations: a link that succeeds before throwing retains published evidence rather than reporting no effect
+  ---
+  duration_ms: 71.867643
+  type: 'test'
+  ...
+# Subtest: file mutations: write, close, cleanup and sync failures retain every original error independently
+ok 90 - file mutations: write, close, cleanup and sync failures retain every original error independently
+  ---
+  duration_ms: 75.933232
+  type: 'test'
+  ...
+# Subtest: file mutations: failed candidate cleanup preserves the published normal two-link pair while sync is still attempted
+ok 91 - file mutations: failed candidate cleanup preserves the published normal two-link pair while sync is still attempted
+  ---
+  duration_ms: 58.720842
+  type: 'test'
+  ...
+# Subtest: file mutations: candidate-replaced never removes a foreign candidate or writes through a changed parent
+ok 92 - file mutations: candidate-replaced never removes a foreign candidate or writes through a changed parent
+  ---
+  duration_ms: 69.714814
+  type: 'test'
+  ...
+# Subtest: file mutations: parent-replaced never removes a foreign candidate or writes through a changed parent
+ok 93 - file mutations: parent-replaced never removes a foreign candidate or writes through a changed parent
+  ---
+  duration_ms: 57.208121
+  type: 'test'
+  ...
+# Subtest: file mutations: retrying existing-directory creation completes the parent barrier after an earlier sync failure
+ok 94 - file mutations: retrying existing-directory creation completes the parent barrier after an earlier sync failure
+  ---
+  duration_ms: 64.459643
+  type: 'test'
+  ...
+# Subtest: file mutations: uncertain mkdir failure preserves the directory without claiming a confirmed creation
+ok 95 - file mutations: uncertain mkdir failure preserves the directory without claiming a confirmed creation
+  ---
+  duration_ms: 61.153188
+  type: 'test'
+  ...
+# Subtest: metadata boundary: host dispatch exposes declared POSIX mechanisms and refuses unsupported or emulated hosts
+ok 96 - metadata boundary: host dispatch exposes declared POSIX mechanisms and refuses unsupported or emulated hosts
+  ---
+  duration_ms: 2.614159
+  type: 'test'
+  ...
+# Subtest: metadata boundary: missing directories return null; regular files and linked directories are rejected
+ok 97 - metadata boundary: missing directories return null; regular files and linked directories are rejected
+  ---
+  duration_ms: 2.193939
+  type: 'test'
+  ...
+# Subtest: metadata boundary: directory access keeps private and owner-writable policies distinct without chmod
+ok 98 - metadata boundary: directory access keeps private and owner-writable policies distinct without chmod
+  ---
+  duration_ms: 1.225498
+  type: 'test'
+  ...
+# Subtest: metadata boundary: public parent traversal permits a private file without weakening its access policy
+ok 99 - metadata boundary: public parent traversal permits a private file without weakening its access policy
+  ---
+  duration_ms: 5.042023
+  type: 'test'
+  ...
+# Subtest: metadata boundary: files enforce their own access policy and preserve original bytes and permissions
+ok 100 - metadata boundary: files enforce their own access policy and preserve original bytes and permissions
+  ---
+  duration_ms: 1.846337
+  type: 'test'
+  ...
+# Subtest: metadata boundary: only a missing read has missing code and its original ENOENT cause
+ok 101 - metadata boundary: only a missing read has missing code and its original ENOENT cause
+  ---
+  duration_ms: 1.835085
+  type: 'test'
+  ...
+# Subtest: metadata boundary: named pipes are rejected without waiting for a writer
+ok 102 - metadata boundary: named pipes are rejected without waiting for a writer
+  ---
+  duration_ms: 61.422163
+  type: 'test'
+  ...
+# Subtest: metadata boundary: maximum counts bytes and includes exact, one-over and empty zero-byte cases
+ok 103 - metadata boundary: maximum counts bytes and includes exact, one-over and empty zero-byte cases
+  ---
+  duration_ms: 2.643512
+  type: 'test'
+  ...
+# Subtest: metadata boundary: invalid maximums fail before allocating or reading data
+ok 104 - metadata boundary: invalid maximums fail before allocating or reading data
+  ---
+  duration_ms: 1.285563
+  type: 'test'
+  ...
+# Subtest: metadata boundary: a leaf may contain Unicode and spaces but cannot traverse directories
+ok 105 - metadata boundary: a leaf may contain Unicode and spaces but cannot traverse directories
+  ---
+  duration_ms: 1.88875
+  type: 'test'
+  ...
+# Subtest: metadata boundary: copied, fabricated and foreign adapter directory references cannot authorize access
+ok 106 - metadata boundary: copied, fabricated and foreign adapter directory references cannot authorize access
+  ---
+  duration_ms: 1.431733
+  type: 'test'
+  ...
+# Subtest: metadata boundary: an issued directory reference detects replacement before read, sync and reinspection
+ok 107 - metadata boundary: an issued directory reference detects replacement before read, sync and reinspection
+  ---
+  duration_ms: 2.034246
+  type: 'test'
+  ...
+# Subtest: metadata boundary: issued directory access is rechecked after permissions change
+ok 108 - metadata boundary: issued directory access is rechecked after permissions change
+  ---
+  duration_ms: 2.054622
+  type: 'test'
+  ...
+# Subtest: metadata boundary: external hard links are rejected and a matching sibling publication pair can be allowed
+ok 109 - metadata boundary: external hard links are rejected and a matching sibling publication pair can be allowed
+  ---
+  duration_ms: 4.002134
+  type: 'test'
+  ...
+# Subtest: metadata boundary: publication link removal during policy observation retries the stable single-link file
+ok 110 - metadata boundary: publication link removal during policy observation retries the stable single-link file
+  ---
+  duration_ms: 1.364912
+  type: 'test'
+  ...
+# Subtest: metadata boundary: sibling inspection cannot escape its issued directory
+ok 111 - metadata boundary: sibling inspection cannot escape its issued directory
+  ---
+  duration_ms: 1.049828
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated changed-once observation preserves stable-read and descriptor cleanup contracts
+ok 112 - metadata boundary: isolated changed-once observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 48.155062
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated changed-twice observation preserves stable-read and descriptor cleanup contracts
+ok 113 - metadata boundary: isolated changed-twice observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 39.004916
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated replaced-once observation preserves stable-read and descriptor cleanup contracts
+ok 114 - metadata boundary: isolated replaced-once observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 33.637938
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated directory-replaced observation preserves stable-read and descriptor cleanup contracts
+ok 115 - metadata boundary: isolated directory-replaced observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 47.386368
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated grew-over-limit observation preserves stable-read and descriptor cleanup contracts
+ok 116 - metadata boundary: isolated grew-over-limit observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 48.432486
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated read-error observation preserves stable-read and descriptor cleanup contracts
+ok 117 - metadata boundary: isolated read-error observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 38.961867
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated sync-error observation preserves stable-read and descriptor cleanup contracts
+ok 118 - metadata boundary: isolated sync-error observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 42.558577
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated foreign-file-uid observation preserves stable-read and descriptor cleanup contracts
+ok 119 - metadata boundary: isolated foreign-file-uid observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 42.882967
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated foreign-directory-uid observation preserves stable-read and descriptor cleanup contracts
+ok 120 - metadata boundary: isolated foreign-directory-uid observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 45.93783
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated policy-error observation preserves stable-read and descriptor cleanup contracts
+ok 121 - metadata boundary: isolated policy-error observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 40.102965
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated check-failure preserves notification, syscall and cleanup boundaries
+ok 122 - metadata sync observer: isolated check-failure preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 45.027348
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated open-eio preserves notification, syscall and cleanup boundaries
+ok 123 - metadata sync observer: isolated open-eio preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 32.005346
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated opened-object-replaced preserves notification, syscall and cleanup boundaries
+ok 124 - metadata sync observer: isolated opened-object-replaced preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 42.363889
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated fsync-eio preserves notification, syscall and cleanup boundaries
+ok 125 - metadata sync observer: isolated fsync-eio preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 40.713221
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated success preserves notification, syscall and cleanup boundaries
+ok 126 - metadata sync observer: isolated success preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 38.787725
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated after-fsync-replaced preserves notification, syscall and cleanup boundaries
+ok 127 - metadata sync observer: isolated after-fsync-replaced preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 43.858805
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated observer-throws preserves notification, syscall and cleanup boundaries
+ok 128 - metadata sync observer: isolated observer-throws preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 42.220696
+  type: 'test'
+  ...
+# Subtest: profile wrapper preserves absent reads, zero-byte reads and original missing sync error
+ok 129 - profile wrapper preserves absent reads, zero-byte reads and original missing sync error
+  ---
+  duration_ms: 3.150675
+  type: 'test'
+  ...
+# Subtest: common diagnostics include directory checks without replacing consumer read counters
+ok 130 - common diagnostics include directory checks without replacing consumer read counters
+  ---
+  duration_ms: 0.988082
+  type: 'test'
+  ...
+# Subtest: profile wrapper preserves open disappearance error and closes opened files
+ok 131 - profile wrapper preserves open disappearance error and closes opened files
+  ---
+  duration_ms: 115.957205
+  type: 'test'
+  ...
+# Subtest: profile wrapper preserves named-lstat disappearance error and closes opened files
+ok 132 - profile wrapper preserves named-lstat disappearance error and closes opened files
+  ---
+  duration_ms: 93.874
+  type: 'test'
+  ...
+# Subtest: emulated unsupported platform refuses profile and standalone journal writes before creating files
+ok 133 - emulated unsupported platform refuses profile and standalone journal writes before creating files
+  ---
+  duration_ms: 138.57782
+  type: 'test'
+  ...
+1..133
+# tests 133
+# suites 0
+# pass 133
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13022.319507

@@ -1,0 +1,28 @@
+import {readFile,access,writeFile} from 'node:fs/promises';
+import {resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+import vm from 'node:vm';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'../..');
+const html=await readFile(resolve(root,'design/secumon-review.html'),'utf8');
+const script=await readFile(resolve(root,'design/review/review.js'),'utf8');
+const markup=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'').replace(/<style\b[^>]*>[\s\S]*?<\/style>/g,'');
+const ids=[...markup.matchAll(/\sid="([^"]+)"/g)].map(m=>m[1]);
+const duplicateIds=ids.filter((s,i)=>ids.indexOf(s)!==i);
+const missingLinks=[];for(const [,u] of markup.matchAll(/href="(\.\.\/[^"#]+)"/g)){try{await access(resolve(root,'design',u))}catch{missingLinks.push(u)}}
+const missingAnchors=[...markup.matchAll(/href="#([^"#]+)"/g)].map(m=>m[1]).filter(id=>!ids.includes(id));
+const missingControlIds=[...script.matchAll(/\$\('([^']+)'\)/g)].map(m=>m[1]).filter(id=>!ids.includes(id));
+const data=JSON.parse(html.match(/<script id="review-data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+const gIds=new Set(data.glossary.map(g=>g.id)),mIds=new Set(data.modules.map(m=>m.id));
+const missingTerms=data.modules.flatMap(m=>m.terms.filter(id=>!gIds.has(id)));
+const missingModules=data.glossary.filter(g=>!mIds.has(g.module));
+const invalidScenarios=Object.entries(data.scenarios).filter(([,s])=>s.steps.length!==8||s.steps.some(step=>step.length!==3||step.some(v=>!v)));
+new vm.Script(script);
+const snapshot=JSON.parse(await readFile(resolve(root,'design/review/status-snapshot.json'),'utf8'));
+const {verifyEvaluationBuild}=await import('../../runtime/dist/infrastructure/local-evaluation.js');
+const build=await verifyEvaluationBuild(resolve(root,'runtime'));
+const sourceUnchanged=build.sourceDigest===snapshot.verification.build.sourceDigest;
+const record={createdAt:new Date().toISOString(),kind:'static_artifact_validation',duplicateIds,missingLinks:[...new Set(missingLinks)],missingAnchors,missingControlIds:[...new Set(missingControlIds)],missingTerms,missingModules,invalidScenarios,scriptSyntax:'passed',items:data.items.length,glossary:data.glossary.length,modules:data.modules.length,scenarios:Object.keys(data.scenarios).length,externalAssets:/<(script|link|img)[^>]*(src|href)=["']https?:/.test(markup),scriptNetworkCalls:/\b(fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(/.test(script),browserRender:'not_verified_file_url_policy_rejected',interactiveBrowserTests:'not_run',productSourceUnchanged:sourceUnchanged,sourceDigest:build.sourceDigest,htmlSha256:createHash('sha256').update(html).digest('hex'),htmlBytes:Buffer.byteLength(html)};
+record.passed=![duplicateIds,missingLinks,missingAnchors,missingControlIds,missingTerms,missingModules,invalidScenarios].some(a=>a.length)&&sourceUnchanged&&!record.externalAssets&&!record.scriptNetworkCalls&&data.items.length===31;
+await writeFile(resolve(root,'design/review/html-static-verification.json'),JSON.stringify(record,null,2)+'\n');console.log(JSON.stringify(record));
+if(!record.passed)process.exitCode=1;

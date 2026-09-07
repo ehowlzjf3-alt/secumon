@@ -1,0 +1,70 @@
+✖ agent setup preserves files, creates private identity/config and reopens without a model (2.393959ms)
+✔ status and invalid initialization options do not create files (1.282ms)
+✖ separate directories get distinct IDs and moving a directory preserves its identity (101.493292ms)
+✔ initialization can finish after a process stops between identity and config publication (68.515334ms)
+✔ missing identity uses explicit repair with the existing config; missing completed config is not reset (93.431375ms)
+✔ completed layout repairs missing directories only with explicit repair and preserves existing state (68.142458ms)
+✔ unknown data without identity is not assigned a new ID (1.498542ms)
+✔ config identity mismatch, unsupported versions and malformed documents are preserved (44.817125ms)
+✔ metadata symlinks and external hard links cannot be used for setup (56.703ms)
+✔ managed directory links and writable/public metadata are rejected without changing permissions (57.297584ms)
+✔ engine overlap and nested agent registration are rejected (45.675708ms)
+✔ CLI first call, status, version and invalid commands expose readiness without claiming runtime execution (236.0535ms)
+✔ separate CLI processes initializing concurrently settle on exactly one identity (188.944292ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 11
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1018.133708
+
+✖ failing tests:
+
+test at dist/tests/agent-profile.test.js:19:1
+✖ agent setup preserves files, creates private identity/config and reopens without a model (2.393959ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   root: '/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-9qYK1P/agent',
+  -   root: '/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-9qYK1P/agent',
+      status: 'uninitialized'
+    }
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-profile.test.js:24:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { status: 'uninitialized', root: '/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-9qYK1P/agent' },
+    expected: { status: 'uninitialized', root: '/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-9qYK1P/agent' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-profile.test.js:52:1
+✖ separate directories get distinct IDs and moving a directory preserves its identity (101.493292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-aESYvt/moved'
+  - '/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-aESYvt/moved'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-profile.test.js:62:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-aESYvt/moved',
+    expected: '/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-aESYvt/moved',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

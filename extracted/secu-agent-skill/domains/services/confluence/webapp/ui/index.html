@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Confluence E2E Pipeline</title>
+  <style>
+    :root{--bg:#f5f7fa;--band:#fff;--panel:#fff;--panel2:#f9fbfd;--line:#d7dde6;--text:#1f2937;--muted:#667085;--blue:#2563eb;--amber:#b45309;--red:#b42318;--green:#15803d;--soft:#344054}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Malgun Gothic",Arial,sans-serif;font-size:14px}
+    header{height:58px;display:flex;align-items:center;gap:16px;padding:0 18px;background:var(--band);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+    h1{font-size:17px;margin:0;letter-spacing:0;font-weight:780;white-space:nowrap}
+    nav{display:flex;gap:8px;flex-wrap:wrap}
+    nav button,.act{min-height:31px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);padding:6px 10px;cursor:pointer}
+    nav button.active,.act.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:760}
+    main{padding:18px;max-width:1580px;margin:0 auto}.sp{flex:1}.muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:16px}
+    .card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+    .card small{display:block;color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase}
+    .card strong{display:block;margin-top:5px;font-size:26px;line-height:1.1}
+    .pill{display:inline-flex;align-items:center;min-height:21px;border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:11px;color:var(--muted);white-space:nowrap}
+    .pill.live{border-color:#86efac;background:#f0fdf4;color:var(--green)}.pill.warn{border-color:#fed7aa;background:#fff7ed;color:var(--amber)}.pill.bad{border-color:#fecaca;background:#fef2f2;color:var(--red)}.pill.meta{background:#f3f4f6;color:#475467}
+    .pill.signal{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:16px 0 10px}
+    .section-head h2{margin:0;font-size:16px}
+    .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin-bottom:16px}
+    .stage{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px;display:grid;grid-template-rows:42px 58px 104px 104px;gap:9px;min-width:0;min-height:340px}
+    .stage.active{border-color:#86efac;box-shadow:0 0 0 2px #dcfce7}.stage.waiting{border-color:#f3c6c2}
+    .stage-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start}
+    .stage-title{font-weight:850;font-size:13px;line-height:1.25;overflow-wrap:anywhere}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .stat{background:var(--panel2);border:1px solid #edf1f6;border-radius:7px;padding:6px 4px;text-align:center;min-width:0}
+    .stat b{display:block;font-size:18px;line-height:1.05;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+    .targets{background:var(--panel2);border:1px solid var(--line);border-radius:7px;overflow:auto;padding:7px;display:grid;align-content:start;gap:5px;min-height:0}
+    .target{font-family:ui-monospace,monospace;color:var(--soft);font-size:12px;display:flex;align-items:center;gap:6px;min-width:0}
+    .target-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+    .target.live{color:var(--green)}.target.stuck{color:var(--red)}.target.empty{font-family:inherit;color:var(--muted)}
+    .mini{min-height:22px;border:1px solid #fecaca;border-radius:6px;background:#fff5f5;color:var(--red);padding:2px 6px;font-size:11px;cursor:pointer;white-space:nowrap}
+    .metrics{border-top:1px dashed #e3e8ef;padding-top:7px;display:grid;align-content:start;gap:4px;overflow:hidden}
+    .metric{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;color:var(--soft);font-size:12px;min-height:18px}
+    .metric span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.metric b{white-space:nowrap}
+    .toolbar{display:grid;grid-template-columns:minmax(220px,1fr) minmax(150px,.42fr) minmax(160px,.45fr);gap:8px;align-items:end;margin:8px 0 12px}
+    .toolbar label{display:grid;gap:4px;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase}
+    .toolbar input,.toolbar select{width:100%;min-height:34px;border:1px solid var(--line);border-radius:7px;background:var(--panel2);color:var(--text);padding:6px 8px}
+    table{width:100%;border-collapse:collapse}th,td{text-align:left;border-bottom:1px solid var(--line);padding:8px;font-size:13px;vertical-align:top}th{color:var(--muted);font-weight:800}
+    code{color:#0f4f7a;word-break:break-all}.layout{display:grid;grid-template-columns:minmax(390px,.9fr) minmax(0,1.28fr);gap:12px;align-items:start}
+    .detail{position:sticky;top:76px}.report-list{display:grid;gap:8px}
+    .report-row{width:100%;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:8px;padding:10px;text-align:left;cursor:pointer;display:grid;gap:7px;min-width:0}
+    .report-row:hover,.report-row.selected{border-color:#93c5fd;background:#f8fbff}
+    .report-main{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;min-width:0}
+    .report-title{display:grid;gap:2px;min-width:0}.report-title code{font-size:13px;overflow-wrap:anywhere}.report-sub{font-size:11.5px;color:var(--muted);overflow-wrap:anywhere}
+    .report-meta{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+    .message-list{display:grid;gap:6px;margin:8px 0 12px}
+    .message-item{border:1px solid var(--line);border-radius:7px;background:var(--panel2);padding:8px;font-size:12px;min-width:0}
+    .message-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);margin-bottom:5px}
+    .message-body{color:var(--soft);white-space:pre-wrap;overflow-wrap:anywhere;max-height:128px;overflow:auto}
+    .message-html{height:160px;min-height:120px;max-height:220px;margin:7px 0 0}
+    .message-decision{border-top:1px dashed #d7dde6;margin-top:7px;padding-top:6px;color:var(--muted);overflow-wrap:anywhere}
+    iframe{width:100%;height:min(520px,62vh);min-height:320px;border:1px solid var(--line);border-radius:8px;background:white;margin:10px 0}
+    @media(max-width:1150px){.layout{grid-template-columns:1fr}.detail{position:static}.toolbar{grid-template-columns:1fr 1fr}}
+    @media(max-width:760px){header{height:auto;min-height:58px;align-items:flex-start;flex-wrap:wrap;padding:12px}header h1{white-space:normal}.sp,#clock{display:none}main{padding:14px}.grid{grid-template-columns:1fr 1fr}.toolbar{grid-template-columns:1fr}.stage{grid-template-rows:auto 58px 104px 104px}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Confluence E2E Pipeline</h1>
+    <nav>
+      <button data-tab="dash" class="active">Pipeline</button>
+      <button data-tab="reports">Reports</button>
+    </nav>
+    <span class="sp"></span>
+    <span id="clock" class="muted"></span>
+  </header>
+  <main id="view"></main>
+<script>
+const $=s=>document.querySelector(s);
+function api(path,params={}){const u=new URL(path,location.origin);for(const[k,v]of Object.entries(params))u.searchParams.set(k,v);return u}
+async function getJSON(path,params){const r=await fetch(api(path,params));if(!r.ok)throw new Error(r.status);return r.json()}
+async function postJSON(path,body={}){const r=await fetch(api(path),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw new Error(r.status);return r.json()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmt(n){return (Number(n)||0).toLocaleString('ko-KR')}
+function age(ts){if(!ts)return '-';const sec=Math.max(0,Math.floor(Date.now()/1000-Number(ts)));if(sec<60)return sec+'s';if(sec<3600)return Math.floor(sec/60)+'m';if(sec<86400)return Math.floor(sec/3600)+'h';return Math.floor(sec/86400)+'d'}
+let activeTab='dash';
+let reportState={q:'',status:'',cycleKey:'',threadId:null};
+let reportFilterApplyTimer=null;
+const REPORT_STATUSES=['reported','report_ready','awaiting_owner','recheck_requested','rechecking','still_open','partially_remediated','exception_review','owner_update_needed','owner_reassignment_review','reassigned','remediated','escalated','closed','error'];
+const HITL_STATUSES=new Set(['exception_review','owner_update_needed','owner_reassignment_review','reassigned']);
+const RECHECKABLE_STATUSES=new Set(['report_ready','awaiting_owner','recheck_requested','still_open','partially_remediated','exception_review','owner_update_needed','owner_reassignment_review','reassigned','escalated','error']);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{activeTab=b.dataset.tab;document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===activeTab));render()});
+function option(value,label,current){return `<option value="${esc(value)}" ${current===value?'selected':''}>${esc(label)}</option>`}
+function statusLabel(s){return ({reported:'리포트 대기',report_ready:'리포트 작성',awaiting_owner:'소유자 대기',recheck_requested:'재검증 요청',rechecking:'재검증 중',still_open:'잔존 노출',partially_remediated:'부분 조치',exception_review:'업무 예외 검토',owner_update_needed:'담당자 확인',owner_reassignment_review:'담당자 변경 검토',reassigned:'담당자 이관',remediated:'조치 완료',escalated:'에스컬레이션',closed:'종료',error:'오류'})[s]||s||'-'}
+function verdictLabel(s){return ({now_closed:'해결 확인',still_open:'잔존 노출',unknown:'확인 불가'})[s]||statusLabel(s)}
+function statusPill(s){const cls=({reported:'warn',report_ready:'live',awaiting_owner:'live',recheck_requested:'warn',rechecking:'warn',still_open:'bad',partially_remediated:'warn',exception_review:'warn',owner_update_needed:'warn',owner_reassignment_review:'warn',reassigned:'warn',remediated:'live',closed:'meta',escalated:'bad',error:'bad'})[s]||'';return `<span class="pill ${cls}">${esc(statusLabel(s))}</span>`}
+function severityLabel(s){return ({critical:'매우 높음',high:'높음',medium:'중간',low:'낮음',informational:'정보'})[s]||s||'-'}
+function directionLabel(s){return ({in:'수신',out:'발신',operator:'운영자'})[s]||s||'-'}
+function tagPills(items){return (items||[]).map(x=>`<span class="pill signal">${esc(x.label||x.key)}</span>`).join('')}
+function scanLabel(s){return ({api_cql_search_detail_scan:'API detail',api_page_detail_scan:'Page detail',browser_sso_review:'SSO review',confluence_surface_refetch:'API recheck'})[s]||s||'unknown'}
+function scanMethodPills(t){
+  const c=t?.scan_method_counts||((t?.report||{}).summary||{}).scan_method_counts||{};
+  return Object.entries(c).filter(([,n])=>Number(n)>0).map(([k,n])=>`<span class="pill meta">${esc(scanLabel(k))} ${fmt(n)}</span>`).join('');
+}
+function findingScanTrace(f){
+  const meta=(f.extra&&f.extra.metadata)||{};
+  const method=scanLabel(meta.scan_method||'unknown');
+  const source=meta.candidate_source||'-';
+  const query=meta.candidate_query||'';
+  return `<span title="${esc(query)}">${esc(method)} · ${esc(source)}</span>`;
+}
+function recheckTrace(r){
+  const verification=r.verification||{};
+  const method=scanLabel(verification.method||'unknown');
+  const count=Number(verification.surface_count||0);
+  const matched=r.verdict==='unknown'?'unknown':(verification.matched===true?'matched':(verification.matched===false?'clean':'unknown'));
+  const labels=Array.isArray(verification.surface_labels)?verification.surface_labels:[];
+  const status=verification.status_code?`HTTP ${verification.status_code}`:'';
+  const auth=verification.auth_failed?'auth_failed':'';
+  const limited=verification.limit_failed?'limit_failed':'';
+  const title=[r.error,status,auth,limited,labels.join(', ')].filter(Boolean).join(' · ');
+  const flags=[status,auth,limited].filter(Boolean).join(' · ');
+  return `<span class="pill meta" title="${esc(title)}">${esc(method)} · ${esc(matched)} · ${fmt(count)} surface${flags?` · ${esc(flags)}`:''}</span>`;
+}
+function recheckEvidence(r){
+  const verification=r.verification||{};
+  const labels=Array.isArray(verification.surface_labels)?verification.surface_labels:[];
+  const parts=[];
+  if(verification.status_code)parts.push(`HTTP ${verification.status_code}`);
+  if(verification.auth_failed)parts.push('auth_failed');
+  if(verification.limit_failed)parts.push('limit_failed');
+  if(r.error)parts.push(r.error);
+  if(labels.length)parts.push(labels.join(', '));
+  return parts.join(' · ')||'-';
+}
+function verificationSummary(t){
+  const c=t?.verification_counts||{};
+  const current=c.current_page||0, attach=c.attachment_surface||0, comment=c.comment_surface||0, history=c.historical_version||0;
+  return `${current?`<span class="pill live">현재 ${fmt(current)}</span>`:''}${attach?`<span class="pill warn">첨부 ${fmt(attach)}</span>`:''}${comment?`<span class="pill warn">댓글 ${fmt(comment)}</span>`:''}${history?`<span class="pill warn">히스토리 ${fmt(history)}</span>`:''}`;
+}
+function decisionDetail(m){
+  const owner=(m.extracted_owner||{}).email;
+  const parts=[];
+  if(m.decision_reason)parts.push(esc(m.decision_reason));
+  if(owner)parts.push('owner '+esc(owner));
+  return parts.length?`<div class="message-decision">${parts.join(' · ')}</div>`:'';
+}
+function messageBody(m){
+  if(m.body_html)return `<iframe class="message-html" sandbox="" srcdoc="${esc(m.body_html)}"></iframe>`;
+  return `<div class="message-body">${esc(m.body_excerpt||'')}</div>`;
+}
+function messageRows(items){
+  return (items||[]).slice(-6).map(m=>`<div class="message-item">
+    <div class="message-meta"><span>${esc(directionLabel(m.direction))} · ${esc(m.agent_verdict||'-')}</span><span>${age(m.received_at)}</span></div>
+    <div><code>${esc(m.subject||'(no subject)')}</code></div>
+    <div class="muted">${esc(m.mail_from||'-')} → ${esc(m.mail_to||'-')}</div>
+    ${messageBody(m)}
+    ${decisionDetail(m)}
+  </div>`).join('');
+}
+function stageTargets(s){
+  const active=((s.targets||{}).active||[]), stuck=((s.targets||{}).stuck||[]), next=((s.targets||{}).next||[]);
+  const rows=[
+    ...active.map(t=>[t,'live']),
+    ...stuck.map(t=>[t,'stuck']),
+    ...(active.length||stuck.length?[]:next.map(t=>[t,'']))
+  ].slice(0,8).map(([t,cls])=>{
+    const reset=cls==='stuck'&&t.session_ref&&s.control_key?`<button class="mini" onclick="resetClaim('${esc(s.control_key)}','${esc(t.session_ref)}')">해제</button>`:'';
+    return `<div class="target ${cls}" title="${esc(t.label||t)}"><span class="target-label">${esc(t.label||t)}</span>${reset}</div>`;
+  }).join('');
+  return rows||'<div class="target empty">대상 없음</div>';
+}
+function stageCard(s){
+  const metrics=(s.metrics||[]).slice(0,6).map(m=>`<div class="metric"><span>${esc(m.label)}</span><b>${fmt(m.value)}${esc(m.unit||'')}</b></div>`).join('');
+  const enabled=s.node_enabled!==false;
+  return `<section class="stage ${esc(s.status||'')}">
+    <div class="stage-head"><div><div class="stage-title">${esc(s.label)}</div><div class="muted">${esc(s.owner||'')}</div></div>
+      ${s.control_key?`<button class="act ${enabled?'':'primary'}" onclick="toggle('${esc(s.control_key)}',${enabled?0:1})">${enabled?'ON':'OFF'}</button>`:''}</div>
+    <div class="stats"><div class="stat"><b>${fmt(s.queue)}</b><span>대기</span></div><div class="stat"><b>${fmt(s.processing)}</b><span>처리중</span></div><div class="stat"><b>${fmt(s.done)}</b><span>누적</span></div></div>
+    <div class="targets">${stageTargets(s)}</div><div class="metrics">${metrics}</div>
+  </section>`;
+}
+// 하트비트 신선도. detail 은 **마지막 실행 결과가 그대로 박혀 있는 값**이라, 나이를 같이
+// 보여주지 않으면 한 달 전 숫자를 오늘 결과로 읽게 된다(2026-08-16 실측: confluence 컴포넌트
+// 대부분이 894h=37일 전 기록이었다). alive 는 API 의 600초 기준이고, 그것만 쓰면 6시간 cron 이
+// 항상 빨갛게 보이므로 24h/7d 구간을 따로 둔다.
+function hbTier(h){
+  const sec=Math.max(0,Math.floor(Date.now()/1000-Number(h.last_beat||0)));
+  if(!h.last_beat)return {cls:'meta',label:'기록없음'};
+  if(h.alive)return {cls:'live',label:'LIVE'};
+  if(sec<86400)return {cls:'warn',label:'대기'};
+  if(sec<604800)return {cls:'bad',label:'하루+'};
+  return {cls:'bad',label:'★일주일+'};
+}
+function heartbeatRows(d){
+  return Object.entries(d.heartbeats||{})
+    .sort((a,b)=>Number(b[1].last_beat||0)-Number(a[1].last_beat||0))
+    .map(([k,h])=>{
+      const t=hbTier(h);
+      return `<tr><td><code>${esc(k)}</code></td><td><span class="pill ${t.cls}">${t.label}</span></td>`
+        +`<td>${esc(h.phase||'-')}</td><td>${age(h.last_beat)}</td><td class="muted">${esc(h.detail||'')}</td></tr>`;
+    }).join('');
+}
+async function renderDash(){
+  const v=$('#view');v.innerHTML='<p class="muted">Loading...</p>';
+  try{
+    const d=await getJSON('/api/pipeline/overview',{live:1});
+    const by={};(d.stages||[]).forEach(s=>by[s.key]=s);
+    const rem=((by.done||{}).metrics||[]).find(m=>m.label==='조치 완료')?.value ?? ((by.recheck||{}).metrics||[]).find(m=>m.label==='조치 확인')?.value;
+    v.innerHTML=`<div class="grid">
+      <div class="card"><small>Queued spaces</small><strong>${fmt((by.space_task||{}).queue)}</strong></div>
+      <div class="card"><small>Confluence findings</small><strong>${fmt(d.findings_total)}</strong></div>
+      <div class="card"><small>Report queue</small><strong>${fmt((by.report||{}).queue)}</strong></div>
+      <div class="card"><small>Remediated spaces</small><strong>${fmt(rem)}</strong></div>
+    </div><div class="section-head"><div><h2>Pipeline</h2><div class="muted">space API, SSO URL, report, recheck queue를 분리해서 표시합니다.</div></div></div><div class="flow">${(d.stages||[]).map(stageCard).join('')}</div>
+    <div class="layout"><section class="panel"><div class="section-head"><div><h2>Heartbeats</h2>
+      <div class="muted">Detail 은 그 시각의 마지막 결과다 — Age 를 같이 볼 것</div></div></div>
+      <table><thead><tr><th>Agent</th><th>신선도</th><th>Phase</th><th>Age</th><th>Detail</th></tr></thead>
+      <tbody>${heartbeatRows(d)||'<tr><td colspan="5" class="muted">데이터 없음</td></tr>'}</tbody></table>
+    </section></div>`;
+  }catch(e){v.innerHTML='<p class="muted">Load failed: '+esc(e)+'</p>'}
+}
+function scheduleReportFilterApply(){
+  if(reportFilterApplyTimer)clearTimeout(reportFilterApplyTimer);
+  reportFilterApplyTimer=setTimeout(()=>{reportFilterApplyTimer=null;applyReportFilters()},220);
+}
+function applyReportFilters(){reportState.q=($('#rq')?.value||'').trim();reportState.status=$('#rst')?.value||'';reportState.threadId=null;renderReports()}
+function applyReportCycle(){reportState.cycleKey=$('#rcycle')?.value||'';reportState.threadId=null;renderReports()}
+function filterReports(items){
+  const q=String(reportState.q||'').toLowerCase();
+  return (items||[]).filter(t=>{
+    if(reportState.status&&t.status!==reportState.status)return false;
+    if(!q)return true;
+    return [t.space_key,t.subject_tag,t.recipient,t.owner_recipient,t.status,t.severity].map(x=>String(x||'').toLowerCase()).join(' ').includes(q);
+  });
+}
+function reportRows(items){
+  return (items||[]).map(t=>{
+    const selected=Number(reportState.threadId)===Number(t.id);
+    return `<button class="report-row ${selected?'selected':''}" onclick="detail(${esc(t.id)})">
+      <span class="report-main"><span class="report-title"><code>${esc(t.space_key)}</code><span class="report-sub">${esc(t.subject_tag||'')}</span></span>${statusPill(t.status)}</span>
+      <span class="report-meta"><span class="pill">${esc(severityLabel(t.severity))}</span><span class="pill">finding ${fmt(t.finding_count)}</span>${tagPills(t.finding_tags)}${verificationSummary(t)}${scanMethodPills(t)}<span class="pill">${esc(age(t.updated_at))}</span></span>
+    </button>`;
+  }).join('');
+}
+function reportActions(t,id){
+  const canRecheck=t.can_request_recheck??RECHECKABLE_STATUSES.has(t.status);
+  const canReassign=t.can_reassign_owner??HITL_STATUSES.has(t.status);
+  const canClose=t.can_close_exception??t.status==='exception_review';
+  const canReject=t.can_reject_exception??t.status==='exception_review';
+  const base=canRecheck?`<button class="act primary" onclick="requestRecheck(${esc(id)})">재검증 요청</button>`:'';
+  if(!canReassign&&!canClose&&!canReject)return base;
+  const exceptionActions=(canClose||canReject)
+    ? `<button class="act" onclick="closeException(${esc(id)})">예외 승인</button>
+       <button class="act" onclick="rejectException(${esc(id)})">예외 반려</button>`
+    : '';
+  return `<div class="tag-row">${base}
+    ${canReassign?`<button class="act" onclick="reassignOwner(${esc(id)})">담당자 재지정</button>`:''}
+    ${exceptionActions}</div>`;
+}
+async function renderReports(){
+  const v=$('#view');v.innerHTML='<p class="muted">Loading...</p>';
+  try{
+    const d=await getJSON('/api/reports',{limit:1000,cycle_key:reportState.cycleKey||''});
+    if(!reportState.cycleKey)reportState.cycleKey=d.cycle_key||'';
+    const all=filterReports(d.items||[]);
+    if(!reportState.threadId&&all[0])reportState.threadId=all[0].id;
+    const counts=Object.entries(d.status_counts||{}).filter(([,n])=>n).map(([s,n])=>`<span class="pill">${esc(statusLabel(s))} ${fmt(n)}</span>`).join(' ');
+    const cycleOptions=(d.cycles||[]).map(c=>option(c,c,reportState.cycleKey)).join('');
+    v.innerHTML=`<div class="section-head"><div><h2>Space Reports</h2><div class="muted">Confluence space 단위 리포트와 재검증 상태입니다.</div></div><div class="report-meta">${counts}</div></div>
+      <div class="toolbar"><label>검색<input id="rq" value="${esc(reportState.q)}" placeholder="space, 제목, 수신자, 상태" oninput="scheduleReportFilterApply()" onkeydown="if(event.key==='Enter'){event.preventDefault();applyReportFilters()}"></label>
+      <label>주차<select id="rcycle" onchange="applyReportCycle()">${cycleOptions}</select></label>
+      <label>상태<select id="rst" onchange="applyReportFilters()">${option('','전체 상태',reportState.status)}${REPORT_STATUSES.map(s=>option(s,statusLabel(s),reportState.status)).join('')}</select></label></div>
+      <div class="layout"><section class="panel"><div class="report-list">${reportRows(all)||'<div class="muted">조건에 맞는 리포트가 없습니다.</div>'}</div></section>
+      <aside id="detail" class="panel detail"><p class="muted">Select a space report.</p></aside></div>`;
+    if(reportState.threadId)detail(reportState.threadId);
+  }catch(e){v.innerHTML='<p class="muted">Load failed: '+esc(e)+'</p>'}
+}
+async function detail(id){
+  reportState.threadId=Number(id);
+  const box=$('#detail');if(!box)return;box.innerHTML='<p class="muted">Loading...</p>';
+  try{
+    const d=await getJSON('/api/reports/'+id,{cycle_key:reportState.cycleKey||''});
+    const t=d.thread||{};
+    const findings=(d.findings||[]).map(f=>`<tr><td>${esc(severityLabel(f.severity))}</td><td><code>${esc(f.asset)}</code></td><td>${esc((f.extra&&f.extra.metadata&&f.extra.metadata.title)||f.asset_kind||'-')}</td><td>${findingScanTrace(f)}</td><td>${esc(f.summary)}</td></tr>`).join('');
+    const rechecks=(d.rechecks||[]).slice(0,8).map(r=>`<tr><td>${esc(verdictLabel(r.verdict))}</td><td><code>${esc(r.asset||'-')}</code></td><td>${recheckTrace(r)}</td><td>${esc(recheckEvidence(r))}</td></tr>`).join('');
+    const messages=messageRows(d.messages||[]);
+    box.innerHTML=`<div class="report-main"><div><h2 style="margin:0 0 4px;font-size:16px">${esc(t.space_key)}</h2><div class="report-meta">${statusPill(t.status)}${tagPills(t.finding_tags)}${verificationSummary(t)}${scanMethodPills(t)}</div></div>
+      ${reportActions(t,id)}</div>
+      <div class="section-head"><div><h2>Mail Replies</h2></div></div>
+      <div class="message-list">${messages||'<div class="muted">No reply mail</div>'}</div>
+      ${t.report_html?`<iframe sandbox="" srcdoc="${esc(t.report_html)}"></iframe>`:''}
+      <table><tr><th>위험</th><th>Asset</th><th>Location</th><th>Scan</th><th>Summary</th></tr>${findings||'<tr><td class="muted" colspan="5">No findings</td></tr>'}</table>
+      <div class="section-head"><div><h2>Recheck</h2></div></div>
+      <table><tr><th>결과</th><th>Asset</th><th>Recheck</th><th>근거</th></tr>${rechecks||'<tr><td class="muted" colspan="4">No recheck history</td></tr>'}</table>`;
+  }catch(e){box.innerHTML='<p class="muted">Load failed: '+esc(e)+'</p>'}
+}
+async function requestRecheck(id){try{await postJSON('/api/reports/'+id+'/request-recheck');await detail(id)}catch(e){alert('failed: '+e)}}
+async function resetClaim(component,sessionRef){try{await postJSON('/api/pipeline/reset-claim',{component,session_ref:sessionRef,reason:'operator reset from dashboard'});await renderDash()}catch(e){alert('failed: '+e)}}
+async function reassignOwner(id){
+  const recipient=prompt('새 담당자 이메일');
+  if(!recipient)return;
+  const reason=prompt('사유','operator reassignment')||'operator reassignment';
+  try{await postJSON('/api/reports/'+id+'/reassign-owner',{recipient,reason});await renderReports()}catch(e){alert('failed: '+e)}
+}
+async function closeException(id){
+  const reason=prompt('예외 승인 사유','business exception approved');
+  if(!reason)return;
+  try{await postJSON('/api/reports/'+id+'/close-exception',{reason,approved_by:'operator'});await renderReports()}catch(e){alert('failed: '+e)}
+}
+async function rejectException(id){
+  const reason=prompt('예외 반려 사유','operator rejected exception; recheck requested')||'operator rejected exception; recheck requested';
+  try{await postJSON('/api/reports/'+id+'/reject-exception',{reason});await renderReports()}catch(e){alert('failed: '+e)}
+}
+async function toggle(component,enabled){try{await postJSON('/api/cron/set',{component,enabled:!!enabled});render()}catch(e){alert('failed: '+e)}}
+function render(){activeTab==='reports'?renderReports():renderDash()}
+setInterval(()=>{const c=$('#clock');if(c)c.textContent=new Date().toLocaleTimeString('ko-KR')},1000);
+render();
+setInterval(()=>{if(activeTab==='dash')renderDash()},15000);
+</script>
+</body>
+</html>

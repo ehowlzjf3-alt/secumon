@@ -1,0 +1,5359 @@
+{
+  "version": 1,
+  "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+  "pins": {
+    "suite": "3f76f66e21b264954aadb39379d277163dc23449b35e9e8860cba499e81a52aa",
+    "code": "37da2a85a14fc874e3dc1c52978020813af59728c112917bdd9a6b525e25e6d4",
+    "fixture": "f9cc231a15c461eb322045d52d1447dcc6173826234280c1e5a708ce35fd3f1a",
+    "configuration": "7bc76fbf5dddf0ff20abbc308bb7671e48ac9c1b397131d68c9a9b0f2c1a39cc",
+    "environment": {
+      "node": "v24.20.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "inference": "scripted",
+      "externalCallsAllowed": false
+    }
+  },
+  "sample": {
+    "case": {
+      "id": "observations-simple.sqlite.fast.source_missing",
+      "family": "observation_review",
+      "fixtureId": "observations-simple",
+      "backend": "sqlite",
+      "mode": "fast",
+      "variant": "source_missing",
+      "oracle": {
+        "expectedFinal": "blocked",
+        "completionEligible": false,
+        "requiredEvidenceIds": [
+          "collection-complete"
+        ],
+        "originals": [
+          {
+            "id": "collection-complete",
+            "sourceId": "collection-complete",
+            "lineageId": "collection-complete",
+            "observedAt": 1788566400000
+          }
+        ],
+        "facts": {
+          "collection.complete": true
+        },
+        "finalHypothesis": null,
+        "forbiddenEvidenceIds": [
+          "revoked-ticket"
+        ],
+        "noCompletionBefore": null
+      }
+    },
+    "observations": [
+      {
+        "at": 1788566400000,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 1,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400000,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "request_accepted"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "pending",
+            "externalId": null,
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": null
+          }
+        ]
+      },
+      {
+        "at": 1788566400000,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 2,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400000,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "delivery_claimed"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "sending",
+            "externalId": null,
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430000,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 3,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "delivery_settled"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 4,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "status": "ready",
+          "statusReason": "plan_required",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "control_selected"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 5,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "waiting",
+          "statusReason": "model_call_pending",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 1,
+            "reservedTokens": 6420
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": null,
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": null,
+              "outputTokens": null,
+              "usageStatus": "reserved",
+              "status": "reserved",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": null,
+              "expired": false,
+              "outcome": null,
+              "reason": "utf8_bytes_with_template_allowance",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "model_call_reserved"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 6,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "waiting",
+          "statusReason": "model_call_pending",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 6420
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": null,
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": null,
+              "outputTokens": null,
+              "usageStatus": "reserved",
+              "status": "running",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": null,
+              "expired": false,
+              "outcome": null,
+              "reason": "utf8_bytes_with_template_allowance",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "model_call_dispatched"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400022,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 7,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "waiting",
+          "statusReason": "model_call_pending",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "received",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "utf8_bytes_with_template_allowance",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400022,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "model_reply_received"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400022,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 8,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 1,
+            "productiveSteps": 0,
+            "unproductiveSteps": 1,
+            "failures": [],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "ready",
+          "statusReason": "plan_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400022,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "model_plan_accepted"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400022,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 9,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 1,
+            "productiveSteps": 0,
+            "unproductiveSteps": 1,
+            "failures": [],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "running",
+          "statusReason": "attempt_reserved",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 1,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "not_invoked",
+                "implementationCalls": 0,
+                "usage": {
+                  "transportCalls": 0,
+                  "internalOperations": 0,
+                  "imageBytes": 0,
+                  "waitMs": 0
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "reserved",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": null,
+              "resultId": null,
+              "resultArtifact": null,
+              "adopted": false,
+              "error": null
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400022,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "attempt_reserved"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400022,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 10,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 1,
+            "productiveSteps": 0,
+            "unproductiveSteps": 1,
+            "failures": [],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "running",
+          "statusReason": "attempt_running",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 1,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "unreported",
+                "implementationCalls": null,
+                "usage": {
+                  "transportCalls": null,
+                  "internalOperations": null,
+                  "imageBytes": null,
+                  "waitMs": null
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "running",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": null,
+              "resultId": null,
+              "resultArtifact": null,
+              "adopted": false,
+              "error": null
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400022,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "attempt_dispatched"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400027,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 11,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 1,
+            "productiveSteps": 0,
+            "unproductiveSteps": 1,
+            "failures": [],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "ready",
+          "statusReason": "result_received",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 1,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "invoked",
+                "implementationCalls": 1,
+                "usage": {
+                  "transportCalls": null,
+                  "internalOperations": null,
+                  "imageBytes": null,
+                  "waitMs": null
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "received",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": 1788566400027,
+              "resultId": "attempt-4:result",
+              "resultArtifact": {
+                "id": "21c46c1d5077fc375d07dea021b9d31501773a52b9c1115833dc2042928f0509",
+                "sha256": "fb9231a89ce663b3e5423522805a5a8a86bc021cf30245c4eb66d8fdc6cb6e52",
+                "byteLength": 229,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "adopted": false,
+              "error": null
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400027,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "result_received"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400027,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 12,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled",
+              "attempt:attempt-4:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 2,
+            "productiveSteps": 0,
+            "unproductiveSteps": 2,
+            "failures": [
+              {
+                "key": "task:9ace6bc7bdf42c426a31c70f1a04d517b87ac370747fbf35cfba29ec807aa8cd",
+                "count": 1,
+                "firstAt": 1788566400027,
+                "lastAt": 1788566400027,
+                "nextEligibleAt": 1788566400127,
+                "deadlineAt": 1788566430027
+              }
+            ],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "ready",
+          "statusReason": "result_settled",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 1,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "invoked",
+                "implementationCalls": 1,
+                "usage": {
+                  "transportCalls": null,
+                  "internalOperations": null,
+                  "imageBytes": null,
+                  "waitMs": null
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "failed",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": 1788566400027,
+              "resultId": "attempt-4:result",
+              "resultArtifact": {
+                "id": "21c46c1d5077fc375d07dea021b9d31501773a52b9c1115833dc2042928f0509",
+                "sha256": "fb9231a89ce663b3e5423522805a5a8a86bc021cf30245c4eb66d8fdc6cb6e52",
+                "byteLength": 229,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "adopted": false,
+              "error": {
+                "code": "evidence_unavailable",
+                "retryable": false
+              }
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400027,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "result_settled"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400027,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 13,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled",
+              "attempt:attempt-4:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 2,
+            "productiveSteps": 0,
+            "unproductiveSteps": 2,
+            "failures": [
+              {
+                "key": "task:9ace6bc7bdf42c426a31c70f1a04d517b87ac370747fbf35cfba29ec807aa8cd",
+                "count": 1,
+                "firstAt": 1788566400027,
+                "lastAt": 1788566400027,
+                "nextEligibleAt": 1788566400127,
+                "deadlineAt": 1788566430027
+              }
+            ],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "blocked",
+          "statusReason": "fast_replan_budget_exhausted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 1,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "invoked",
+                "implementationCalls": 1,
+                "usage": {
+                  "transportCalls": null,
+                  "internalOperations": null,
+                  "imageBytes": null,
+                  "waitMs": null
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "failed",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": 1788566400027,
+              "resultId": "attempt-4:result",
+              "resultArtifact": {
+                "id": "21c46c1d5077fc375d07dea021b9d31501773a52b9c1115833dc2042928f0509",
+                "sha256": "fb9231a89ce663b3e5423522805a5a8a86bc021cf30245c4eb66d8fdc6cb6e52",
+                "byteLength": 229,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "adopted": false,
+              "error": {
+                "code": "evidence_unavailable",
+                "retryable": false
+              }
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400027,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "control_selected"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400027,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 14,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled",
+              "attempt:attempt-4:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 2,
+            "productiveSteps": 0,
+            "unproductiveSteps": 2,
+            "failures": [
+              {
+                "key": "task:9ace6bc7bdf42c426a31c70f1a04d517b87ac370747fbf35cfba29ec807aa8cd",
+                "count": 1,
+                "firstAt": 1788566400027,
+                "lastAt": 1788566400027,
+                "nextEligibleAt": 1788566400127,
+                "deadlineAt": 1788566430027
+              }
+            ],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "blocked",
+          "statusReason": "fast_replan_budget_exhausted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 1,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "invoked",
+                "implementationCalls": 1,
+                "usage": {
+                  "transportCalls": null,
+                  "internalOperations": null,
+                  "imageBytes": null,
+                  "waitMs": null
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "failed",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": 1788566400027,
+              "resultId": "attempt-4:result",
+              "resultArtifact": {
+                "id": "21c46c1d5077fc375d07dea021b9d31501773a52b9c1115833dc2042928f0509",
+                "sha256": "fb9231a89ce663b3e5423522805a5a8a86bc021cf30245c4eb66d8fdc6cb6e52",
+                "byteLength": 229,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "adopted": false,
+              "error": {
+                "code": "evidence_unavailable",
+                "retryable": false
+              }
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400027,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "response_prepared"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          },
+          {
+            "id": "failure-984fac0b8c7a2d283d5b03ea0cfb384da35a87d626ff25d21d5a6bb8f96b61a7",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "failure",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.",
+            "status": "pending",
+            "externalId": null,
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 13,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": null
+          }
+        ]
+      },
+      {
+        "at": 1788566400027,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 15,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled",
+              "attempt:attempt-4:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 2,
+            "productiveSteps": 0,
+            "unproductiveSteps": 2,
+            "failures": [
+              {
+                "key": "task:9ace6bc7bdf42c426a31c70f1a04d517b87ac370747fbf35cfba29ec807aa8cd",
+                "count": 1,
+                "firstAt": 1788566400027,
+                "lastAt": 1788566400027,
+                "nextEligibleAt": 1788566400127,
+                "deadlineAt": 1788566430027
+              }
+            ],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "blocked",
+          "statusReason": "fast_replan_budget_exhausted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 1,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "invoked",
+                "implementationCalls": 1,
+                "usage": {
+                  "transportCalls": null,
+                  "internalOperations": null,
+                  "imageBytes": null,
+                  "waitMs": null
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "failed",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": 1788566400027,
+              "resultId": "attempt-4:result",
+              "resultArtifact": {
+                "id": "21c46c1d5077fc375d07dea021b9d31501773a52b9c1115833dc2042928f0509",
+                "sha256": "fb9231a89ce663b3e5423522805a5a8a86bc021cf30245c4eb66d8fdc6cb6e52",
+                "byteLength": 229,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "adopted": false,
+              "error": {
+                "code": "evidence_unavailable",
+                "retryable": false
+              }
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400027,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "delivery_claimed"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          },
+          {
+            "id": "failure-984fac0b8c7a2d283d5b03ea0cfb384da35a87d626ff25d21d5a6bb8f96b61a7",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "failure",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.",
+            "status": "sending",
+            "externalId": null,
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 13,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430027,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400029,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 16,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled",
+              "attempt:attempt-4:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 2,
+            "productiveSteps": 0,
+            "unproductiveSteps": 2,
+            "failures": [
+              {
+                "key": "task:9ace6bc7bdf42c426a31c70f1a04d517b87ac370747fbf35cfba29ec807aa8cd",
+                "count": 1,
+                "firstAt": 1788566400027,
+                "lastAt": 1788566400027,
+                "nextEligibleAt": 1788566400127,
+                "deadlineAt": 1788566430027
+              }
+            ],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "blocked",
+          "statusReason": "fast_replan_budget_exhausted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 1,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "invoked",
+                "implementationCalls": 1,
+                "usage": {
+                  "transportCalls": null,
+                  "internalOperations": null,
+                  "imageBytes": null,
+                  "waitMs": null
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "failed",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": 1788566400027,
+              "resultId": "attempt-4:result",
+              "resultArtifact": {
+                "id": "21c46c1d5077fc375d07dea021b9d31501773a52b9c1115833dc2042928f0509",
+                "sha256": "fb9231a89ce663b3e5423522805a5a8a86bc021cf30245c4eb66d8fdc6cb6e52",
+                "byteLength": 229,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "adopted": false,
+              "error": {
+                "code": "evidence_unavailable",
+                "retryable": false
+              }
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400029,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [
+          "delivery_settled"
+        ],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          },
+          {
+            "id": "failure-984fac0b8c7a2d283d5b03ea0cfb384da35a87d626ff25d21d5a6bb8f96b61a7",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "failure",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.",
+            "status": "delivered",
+            "externalId": "local-d37a88a63f2120ff7a6f9304e42b656ceaead11d9399418c620af31f444156f3",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 13,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400029,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 16,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled",
+              "attempt:attempt-4:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 2,
+            "productiveSteps": 0,
+            "unproductiveSteps": 2,
+            "failures": [
+              {
+                "key": "task:9ace6bc7bdf42c426a31c70f1a04d517b87ac370747fbf35cfba29ec807aa8cd",
+                "count": 1,
+                "firstAt": 1788566400027,
+                "lastAt": 1788566400027,
+                "nextEligibleAt": 1788566400127,
+                "deadlineAt": 1788566430027
+              }
+            ],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "blocked",
+          "statusReason": "fast_replan_budget_exhausted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 1,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "invoked",
+                "implementationCalls": 1,
+                "usage": {
+                  "transportCalls": null,
+                  "internalOperations": null,
+                  "imageBytes": null,
+                  "waitMs": null
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "failed",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": 1788566400027,
+              "resultId": "attempt-4:result",
+              "resultArtifact": {
+                "id": "21c46c1d5077fc375d07dea021b9d31501773a52b9c1115833dc2042928f0509",
+                "sha256": "fb9231a89ce663b3e5423522805a5a8a86bc021cf30245c4eb66d8fdc6cb6e52",
+                "byteLength": 229,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "adopted": false,
+              "error": {
+                "code": "evidence_unavailable",
+                "retryable": false
+              }
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400029,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          },
+          {
+            "id": "failure-984fac0b8c7a2d283d5b03ea0cfb384da35a87d626ff25d21d5a6bb8f96b61a7",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "failure",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.",
+            "status": "delivered",
+            "externalId": "local-d37a88a63f2120ff7a6f9304e42b656ceaead11d9399418c620af31f444156f3",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 13,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400029,
+        "stage": "fresh",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+          "revision": 16,
+          "goal": {
+            "revision": 1,
+            "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+            "scope": "obs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "coverage",
+                "description": "근거로 collection.complete 확인",
+                "key": "collection.complete",
+                "operator": "equals",
+                "equals": true,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "progress": {
+            "schemaVersion": 1,
+            "goalRevision": 1,
+            "policy": {
+              "maxUnproductiveSteps": 3,
+              "maxRepeatedFailures": 3,
+              "retryWindowMs": 30000,
+              "backoffMs": 100,
+              "maxTrackedEntries": 10000
+            },
+            "processed": [
+              "model:model-3:settled",
+              "attempt:attempt-4:settled"
+            ],
+            "knownKeys": [],
+            "consecutiveUnproductive": 2,
+            "productiveSteps": 0,
+            "unproductiveSteps": 2,
+            "failures": [
+              {
+                "key": "task:9ace6bc7bdf42c426a31c70f1a04d517b87ac370747fbf35cfba29ec807aa8cd",
+                "count": 1,
+                "firstAt": 1788566400027,
+                "lastAt": 1788566400027,
+                "nextEligibleAt": 1788566400127,
+                "deadlineAt": 1788566430027
+              }
+            ],
+            "saturated": false
+          },
+          "retryWakeAt": null,
+          "contextHead": {
+            "artifact": {
+              "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+              "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+              "byteLength": 3715,
+              "mediaType": "application/json",
+              "tenantId": "synthetic",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "basisRevision": 4,
+            "cycle": 1
+          },
+          "status": "blocked",
+          "statusReason": "fast_replan_budget_exhausted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 1,
+              "modelCalls": 1,
+              "tokens": 150,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": {
+            "revision": 1,
+            "goalRevision": 1,
+            "reason": "Fixed synthetic proposal; no actual model inference",
+            "tasks": [
+              {
+                "id": "collection-complete",
+                "description": "Read the declared synthetic original",
+                "dependsOn": [],
+                "toolId": "fixture.read",
+                "toolVersion": "1",
+                "input": {
+                  "evidenceIds": [
+                    "collection-complete"
+                  ]
+                },
+                "effect": "read",
+                "maxAttempts": 2,
+                "satisfies": []
+              }
+            ]
+          },
+          "attempts": [
+            {
+              "id": "attempt-4",
+              "taskId": "collection-complete",
+              "planRevision": 1,
+              "goalRevision": 1,
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "inputDigest": "eef967dbcefb3bb88d29b4b1692fc38dbae72a52e93606e4f0916d4dd438e697",
+              "scope": "obs-simple",
+              "contractDigest": "5b01d9447315d5a7118a952acdad07fb74f28adff3c00c374f11af8f724d17db",
+              "execution": {
+                "mode": "invoked",
+                "implementationCalls": 1,
+                "usage": {
+                  "transportCalls": null,
+                  "internalOperations": null,
+                  "imageBytes": null,
+                  "waitMs": null
+                }
+              },
+              "effect": "read",
+              "effectState": "none",
+              "status": "failed",
+              "owner": "evaluation-1",
+              "leaseUntil": 1788566430022,
+              "startedAt": 1788566400022,
+              "finishedAt": 1788566400027,
+              "resultId": "attempt-4:result",
+              "resultArtifact": {
+                "id": "21c46c1d5077fc375d07dea021b9d31501773a52b9c1115833dc2042928f0509",
+                "sha256": "fb9231a89ce663b3e5423522805a5a8a86bc021cf30245c4eb66d8fdc6cb6e52",
+                "byteLength": 229,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "adopted": false,
+              "error": {
+                "code": "evidence_unavailable",
+                "retryable": false
+              }
+            }
+          ],
+          "modelCalls": [
+            {
+              "id": "model-3",
+              "provider": "scripted",
+              "model": "fixture",
+              "adapterRevision": "1",
+              "destination": "local",
+              "owner": "evaluation-1",
+              "goalRevision": 1,
+              "baseStateRevision": 4,
+              "basePlanRevision": 0,
+              "semanticDigest": "1036c7fd4b345d42786da4581b474907f60881d882b7d3f044f5158be2ba0904",
+              "semanticVersion": 2,
+              "failureKey": "model:bd1e87e47cb50fe3ea63b72ec4639d5181e0d95a0515c5b5ad53a8ab3edff996",
+              "inputArtifact": {
+                "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+                "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+                "byteLength": 2324,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "replyArtifact": {
+                "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+                "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+                "byteLength": 491,
+                "mediaType": "application/json",
+                "tenantId": "synthetic",
+                "labels": [
+                  "public",
+                  "synthetic"
+                ]
+              },
+              "inputEstimate": 4372,
+              "maxOutputTokens": 2048,
+              "tokenReservation": 6420,
+              "inputTokens": 100,
+              "outputTokens": 50,
+              "usageStatus": "reported",
+              "status": "accepted",
+              "startedAt": 1788566400002,
+              "leaseUntil": 1788566430002,
+              "finishedAt": 1788566400022,
+              "expired": false,
+              "outcome": "ok",
+              "reason": "plan",
+              "contextMetrics": {
+                "baselinePacketBytes": 1509,
+                "baselineToolBytes": 409,
+                "packetBytes": 1841,
+                "toolBytes": 409,
+                "envelopeBytes": 2324,
+                "requestBytes": 2324,
+                "estimatedTokens": 4372,
+                "estimateMethod": "utf8_bytes_with_template_allowance",
+                "outputTokenReservation": 2048,
+                "sourceReads": 1,
+                "extraModelCalls": 0,
+                "evictions": 0,
+                "reloads": 0
+              }
+            }
+          ],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": {
+            "goalRevision": 1,
+            "evidenceIds": []
+          },
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400029,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-82303f8cc05b84cac8119007045be61e447636303e39c70059e8c1e27f35bd88",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          },
+          {
+            "id": "failure-984fac0b8c7a2d283d5b03ea0cfb384da35a87d626ff25d21d5a6bb8f96b61a7",
+            "workId": "work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "failure",
+            "text": "[work-d010c0b9aadd6cd40f0f283b8cbedcf6cc945e5906098db801b79712d73b0216] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.",
+            "status": "delivered",
+            "externalId": "local-d37a88a63f2120ff7a6f9304e42b656ceaead11d9399418c620af31f444156f3",
+            "context": {
+              "binding": {
+                "id": "binding-94c8fbbff37c1a727bbf4e089d12f6c4568010f23275a2d3d03297c977ea391a",
+                "channel": "test",
+                "conversationId": "observations-simple.sqlite.fast.source_missing",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 13,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "kind": "send",
+        "at": 1788566400000,
+        "id": "ack",
+        "sourceKey": null
+      },
+      {
+        "kind": "model",
+        "at": 1788566400002,
+        "id": "model-3",
+        "sourceKey": null
+      },
+      {
+        "kind": "tool",
+        "at": 1788566400022,
+        "id": "attempt-4",
+        "sourceKey": "87677f57b0a14766b73f09f17fd7477cbf0ee8b8b7f04153699c10c21fd65622"
+      },
+      {
+        "kind": "send",
+        "at": 1788566400027,
+        "id": "failure-984fac0b8c7a2d283d5b03ea0cfb384da35a87d626ff25d21d5a6bb8f96b61a7",
+        "sourceKey": null
+      }
+    ],
+    "finalControl": "blocked",
+    "startedAt": 1788566400000,
+    "finishedAt": 1788566400029,
+    "wallElapsedMs": 122.46654199999466,
+    "runError": null
+  },
+  "sampleDigest": "1f1174e44ccd2851e08ecbc225d98fb358c840418efa644b3133289c39a383a5",
+  "score": {
+    "caseId": "observations-simple.sqlite.fast.source_missing",
+    "contractPassed": true,
+    "goalCompleted": false,
+    "falseCompletionRevisions": [],
+    "failures": [],
+    "finalControl": "blocked",
+    "usage": {
+      "limits": {
+        "toolCalls": 20,
+        "modelCalls": 10,
+        "tokens": 1000000,
+        "replans": 5,
+        "wallTimeMs": 172800000
+      },
+      "used": {
+        "toolCalls": 1,
+        "modelCalls": 1,
+        "tokens": 150,
+        "replans": 0,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "calls": {
+      "modelEntries": 1,
+      "toolEntries": 1,
+      "sends": 2,
+      "lookups": 0,
+      "uniqueQueries": 1,
+      "repeatedQueries": 0,
+      "adoptedTools": 0,
+      "reusedTools": 0
+    },
+    "context": {
+      "requestBytes": 2324,
+      "estimatedTokens": 4372,
+      "sourceReads": 1,
+      "evictions": 0,
+      "reloads": 0
+    },
+    "latency": {
+      "ackMs": 2,
+      "firstEvidenceMs": null,
+      "firstUsefulAnswerMs": null,
+      "verifiedCompletionMs": null,
+      "simulatedElapsedMs": 29,
+      "wallElapsedMs": 122.46654199999466
+    },
+    "interventions": 0,
+    "promotions": 0
+  },
+  "scoreDigest": "88fe12d2e7367cd407785af00345e15c43063d23722d2591121626268c82b3c0",
+  "finalStateDigest": "aaab6c583b572edb02c386b722fedcad9ea02a430642a0f5d9c814ab3adf20c9",
+  "eventsDigest": "177b81bc00441d7c50e523d3bf42ac4baa8355a47308b7fef5fd22685ec21d93",
+  "deliveriesDigest": "48ad2b5e8cd34235c186bf280f3183f49d616d730ddf1d2d88d4088b5a40f7ae",
+  "receipts": [
+    {
+      "commandId": "conversation.accept",
+      "digest": "358a4e5f285b89a2190f2fb21ef6ea5883f99515ca1ed5a3836808bae20def79",
+      "stateRevision": 1,
+      "stateDigest": "1f65971e0a1bc3d177b33b15c8a2e7f62f8f8572a3a9f05f70eac9ddb9e00c6c"
+    },
+    {
+      "commandId": "delivery-claim:ack:1",
+      "digest": "423f4b2fbfd0c0b567fe06874475ded32d9826b59e26eaea0d04d785eb46953b",
+      "stateRevision": 2,
+      "stateDigest": "7ab8b096abea3a34c6782ad0cfb4a05002944c42ba4b7cd06915c3f614fa3948"
+    },
+    {
+      "commandId": "delivery-settle:ack:1:delivered:2",
+      "digest": "bbf20414ad0321047697cd62ee47be80086cbf7d0b9e1ea78a2250bf37b06377",
+      "stateRevision": 3,
+      "stateDigest": "b5c27f2b89f0c162fdaa69168b712c2bb9d3dc18a4c62195caa9cf2ed6b85a30"
+    },
+    {
+      "commandId": "control:3",
+      "digest": "52d73767fd578ef6af805cad0a2997f917393df7e72a5e389d8b88f9b0b0102e",
+      "stateRevision": 4,
+      "stateDigest": "1655cec952d21e55f2e2685ac3f21deecb5eafafcd57a3dc047c5124dd90cfb8"
+    },
+    {
+      "commandId": "model-reserve:model-3",
+      "digest": "dee1f2a031a6f33f53f096ef3a7672691b44ee8f9ef94a6b768cf39e53d74ea7",
+      "stateRevision": 5,
+      "stateDigest": "2de89f21674fc3dbca05434b1b2754653205f04fdeb02762508559446734b0be"
+    },
+    {
+      "commandId": "model-dispatch:model-3",
+      "digest": "1edcdf055aea0387e26276a07f7140dbe6534b41d94aaae4ea6cf9b439b743c6",
+      "stateRevision": 6,
+      "stateDigest": "8017cecc1347384cc2b1ff01ba585d110c49b288cf13e74099f02cc90c0997e1"
+    },
+    {
+      "commandId": "model-receive:model-3",
+      "digest": "85d80f9581c5dc594244d2d9edf3de7b2e86fa95e4323a46a75910f06fc78b3d",
+      "stateRevision": 7,
+      "stateDigest": "1ad545c581baea33c6ebeab75ed3f9f7b7dc9deeb28a5a69fa0e141886aadc79"
+    },
+    {
+      "commandId": "model-adopt:model-3",
+      "digest": "d8cb09acb65e72cea64a60a5f477507c2946924f258649e495ec95914fe1da35",
+      "stateRevision": 8,
+      "stateDigest": "8d5b9bb0394af7d91ab440d018447a594ab17990ae86caadbcb854dfe818d01e"
+    },
+    {
+      "commandId": "reserve:attempt-4",
+      "digest": "7b1a77f5411bc83ce73f2f97e61f21e415f8cd427936b718d688615e7b51c3c5",
+      "stateRevision": 9,
+      "stateDigest": "d52910436167225770d90116cf20a6b3bca014468525509083a63de0fe54ae6b"
+    },
+    {
+      "commandId": "dispatch:attempt-4",
+      "digest": "a07da851c2ae3cfc338ea5ef8002b55ff8fc512dffc460a1b05ac807c3e9beba",
+      "stateRevision": 10,
+      "stateDigest": "151d3ce0eb073f54f209c32f19714278ae016c0916cb7ed9bab88b98614310c7"
+    },
+    {
+      "commandId": "receive:attempt-4",
+      "digest": "9492f4a905d1c86d3109fbff320f47f8d720cc0090ec4678bb067ee874deb8e2",
+      "stateRevision": 11,
+      "stateDigest": "21dbdc5c26de45a41475904634d35280eae23c0b1cddd15993312d3c80443d82"
+    },
+    {
+      "commandId": "adopt:attempt-4",
+      "digest": "41a6006ac3424e3244a653072553c042a33a37a18828e2ee3d6b04fee0ba6f44",
+      "stateRevision": 12,
+      "stateDigest": "c2c8f7a51b48f018bcec51fe3dca6445807a334941c926896e873ca4c22d537c"
+    },
+    {
+      "commandId": "control:12",
+      "digest": "018b4a10955ca2adfd26d7b83e3aeed577f0303fe4088cffde5afa40798c88d4",
+      "stateRevision": 13,
+      "stateDigest": "043a96535e72da4d009c218f68a6093cc02cca8ac72a4156936be4bdc1a66f73"
+    },
+    {
+      "commandId": "prepare:failure-984fac0b8c7a2d283d5b03ea0cfb384da35a87d626ff25d21d5a6bb8f96b61a7:13",
+      "digest": "3c8f3e4e81456c3d7cc5f0f42576dfa95c606a99bf7467f67176fa288dbfd90a",
+      "stateRevision": 14,
+      "stateDigest": "84eead3b489aae2207b08edd712f9191c1412a8a5ff1844ac9d40ee356aa3075"
+    },
+    {
+      "commandId": "delivery-claim:failure-984fac0b8c7a2d283d5b03ea0cfb384da35a87d626ff25d21d5a6bb8f96b61a7:1",
+      "digest": "bb67cb13ffe72f84dc853b05388d5628cc549c5e508ff6909fe94d04e4602677",
+      "stateRevision": 15,
+      "stateDigest": "2518d1e224063707e85d4667840a63e342b9f6c256ce5a9c6af14058f040d5ef"
+    },
+    {
+      "commandId": "delivery-settle:failure-984fac0b8c7a2d283d5b03ea0cfb384da35a87d626ff25d21d5a6bb8f96b61a7:1:delivered:15",
+      "digest": "e858e01fb35ed3bfe7e6c0f44c3fb7840a33a27bbfe76f41353284ad10cf38d7",
+      "stateRevision": 16,
+      "stateDigest": "aaab6c583b572edb02c386b722fedcad9ea02a430642a0f5d9c814ab3adf20c9"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "13887e0847d750721d5e266d60e3acf330df448d3a01066ecbae369f2e5fbed5",
+      "sha256": "269d1b2786a63ba1ae27af198ea03bb2139ca740308a38382a70cd0bec9d030f",
+      "byteLength": 9421,
+      "mediaType": "application/json",
+      "tenantId": "synthetic",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    },
+    {
+      "id": "21c46c1d5077fc375d07dea021b9d31501773a52b9c1115833dc2042928f0509",
+      "sha256": "fb9231a89ce663b3e5423522805a5a8a86bc021cf30245c4eb66d8fdc6cb6e52",
+      "byteLength": 229,
+      "mediaType": "application/json",
+      "tenantId": "synthetic",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    },
+    {
+      "id": "4ae98e4d2914a7c17f55b63dc2c2bda9bdf281ba71ddc50167e3fb2cdbd910cf",
+      "sha256": "53e64f9dec175fb597d8e9e7b744c82f77287f91e5d340fdc5682a9caec3e0ac",
+      "byteLength": 2324,
+      "mediaType": "application/json",
+      "tenantId": "synthetic",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    },
+    {
+      "id": "5ed447e7b4e74973d2dcc348e638a0593227b31932d2bd562723674371aa620b",
+      "sha256": "160c15966c8f3ed7702bcf23be50a5886b774d2f089244840dd53c333d8efcd1",
+      "byteLength": 491,
+      "mediaType": "application/json",
+      "tenantId": "synthetic",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    },
+    {
+      "id": "f50f4234fba38efdfe7ddec1bb1ec5e5e75057e66a0f60232fb3d3d97192f701",
+      "sha256": "3b94673e68f2ca0ea1dcd2a9a67bb0b3e14ba4abfa5a8a0ddfcfd426a6a6a48f",
+      "byteLength": 3715,
+      "mediaType": "application/json",
+      "tenantId": "synthetic",
+      "labels": [
+        "public",
+        "synthetic"
+      ]
+    }
+  ],
+  "checkpoint": {
+    "id": "13887e0847d750721d5e266d60e3acf330df448d3a01066ecbae369f2e5fbed5",
+    "sha256": "269d1b2786a63ba1ae27af198ea03bb2139ca740308a38382a70cd0bec9d030f",
+    "byteLength": 9421,
+    "mediaType": "application/json",
+    "tenantId": "synthetic",
+    "labels": [
+      "public",
+      "synthetic"
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+✔ sqlite: MCP family 0 stores an original, adopts facts and revalidates offline (154.574291ms)
+✔ sqlite: MCP family 1 stores an original, adopts facts and revalidates offline (115.904125ms)
+✔ sqlite: MCP partial records do not satisfy complete coverage (113.876292ms)
+✔ sqlite: MCP error retains no result evidence (113.455208ms)
+✔ sqlite: MCP invalid retains no result evidence (109.864667ms)
+✔ sqlite: MCP changed projected facts and different attempt proof are rejected (103.708375ms)
+✖ sqlite: MCP raw body corruption prevents adoption after restart (107.048875ms)
+✔ sqlite: MCP received result survives reopen and does not recall a stopped server (110.795458ms)
+✔ sqlite: MCP request intent prevents a hidden second call for the same attempt (90.874125ms)
+✖ sqlite: MCP repeated reads keep one independent source lineage (113.882708ms)
+✔ sqlite: MCP authority change during adapter wait blocks the wire call (73.455375ms)
+✔ file-journal: MCP family 0 stores an original, adopts facts and revalidates offline (234.578166ms)
+✔ file-journal: MCP family 1 stores an original, adopts facts and revalidates offline (342.364708ms)
+✔ file-journal: MCP partial records do not satisfy complete coverage (234.123959ms)
+✔ file-journal: MCP error retains no result evidence (224.477791ms)
+✔ file-journal: MCP invalid retains no result evidence (228.448041ms)
+✔ file-journal: MCP changed projected facts and different attempt proof are rejected (226.24225ms)
+✖ file-journal: MCP raw body corruption prevents adoption after restart (237.130333ms)
+✔ file-journal: MCP received result survives reopen and does not recall a stopped server (223.404916ms)
+✔ file-journal: MCP request intent prevents a hidden second call for the same attempt (176.738875ms)
+✖ file-journal: MCP repeated reads keep one independent source lineage (236.817166ms)
+✔ file-journal: MCP authority change during adapter wait blocks the wire call (157.758333ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 18
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3814.100541
+
+✖ failing tests:
+
+test at dist/tests/mcp-read-tools.test.js:130:5
+✖ sqlite: MCP raw body corruption prevents adoption after restart (107.048875ms)
+  Error: artifact_unavailable
+      at commitWithArtifacts (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/commit-artifacts.js:16:19)
+      at async transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:21:24)
+      at async ExecutionRuntime.adoptOnce (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:572:9)
+      at async ExecutionRuntime.adopt (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:531:24)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-read-tools.test.js:138:23)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+
+test at dist/tests/mcp-read-tools.test.js:158:5
+✖ sqlite: MCP repeated reads keep one independent source lineage (113.882708ms)
+  Error: task_not_ready
+      at file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:250:23
+      at transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:18:28)
+      at async ExecutionRuntime.reserve (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:244:24)
+      at async prepare (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-read-tools.test.js:62:25)
+      at async Object.invoke (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-read-tools.test.js:68:26)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-read-tools.test.js:162:24)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+
+test at dist/tests/mcp-read-tools.test.js:130:5
+✖ file-journal: MCP raw body corruption prevents adoption after restart (237.130333ms)
+  Error: artifact_unavailable
+      at commitWithArtifacts (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/commit-artifacts.js:16:19)
+      at async transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:21:24)
+      at async ExecutionRuntime.adoptOnce (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:572:9)
+      at async ExecutionRuntime.adopt (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:531:24)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-read-tools.test.js:138:23)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+
+test at dist/tests/mcp-read-tools.test.js:158:5
+✖ file-journal: MCP repeated reads keep one independent source lineage (236.817166ms)
+  Error: task_not_ready
+      at file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:250:23
+      at transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:18:28)
+      at async ExecutionRuntime.reserve (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:244:24)
+      at async prepare (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-read-tools.test.js:62:25)
+      at async Object.invoke (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-read-tools.test.js:68:26)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-read-tools.test.js:162:24)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)

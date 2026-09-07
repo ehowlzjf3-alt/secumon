@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "status": "frozen_staging_only",
+  "createdAt": "2026-09-07T16:16:54.603753+00:00",
+  "scope": "C05 collection post-send custody adapter",
+  "productApplied": false,
+  "files": [
+    {
+      "path": "src/infrastructure/mcp-read-collections.ts",
+      "sourcePath": "runtime/src/infrastructure/mcp-read-collections.ts",
+      "sourceSha256": "ba7398f4908e6b83c2c2d1e4bfb395bd6585f45df9ec5ddb9abe349520ed1508",
+      "stagedPath": "runtime/evidence/C05-mcp-collections-custody-staging/adapter/src/infrastructure/mcp-read-collections.ts",
+      "stagedSha256": "f62b7dbb43a0d47d481fa07c7cf128fbe4381b4db93a5aed6377d952d8912077",
+      "change": "modified copy"
+    }
+  ],
+  "initialManifest": {
+    "path": "runtime/evidence/C05-mcp-collections-custody-staging/adapter/original.json",
+    "sha256": "9d806fb9d80491a4683b61ef0a72694491172307d71c8a2632690cb701449239"
+  },
+  "adoptedContract": "design/chapters/C05-mcp-collections-custody-plan.md",
+  "changes": [
+    "Adds the approved five finite custody marker variants with recordedAtKind to response receipt payloads only.",
+    "Passes immutable request-local decoded capture through the existing client; arbitrary exceptions never become a measured send.",
+    "Binds custody to original dispatch and page intent receipts, fixed owner and data generation, exact indexed refs and raw SHA; does not require the current head to remain the original intent head.",
+    "Adds source.restoreUsage returning original request/intent/response receipt metadata and page usage without project, manifest, discovery or fetch.",
+    "Retains legacy unmarked body validation; marked bodies require returned and observation before the original lease/deadline; captured/failure cannot become a page.",
+    "Preserves original call errors and a simultaneous custody persistence failure as an AggregateError."
+  ],
+  "checks": {
+    "productSourceUnchanged": true,
+    "envelopeV1BlockUnchanged": true,
+    "bindingAndDefinitionBlockUnchanged": true,
+    "projectorBlockUnchanged": true,
+    "staticReadReview": true,
+    "build": "not_run",
+    "tests": "not_run",
+    "ssh": "not_run"
+  },
+  "dependencies": [
+    "core staging ports.ts and ToolContracts restoreReadUsage",
+    "core Broker and ReadCollections authorizeResponseCustody forwarding",
+    "separate Windows-owned A custody fixture/tests"
+  ],
+  "suggestedFocusedSelection": [
+    "mcp-collection-custody.test",
+    "mcp-read-collections.test",
+    "mcp-read-settlement-recovery.test",
+    "mcp-read-waits.test",
+    "mcp-stored-read-collections.test"
+  ],
+  "limitations": [
+    "This adapter returns page measurements only; whole-attempt accounting and protected ContextRecovery refs belong to unit B.",
+    "No runtime or TypeScript build was executed; root must integrate the staged port changes and run the approved checks.",
+    "The existing checkpoint reader is reused for original intent proof; no new ledger, schema version or online fallback is introduced."
+  ]
+}

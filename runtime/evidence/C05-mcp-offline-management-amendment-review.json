@@ -1,0 +1,34 @@
+{
+  "recordedAt": "2026-09-07T14:05:53.948Z",
+  "kind": "supplemental_management_read_review",
+  "previous": "evidence/C05-mcp-offline-management-review.json",
+  "amendment": "evidence/C05-mcp-offline-linux-nas-20260907/http-acceptance-amendment1.json",
+  "checks": [
+    {
+      "name": "README.md",
+      "beforeSha256": "c5743a209a563e76e7a59e51adff6254b1974786d0fedfa403b7cab4015d38ad",
+      "afterSha256": "615ac6646d0de9460e88e8cd0ee41417ed5eb2f4d3ef7c433b6301ee56d30f59",
+      "changes": [
+        {
+          "line": 57,
+          "before": "새 인수는 명시적 `stored_only` 등록으로 peer 생성·discovery 없이 저장된 plain-read 증명/usage를 복구하거나 미호출 업무를 connection_required로 기다리는 것이다. 실제 CLI fixture는 원 응답 복구·답변, localhost HTTP fixture는 미호출 업무 대기를 확인한다. 모든 모델/서비스가 offline이라는 주장이나 자동 online fallback은 아니다. 일반 입구 collection/page/wait 복구, 실제 모델 품질/API, 사내 서비스, native Windows, PostgreSQL, 전원 장애 내구성과 C05 전체/goal 완료는 이 proof의 범위가 아니다.",
+          "after": "새 인수는 명시적 `stored_only` 등록으로 peer 생성·discovery 없이 저장된 plain-read 증명/usage를 복구하거나 미호출 업무를 connection_required로 기다리는 것이다. SQLite/file-journal의 실제 CLI 2개는 원응답 복구·답변을, localhost HTTP 4개는 서버 없는 원응답 복구 2개와 미호출 대기 후 명시적으로 온라인 앱을 다시 열어 실제 peer 호출 1회로 완료하는 2개를 확인하며, 저장 전용 구간의 peer 감사 bytes와 반복 명령의 원기록·정산 보존을 대조한다. 모든 모델/서비스가 offline이라는 주장이나 자동 online fallback은 아니다. 일반 입구 collection/page/wait 복구, 실제 모델 품질/API, 사내 서비스, native Windows, PostgreSQL, 전원 장애 내구성과 C05 전체/goal 완료는 이 proof의 범위가 아니다."
+        }
+      ]
+    },
+    {
+      "name": "finalize-evidence.mjs",
+      "beforeSha256": "c737eeb0cb1960267c9dce5380674413db34346d68e467b0a33f3322af71efed",
+      "afterSha256": "ad584c0cbbd25445eda1b0a86f69386aed91a85bcb9b8295add636a583942748",
+      "changes": [
+        {
+          "line": 200,
+          "before": "    'The actual offline CLI fixture restores a stored plain-read response; the HTTP fixture waits for a connection before an uncalled task. Other interruption and reconnect boundaries require their own tests.',",
+          "after": "    'SQLite and file-journal entry fixtures cover two real CLI response restorations and four localhost HTTP cases: two response restorations without a peer, plus two uncalled-task waits followed by explicit online reopen and one actual peer call. Stored-only portions preserve peer audit bytes; repeated commands preserve original records and accounting. Other interruption boundaries require their own tests.',"
+        }
+      ]
+    }
+  ],
+  "productOrTestsChanged": false,
+  "helperExecuted": false
+}

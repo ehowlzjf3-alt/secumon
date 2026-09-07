@@ -1,0 +1,91 @@
+✔ sqlite: one closed original call set refines unknown to known when its late page receipt arrives (761.35825ms)
+✔ sqlite: two accountants publish one collection usage receipt and preserve the original unreceived result (398.516042ms)
+✔ file-journal: one closed original call set refines unknown to known when its late page receipt arrives (4167.937459ms)
+✔ file-journal: two accountants publish one collection usage receipt and preserve the original unreceived result (1515.774667ms)
+✔ a successor charges only its own new page and keeps the parent result and original receipts unchanged (857.06125ms)
+✔ a contradictory known collection total rejects accounting without rewriting the result or adding an event (214.231291ms)
+✔ sqlite: recovery hides only authenticated old collection custody and preserves authoritative originals across reopen (662.784542ms)
+✔ file-journal: recovery hides only authenticated old collection custody and preserves authoritative originals across reopen (2387.594625ms)
+✔ a protected head still required by the current running task is never projected out (422.671583ms)
+✔ a current result or evidence reference overrides collection custody exclusion (950.09625ms)
+✔ an unrelated protected ref prevents collection recovery instead of borrowing the custody proof (423.00925ms)
+✔ a receipt identity change during collection custody proof refuses context publication (368.480583ms)
+✔ sqlite: workflow settles captured custody after expiring the intent within one step and without a body (401.829ms)
+✔ sqlite: workflow settles failure custody after expiring the intent within one step and without a body (282.235625ms)
+✔ sqlite: workflow settles late_returned custody after expiring the intent within one step and without a body (388.096833ms)
+✔ file-journal: workflow settles captured custody after expiring the intent within one step and without a body (1466.910292ms)
+✔ file-journal: workflow settles failure custody after expiring the intent within one step and without a body (2288.640083ms)
+✔ file-journal: workflow settles late_returned custody after expiring the intent within one step and without a body (1330.48825ms)
+✔ workflow rejects intent corruption instead of converting it into custody-only accounting (183.77075ms)
+✖ workflow rejects raw corruption instead of converting it into custody-only accounting (177.0045ms)
+✔ sqlite: collection returned retains one request after policy narrowing without projecting it (327.844333ms)
+✔ sqlite: collection captured-failure retains one request after policy narrowing without projecting it (207.005125ms)
+✔ sqlite: normal pages remain verifiable after the current head advances and the stores reopen (579.511792ms)
+✔ file-journal: collection returned retains one request after policy narrowing without projecting it (975.12725ms)
+✔ file-journal: collection captured-failure retains one request after policy narrowing without projecting it (556.066333ms)
+✔ file-journal: normal pages remain verifiable after the current head advances and the stores reopen (2928.623875ms)
+✔ collection cancellation at beforeRaw preserves raw custody but no current page (181.888958ms)
+✔ collection cancellation at afterRaw preserves raw custody but no current page (146.040458ms)
+✔ collection cancellation at beforeResponseCommit preserves raw custody but no current page (159.011583ms)
+✔ collection owner corruption at afterCapture cannot publish the original response (112.4175ms)
+✔ collection generation corruption at afterRaw cannot publish the original response (158.088584ms)
+✔ collection intent corruption at beforeResponseCommit cannot publish the original response (167.935ms)
+✔ a captured call failure and a custody denial retain both original errors (95.381625ms)
+✔ removed current catalog entry does not erase the original in-flight collection custody (107.518916ms)
+✔ collection sent-false preserves only observed send information without a decoded body (173.279125ms)
+✔ collection sent-true preserves only observed send information without a decoded body (149.734292ms)
+✔ collection arbitrary-error preserves only observed send information without a decoded body (103.715291ms)
+✔ legacy collection returned-without-capture keeps the old body and unknown-send interpretations (142.85075ms)
+✔ legacy collection sent-true keeps the old body and unknown-send interpretations (124.004041ms)
+✔ returned distinguishes decoded observation from late response preparation (111.106292ms)
+✔ returned-without-capture distinguishes decoded observation from late response preparation (101.411083ms)
+✔ captured failure is never restored as a page even with unchanged authority (119.907375ms)
+✔ page usage rejects wrong request/time/contract and damaged raw or original intent (202.148625ms)
+✔ an impossible persisted custody marker is not accepted as either legacy or new proof (104.208833ms)
+✔ two concurrent work requests retain their own captures, intents and raw payloads (127.518875ms)
+✔ real stdio SDK post-capture abort preserves the collection original without a fabricated successful reply (177.374333ms)
+✔ collection registration reads source and restoreUsage getters once and binds that exact callback (133.276625ms)
+✔ the first intent receipt must carry its original work and attempt even when digest and head match (150.585166ms)
+✔ sqlite: custody inspection cannot finalize a running subset, even after pause or a shorter work deadline (638.5095ms)
+✔ file-journal: custody inspection cannot finalize a running subset, even after pause or a shorter work deadline (2303.531667ms)
+✔ a complete checkpoint is not attempt closure; an actual received result closes its original calls (365.888083ms)
+✔ read usage tickets are instance-bound and fail after source receipts or current ownership change (325.83675ms)
+✔ custody inspection excludes unrelated indexed artifacts instead of treating all checkpoint history as permission (350.081333ms)
+✔ a settled head removed or substituted during a later receipt lookup fails the final original-file fence (643.426625ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 53
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8794.201292
+
+✖ failing tests:
+
+test at dist/tests/mcp-collection-custody-resume.test.js:124:5
+✖ workflow rejects raw corruption instead of converting it into custody-only accounting (177.0045ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /read_reconciliation_invalid/. Input:
+  
+  'Error: artifact_unavailable'
+  
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-custody-resume.test.js:132:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: artifact_unavailable
+        at commitWithArtifacts (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/commit-artifacts.js:16:19)
+        at async transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:21:24)
+        at async ExecutionRuntime.expireAttempt (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:1042:9)
+        at async ExecutionRuntime.settleStoredCollection (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:1156:13)
+        at async WorkflowRuntime.run (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/workflow-runtime.js:111:79)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-custody-resume.test.js:132:9)
+        at async Test.run (node:internal/test_runner/test:1404:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:969:7),
+    expected: /read_reconciliation_invalid/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

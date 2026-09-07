@@ -1,0 +1,750 @@
+TAP version 13
+# Subtest: inspect retains a measured fitting optional subset when byte capacity exceeds the chosen items
+ok 1 - inspect retains a measured fitting optional subset when byte capacity exceeds the chosen items
+  ---
+  duration_ms: 107.261625
+  type: 'test'
+  ...
+# {"path":"inspect","proof":{"full":{"tokens":180,"bytes":13723,"method":"fixture-optional-token-pressure"},"intermediate":{"tokens":140,"bytes":9444,"method":"fixture-optional-token-pressure"},"candidateBytes":6259},"selected":["core.catalog.get","core.catalog.search","fixture.a"],"observedEstimates":[{"tools":["core.catalog.get","core.catalog.search"],"tokens":100,"bytes":8165},{"tools":["core.catalog.get","core.catalog.search"],"tokens":100,"bytes":8165},{"tools":[],"tokens":100,"bytes":7548},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a"],"tokens":140,"bytes":9444},{"tools":["core.catalog.get","core.catalog.search","fixture.a"],"tokens":140,"bytes":9444}],"frameWrites":1,"calls":{"modelCalls":0,"toolCalls":0}}
+# Subtest: prepare retains a measured fitting optional subset instead of exhausting unused-byte-budget retries
+ok 2 - prepare retains a measured fitting optional subset instead of exhausting unused-byte-budget retries
+  ---
+  duration_ms: 91.341958
+  type: 'test'
+  ...
+# {"path":"prepare","proof":{"full":{"tokens":180,"bytes":13723,"method":"fixture-optional-token-pressure"},"intermediate":{"tokens":140,"bytes":9444,"method":"fixture-optional-token-pressure"},"candidateBytes":6259},"selected":["core.catalog.get","core.catalog.search","fixture.a"],"observedEstimates":[{"tools":[],"tokens":100,"bytes":7548},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a"],"tokens":140,"bytes":9444},{"tools":["core.catalog.get","core.catalog.search","fixture.a"],"tokens":140,"bytes":9444}],"frameWrites":1,"calls":{"modelCalls":0,"toolCalls":0}}
+# Subtest: sqlite: mixed host collection uses the profile's original stores and one compiled registry through answer and reopen
+ok 3 - sqlite: mixed host collection uses the profile's original stores and one compiled registry through answer and reopen
+  ---
+  duration_ms: 1182.227667
+  type: 'test'
+  ...
+# Subtest: file-journal: mixed host collection uses the profile's original stores and one compiled registry through answer and reopen
+ok 4 - file-journal: mixed host collection uses the profile's original stores and one compiled registry through answer and reopen
+  ---
+  duration_ms: 3709.897416
+  type: 'test'
+  ...
+# Subtest: stored-only collection registration keeps its definition visible without granting new calls or core/skill permissions
+ok 5 - stored-only collection registration keeps its definition visible without granting new calls or core/skill permissions
+  ---
+  duration_ms: 135.427417
+  type: 'test'
+  ...
+# Subtest: a supplied collection list requires real assembly while omitted collection metadata preserves the legacy direct helper
+ok 6 - a supplied collection list requires real assembly while omitted collection metadata preserves the legacy direct helper
+  ---
+  duration_ms: 0.314
+  type: 'test'
+  ...
+# Subtest: collection/plain identity and provider ownership conflicts fail before model open and close the acquired lease once
+ok 7 - collection/plain identity and provider ownership conflicts fail before model open and close the acquired lease once
+  ---
+  duration_ms: 1303.531375
+  type: 'test'
+  ...
+# Subtest: a late collection schema compile failure returns no partial profile and preserves model/tools cleanup failures
+ok 8 - a late collection schema compile failure returns no partial profile and preserves model/tools cleanup failures
+  ---
+  duration_ms: 189.701916
+  type: 'test'
+  ...
+# Subtest: sqlite: SIGKILL collection response resumes through actual CLI, compacts its real session and consumes an explicit complete successor offline
+not ok 9 - sqlite: SIGKILL collection response resumes through actual CLI, compacts its real session and consumes an explicit complete successor offline
+  ---
+  duration_ms: 3409.666625
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-entry.test.js:266:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"cli":{"provider":"registered","modelInfo":{"selection":"registered","profileName":"mcp-agent-fixture-v1","identity":{"provider":"local-fixture","model":"collection-entry","revision":"1"},"compact":true,"execution":"deterministic_fixture"},"notice":"등록 모델의 로컬 전송 대역 시험입니다. 정해진 시험 문구만 처리하며 실제 모델/API는 호출하지 않습니다.","sessionId":"aa90f9c9-003f-4014-9f82-4c93bf1c2bd1","workId":"work-74891be664725aded8fc3fd001d09d6caf8321fa9259ae97feda567463d21e7c","snapshot":{"workId":"work-74891be664725aded8fc3fd001d09d6caf8321fa9259ae97feda567463d21e7c","goalRevision":1,"revision":54,"status":"blocked","reason":"no_progress_limit","execution":{"revision":2,"requestedMode":"auto","strategy":"investigate","pending":null,"lastReason":"plan_scope_expanded","limits":{"toolCalls":8,"modelCalls":16,"tokens":1000000,"replans":6,"wallTimeMs":600000},"remaining":{"toolCalls":4,"modelCalls":12,"tokens":999200,"replans":4},"reserved":{"toolCalls":0,"modelCalls":0,"tokens":0},"deadlineAt":700288,"retryWakeAt":null,"activeModels":0,"progress":{"consecutiveUnproductive":3,"productiveSteps":1,"unproductiveSteps":5,"saturated":false},"unmetCriteria":[]},"analysisReady":false,"resultReady":false,"resultDelivery":"not_prepared","pendingQuestions":[],"activeAttempts":0,"unresolvedEffects":0,"unresolvedDeliveries":0,"usage":{"toolCalls":4,"modelCalls":4,"tokens":800,"replans":2,"unmeasuredModelCalls":0},"conversationIds":["terminal"]},"messages":[{"id":"ack","kind":"ack","text":"[work-74891be664725aded8fc3fd001d09d6caf8321fa9259ae97feda567463d21e7c] 요청을 접수했습니다."}],"run":{"control":{"kind":"blocked","reason":"no_progress_limit"},"steps":23,"reason":"no_progress_limit","stateRevision":54,"goalRevision":1,"checkpoint":{"id":"ec77d1dabb1e14914354ea796e84847e9f718b59aaecf0125023e5e57cdeab47","sha256":"90941b24016cca37315071089877324c1c5e3241b2c5ee26c2e55015ab8169c7","byteLength":35829,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"resumeDisposition":"created"}},"attempts":[{"id":"attempt-96005ad0-b226-4e78-a0cf-ebb19035c510","status":"failed","adopted":false,"error":{"code":"lease_expired","retryable":true},"readProgress":{"operationId":"read-d2e383ea-caf1-4911-87df-449bcd8fc31a","head":{"id":"72757465efc1dc4c52a8bc8314dd6d95a83a07822b734544897652a99f2a4795","sha256":"aa11f88049db61c3fef8753199cf1e75cf5b3948de8a7e7c230bd0027d541912","byteLength":1016,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"callCount":1,"remainingCalls":3,"completedPages":1,"completedItems":2,"pendingItems":0,"unknownCalls":0,"phase":"complete","successorAttemptId":"attempt-df429fdb-bf0e-4d48-b4b3-8dd3fd546c5b"}},{"id":"attempt-df429fdb-bf0e-4d48-b4b3-8dd3fd546c5b","status":"succeeded","adopted":true,"error":null,"readProgress":{"operationId":"read-d2e383ea-caf1-4911-87df-449bcd8fc31a","head":{"id":"5d525aa1f3a713b67e4393bd95f4d43f9a980a202cf967cf543ebd435612bcba","sha256":"0c9d0744a40a8bc8a397c61b3245cb1a15a95e1444abe943b8570c9246fa6686","byteLength":540,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"callCount":1,"remainingCalls":3,"completedPages":1,"completedItems":2,"pendingItems":0,"unknownCalls":0,"phase":"complete","successorAttemptId":null}},{"id":"attempt-d3678852-6fa0-4b67-82c7-043a08347842","status":"succeeded","adopted":true,"error":null},{"id":"attempt-33802b66-819d-457c-82a5-b32562d9d1ed","status":"succeeded","adopted":true,"error":null}],"evidence":[{"id":"mcp:read_request-55c2cc50-df73-4589-9011-382b7f883e86:0:0","tenantId":"mcp-collection-company","scope":"agent:e4a35cf3-4a2a-4405-84b5-a7509dd63b6a","sourceId":"document:a","lineageId":"doc-origin","locator":"/value/structuredContent/records/0/record","observedAt":900,"recordedAt":100423,"labels":["public","synthetic"],"coverage":"complete","status":"accepted","supersedes":[],"derivedFrom":[],"access":"available","facts":{"value":30,"collection.record":"a"},"artifact":{"id":"7f07d70926724d8e9bade8863ea05b8e296e63e18d49d9666a81ce9db65bf530","sha256":"eb62d19e92cb92a713c1441234cd7e315f37f8ef14582df091809fc0157f4dd8","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}},{"id":"mcp:read_request-55c2cc50-df73-4589-9011-382b7f883e86:1:0","tenantId":"mcp-collection-company","scope":"agent:e4a35cf3-4a2a-4405-84b5-a7509dd63b6a","sourceId":"document:b","lineageId":"doc-origin","locator":"/value/structuredContent/records/1/record","observedAt":900,"recordedAt":100423,"labels":["public","synthetic"],"coverage":"complete","status":"accepted","supersedes":[],"derivedFrom":[],"access":"available","facts":{"value":30,"collection.record":"b"},"artifact":{"id":"7f07d70926724d8e9bade8863ea05b8e296e63e18d49d9666a81ce9db65bf530","sha256":"eb62d19e92cb92a713c1441234cd7e315f37f8ef14582df091809fc0157f4dd8","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}}],"turns":[{"result":{"kind":"plan","proposal":{"baseStateRevision":28,"baseGoalRevision":1,"basePlanRevision":1,"reason":"현재 원 task/query/head를 명시적으로 이어 읽는다.","tasks":[{"id":"resume-attempt-96005ad0-b226-4e78-a0cf-ebb19035c510","description":"Read all original fixture records","dependsOn":[],"toolId":"fixture.collection","toolVersion":"1.bd977f97c84ded55458b8e98","input":{"ids":["a","b"]},"effect":"read","maxAttempts":1,"satisfies":[],"readResume":{"attemptId":"attempt-96005ad0-b226-4e78-a0cf-ebb19035c510","checkpointId":"72757465efc1dc4c52a8bc8314dd6d95a83a07822b734544897652a99f2a4795"}}],"hypotheses":[]}},"evidence":[],"collections":[{"attemptId":"attempt-96005ad0-b226-4e78-a0cf-ebb19035c510","taskId":"original-collection","attemptStatus":"failed","progress":{"operationId":"read-d2e383ea-caf1-4911-87df-449bcd8fc31a","head":{"id":"72757465efc1dc4c52a8bc8314dd6d95a83a07822b734544897652a99f2a4795","sha256":"aa11f88049db61c3fef8753199cf1e75cf5b3948de8a7e7c230bd0027d541912","byteLength":1016,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"callCount":1,"remainingCalls":3,"completedPages":1,"completedItems":2,"pendingItems":0,"unknownCalls":0,"phase":"complete","successorAttemptId":null},"resumeMode":"stored_complete"}],"references":[],"observations":[],"tools":["core.evidence.find","core.evidence.get"],"estimate":{"tokens":20887,"bytes":20887,"method":"utf8_bytes_estimate"}},{"result":{"kind":"plan","proposal":{"baseStateRevision":38,"baseGoalRevision":1,"basePlanRevision":2,"reason":"문맥에서 생략된 근거를 기존 로컬 읽기 도구로 확인한다.","tasks":[{"id":"collection-evidence-get-0","description":"현재 저장 근거의 값을 다시 읽는다.","toolId":"core.evidence.get","toolVersion":"1","input":{"evidenceId":"mcp:read_request-55c2cc50-df73-4589-9011-382b7f883e86:0:0","detail":"evidence","maxBytes":4096},"effect":"read","dependsOn":[],"satisfies":[],"maxAttempts":1},{"id":"collection-evidence-get-1","description":"현재 저장 근거의 값을 다시 읽는다.","toolId":"core.evidence.get","toolVersion":"1","input":{"evidenceId":"mcp:read_request-55c2cc50-df73-4589-9011-382b7f883e86:1:0","detail":"evidence","maxBytes":4096},"effect":"read","dependsOn":[],"satisfies":[],"maxAttempts":1}],"hypotheses":[]}},"evidence":[],"collections":[],"references":[{"id":"mcp:read_request-55c2cc50-df73-4589-9011-382b7f883e86:0:0","sourceId":"document:a","locator":"/value/structuredContent/records/0/record","observedAt":900,"coverage":"complete","status":"accepted"},{"id":"mcp:read_request-55c2cc50-df73-4589-9011-382b7f883e86:1:0","sourceId":"document:b","locator":"/value/structuredContent/records/1/record","observedAt":900,"coverage":"complete","status":"accepted"}],"observations":[{"attemptId":"attempt-df429fdb-bf0e-4d48-b4b3-8dd3fd546c5b","taskId":"resume-attempt-96005ad0-b226-4e78-a0cf-ebb19035c510","toolId":"fixture.collection","toolVersion":"1.bd977f97c84ded55458b8e98","inputDigest":"9a33d083eb3c5222e455ed6d1c5137555dcea852946ca11f3390321ab13b4b1a","resultId":"attempt-df429fdb-bf0e-4d48-b4b3-8dd3fd546c5b:collection","resultArtifact":{"id":"1330adee2ef1d7205028e36d9575d4fb044cda3ab6f36ab6fea8396ed8fb96af","sha256":"dce2306195e0dfe2aa53fb97dcf76d9d356ee1fe5fb57e485698ed59634acfeb","byteLength":6510,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"sourceContracts":[{"id":"fixture.collection","version":"1.bd977f97c84ded55458b8e98","digest":"6c540420bd5c87d6b6ac4b8f3f79f82f975ef1af193f2c4b9f84ca979be7a71a"}],"status":"success","coverage":"complete","representation":"full","input":{"ids":["a","b"]},"output":{"operationId":"read-d2e383ea-caf1-4911-87df-449bcd8fc31a","snapshot":"mcpc-snapshot:de6a407508575abef1971c7e68884a3f14bd76e1ba7c20e3756616b4a7529073","items":[{"id":"a","inputDigest":"7c439f610ecf8db0b6f3ee74f8fe929816da6a8d5704bf82451fb04b070d97d5","status":"success","output":{"value":30},"evidence":[{"id":"mcp:read_request-55c2cc50-df73-4589-9011-382b7f883e86:0:0","tenantId":"mcp-collection-company","scope":"agent:e4a35cf3-4a2a-4405-84b5-a7509dd63b6a","sourceId":"document:a","lineageId":"doc-origin","locator":"/value/structuredContent/records/0/record","observedAt":900,"recordedAt":100423,"labels":["public","synthetic"],"coverage":"complete","status":"accepted","supersedes":[],"derivedFrom":[],"access":"available","facts":{"value":30,"collection.record":"a"},"artifact":{"id":"7f07d70926724d8e9bade8863ea05b8e296e63e18d49d9666a81ce9db65bf530","sha256":"eb62d19e92cb92a713c1441234cd7e315f37f8ef14582df091809fc0157f4dd8","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}}],"artifacts":[{"id":"7f07d70926724d8e9bade8863ea05b8e296e63e18d49d9666a81ce9db65bf530","sha256":"eb62d19e92cb92a713c1441234cd7e315f37f8ef14582df091809fc0157f4dd8","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}],"coverage":"complete","error":null},{"id":"b","inputDigest":"8854773cff8b193b58ccd0654ab0414b57deedad49d4e027f2c408aaba7d6f19","status":"success","output":{"value":30},"evidence":[{"id":"mcp:read_request-55c2cc50-df73-4589-9011-382b7f883e86:1:0","tenantId":"mcp-collection-company","scope":"agent:e4a35cf3-4a2a-4405-84b5-a7509dd63b6a","sourceId":"document:b","lineageId":"doc-origin","locator":"/value/structuredContent/records/1/record","observedAt":900,"recordedAt":100423,"labels":["public","synthetic"],"coverage":"complete","status":"accepted","supersedes":[],"derivedFrom":[],"access":"available","facts":{"value":30,"collection.record":"b"},"artifact":{"id":"7f07d70926724d8e9bade8863ea05b8e296e63e18d49d9666a81ce9db65bf530","sha256":"eb62d19e92cb92a713c1441234cd7e315f37f8ef14582df091809fc0157f4dd8","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}}],"artifacts":[{"id":"7f07d70926724d8e9bade8863ea05b8e296e63e18d49d9666a81ce9db65bf530","sha256":"eb62d19e92cb92a713c1441234cd7e315f37f8ef14582df091809fc0157f4dd8","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}],"coverage":"complete","error":null}],"resume":{"attemptId":"attempt-df429fdb-bf0e-4d48-b4b3-8dd3fd546c5b","checkpointId":"5d525aa1f3a713b67e4393bd95f4d43f9a980a202cf967cf543ebd435612bcba"}},"historical":true}],"tools":["core.evidence.find","core.evidence.get"],"estimate":{"tokens":22692,"bytes":22692,"method":"utf8_bytes_estimate"}}]}
+    + actual - expected
+    
+    + 'blocked'
+    - 'complete'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'complete'
+  actual: 'blocked'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-entry.test.js:274:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: file-journal: SIGKILL collection response resumes through actual CLI, compacts its real session and consumes an explicit complete successor offline
+not ok 10 - file-journal: SIGKILL collection response resumes through actual CLI, compacts its real session and consumes an explicit complete successor offline
+  ---
+  duration_ms: 16677.033333
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-entry.test.js:266:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"cli":{"provider":"registered","modelInfo":{"selection":"registered","profileName":"mcp-agent-fixture-v1","identity":{"provider":"local-fixture","model":"collection-entry","revision":"1"},"compact":true,"execution":"deterministic_fixture"},"notice":"등록 모델의 로컬 전송 대역 시험입니다. 정해진 시험 문구만 처리하며 실제 모델/API는 호출하지 않습니다.","sessionId":"cbd1e0d1-1fca-46a4-9699-a46528337b27","workId":"work-ad3433ad0e8d55eb9b45cfbfe18b1e5ec9759bc60a514bae8b5b5fb5d1266ab1","snapshot":{"workId":"work-ad3433ad0e8d55eb9b45cfbfe18b1e5ec9759bc60a514bae8b5b5fb5d1266ab1","goalRevision":1,"revision":54,"status":"blocked","reason":"no_progress_limit","execution":{"revision":2,"requestedMode":"auto","strategy":"investigate","pending":null,"lastReason":"plan_scope_expanded","limits":{"toolCalls":8,"modelCalls":16,"tokens":1000000,"replans":6,"wallTimeMs":600000},"remaining":{"toolCalls":4,"modelCalls":12,"tokens":999200,"replans":4},"reserved":{"toolCalls":0,"modelCalls":0,"tokens":0},"deadlineAt":700274,"retryWakeAt":null,"activeModels":0,"progress":{"consecutiveUnproductive":3,"productiveSteps":1,"unproductiveSteps":5,"saturated":false},"unmetCriteria":[]},"analysisReady":false,"resultReady":false,"resultDelivery":"not_prepared","pendingQuestions":[],"activeAttempts":0,"unresolvedEffects":0,"unresolvedDeliveries":0,"usage":{"toolCalls":4,"modelCalls":4,"tokens":800,"replans":2,"unmeasuredModelCalls":0},"conversationIds":["terminal"]},"messages":[{"id":"ack","kind":"ack","text":"[work-ad3433ad0e8d55eb9b45cfbfe18b1e5ec9759bc60a514bae8b5b5fb5d1266ab1] 요청을 접수했습니다."}],"run":{"control":{"kind":"blocked","reason":"no_progress_limit"},"steps":23,"reason":"no_progress_limit","stateRevision":54,"goalRevision":1,"checkpoint":{"id":"a131e3d9708523aa20d8f52dfb3fb1880647263775dfe4755b3970eb2d41c6c3","sha256":"5689bf549f73ed74993620bf10b178a3c9204323d850062993a856b4561107a1","byteLength":35829,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"resumeDisposition":"created"}},"attempts":[{"id":"attempt-e8cb4d10-ef93-4df4-bed2-4504e8d6a9e0","status":"failed","adopted":false,"error":{"code":"lease_expired","retryable":true},"readProgress":{"operationId":"read-7c882132-33cc-410d-8306-927f9fc32195","head":{"id":"46bbc20a54c8c75b06988b4927f2a16319597f488aef8f4a9ba8368aec435b23","sha256":"3a26b46f437c86792b830860bf360890af1efd100b062b1ad58ef17f418d4189","byteLength":1016,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"callCount":1,"remainingCalls":3,"completedPages":1,"completedItems":2,"pendingItems":0,"unknownCalls":0,"phase":"complete","successorAttemptId":"attempt-835883ab-3182-4b65-bfea-77209b40b5a8"}},{"id":"attempt-835883ab-3182-4b65-bfea-77209b40b5a8","status":"succeeded","adopted":true,"error":null,"readProgress":{"operationId":"read-7c882132-33cc-410d-8306-927f9fc32195","head":{"id":"d54e4388cd341c725784de62896a17b3dc165b325d6284b3f84db71aedb988ae","sha256":"2d4a4a31f595dd91b708838543bd90c556e3b12634bb3794b0dd7e637ac049ac","byteLength":540,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"callCount":1,"remainingCalls":3,"completedPages":1,"completedItems":2,"pendingItems":0,"unknownCalls":0,"phase":"complete","successorAttemptId":null}},{"id":"attempt-67297bc6-7641-4406-b175-427e87f46fa0","status":"succeeded","adopted":true,"error":null},{"id":"attempt-604f5e61-764a-460b-8e88-ff08c2592678","status":"succeeded","adopted":true,"error":null}],"evidence":[{"id":"mcp:read_request-843efdab-3e9c-4b66-a328-e67a796bb3e3:0:0","tenantId":"mcp-collection-company","scope":"agent:5ce5881e-3970-4e85-9fa9-0f3cc11c7cf4","sourceId":"document:a","lineageId":"doc-origin","locator":"/value/structuredContent/records/0/record","observedAt":900,"recordedAt":100871,"labels":["public","synthetic"],"coverage":"complete","status":"accepted","supersedes":[],"derivedFrom":[],"access":"available","facts":{"value":30,"collection.record":"a"},"artifact":{"id":"98a55d29922be26f71db43b36bb3d8ed7da30cf05b425096e0c436743ba19a1e","sha256":"8979b79b1c2b751963c47d054778ddf62134bcf6ae5d29dc86a50c037a09968a","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}},{"id":"mcp:read_request-843efdab-3e9c-4b66-a328-e67a796bb3e3:1:0","tenantId":"mcp-collection-company","scope":"agent:5ce5881e-3970-4e85-9fa9-0f3cc11c7cf4","sourceId":"document:b","lineageId":"doc-origin","locator":"/value/structuredContent/records/1/record","observedAt":900,"recordedAt":100871,"labels":["public","synthetic"],"coverage":"complete","status":"accepted","supersedes":[],"derivedFrom":[],"access":"available","facts":{"value":30,"collection.record":"b"},"artifact":{"id":"98a55d29922be26f71db43b36bb3d8ed7da30cf05b425096e0c436743ba19a1e","sha256":"8979b79b1c2b751963c47d054778ddf62134bcf6ae5d29dc86a50c037a09968a","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}}],"turns":[{"result":{"kind":"plan","proposal":{"baseStateRevision":28,"baseGoalRevision":1,"basePlanRevision":1,"reason":"현재 원 task/query/head를 명시적으로 이어 읽는다.","tasks":[{"id":"resume-attempt-e8cb4d10-ef93-4df4-bed2-4504e8d6a9e0","description":"Read all original fixture records","dependsOn":[],"toolId":"fixture.collection","toolVersion":"1.bd977f97c84ded55458b8e98","input":{"ids":["a","b"]},"effect":"read","maxAttempts":1,"satisfies":[],"readResume":{"attemptId":"attempt-e8cb4d10-ef93-4df4-bed2-4504e8d6a9e0","checkpointId":"46bbc20a54c8c75b06988b4927f2a16319597f488aef8f4a9ba8368aec435b23"}}],"hypotheses":[]}},"evidence":[],"collections":[{"attemptId":"attempt-e8cb4d10-ef93-4df4-bed2-4504e8d6a9e0","taskId":"original-collection","attemptStatus":"failed","progress":{"operationId":"read-7c882132-33cc-410d-8306-927f9fc32195","head":{"id":"46bbc20a54c8c75b06988b4927f2a16319597f488aef8f4a9ba8368aec435b23","sha256":"3a26b46f437c86792b830860bf360890af1efd100b062b1ad58ef17f418d4189","byteLength":1016,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"callCount":1,"remainingCalls":3,"completedPages":1,"completedItems":2,"pendingItems":0,"unknownCalls":0,"phase":"complete","successorAttemptId":null},"resumeMode":"stored_complete"}],"references":[],"observations":[],"tools":["core.evidence.find","core.evidence.get"],"estimate":{"tokens":20887,"bytes":20887,"method":"utf8_bytes_estimate"}},{"result":{"kind":"plan","proposal":{"baseStateRevision":38,"baseGoalRevision":1,"basePlanRevision":2,"reason":"문맥에서 생략된 근거를 기존 로컬 읽기 도구로 확인한다.","tasks":[{"id":"collection-evidence-get-0","description":"현재 저장 근거의 값을 다시 읽는다.","toolId":"core.evidence.get","toolVersion":"1","input":{"evidenceId":"mcp:read_request-843efdab-3e9c-4b66-a328-e67a796bb3e3:0:0","detail":"evidence","maxBytes":4096},"effect":"read","dependsOn":[],"satisfies":[],"maxAttempts":1},{"id":"collection-evidence-get-1","description":"현재 저장 근거의 값을 다시 읽는다.","toolId":"core.evidence.get","toolVersion":"1","input":{"evidenceId":"mcp:read_request-843efdab-3e9c-4b66-a328-e67a796bb3e3:1:0","detail":"evidence","maxBytes":4096},"effect":"read","dependsOn":[],"satisfies":[],"maxAttempts":1}],"hypotheses":[]}},"evidence":[],"collections":[],"references":[{"id":"mcp:read_request-843efdab-3e9c-4b66-a328-e67a796bb3e3:0:0","sourceId":"document:a","locator":"/value/structuredContent/records/0/record","observedAt":900,"coverage":"complete","status":"accepted"},{"id":"mcp:read_request-843efdab-3e9c-4b66-a328-e67a796bb3e3:1:0","sourceId":"document:b","locator":"/value/structuredContent/records/1/record","observedAt":900,"coverage":"complete","status":"accepted"}],"observations":[{"attemptId":"attempt-835883ab-3182-4b65-bfea-77209b40b5a8","taskId":"resume-attempt-e8cb4d10-ef93-4df4-bed2-4504e8d6a9e0","toolId":"fixture.collection","toolVersion":"1.bd977f97c84ded55458b8e98","inputDigest":"3050b6829228f558fbf494633d30ae5c918f7a21f0d7646686198710fda4c772","resultId":"attempt-835883ab-3182-4b65-bfea-77209b40b5a8:collection","resultArtifact":{"id":"5da2f4f6fe724c576a33e8ba06581ec36a88583a737d4c832079368f251a77a5","sha256":"4c2506415e2ab5156ea9cd888f3ebc9edbe28246c4c522447402a698f5e0f945","byteLength":6510,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]},"sourceContracts":[{"id":"fixture.collection","version":"1.bd977f97c84ded55458b8e98","digest":"6c540420bd5c87d6b6ac4b8f3f79f82f975ef1af193f2c4b9f84ca979be7a71a"}],"status":"success","coverage":"complete","representation":"full","input":{"ids":["a","b"]},"output":{"operationId":"read-7c882132-33cc-410d-8306-927f9fc32195","snapshot":"mcpc-snapshot:de6a407508575abef1971c7e68884a3f14bd76e1ba7c20e3756616b4a7529073","items":[{"id":"a","inputDigest":"7c439f610ecf8db0b6f3ee74f8fe929816da6a8d5704bf82451fb04b070d97d5","status":"success","output":{"value":30},"evidence":[{"id":"mcp:read_request-843efdab-3e9c-4b66-a328-e67a796bb3e3:0:0","tenantId":"mcp-collection-company","scope":"agent:5ce5881e-3970-4e85-9fa9-0f3cc11c7cf4","sourceId":"document:a","lineageId":"doc-origin","locator":"/value/structuredContent/records/0/record","observedAt":900,"recordedAt":100871,"labels":["public","synthetic"],"coverage":"complete","status":"accepted","supersedes":[],"derivedFrom":[],"access":"available","facts":{"value":30,"collection.record":"a"},"artifact":{"id":"98a55d29922be26f71db43b36bb3d8ed7da30cf05b425096e0c436743ba19a1e","sha256":"8979b79b1c2b751963c47d054778ddf62134bcf6ae5d29dc86a50c037a09968a","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}}],"artifacts":[{"id":"98a55d29922be26f71db43b36bb3d8ed7da30cf05b425096e0c436743ba19a1e","sha256":"8979b79b1c2b751963c47d054778ddf62134bcf6ae5d29dc86a50c037a09968a","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}],"coverage":"complete","error":null},{"id":"b","inputDigest":"8854773cff8b193b58ccd0654ab0414b57deedad49d4e027f2c408aaba7d6f19","status":"success","output":{"value":30},"evidence":[{"id":"mcp:read_request-843efdab-3e9c-4b66-a328-e67a796bb3e3:1:0","tenantId":"mcp-collection-company","scope":"agent:5ce5881e-3970-4e85-9fa9-0f3cc11c7cf4","sourceId":"document:b","lineageId":"doc-origin","locator":"/value/structuredContent/records/1/record","observedAt":900,"recordedAt":100871,"labels":["public","synthetic"],"coverage":"complete","status":"accepted","supersedes":[],"derivedFrom":[],"access":"available","facts":{"value":30,"collection.record":"b"},"artifact":{"id":"98a55d29922be26f71db43b36bb3d8ed7da30cf05b425096e0c436743ba19a1e","sha256":"8979b79b1c2b751963c47d054778ddf62134bcf6ae5d29dc86a50c037a09968a","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}}],"artifacts":[{"id":"98a55d29922be26f71db43b36bb3d8ed7da30cf05b425096e0c436743ba19a1e","sha256":"8979b79b1c2b751963c47d054778ddf62134bcf6ae5d29dc86a50c037a09968a","byteLength":2050,"mediaType":"application/json","tenantId":"mcp-collection-company","labels":["public","synthetic"]}],"coverage":"complete","error":null}],"resume":{"attemptId":"attempt-835883ab-3182-4b65-bfea-77209b40b5a8","checkpointId":"d54e4388cd341c725784de62896a17b3dc165b325d6284b3f84db71aedb988ae"}},"historical":true}],"tools":["core.evidence.find","core.evidence.get"],"estimate":{"tokens":22692,"bytes":22692,"method":"utf8_bytes_estimate"}}]}
+    + actual - expected
+    
+    + 'blocked'
+    - 'complete'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'complete'
+  actual: 'blocked'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-entry.test.js:274:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: sqlite: SIGKILL at a real nonfinal page resumes through HTTP, waits offline repeatedly and continues only the next online page
+ok 11 - sqlite: SIGKILL at a real nonfinal page resumes through HTTP, waits offline repeatedly and continues only the next online page
+  ---
+  duration_ms: 3869.395125
+  type: 'test'
+  ...
+# Subtest: file-journal: SIGKILL at a real nonfinal page resumes through HTTP, waits offline repeatedly and continues only the next online page
+ok 12 - file-journal: SIGKILL at a real nonfinal page resumes through HTTP, waits offline repeatedly and continues only the next online page
+  ---
+  duration_ms: 10495.24375
+  type: 'test'
+  ...
+# Subtest: sqlite: normally adopted partial batch retains its offline wait and explicitly retries only the failed item online
+ok 13 - sqlite: normally adopted partial batch retains its offline wait and explicitly retries only the failed item online
+  ---
+  duration_ms: 3134.891625
+  type: 'test'
+  ...
+# Subtest: sqlite: mixed MCP host discovers once and registers plain plus collection against the same session
+ok 14 - sqlite: mixed MCP host discovers once and registers plain plus collection against the same session
+  ---
+  duration_ms: 428.053334
+  type: 'test'
+  ...
+# Subtest: file-journal: mixed MCP host discovers once and registers plain plus collection against the same session
+ok 15 - file-journal: mixed MCP host discovers once and registers plain plus collection against the same session
+  ---
+  duration_ms: 815.66525
+  type: 'test'
+  ...
+# Subtest: mixed registration captures one provider and rejects combined count/byte overflow before peer or schema compile
+ok 16 - mixed registration captures one provider and rejects combined count/byte overflow before peer or schema compile
+  ---
+  duration_ms: 10.305875
+  type: 'test'
+  ...
+# Subtest: mixed open preserves final collection compile error without returning a partial lease
+ok 17 - mixed open preserves final collection compile error without returning a partial lease
+  ---
+  duration_ms: 102.612
+  type: 'test'
+  ...
+# Subtest: mixed open preserves final collection compile error and owned close error without returning a partial lease
+ok 18 - mixed open preserves final collection compile error and owned close error without returning a partial lease
+  ---
+  duration_ms: 92.522167
+  type: 'test'
+  ...
+# Subtest: mixed host fails closed on a missing remote contract and owns independent client lifetimes
+ok 19 - mixed host fails closed on a missing remote contract and owns independent client lifetimes
+  ---
+  duration_ms: 418.138708
+  type: 'test'
+  ...
+# Subtest: plain-only options keep lazy provider discovery and do not gain a collection field or permissions
+ok 20 - plain-only options keep lazy provider discovery and do not gain a collection field or permissions
+  ---
+  duration_ms: 88.174792
+  type: 'test'
+  ...
+# Subtest: stored mixed host verifies online originals without online transport or custody ownership
+ok 21 - stored mixed host verifies online originals without online transport or custody ownership
+  ---
+  duration_ms: 278.9755
+  type: 'test'
+  ...
+# Subtest: stored host captures the deferral mapper and settings without changing the original wait proof
+ok 22 - stored host captures the deferral mapper and settings without changing the original wait proof
+  ---
+  duration_ms: 268.648458
+  type: 'test'
+  ...
+# Subtest: sqlite: stored collection authenticates original page after peer and repository close
+ok 23 - sqlite: stored collection authenticates original page after peer and repository close
+  ---
+  duration_ms: 331.170375
+  type: 'test'
+  ...
+# Subtest: sqlite: stored collection authenticates original deferral after peer and repository close
+ok 24 - sqlite: stored collection authenticates original deferral after peer and repository close
+  ---
+  duration_ms: 279.465667
+  type: 'test'
+  ...
+# Subtest: file-journal: stored collection authenticates original page after peer and repository close
+ok 25 - file-journal: stored collection authenticates original page after peer and repository close
+  ---
+  duration_ms: 483.369083
+  type: 'test'
+  ...
+# Subtest: file-journal: stored collection authenticates original deferral after peer and repository close
+ok 26 - file-journal: stored collection authenticates original deferral after peer and repository close
+  ---
+  duration_ms: 458.568875
+  type: 'test'
+  ...
+# Subtest: stored collection distinguishes absent receipt from changed binding, current policy, request and corrupt original
+ok 27 - stored collection distinguishes absent receipt from changed binding, current policy, request and corrupt original
+  ---
+  duration_ms: 282.587917
+  type: 'test'
+  ...
+# Subtest: stored collection rejects unsupported or fabricated origins and keeps its original custody ports
+ok 28 - stored collection rejects unsupported or fabricated origins and keeps its original custody ports
+  ---
+  duration_ms: 250.992125
+  type: 'test'
+  ...
+# Subtest: read collection context: only visible current goal and scope tips survive; complete unadopted tips remain resumable
+ok 29 - read collection context: only visible current goal and scope tips survive; complete unadopted tips remain resumable
+  ---
+  duration_ms: 3.848625
+  type: 'test'
+  ...
+# Subtest: read collection context: the common packet removes denied head metadata from both execution and resume projections
+ok 30 - read collection context: the common packet removes denied head metadata from both execution and resume projections
+  ---
+  duration_ms: 2.995709
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: five compactions and reopen retain partial resume metadata without page bodies
+ok 31 - read collection context sqlite: five compactions and reopen retain partial resume metadata without page bodies
+  ---
+  duration_ms: 319.08425
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: five compactions and reopen retain complete orphan resume metadata without page bodies
+ok 32 - read collection context sqlite: five compactions and reopen retain complete orphan resume metadata without page bodies
+  ---
+  duration_ms: 266.672917
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: five compactions and reopen retain partial resume metadata without page bodies
+ok 33 - read collection context file-journal: five compactions and reopen retain partial resume metadata without page bodies
+  ---
+  duration_ms: 531.408625
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: five compactions and reopen retain complete orphan resume metadata without page bodies
+ok 34 - read collection context file-journal: five compactions and reopen retain complete orphan resume metadata without page bodies
+  ---
+  duration_ms: 537.60225
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: lost derived frame regenerates while lost original raw response blocks context and recovery
+ok 35 - read collection context sqlite: lost derived frame regenerates while lost original raw response blocks context and recovery
+  ---
+  duration_ms: 123.572917
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: lost derived frame regenerates while lost original raw response blocks context and recovery
+ok 36 - read collection context file-journal: lost derived frame regenerates while lost original raw response blocks context and recovery
+  ---
+  duration_ms: 261.056375
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: source gate rejects omitted, altered, and canonically inconsistent resume metadata
+ok 37 - read collection context sqlite: source gate rejects omitted, altered, and canonically inconsistent resume metadata
+  ---
+  duration_ms: 105.600833
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: source gate rejects omitted, altered, and canonically inconsistent resume metadata
+ok 38 - read collection context file-journal: source gate rejects omitted, altered, and canonically inconsistent resume metadata
+  ---
+  duration_ms: 172.934333
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget
+ok 39 - read collection context sqlite: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget
+  ---
+  duration_ms: 69.135125
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget
+ok 40 - read collection context file-journal: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget
+  ---
+  duration_ms: 167.375125
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: source lifecycle change during checkpoint read prevents staged frame publication
+ok 41 - read collection context sqlite: source lifecycle change during checkpoint read prevents staged frame publication
+  ---
+  duration_ms: 59.98125
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: source lifecycle change during checkpoint read prevents staged frame publication
+ok 42 - read collection context file-journal: source lifecycle change during checkpoint read prevents staged frame publication
+  ---
+  duration_ms: 183.605667
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: contract change during derived resume put is checked before return
+ok 43 - read collection context sqlite: contract change during derived resume put is checked before return
+  ---
+  duration_ms: 109.128167
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: original change during derived resume put is checked before return
+ok 44 - read collection context sqlite: original change during derived resume put is checked before return
+  ---
+  duration_ms: 87.372708
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: contract change during derived resume put is checked before return
+ok 45 - read collection context file-journal: contract change during derived resume put is checked before return
+  ---
+  duration_ms: 212.992208
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: original change during derived resume put is checked before return
+ok 46 - read collection context file-journal: original change during derived resume put is checked before return
+  ---
+  duration_ms: 224.596708
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: completed adopted output retains original proof requirements after leaving the resume list
+ok 47 - read collection context sqlite: completed adopted output retains original proof requirements after leaving the resume list
+  ---
+  duration_ms: 132.681875
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: completed adopted output retains original proof requirements after leaving the resume list
+ok 48 - read collection context file-journal: completed adopted output retains original proof requirements after leaving the resume list
+  ---
+  duration_ms: 293.038333
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: raw loss during frame staging suppresses completed adopted copies
+ok 49 - read collection context sqlite: raw loss during frame staging suppresses completed adopted copies
+  ---
+  duration_ms: 112.776042
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: raw loss during frame staging suppresses completed adopted copies
+ok 50 - read collection context file-journal: raw loss during frame staging suppresses completed adopted copies
+  ---
+  duration_ms: 314.165958
+  type: 'test'
+  ...
+# Subtest: sqlite: complete stored-only successor publishes once and adopts without execute, fetch or reuse
+ok 51 - sqlite: complete stored-only successor publishes once and adopts without execute, fetch or reuse
+  ---
+  duration_ms: 304.509417
+  type: 'test'
+  ...
+# Subtest: file-journal: complete stored-only successor publishes once and adopts without execute, fetch or reuse
+ok 52 - file-journal: complete stored-only successor publishes once and adopts without execute, fetch or reuse
+  ---
+  duration_ms: 698.531375
+  type: 'test'
+  ...
+# Subtest: complete local resume refuses partial before a new reservation or request
+ok 53 - complete local resume refuses partial before a new reservation or request
+  ---
+  duration_ms: 183.975375
+  type: 'test'
+  ...
+# Subtest: complete local resume refuses query before a new reservation or request
+ok 54 - complete local resume refuses query before a new reservation or request
+  ---
+  duration_ms: 156.111167
+  type: 'test'
+  ...
+# Subtest: complete local resume refuses head before a new reservation or request
+ok 55 - complete local resume refuses head before a new reservation or request
+  ---
+  duration_ms: 130.921875
+  type: 'test'
+  ...
+# Subtest: complete local resume refuses raw before a new reservation or request
+ok 56 - complete local resume refuses raw before a new reservation or request
+  ---
+  duration_ms: 163.86625
+  type: 'test'
+  ...
+# Subtest: local child original-read: authority prevents checkpoint publication and adoption
+ok 57 - local child original-read: authority prevents checkpoint publication and adoption
+  ---
+  duration_ms: 194.492584
+  type: 'test'
+  ...
+# Subtest: local child original-read: registration prevents checkpoint publication and adoption
+ok 58 - local child original-read: registration prevents checkpoint publication and adoption
+  ---
+  duration_ms: 201.961333
+  type: 'test'
+  ...
+# Subtest: local child original-read: cancel prevents checkpoint publication and adoption
+ok 59 - local child original-read: cancel prevents checkpoint publication and adoption
+  ---
+  duration_ms: 198.431917
+  type: 'test'
+  ...
+# Subtest: local child child-artifact: authority prevents checkpoint publication and adoption
+ok 60 - local child child-artifact: authority prevents checkpoint publication and adoption
+  ---
+  duration_ms: 247.179917
+  type: 'test'
+  ...
+# Subtest: local child child-artifact: registration prevents checkpoint publication and adoption
+ok 61 - local child child-artifact: registration prevents checkpoint publication and adoption
+  ---
+  duration_ms: 200.973375
+  type: 'test'
+  ...
+# Subtest: local child child-artifact: cancel prevents checkpoint publication and adoption
+ok 62 - local child child-artifact: cancel prevents checkpoint publication and adoption
+  ---
+  duration_ms: 202.60675
+  type: 'test'
+  ...
+# Subtest: cancellation after child publication retains its lineage but cannot adopt the local projection
+ok 63 - cancellation after child publication retains its lineage but cannot adopt the local projection
+  ---
+  duration_ms: 581.051
+  type: 'test'
+  ...
+# Subtest: sqlite: adopted partial requires a connection without changing originals or accounting
+ok 64 - sqlite: adopted partial requires a connection without changing originals or accounting
+  ---
+  duration_ms: 201.175417
+  type: 'test'
+  ...
+# Subtest: sqlite: settled running checkpoint requires a connection without changing originals or accounting
+ok 65 - sqlite: settled running checkpoint requires a connection without changing originals or accounting
+  ---
+  duration_ms: 132.648292
+  type: 'test'
+  ...
+# Subtest: file-journal: adopted partial requires a connection without changing originals or accounting
+ok 66 - file-journal: adopted partial requires a connection without changing originals or accounting
+  ---
+  duration_ms: 345.014709
+  type: 'test'
+  ...
+# Subtest: file-journal: settled running checkpoint requires a connection without changing originals or accounting
+ok 67 - file-journal: settled running checkpoint requires a connection without changing originals or accounting
+  ---
+  duration_ms: 400.621667
+  type: 'test'
+  ...
+# Subtest: sqlite: ordinary executor resume preserves a previously published connection wait
+ok 68 - sqlite: ordinary executor resume preserves a previously published connection wait
+  ---
+  duration_ms: 159.462125
+  type: 'test'
+  ...
+# Subtest: file-journal: ordinary executor resume preserves a previously published connection wait
+ok 69 - file-journal: ordinary executor resume preserves a previously published connection wait
+  ---
+  duration_ms: 721.94825
+  type: 'test'
+  ...
+# Subtest: a verified deferral retains its original deadline then needs a connection when due
+ok 70 - a verified deferral retains its original deadline then needs a connection when due
+  ---
+  duration_ms: 146.301709
+  type: 'test'
+  ...
+# Subtest: permanent/{} keeps the original replan when no proven next request exists
+ok 71 - permanent/{} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 134.6255
+  type: 'test'
+  ...
+# Subtest: partial/{"maxCalls":1} keeps the original replan when no proven next request exists
+ok 72 - partial/{"maxCalls":1} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 127.950959
+  type: 'test'
+  ...
+# Subtest: nonfinal/{"maxPages":1} keeps the original replan when no proven next request exists
+ok 73 - nonfinal/{"maxPages":1} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 96.582958
+  type: 'test'
+  ...
+# Subtest: nonfinal/{"maxItems":2} keeps the original replan when no proven next request exists
+ok 74 - nonfinal/{"maxItems":2} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 77.593667
+  type: 'test'
+  ...
+# Subtest: complete/{} keeps the original replan when no proven next request exists
+ok 75 - complete/{} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 133.262459
+  type: 'test'
+  ...
+# Subtest: intent/{} keeps the original replan when no proven next request exists
+ok 76 - intent/{} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 56.303625
+  type: 'test'
+  ...
+# Subtest: rejected/{} keeps the original replan when no proven next request exists
+ok 77 - rejected/{} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 109.957792
+  type: 'test'
+  ...
+# Subtest: independent control and review decisions never trigger an extra checkpoint read
+ok 78 - independent control and review decisions never trigger an extra checkpoint read
+  ---
+  duration_ms: 104.519625
+  type: 'test'
+  ...
+# Subtest: a changed current task or successor tip cannot create a connection wait
+ok 79 - a changed current task or successor tip cannot create a connection wait
+  ---
+  duration_ms: 135.89875
+  type: 'test'
+  ...
+# Subtest: corrupt original checkpoint bytes remain an error rather than an ordinary connection wait
+ok 80 - corrupt original checkpoint bytes remain an error rather than an ordinary connection wait
+  ---
+  duration_ms: 116.366959
+  type: 'test'
+  ...
+# Subtest: state changes during original read cannot leave a stale connection wait
+ok 81 - state changes during original read cannot leave a stale connection wait
+  ---
+  duration_ms: 144.037333
+  type: 'test'
+  ...
+# Subtest: registration changes during original read cannot leave a stale connection wait
+ok 82 - registration changes during original read cannot leave a stale connection wait
+  ---
+  duration_ms: 142.116875
+  type: 'test'
+  ...
+# Subtest: host authority revoked before_read cannot become a connection wait
+ok 83 - host authority revoked before_read cannot become a connection wait
+  ---
+  duration_ms: 115.975709
+  type: 'test'
+  ...
+# Subtest: host authority revoked during_read cannot become a connection wait
+ok 84 - host authority revoked during_read cannot become a connection wait
+  ---
+  duration_ms: 122.39475
+  type: 'test'
+  ...
+# Subtest: resume option is optional and strict; old packet JSON is preserved without a default marker
+ok 85 - resume option is optional and strict; old packet JSON is preserved without a default marker
+  ---
+  duration_ms: 68.11025
+  type: 'test'
+  ...
+# Subtest: sqlite: a complete original becomes a planning option online and stored-only without changing canonical state
+ok 86 - sqlite: a complete original becomes a planning option online and stored-only without changing canonical state
+  ---
+  duration_ms: 101.21425
+  type: 'test'
+  ...
+# Subtest: file-journal: a complete original becomes a planning option online and stored-only without changing canonical state
+ok 87 - file-journal: a complete original becomes a planning option online and stored-only without changing canonical state
+  ---
+  duration_ms: 360.791667
+  type: 'test'
+  ...
+# Subtest: a partial checkpoint gets no complete option and a forged mode is rejected by both currentness paths
+ok 88 - a partial checkpoint gets no complete option and a forged mode is rejected by both currentness paths
+  ---
+  duration_ms: 61.521542
+  type: 'test'
+  ...
+# Subtest: an original absent from the current frontier is never reconstructed from checkpoint metadata
+ok 89 - an original absent from the current frontier is never reconstructed from checkpoint metadata
+  ---
+  duration_ms: 75.448417
+  type: 'test'
+  ...
+# Subtest: the complete option and exact frontier are mandatory at the minimum context size; inspection never writes a replacement
+ok 90 - the complete option and exact frontier are mandatory at the minimum context size; inspection never writes a replacement
+  ---
+  duration_ms: 67.147042
+  type: 'test'
+  ...
+# Subtest: canonical four fields, original query and supplied frontier remain mandatory under the annotation
+ok 91 - canonical four fields, original query and supplied frontier remain mandatory under the annotation
+  ---
+  duration_ms: 63.578542
+  type: 'test'
+  ...
+# Subtest: one marked source verification reuses its checkpoint proof rather than rereading dispatch or raw for the annotation
+ok 92 - one marked source verification reuses its checkpoint proof rather than rereading dispatch or raw for the annotation
+  ---
+  duration_ms: 64.994917
+  type: 'test'
+  ...
+# Subtest: availability alone cannot invalidate a stored complete option, while missing original bytes do
+ok 93 - availability alone cannot invalidate a stored complete option, while missing original bytes do
+  ---
+  duration_ms: 60.010542
+  type: 'test'
+  ...
+# Subtest: a state change during original-page verification cannot authenticate the earlier complete option
+ok 94 - a state change during original-page verification cannot authenticate the earlier complete option
+  ---
+  duration_ms: 75.757167
+  type: 'test'
+  ...
+# Subtest: legacy planning adopts an explicit successor after availability changes without rewriting parent ownership, originals or model usage
+ok 95 - legacy planning adopts an explicit successor after availability changes without rewriting parent ownership, originals or model usage
+  ---
+  duration_ms: 122.483417
+  type: 'test'
+  ...
+# Subtest: before_adopt: losing a marked original rejects only the plan body and preserves known accounting
+ok 96 - before_adopt: losing a marked original rejects only the plan body and preserves known accounting
+  ---
+  duration_ms: 111.264875
+  type: 'test'
+  ...
+# Subtest: before_commit: losing a marked original rejects only the plan body and preserves known accounting
+ok 97 - before_commit: losing a marked original rejects only the plan body and preserves known accounting
+  ---
+  duration_ms: 144.202583
+  type: 'test'
+  ...
+# Subtest: missing: a received legacy input must authenticate before deciding that its marker is absent
+ok 98 - missing: a received legacy input must authenticate before deciding that its marker is absent
+  ---
+  duration_ms: 100.563667
+  type: 'test'
+  ...
+# Subtest: same_length_tampering: a received legacy input must authenticate before deciding that its marker is absent
+ok 99 - same_length_tampering: a received legacy input must authenticate before deciding that its marker is absent
+  ---
+  duration_ms: 145.730875
+  type: 'test'
+  ...
+# Subtest: an authenticated unmarked legacy reply retains its existing adoption path without added collection-source reads
+ok 100 - an authenticated unmarked legacy reply retains its existing adoption path without added collection-source reads
+  ---
+  duration_ms: 166.761917
+  type: 'test'
+  ...
+# Subtest: planning uses the inspected connection wait for an incomplete stored-only collection before reservation or automatic compact
+ok 101 - planning uses the inspected connection wait for an incomplete stored-only collection before reservation or automatic compact
+  ---
+  duration_ms: 72.120208
+  type: 'test'
+  ...
+# Subtest: both fixed prompts describe an exact local successor proposal and preserve strict plan/output and prompt fingerprint checks
+ok 102 - both fixed prompts describe an exact local successor proposal and preserve strict plan/output and prompt fingerprint checks
+  ---
+  duration_ms: 108.305
+  type: 'test'
+  ...
+# Subtest: sqlite: a stored-only task yields a final workflow connection wait with no reservation or invocation
+ok 103 - sqlite: a stored-only task yields a final workflow connection wait with no reservation or invocation
+  ---
+  duration_ms: 319.449667
+  type: 'test'
+  ...
+# Subtest: sqlite: an unavailable ready task does not starve independent work
+ok 104 - sqlite: an unavailable ready task does not starve independent work
+  ---
+  duration_ms: 266.662833
+  type: 'test'
+  ...
+# Subtest: sqlite: a stored-only reopen preserves an unsent reservation and online resume dispatches it once
+ok 105 - sqlite: a stored-only reopen preserves an unsent reservation and online resume dispatches it once
+  ---
+  duration_ms: 367.784042
+  type: 'test'
+  ...
+# Subtest: sqlite: offline reservation expiry returns capacity without using an execution attempt
+ok 106 - sqlite: offline reservation expiry returns capacity without using an execution attempt
+  ---
+  duration_ms: 199.469625
+  type: 'test'
+  ...
+# Subtest: sqlite: received results remain adoptable after availability changes
+ok 107 - sqlite: received results remain adoptable after availability changes
+  ---
+  duration_ms: 211.2515
+  type: 'test'
+  ...
+# Subtest: file-journal: a stored-only task yields a final workflow connection wait with no reservation or invocation
+ok 108 - file-journal: a stored-only task yields a final workflow connection wait with no reservation or invocation
+  ---
+  duration_ms: 329.313208
+  type: 'test'
+  ...
+# Subtest: file-journal: an unavailable ready task does not starve independent work
+ok 109 - file-journal: an unavailable ready task does not starve independent work
+  ---
+  duration_ms: 442.807916
+  type: 'test'
+  ...
+# Subtest: file-journal: a stored-only reopen preserves an unsent reservation and online resume dispatches it once
+ok 110 - file-journal: a stored-only reopen preserves an unsent reservation and online resume dispatches it once
+  ---
+  duration_ms: 565.204792
+  type: 'test'
+  ...
+# Subtest: file-journal: offline reservation expiry returns capacity without using an execution attempt
+ok 111 - file-journal: offline reservation expiry returns capacity without using an execution attempt
+  ---
+  duration_ms: 301.7035
+  type: 'test'
+  ...
+# Subtest: file-journal: received results remain adoptable after availability changes
+ok 112 - file-journal: received results remain adoptable after availability changes
+  ---
+  duration_ms: 436.224375
+  type: 'test'
+  ...
+# Subtest: availability changed after reserve staging cannot publish a reservation or charge
+ok 113 - availability changed after reserve staging cannot publish a reservation or charge
+  ---
+  duration_ms: 281.922625
+  type: 'test'
+  ...
+# Subtest: availability changed after dispatch staging cannot publish a reservation or charge
+ok 114 - availability changed after dispatch staging cannot publish a reservation or charge
+  ---
+  duration_ms: 189.974125
+  type: 'test'
+  ...
+# Subtest: a dispatched failure named reservation_expired still consumes maxAttempts
+ok 115 - a dispatched failure named reservation_expired still consumes maxAttempts
+  ---
+  duration_ms: 222.600375
+  type: 'test'
+  ...
+# Subtest: a dispatched failure named reservation_cancelled still consumes maxAttempts
+ok 116 - a dispatched failure named reservation_cancelled still consumes maxAttempts
+  ---
+  duration_ms: 162.220125
+  type: 'test'
+  ...
+# Subtest: a received plain read without restoration still settles its rejection after host authority is revoked
+ok 117 - a received plain read without restoration still settles its rejection after host authority is revoked
+  ---
+  duration_ms: 232.246583
+  type: 'test'
+  ...
+1..117
+# tests 117
+# suites 0
+# pass 115
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 38036.038209

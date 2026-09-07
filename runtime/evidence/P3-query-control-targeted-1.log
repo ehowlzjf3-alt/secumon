@@ -1,0 +1,193 @@
+✔ sqlite: goal change rejects a mode changed by another channel without modifying goal, control or receipts (160.139792ms)
+✔ sqlite: goal control is rechecked after a commit CAS conflict and cannot overwrite the winning mode (80.395625ms)
+✔ sqlite: unrelated commit contention retries the same goal request while incrementing control exactly once (143.409625ms)
+✔ sqlite: successful goal replay remains idempotent after a later mode change and restart (184.761792ms)
+✔ sqlite: goal mutation requires a positive safe control revision and strict fields before any receipt or state change (52.896542ms)
+✔ sqlite: a legacy goal without stored execution control still requires its explicit initial revision (182.745583ms)
+✖ sqlite: CLI goal changes require both explicit revisions, reject stale control and replay the saved receipt (493.258375ms)
+✔ sqlite: Web strict goal input carries control revision through HTTP and rejects a newer channel mode (216.761334ms)
+✔ file-journal: goal change rejects a mode changed by another channel without modifying goal, control or receipts (975.454917ms)
+✔ file-journal: goal control is rechecked after a commit CAS conflict and cannot overwrite the winning mode (847.678ms)
+✔ file-journal: unrelated commit contention retries the same goal request while incrementing control exactly once (639.062208ms)
+✔ file-journal: successful goal replay remains idempotent after a later mode change and restart (1224.713708ms)
+✔ file-journal: goal mutation requires a positive safe control revision and strict fields before any receipt or state change (774.441042ms)
+✔ file-journal: a legacy goal without stored execution control still requires its explicit initial revision (658.886042ms)
+✖ file-journal: CLI goal changes require both explicit revisions, reject stale control and replay the saved receipt (622.981834ms)
+✔ file-journal: Web strict goal input carries control revision through HTTP and rejects a newer channel mode (625.181875ms)
+✔ Web goal schema accepts only an explicit positive safe numeric control revision (0.390458ms)
+✔ file journal: exception at candidate_synced preserves the publication boundary and retry identity (168.107833ms)
+✔ file journal: actual SIGKILL at candidate_synced reopens a whole commit or no commit (249.87575ms)
+✔ file journal: exception at published preserves the publication boundary and retry identity (166.46525ms)
+✔ file journal: actual SIGKILL at published reopens a whole commit or no commit (269.799833ms)
+✔ file journal: exception at directory_synced preserves the publication boundary and retry identity (220.61875ms)
+✔ file journal: actual SIGKILL at directory_synced reopens a whole commit or no commit (238.44125ms)
+✔ file journal: a reader and duplicate retry observe a whole published record while its writer is pending (212.467ms)
+✔ file journal: directory sync failure prevents reads and duplicate acknowledgements without rolling back publication (160.101833ms)
+✔ file journal: listing retries the first record when publication follows its initial ENOENT (132.811875ms)
+✔ file journal: checksum corruption blocks reads and subsequent commits without overwriting the damaged record (82.439ms)
+✔ file journal: an intact record checksum does not hide a broken previous-hash link (118.419833ms)
+✔ file journal: deleting a middle revision rejects the incomplete prefix (175.070958ms)
+✔ file journal: changing store identity is rejected by an open instance and by replay after reopening (85.840292ms)
+✔ file journal: a missing format header does not initialize a populated store as empty (77.005166ms)
+✔ file journal: existing root, work and record symlinks are rejected without following their contents (308.84925ms)
+✔ file journal: group or other permissions on the root and records are rejected (139.711292ms)
+✔ file journal: an observed root or work directory replacement cannot reset the open repository (149.204ms)
+✔ file journal: record size limits reject both publication and oversized persisted input (155.854416ms)
+✔ file journal: closed instances reject every repository operation while reopening retains data (103.966834ms)
+✔ file journal: revision zero is invalid layout and cannot be silently ignored (71.738417ms)
+✔ sqlite: accepted work, request replay, and queries stay separate from fixture execution (333.186375ms)
+✔ sqlite: document question is atomic, actionable, and does not interpret reply text (407.147708ms)
+✔ sqlite: current ownership, route, and disclosure gates apply to reads and mutations (188.096125ms)
+✔ sqlite: web attachment observes an existing CLI primary without re-sending or changing it (374.384334ms)
+✔ sqlite: goal and mode commands preserve optimistic revisions and durable idempotency (470.652792ms)
+✔ sqlite: pause does not wait behind an active run and a replay cannot start another run (639.136167ms)
+✔ sqlite: cancel does not wait behind an active run and a replay cannot start another run (345.886ms)
+✔ sqlite: an unfinished durable run is not repeated by the same request after restart (602.93225ms)
+✔ sqlite: a goal changed while the old run intent is acknowledged never receives that run's plan (458.879958ms)
+✔ sqlite: workflow entry rejects a stale pinned goal before recovery or execution (226.586458ms)
+✔ sqlite: paged lists recheck every returned card and omit a card revoked while another is read (1239.338583ms)
+✔ sqlite: at most four distinct works execute concurrently and draining admits no new mutations (1072.589208ms)
+✔ file-journal: accepted work, request replay, and queries stay separate from fixture execution (1606.618209ms)
+✔ file-journal: document question is atomic, actionable, and does not interpret reply text (1278.131042ms)
+✔ file-journal: current ownership, route, and disclosure gates apply to reads and mutations (220.700458ms)
+✔ file-journal: web attachment observes an existing CLI primary without re-sending or changing it (776.62375ms)
+✔ file-journal: goal and mode commands preserve optimistic revisions and durable idempotency (616.205ms)
+✔ file-journal: pause does not wait behind an active run and a replay cannot start another run (400.035959ms)
+✔ file-journal: cancel does not wait behind an active run and a replay cannot start another run (160.4745ms)
+✔ file-journal: an unfinished durable run is not repeated by the same request after restart (349.895209ms)
+✔ file-journal: a goal changed while the old run intent is acknowledged never receives that run's plan (363.989167ms)
+✔ file-journal: workflow entry rejects a stale pinned goal before recovery or execution (100.059792ms)
+✔ file-journal: paged lists recheck every returned card and omit a card revoked while another is read (1255.555417ms)
+✔ file-journal: at most four distinct works execute concurrently and draining admits no new mutations (1140.674042ms)
+✔ sqlite: page options cannot replace the trusted actor or conversation route (128.403708ms)
+✖ sqlite: diagnostics uses metadata through the current revision and never requests full event payloads (83.195416ms)
+✔ sqlite: a denied-only list page stops after one candidate page and continues after a detached anchor (1012.027667ms)
+✔ sqlite: list cursor handles expire, stay instance scoped, and are evicted without resolving all IDs (122.084833ms)
+✔ file-journal: page options cannot replace the trusted actor or conversation route (629.903958ms)
+✖ file-journal: diagnostics uses metadata through the current revision and never requests full event payloads (974.223666ms)
+✔ file-journal: a denied-only list page stops after one candidate page and continues after a detached anchor (7795.809916ms)
+✔ file-journal: list cursor handles expire, stay instance scoped, and are evicted without resolving all IDs (67.820042ms)
+✔ sqlite: empty accepted work reads and reopens without executing, writing, or sending (53.533791ms)
+✔ sqlite: ownership, exact route, current read restriction, and diagnostics are distinct checks (41.084125ms)
+✔ sqlite: legacy read labels also protect retained text (24.825959ms)
+✔ sqlite: cursors bind level, route, actor rights, and work without moving the primary reply (55.229292ms)
+✔ sqlite: verified prepared results remain distinct from pending and unknown delivery (52.447167ms)
+✔ sqlite: missing source and corrupt response withhold a same-revision result before cursor matching (30.628ms)
+✔ sqlite: originals, goals, cancellation, and hypothesis review invalidate historical replies (83.325458ms)
+✔ sqlite: only the current pending question is displayed and resolved questions disappear (55.462541ms)
+✔ sqlite: losing a separate hypothesis basis withholds the result consistently at every view level (55.991375ms)
+✔ sqlite: a derived evidence card requires every original ancestor to remain available (62.529208ms)
+✔ sqlite: knowledge changes reject current and repeated reads without refreshing state (50.5515ms)
+✔ sqlite: revocation during artifact reads or final state checks prevents unchanged and snapshots (47.97475ms)
+✔ sqlite: a disappearing original during projection is revalidated before returning a cached cursor (18.182625ms)
+✔ sqlite: detail and diagnostic cards are bounded and omit raw inputs, outputs, event payloads, and controls (25.936417ms)
+✔ file-journal: empty accepted work reads and reopens without executing, writing, or sending (440.741916ms)
+✔ file-journal: ownership, exact route, current read restriction, and diagnostics are distinct checks (538.939334ms)
+✔ file-journal: legacy read labels also protect retained text (261.741125ms)
+✔ file-journal: cursors bind level, route, actor rights, and work without moving the primary reply (898.765459ms)
+✔ file-journal: verified prepared results remain distinct from pending and unknown delivery (2061.215042ms)
+✔ file-journal: missing source and corrupt response withhold a same-revision result before cursor matching (466.61575ms)
+✔ file-journal: originals, goals, cancellation, and hypothesis review invalidate historical replies (785.346791ms)
+✔ file-journal: only the current pending question is displayed and resolved questions disappear (443.751125ms)
+✔ file-journal: losing a separate hypothesis basis withholds the result consistently at every view level (459.570917ms)
+✔ file-journal: a derived evidence card requires every original ancestor to remain available (125.010167ms)
+✔ file-journal: knowledge changes reject current and repeated reads without refreshing state (89.806292ms)
+✔ file-journal: revocation during artifact reads or final state checks prevents unchanged and snapshots (315.079625ms)
+✔ file-journal: a disappearing original during projection is revalidated before returning a cached cursor (120.753625ms)
+✔ file-journal: detail and diagnostic cards are bounded and omit raw inputs, outputs, event payloads, and controls (181.533708ms)
+ℹ tests 97
+ℹ suites 0
+ℹ pass 93
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14725.561
+
+✖ failing tests:
+
+test at dist/tests/goal-control-atomic.test.js:155:5
+✖ sqlite: CLI goal changes require both explicit revisions, reject stale control and replay the saved receipt (493.258375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '오류: cli_request_failed\n'
+  - '오류: invalid_control_revision\n'
+         ^
+  
+      at Object.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/goal-control-atomic.test.js:50:16)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async rejectCli (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/goal-control-atomic.test.js:46:5)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/goal-control-atomic.test.js:170:13)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '오류: cli_request_failed\n',
+    expected: '오류: invalid_control_revision\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/goal-control-atomic.test.js:155:5
+✖ file-journal: CLI goal changes require both explicit revisions, reject stale control and replay the saved receipt (622.981834ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '오류: cli_request_failed\n'
+  - '오류: invalid_control_revision\n'
+         ^
+  
+      at Object.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/goal-control-atomic.test.js:50:16)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async rejectCli (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/goal-control-atomic.test.js:46:5)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/goal-control-atomic.test.js:170:13)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '오류: cli_request_failed\n',
+    expected: '오류: invalid_control_revision\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/work-query-view.test.js:28:5
+✖ sqlite: diagnostics uses metadata through the current revision and never requests full event payloads (83.195416ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  73 !== 71
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/work-query-view.test.js:52:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 73,
+    expected: 71,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/work-query-view.test.js:28:5
+✖ file-journal: diagnostics uses metadata through the current revision and never requests full event payloads (974.223666ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  73 !== 71
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/work-query-view.test.js:52:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 73,
+    expected: 71,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

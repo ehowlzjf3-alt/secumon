@@ -1,0 +1,101 @@
+{
+  "observedAt": "2026-09-06T18:36:24.669Z",
+  "sourceDigest": "b4cc087386b89a8dcfafe55328afe8a973cd87981a58acb0be6c56f921c98a99",
+  "files": [
+    {
+      "path": "Cargo.lock",
+      "bytes": 10677,
+      "sha256": "e459f8d64e86344d19285d6da21d7c4504e1bc76b0ff8cda3a255f7decc9f3c0"
+    },
+    {
+      "path": "Cargo.toml",
+      "bytes": 725,
+      "sha256": "941341d2f2dce527d41cb67f01e1211b65679e2afdf2721c24c009ded9d218e5"
+    },
+    {
+      "path": "build.rs",
+      "bytes": 39,
+      "sha256": "fcbd1ff3f627a7553fa1704dc6f558998daff8bc256015c37aace62cc49ce584"
+    },
+    {
+      "path": "src/lib.rs",
+      "bytes": 4477,
+      "sha256": "6369cebe4ec1c00c4483cd4fb2b64e7cbc1c782c8e3e899814d817b6cdbc6028"
+    },
+    {
+      "path": "src/request.rs",
+      "bytes": 4658,
+      "sha256": "5e7d6bd64946f1d37dd35e633b92c89db67de9f22ecb9d7ff3b94214e15bb9f5"
+    },
+    {
+      "path": "src/windows.rs",
+      "bytes": 24197,
+      "sha256": "a8fa2f292b62da28296e0cc19682f0f3354ec9960048ac14ec7e31d98dc11248"
+    },
+    {
+      "path": "tests/nonwindows-addon.mjs",
+      "bytes": 1856,
+      "sha256": "f500bfd06d9e75e0134e0e46be9805657d637a8be42bf23adde7405b2b92b9ec"
+    },
+    {
+      "path": "tests/windows-addon.mjs",
+      "bytes": 3470,
+      "sha256": "e3016afd69b5d764d721a8c2c4a4a547b4eaf9af133ee3a5484251024765390c"
+    }
+  ],
+  "scope": "runtime/native/windows-files only; no runtime TypeScript dispatch or package change",
+  "checks": [
+    {
+      "command": "cargo fmt --check",
+      "exitCode": 0,
+      "evidence": "final-format.log"
+    },
+    {
+      "command": "cargo test --lib --locked",
+      "exitCode": 0,
+      "passed": 4,
+      "evidence": "final-unit-test.log",
+      "kind": "portable input/policy tests"
+    },
+    {
+      "command": "cargo build --locked",
+      "exitCode": 0,
+      "evidence": "final-macos-build.log",
+      "target": "aarch64-apple-darwin"
+    },
+    {
+      "command": "cargo check --target x86_64-pc-windows-msvc --locked",
+      "exitCode": 0,
+      "evidence": "final-windows-target-check.log",
+      "kind": "actual target compile check; no linker or execution",
+      "sysroot": ".sysroot/rust-std-1.93.1-x86_64-pc-windows-msvc/rust-std-x86_64-pc-windows-msvc"
+    },
+    {
+      "command": "Node24 tests/nonwindows-addon.mjs evidence/secumon_windows_files.node",
+      "exitCode": 0,
+      "passed": 6,
+      "evidence": "final-macos-addon-preflight.json",
+      "kind": "actual macOS Node-API load/preflight, no Win32 calls"
+    }
+  ],
+  "globalTargetsAfter": [
+    "aarch64-apple-darwin"
+  ],
+  "nativeWindowsBuildAndLoad": "not_run",
+  "nativeWindowsAclAndRaceTests": "not_run",
+  "nativeWindowsProcessKill": "not_run",
+  "namespaceDurability": "unsupported; strict requests fail before filesystem mutation",
+  "powerLossTest": "not_run",
+  "runtimeDispatchConnected": false,
+  "earlierAttempts": [
+    {
+      "evidence": "source-check.initial.log",
+      "description": "intermediate non-Windows source feature check; feature removed after actual Windows target check became available"
+    },
+    {
+      "evidence": "macos-addon-wrong-node-path.log",
+      "exitCode": 127,
+      "description": "initial shell command used a nonexistent root .tools path; no addon executed; corrected to runtime/.tools"
+    }
+  ]
+}

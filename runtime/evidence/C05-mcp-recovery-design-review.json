@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-09-07T11:11:04.653Z",
+  "document": "design/chapters/C05-mcp-response-recovery-plan.md",
+  "status": "design_review_not_implementation",
+  "sourceAndBuild": {
+    "sourceDigest": "45f9b1a119186cf5da63139145ab1c48f11c32491a46e2c717519114de7172cd",
+    "filesDigest": "a0f873e8bcb9721d672911c149b49df5f7b9256093a774e9544aec4afe8c0f83",
+    "fileCount": 1668
+  },
+  "links": 18,
+  "verifiedSourceFacts": [
+    "updatedAt is transaction preparation time before beforeCommit and store commit",
+    "Attempt.startedAt is reservation time",
+    "current readProof alone lacks restore-specific lease, receipt-order and current plan checks",
+    "recover and adopt share one settled progress key",
+    "current clock is Date.now without a monotonic cross-restart guarantee",
+    "PlanningRuntime.step runs compactStep before execution.step; failed lease-expired candidates are not in compactSteps existing active-attempt guard"
+  ],
+  "implementationDecisionsPending": [
+    "final eligibility and metadata contract for internal restored receive",
+    "once-only restored progress accounting without deleting prior failure records"
+  ],
+  "sourceChanged": false,
+  "testsExecuted": false,
+  "nativeRunStillPending": 22557,
+  "reviewUpdatedAt": "2026-09-07T11:14:54.491Z",
+  "requiredIntegration": "Reuse a shared recovery candidate predicate to defer automatic compact without duplicating raw reads; verify stored settlement precedes new model use"
+}

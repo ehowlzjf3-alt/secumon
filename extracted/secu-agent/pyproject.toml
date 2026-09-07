@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secu-agent"
+version = "0.1.0"
+description = "LLM-driven internal asset agent_type — credential & PII exposure + basic web vuln"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.6",
+    "openai>=1.40",
+    "httpx>=0.27",
+    "pyyaml>=6.0",
+    "fastapi>=0.110",
+    "uvicorn>=0.27",
+    "croniter>=2.0",
+    "playwright>=1.50",
+    "websockets>=13.0",
+    "mcp[cli]>=1.27.1",
+    # v3.88 R2-5: 코어가 persistence 풀(secu_agent.state)을 소유 — psycopg 의존을 코어가 직접 선언·고정.
+    "psycopg>=3.2",
+    "psycopg-pool>=3.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+web-adaptive = [
+    "curl_cffi>=0.15.0",
+]
+# de-domain: impacket(SMB)·beautifulsoup4(web 파싱)·pdf extra(pymupdf/pypdf, 문서추출)는
+# 도메인 전용 의존성 — secu-agent-skill 재부착 시 plugin 쪽에서 요구.
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[project.scripts]
+secu-agent = "secu_agent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["secu_agent*"]

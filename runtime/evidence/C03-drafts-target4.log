@@ -1,0 +1,1847 @@
+{"event":"starting","files":34,"sourceAndBuild":{"sourceDigest":"3fc910d23cc423708a8fd97feb6244c1df2dacf048e7e202e6502822e2f2fc42","filesDigest":"115d241665f123c7fe720d64576bf0fa94b64de894536978bd4996a6a9c58cc5","fileCount":1380}}
+TAP version 13
+# Subtest: file-journal agents separate identical work IDs, events and historical receipts across reopen
+ok 1 - file-journal agents separate identical work IDs, events and historical receipts across reopen
+  ---
+  duration_ms: 472.866542
+  type: 'test'
+  ...
+# Subtest: file-journal state keeps private memory and channel messages in separately owned SQLite databases
+ok 2 - file-journal state keeps private memory and channel messages in separately owned SQLite databases
+  ---
+  duration_ms: 391.358958
+  type: 'test'
+  ...
+# Subtest: a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+ok 3 - a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+  ---
+  duration_ms: 552.550375
+  type: 'test'
+  ...
+# Subtest: copying another agents complete journal is rejected before binding a new backend marker
+ok 4 - copying another agents complete journal is rejected before binding a new backend marker
+  ---
+  duration_ms: 288.87525
+  type: 'test'
+  ...
+# Subtest: file-journal selection does not bypass foreign memory or channel SQLite ownership
+ok 5 - file-journal selection does not bypass foreign memory or channel SQLite ownership
+  ---
+  duration_ms: 685.548
+  type: 'test'
+  ...
+# Subtest: empty and populated legacy v1 journals are not automatically adopted by an agent
+ok 6 - empty and populated legacy v1 journals are not automatically adopted by an agent
+  ---
+  duration_ms: 429.554916
+  type: 'test'
+  ...
+# Subtest: changing config between SQLite and file-journal never creates a replacement state store
+ok 7 - changing config between SQLite and file-journal never creates a replacement state store
+  ---
+  duration_ms: 532.699792
+  type: 'test'
+  ...
+# Subtest: an owned legacy SQLite agent gains only its backend marker and preserves historical data
+ok 8 - an owned legacy SQLite agent gains only its backend marker and preserves historical data
+  ---
+  duration_ms: 336.401792
+  type: 'test'
+  ...
+# Subtest: an unowned legacy SQLite database is preserved without creating a backend marker
+ok 9 - an unowned legacy SQLite database is preserved without creating a backend marker
+  ---
+  duration_ms: 224.377333
+  type: 'test'
+  ...
+# Subtest: copying another agents backend marker is rejected before creating any state or private databases
+ok 10 - copying another agents backend marker is rejected before creating any state or private databases
+  ---
+  duration_ms: 298.850875
+  type: 'test'
+  ...
+# Subtest: malformed, unsupported or linked backend markers cannot initialize state stores
+ok 11 - malformed, unsupported or linked backend markers cannot initialize state stores
+  ---
+  duration_ms: 574.280292
+  type: 'test'
+  ...
+# Subtest: ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+ok 12 - ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+  ---
+  duration_ms: 346.606041
+  type: 'test'
+  ...
+# Subtest: concurrent CLI first storage opens retain one agent, backend selection and journal identity
+ok 13 - concurrent CLI first storage opens retain one agent, backend selection and journal identity
+  ---
+  duration_ms: 1009.227542
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at setup-operation.json
+ok 14 - clone resumes with one identity after actual process termination at setup-operation.json
+  ---
+  duration_ms: 317.072416
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at setup.json
+ok 15 - clone resumes with one identity after actual process termination at setup.json
+  ---
+  duration_ms: 348.680333
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at identity.json
+ok 16 - clone resumes with one identity after actual process termination at identity.json
+  ---
+  duration_ms: 332.439916
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at config.json
+ok 17 - clone resumes with one identity after actual process termination at config.json
+  ---
+  duration_ms: 375.207416
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at skill
+ok 18 - clone resumes with one identity after actual process termination at skill
+  ---
+  duration_ms: 403.356417
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at before-complete
+ok 19 - clone resumes with one identity after actual process termination at before-complete
+  ---
+  duration_ms: 411.070042
+  type: 'test'
+  ...
+# Subtest: a published completion survives process termination and later source/skill edits do not trigger recopy
+ok 20 - a published completion survives process termination and later source/skill edits do not trigger recopy
+  ---
+  duration_ms: 335.35575
+  type: 'test'
+  ...
+# Subtest: source changes and target conflicts are preserved during explicit clone resume
+ok 21 - source changes and target conflicts are preserved during explicit clone resume
+  ---
+  duration_ms: 363.832083
+  type: 'test'
+  ...
+# Subtest: pending clone blocks nested setup and CLI repair explains explicit clone resume
+ok 22 - pending clone blocks nested setup and CLI repair explains explicit clone resume
+  ---
+  duration_ms: 609.013583
+  type: 'test'
+  ...
+# Subtest: general initialization keeps its selected identity after interruption at the operation marker
+ok 23 - general initialization keeps its selected identity after interruption at the operation marker
+  ---
+  duration_ms: 308.488875
+  type: 'test'
+  ...
+# Subtest: competing clone commands never assign two identities to the same destination
+ok 24 - competing clone commands never assign two identities to the same destination
+  ---
+  duration_ms: 333.954125
+  type: 'test'
+  ...
+# Subtest: initialization and clone contention leave a single coherent ready profile
+ok 25 - initialization and clone contention leave a single coherent ready profile
+  ---
+  duration_ms: 326.543375
+  type: 'test'
+  ...
+# Subtest: a target config changed during skill publication cannot be marked clone-complete
+ok 26 - a target config changed during skill publication cannot be marked clone-complete
+  ---
+  duration_ms: 314.510833
+  type: 'test'
+  ...
+# Subtest: legacy v1 setup without an operation marker reopens untouched and repairs with its existing identity
+ok 27 - legacy v1 setup without an operation marker reopens untouched and repairs with its existing identity
+  ---
+  duration_ms: 167.143125
+  type: 'test'
+  ...
+# Subtest: pending filenames cannot hide data in clone memory, workspace or artifact directories
+ok 28 - pending filenames cannot hide data in clone memory, workspace or artifact directories
+  ---
+  duration_ms: 874.6825
+  type: 'test'
+  ...
+# Subtest: one interrupted publication at the entries boundary can resume with its safe pending file
+ok 29 - one interrupted publication at the entries boundary can resume with its safe pending file
+  ---
+  duration_ms: 7061.840041
+  type: 'test'
+  ...
+# Subtest: one interrupted publication at the bytes boundary can resume with its safe pending file
+ok 30 - one interrupted publication at the bytes boundary can resume with its safe pending file
+  ---
+  duration_ms: 598.965958
+  type: 'test'
+  ...
+# Subtest: clone creates a fresh identity while preserving reusable configuration and the original files
+ok 31 - clone creates a fresh identity while preserving reusable configuration and the original files
+  ---
+  duration_ms: 259.719958
+  type: 'test'
+  ...
+# Subtest: clone copies skill bytes, nested empty directories and executable bits without linking source files
+ok 32 - clone copies skill bytes, nested empty directories and executable bits without linking source files
+  ---
+  duration_ms: 404.127583
+  type: 'test'
+  ...
+# Subtest: clone starts with independent empty stores despite source work, memory, conversation and artifacts
+ok 33 - clone starts with independent empty stores despite source work, memory, conversation and artifacts
+  ---
+  duration_ms: 692.71
+  type: 'test'
+  ...
+# Subtest: ordinary clone never overwrites an existing empty, populated or initialized destination
+ok 34 - ordinary clone never overwrites an existing empty, populated or initialized destination
+  ---
+  duration_ms: 310.38825
+  type: 'test'
+  ...
+# Subtest: clone rejects source overlap, nested agents and engine destinations without changing either tree
+ok 35 - clone rejects source overlap, nested agents and engine destinations without changing either tree
+  ---
+  duration_ms: 130.458625
+  type: 'test'
+  ...
+# Subtest: clone rejects missing or malformed sources and invalid options without creating a destination
+ok 36 - clone rejects missing or malformed sources and invalid options without creating a destination
+  ---
+  duration_ms: 132.818208
+  type: 'test'
+  ...
+# Subtest: clone rejects skill file and directory symlinks without modifying their outside targets
+ok 37 - clone rejects skill file and directory symlinks without modifying their outside targets
+  ---
+  duration_ms: 149.818958
+  type: 'test'
+  ...
+# Subtest: clone rejects hard-linked skill files and leaves both links unchanged
+ok 38 - clone rejects hard-linked skill files and leaves both links unchanged
+  ---
+  duration_ms: 147.840875
+  type: 'test'
+  ...
+# Subtest: clone rejects a POSIX FIFO skill instead of blocking on its contents
+ok 39 - clone rejects a POSIX FIFO skill instead of blocking on its contents
+  ---
+  duration_ms: 246.963792
+  type: 'test'
+  ...
+# Subtest: clone permits a four-MiB skill file and rejects a file exceeding that limit
+ok 40 - clone permits a four-MiB skill file and rejects a file exceeding that limit
+  ---
+  duration_ms: 317.536792
+  type: 'test'
+  ...
+# Subtest: clone enforces snapshot entry, total-byte and directory-depth limits
+ok 41 - clone enforces snapshot entry, total-byte and directory-depth limits
+  ---
+  duration_ms: 998.287167
+  type: 'test'
+  ...
+# Subtest: pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+ok 42 - pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+  ---
+  duration_ms: 549.310458
+  type: 'test'
+  ...
+# Subtest: pending clone preserves target file conflicts instead of overwriting or accepting them
+ok 43 - pending clone preserves target file conflicts instead of overwriting or accepting them
+  ---
+  duration_ms: 674.506042
+  type: 'test'
+  ...
+# Subtest: finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+ok 44 - finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+  ---
+  duration_ms: 357.96475
+  type: 'test'
+  ...
+# Subtest: CLI clone reports the new ready profile and supports explicit completed-clone resume
+ok 45 - CLI clone reports the new ready profile and supports explicit completed-clone resume
+  ---
+  duration_ms: 792.616833
+  type: 'test'
+  ...
+# Subtest: default SQLite personal selection stays bound on restart without creating a document store
+ok 46 - default SQLite personal selection stays bound on restart without creating a document store
+  ---
+  duration_ms: 210.206583
+  type: 'test'
+  ...
+# Subtest: a completed document store cannot disappear and silently return an empty SQLite personal partition
+ok 47 - a completed document store cannot disappear and silently return an empty SQLite personal partition
+  ---
+  duration_ms: 357.612084
+  type: 'test'
+  ...
+# Subtest: registration completion can resume after the owner was created without discarding a committed memory
+ok 48 - registration completion can resume after the owner was created without discarding a committed memory
+  ---
+  duration_ms: 335.494167
+  type: 'test'
+  ...
+# Subtest: documents cannot be assigned over an existing SQLite store without a migration
+ok 49 - documents cannot be assigned over an existing SQLite store without a migration
+  ---
+  duration_ms: 103.291917
+  type: 'test'
+  ...
+# Subtest: replacing the config with a legacy default cannot reroute an assigned document partition
+ok 50 - replacing the config with a legacy default cannot reroute an assigned document partition
+  ---
+  duration_ms: 216.102875
+  type: 'test'
+  ...
+# Subtest: a missing assignment behind an existing completion does not create a new owner
+ok 51 - a missing assignment behind an existing completion does not create a new owner
+  ---
+  duration_ms: 210.395792
+  type: 'test'
+  ...
+# Subtest: moving the whole document-backed agent keeps its owner, receipts and revision transitions
+ok 52 - moving the whole document-backed agent keeps its owner, receipts and revision transitions
+  ---
+  duration_ms: 382.278333
+  type: 'test'
+  ...
+# Subtest: personal repository errors do not fall back and closing still releases both repositories
+ok 53 - personal repository errors do not fall back and closing still releases both repositories
+  ---
+  duration_ms: 0.209292
+  type: 'test'
+  ...
+# Subtest: first document open reobserves assignment when another process publishes readiness after its initial ENOENT
+ok 54 - first document open reobserves assignment when another process publishes readiness after its initial ENOENT
+  ---
+  duration_ms: 595.218
+  type: 'test'
+  ...
+# Subtest: simultaneous document first opens converge on the same assignment and readiness without replacing them
+ok 55 - simultaneous document first opens converge on the same assignment and readiness without replacing them
+  ---
+  duration_ms: 428.835916
+  type: 'test'
+  ...
+# Subtest: initialization joins the same identity published after its first empty metadata observation
+ok 56 - initialization joins the same identity published after its first empty metadata observation
+  ---
+  duration_ms: 261.035875
+  type: 'test'
+  ...
+# Subtest: initialization reobserves malformed metadata after a concurrent publication and refuses without replacement
+ok 57 - initialization reobserves malformed metadata after a concurrent publication and refuses without replacement
+  ---
+  duration_ms: 206.191875
+  type: 'test'
+  ...
+# Subtest: initialization reobserves mismatch metadata after a concurrent publication and refuses without replacement
+ok 58 - initialization reobserves mismatch metadata after a concurrent publication and refuses without replacement
+  ---
+  duration_ms: 207.170166
+  type: 'test'
+  ...
+# Subtest: reobserving genuinely unowned metadata or memory still refuses assignment and preserves every original file
+ok 59 - reobserving genuinely unowned metadata or memory still refuses assignment and preserves every original file
+  ---
+  duration_ms: 15.435792
+  type: 'test'
+  ...
+# Subtest: agent setup preserves files, creates private identity/config and reopens without a model
+ok 60 - agent setup preserves files, creates private identity/config and reopens without a model
+  ---
+  duration_ms: 85.959042
+  type: 'test'
+  ...
+# Subtest: status and invalid initialization options do not create files
+ok 61 - status and invalid initialization options do not create files
+  ---
+  duration_ms: 0.731875
+  type: 'test'
+  ...
+# Subtest: separate directories get distinct IDs and moving a directory preserves its identity
+ok 62 - separate directories get distinct IDs and moving a directory preserves its identity
+  ---
+  duration_ms: 160.233833
+  type: 'test'
+  ...
+# Subtest: initialization can finish after a process stops between identity and config publication
+ok 63 - initialization can finish after a process stops between identity and config publication
+  ---
+  duration_ms: 130.297167
+  type: 'test'
+  ...
+# Subtest: missing identity uses explicit repair with the existing config; missing completed config is not reset
+ok 64 - missing identity uses explicit repair with the existing config; missing completed config is not reset
+  ---
+  duration_ms: 88.162833
+  type: 'test'
+  ...
+# Subtest: completed layout repairs missing directories only with explicit repair and preserves existing state
+ok 65 - completed layout repairs missing directories only with explicit repair and preserves existing state
+  ---
+  duration_ms: 127.931375
+  type: 'test'
+  ...
+# Subtest: unknown data without identity is not assigned a new ID
+ok 66 - unknown data without identity is not assigned a new ID
+  ---
+  duration_ms: 2.528292
+  type: 'test'
+  ...
+# Subtest: config identity mismatch, unsupported versions and malformed documents are preserved
+ok 67 - config identity mismatch, unsupported versions and malformed documents are preserved
+  ---
+  duration_ms: 67.636416
+  type: 'test'
+  ...
+# Subtest: metadata symlinks and external hard links cannot be used for setup
+ok 68 - metadata symlinks and external hard links cannot be used for setup
+  ---
+  duration_ms: 101.510208
+  type: 'test'
+  ...
+# Subtest: managed directory links and writable/public metadata are rejected without changing permissions
+ok 69 - managed directory links and writable/public metadata are rejected without changing permissions
+  ---
+  duration_ms: 72.17575
+  type: 'test'
+  ...
+# Subtest: engine overlap and nested agent registration are rejected
+ok 70 - engine overlap and nested agent registration are rejected
+  ---
+  duration_ms: 110.949167
+  type: 'test'
+  ...
+# Subtest: CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+ok 71 - CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+  ---
+  duration_ms: 420.811625
+  type: 'test'
+  ...
+# Subtest: separate CLI processes initializing concurrently settle on exactly one identity
+ok 72 - separate CLI processes initializing concurrently settle on exactly one identity
+  ---
+  duration_ms: 480.9115
+  type: 'test'
+  ...
+# Subtest: setup mutations: a new private root syncs its unchanged 0755 parent before publishing ownership
+ok 73 - setup mutations: a new private root syncs its unchanged 0755 parent before publishing ownership
+  ---
+  duration_ms: 168.432375
+  type: 'test'
+  ...
+# Subtest: setup mutations: a failed new-root parent barrier reports creation uncertainty and a retry finishes the existing directory
+ok 74 - setup mutations: a failed new-root parent barrier reports creation uncertainty and a retry finishes the existing directory
+  ---
+  duration_ms: 170.114667
+  type: 'test'
+  ...
+# Subtest: setup mutations: write-failure before identity publication preserves the original I/O cause and resumes the same operation
+ok 75 - setup mutations: write-failure before identity publication preserves the original I/O cause and resumes the same operation
+  ---
+  duration_ms: 187.925667
+  type: 'test'
+  ...
+# Subtest: setup mutations: file-sync-failure before identity publication preserves the original I/O cause and resumes the same operation
+ok 76 - setup mutations: file-sync-failure before identity publication preserves the original I/O cause and resumes the same operation
+  ---
+  duration_ms: 124.072958
+  type: 'test'
+  ...
+# Subtest: setup mutations: link-after-failure reports published uncertainty with the original cause and can re-observe the same identity
+ok 77 - setup mutations: link-after-failure reports published uncertainty with the original cause and can re-observe the same identity
+  ---
+  duration_ms: 163.589625
+  type: 'test'
+  ...
+# Subtest: setup mutations: unlink-failure reports published uncertainty with the original cause and can re-observe the same identity
+ok 78 - setup mutations: unlink-failure reports published uncertainty with the original cause and can re-observe the same identity
+  ---
+  duration_ms: 120.431917
+  type: 'test'
+  ...
+# Subtest: setup mutations: directory-sync-failure reports published uncertainty with the original cause and can re-observe the same identity
+ok 79 - setup mutations: directory-sync-failure reports published uncertainty with the original cause and can re-observe the same identity
+  ---
+  duration_ms: 337.290625
+  type: 'test'
+  ...
+# Subtest: setup mutations: swap-parent after a candidate fsync rejects substitution without cleaning foreign names
+ok 80 - setup mutations: swap-parent after a candidate fsync rejects substitution without cleaning foreign names
+  ---
+  duration_ms: 128.291708
+  type: 'test'
+  ...
+# Subtest: setup mutations: swap-root after a candidate fsync rejects substitution without cleaning foreign names
+ok 81 - setup mutations: swap-root after a candidate fsync rejects substitution without cleaning foreign names
+  ---
+  duration_ms: 71.466
+  type: 'test'
+  ...
+# Subtest: setup mutations: swap-metadata after a candidate fsync rejects substitution without cleaning foreign names
+ok 82 - setup mutations: swap-metadata after a candidate fsync rejects substitution without cleaning foreign names
+  ---
+  duration_ms: 78.712375
+  type: 'test'
+  ...
+# Subtest: setup mutations: the engine boundary rejects before any mutation scope can create a target
+ok 83 - setup mutations: the engine boundary rejects before any mutation scope can create a target
+  ---
+  duration_ms: 44.149208
+  type: 'test'
+  ...
+# Subtest: setup mutations: actual SIGKILL at kill-identity-synced preserves the published operation and resumes without reallocating identity
+ok 84 - setup mutations: actual SIGKILL at kill-identity-synced preserves the published operation and resumes without reallocating identity
+  ---
+  duration_ms: 201.679792
+  type: 'test'
+  ...
+# Subtest: setup mutations: actual SIGKILL at kill-config-linked preserves the published operation and resumes without reallocating identity
+ok 85 - setup mutations: actual SIGKILL at kill-config-linked preserves the published operation and resumes without reallocating identity
+  ---
+  duration_ms: 150.714208
+  type: 'test'
+  ...
+# Subtest: setup mutations: actual SIGKILL at kill-receipt-linked preserves the published operation and resumes without reallocating identity
+ok 86 - setup mutations: actual SIGKILL at kill-receipt-linked preserves the published operation and resumes without reallocating identity
+  ---
+  duration_ms: 158.722541
+  type: 'test'
+  ...
+# Subtest: sqlite initialization recovers after actual termination at before-profile
+ok 87 - sqlite initialization recovers after actual termination at before-profile
+  ---
+  duration_ms: 293.254709
+  type: 'test'
+  ...
+# Subtest: sqlite initialization recovers after actual termination at published-profile
+ok 88 - sqlite initialization recovers after actual termination at published-profile
+  ---
+  duration_ms: 216.203833
+  type: 'test'
+  ...
+# Subtest: file-journal initialization recovers after actual termination at before-profile
+ok 89 - file-journal initialization recovers after actual termination at before-profile
+  ---
+  duration_ms: 317.102542
+  type: 'test'
+  ...
+# Subtest: file-journal initialization recovers after actual termination at published-profile
+ok 90 - file-journal initialization recovers after actual termination at published-profile
+  ---
+  duration_ms: 328.607833
+  type: 'test'
+  ...
+# Subtest: assignment permits recovery of the empty runtime.sqlite left by actual termination
+ok 91 - assignment permits recovery of the empty runtime.sqlite left by actual termination
+  ---
+  duration_ms: 286.845834
+  type: 'test'
+  ...
+# Subtest: assignment permits recovery of the empty memory.sqlite left by actual termination
+ok 92 - assignment permits recovery of the empty memory.sqlite left by actual termination
+  ---
+  duration_ms: 337.884375
+  type: 'test'
+  ...
+# Subtest: assignment permits recovery of the empty channel.sqlite left by actual termination
+ok 93 - assignment permits recovery of the empty channel.sqlite left by actual termination
+  ---
+  duration_ms: 350.494959
+  type: 'test'
+  ...
+# Subtest: an empty preexisting state database without assignment is not adopted
+ok 94 - an empty preexisting state database without assignment is not adopted
+  ---
+  duration_ms: 113.439458
+  type: 'test'
+  ...
+# Subtest: an empty preexisting memory database without assignment is not adopted
+ok 95 - an empty preexisting memory database without assignment is not adopted
+  ---
+  duration_ms: 119.963583
+  type: 'test'
+  ...
+# Subtest: an empty preexisting channel database without assignment is not adopted
+ok 96 - an empty preexisting channel database without assignment is not adopted
+  ---
+  duration_ms: 111.284625
+  type: 'test'
+  ...
+# Subtest: a valid assignment cannot adopt a database with unknown application data
+ok 97 - a valid assignment cannot adopt a database with unknown application data
+  ---
+  duration_ms: 211.360625
+  type: 'test'
+  ...
+# Subtest: competing backend snapshots publish one choice and cannot create both stores
+ok 98 - competing backend snapshots publish one choice and cannot create both stores
+  ---
+  duration_ms: 233.380583
+  type: 'test'
+  ...
+# Subtest: two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+ok 99 - two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+  ---
+  duration_ms: 430.815208
+  type: 'test'
+  ...
+# Subtest: agent work files cannot traverse into engine or another agent and remain separate
+ok 100 - agent work files cannot traverse into engine or another agent and remain separate
+  ---
+  duration_ms: 443.134916
+  type: 'test'
+  ...
+# Subtest: copying another agents database is detected by its durable owner before runtime access
+ok 101 - copying another agents database is detected by its durable owner before runtime access
+  ---
+  duration_ms: 368.231667
+  type: 'test'
+  ...
+# Subtest: unowned existing databases are not silently adopted
+ok 102 - unowned existing databases are not silently adopted
+  ---
+  duration_ms: 194.954
+  type: 'test'
+  ...
+# Subtest: symlink database and sidecar destinations cannot overwrite another file
+ok 103 - symlink database and sidecar destinations cannot overwrite another file
+  ---
+  duration_ms: 227.31225
+  type: 'test'
+  ...
+# Subtest: changing config after SQLite initialization cannot replace it with an empty journal
+ok 104 - changing config after SQLite initialization cannot replace it with an empty journal
+  ---
+  duration_ms: 272.774542
+  type: 'test'
+  ...
+# Subtest: document worker retains early IPC and reports a closed child with its original stderr
+ok 105 - document worker retains early IPC and reports a closed child with its original stderr
+  ---
+  duration_ms: 86.280125
+  type: 'test'
+  ...
+# Subtest: document codec preserves body bytes and rejects malformed UTF-8, checksum, identity and schema changes
+ok 106 - document codec preserves body bytes and rejects malformed UTF-8, checksum, identity and schema changes
+  ---
+  duration_ms: 3.511625
+  type: 'test'
+  ...
+# Subtest: a deleted forgotten tail or whole namespace cannot resurrect prior active memory after reopening
+ok 107 - a deleted forgotten tail or whole namespace cannot resurrect prior active memory after reopening
+  ---
+  duration_ms: 273.7475
+  type: 'test'
+  ...
+# Subtest: document reads reject external links, unsafe permissions, unknown files and tampered witnesses without falling back
+ok 108 - document reads reject external links, unsafe permissions, unknown files and tampered witnesses without falling back
+  ---
+  duration_ms: 389.127333
+  type: 'test'
+  ...
+# Subtest: bounded namespace enumeration and file bytes fail explicitly rather than truncating history
+ok 109 - bounded namespace enumeration and file bytes fail explicitly rather than truncating history
+  ---
+  duration_ms: 444.046834
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at document candidate keeps only canonical publication and resumes witness through get
+ok 110 - actual SIGKILL at document candidate keeps only canonical publication and resumes witness through get
+  ---
+  duration_ms: 150.223041
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at document event keeps only canonical publication and resumes witness through get
+ok 111 - actual SIGKILL at document event keeps only canonical publication and resumes witness through get
+  ---
+  duration_ms: 131.237375
+  type: 'test'
+  ...
+# Subtest: post-publication sync EIO preserves original cause and publication state; receipt-first retry recovers
+ok 112 - post-publication sync EIO preserves original cause and publication state; receipt-first retry recovers
+  ---
+  duration_ms: 142.885
+  type: 'test'
+  ...
+# Subtest: separate processes contend on one namespace with same memory IDs
+ok 113 - separate processes contend on one namespace with same memory IDs
+  ---
+  duration_ms: 173.008792
+  type: 'test'
+  ...
+# Subtest: separate processes contend on one namespace with different memory IDs
+ok 114 - separate processes contend on one namespace with different memory IDs
+  ---
+  duration_ms: 189.834
+  type: 'test'
+  ...
+# Subtest: namespace retries its full snapshot when a canonical link appears after the pending-only listing
+ok 115 - namespace retries its full snapshot when a canonical link appears after the pending-only listing
+  ---
+  duration_ms: 175.013084
+  type: 'test'
+  ...
+# Subtest: document storage requires explicit registration, preserves a 0755 supplied parent and pins copied owner binding
+ok 116 - document storage requires explicit registration, preserves a 0755 supplied parent and pins copied owner binding
+  ---
+  duration_ms: 121.729542
+  type: 'test'
+  ...
+# Subtest: Markdown record and receipt survive reopen, exact text, revision CAS, correction and forgetting without resurrection
+ok 117 - Markdown record and receipt survive reopen, exact text, revision CAS, correction and forgetting without resurrection
+  ---
+  duration_ms: 247.860291
+  type: 'test'
+  ...
+# Subtest: document namespaces isolate tenant, principal, refs, receipts and index error/rebuild state
+ok 118 - document namespaces isolate tenant, principal, refs, receipts and index error/rebuild state
+  ---
+  duration_ms: 610.444916
+  type: 'test'
+  ...
+# Subtest: document candidate ordering, maximum and private labels follow the existing personal repository contract
+ok 119 - document candidate ordering, maximum and private labels follow the existing personal repository contract
+  ---
+  duration_ms: 159.829708
+  type: 'test'
+  ...
+# Subtest: remember duplicate repairs an event-only suffix through receipt-first reads without another canonical commit
+ok 120 - remember duplicate repairs an event-only suffix through receipt-first reads without another canonical commit
+  ---
+  duration_ms: 489.53325
+  type: 'test'
+  ...
+# Subtest: forget duplicate repairs its event-only suffix through get-first reads and leaves the memory deleted
+ok 121 - forget duplicate repairs its event-only suffix through get-first reads and leaves the memory deleted
+  ---
+  duration_ms: 476.1795
+  type: 'test'
+  ...
+# Subtest: C01 resumes an assigned owner-pending-only registration using a new owner publication and preserves the prior candidate
+ok 122 - C01 resumes an assigned owner-pending-only registration using a new owner publication and preserves the prior candidate
+  ---
+  duration_ms: 199.612167
+  type: 'test'
+  ...
+# Subtest: C01 refuses partial pending-only registration and preserves its unconfirmed bytes
+ok 123 - C01 refuses partial pending-only registration and preserves its unconfirmed bytes
+  ---
+  duration_ms: 232.753584
+  type: 'test'
+  ...
+# Subtest: C01 refuses foreign-owner pending-only registration and preserves its unconfirmed bytes
+ok 124 - C01 refuses foreign-owner pending-only registration and preserves its unconfirmed bytes
+  ---
+  duration_ms: 197.094792
+  type: 'test'
+  ...
+# Subtest: registration re-enumerates a disappeared owned pending file without rewriting owner or format
+ok 125 - registration re-enumerates a disappeared owned pending file without rewriting owner or format
+  ---
+  duration_ms: 153.855334
+  type: 'test'
+  ...
+# Subtest: document file reobservation preserves the unsafe cause and requires a fresh validation after the canonical peer is linked
+ok 126 - document file reobservation preserves the unsafe cause and requires a fresh validation after the canonical peer is linked
+  ---
+  duration_ms: 10.923416
+  type: 'test'
+  ...
+# Subtest: document registration resumes after a complete candidate is linked during its first inspection
+ok 127 - document registration resumes after a complete candidate is linked during its first inspection
+  ---
+  duration_ms: 32.310125
+  type: 'test'
+  ...
+# Subtest: document registration resumes after a completed partial candidate is linked during its first inspection
+ok 128 - document registration resumes after a completed partial candidate is linked during its first inspection
+  ---
+  duration_ms: 18.195167
+  type: 'test'
+  ...
+# Subtest: unchanged external hardlink remains the original unsafe error rather than a contention retry
+ok 129 - unchanged external hardlink remains the original unsafe error rather than a contention retry
+  ---
+  duration_ms: 1.299
+  type: 'test'
+  ...
+# Subtest: an unrelated new pending name cannot authorize an externally linked candidate on registration retry
+ok 130 - an unrelated new pending name cannot authorize an externally linked candidate on registration retry
+  ---
+  duration_ms: 2.095292
+  type: 'test'
+  ...
+# Subtest: CLI init explicitly selects documents, preserves ready choices and truthfully advertises schema support
+ok 131 - CLI init explicitly selects documents, preserves ready choices and truthfully advertises schema support
+  ---
+  duration_ms: 1360.992125
+  type: 'test'
+  ...
+# Subtest: sqlite: existing Web memory lifecycle uses documents while real Evidence memory stays in SQLite
+ok 132 - sqlite: existing Web memory lifecycle uses documents while real Evidence memory stays in SQLite
+  ---
+  duration_ms: 2088.338083
+  type: 'test'
+  ...
+# Subtest: file-journal: existing Web memory lifecycle uses documents while real Evidence memory stays in SQLite
+ok 133 - file-journal: existing Web memory lifecycle uses documents while real Evidence memory stays in SQLite
+  ---
+  duration_ms: 2278.675292
+  type: 'test'
+  ...
+# Subtest: built CLI entrypoint document-backed memory survives separate processes and uses the existing explicit recall commands
+ok 134 - built CLI entrypoint document-backed memory survives separate processes and uses the existing explicit recall commands
+  ---
+  duration_ms: 3595.195334
+  type: 'test'
+  ...
+# Subtest: ordinary and explicit SQLite setup retain the exact v1 configuration and initialize operation shapes
+ok 135 - ordinary and explicit SQLite setup retain the exact v1 configuration and initialize operation shapes
+  ---
+  duration_ms: 70.581542
+  type: 'test'
+  ...
+# Subtest: documents setup persists a distinct v2 choice while retaining the existing SQLite work-memory path
+ok 136 - documents setup persists a distinct v2 choice while retaining the existing SQLite work-memory path
+  ---
+  duration_ms: 76.795583
+  type: 'test'
+  ...
+# Subtest: operation-only: a saved document setup resumes with the same store and agent when the option is omitted
+ok 137 - operation-only: a saved document setup resumes with the same store and agent when the option is omitted
+  ---
+  duration_ms: 185.459666
+  type: 'test'
+  ...
+# Subtest: identity-published: a saved document setup resumes with the same store and agent when the option is omitted
+ok 138 - identity-published: a saved document setup resumes with the same store and agent when the option is omitted
+  ---
+  duration_ms: 120.342333
+  type: 'test'
+  ...
+# Subtest: ready and incomplete profiles reject an explicit backend switch without replacing their saved choice
+ok 139 - ready and incomplete profiles reject an explicit backend switch without replacing their saved choice
+  ---
+  duration_ms: 257.9795
+  type: 'test'
+  ...
+# Subtest: explicit missing-identity repair preserves document assignment and does not restore a missing completed config by default
+ok 140 - explicit missing-identity repair preserves document assignment and does not restore a missing completed config by default
+  ---
+  duration_ms: 107.014458
+  type: 'test'
+  ...
+# Subtest: documents inspection rejects store-id without repairing the conflicting original
+ok 141 - documents inspection rejects store-id without repairing the conflicting original
+  ---
+  duration_ms: 58.712
+  type: 'test'
+  ...
+# Subtest: documents inspection rejects downgrade-config without repairing the conflicting original
+ok 142 - documents inspection rejects downgrade-config without repairing the conflicting original
+  ---
+  duration_ms: 63.9385
+  type: 'test'
+  ...
+# Subtest: documents inspection rejects downgrade-operation without repairing the conflicting original
+ok 143 - documents inspection rejects downgrade-operation without repairing the conflicting original
+  ---
+  duration_ms: 110.390542
+  type: 'test'
+  ...
+# Subtest: documents inspection rejects missing-operation without repairing the conflicting original
+ok 144 - documents inspection rejects missing-operation without repairing the conflicting original
+  ---
+  duration_ms: 92.552875
+  type: 'test'
+  ...
+# Subtest: a v1 setup cannot acquire a document store by editing only config, and malformed or unknown versions are rejected
+ok 145 - a v1 setup cannot acquire a document store by editing only config, and malformed or unknown versions are rejected
+  ---
+  duration_ms: 82.652333
+  type: 'test'
+  ...
+# Subtest: the personal assignment fence preserves the existing independent state-backend selection
+ok 146 - the personal assignment fence preserves the existing independent state-backend selection
+  ---
+  duration_ms: 68.748667
+  type: 'test'
+  ...
+# Subtest: document clone gives the new agent a new store and copies skills without any original memories
+ok 147 - document clone gives the new agent a new store and copies skills without any original memories
+  ---
+  duration_ms: 150.92925
+  type: 'test'
+  ...
+# Subtest: an incomplete document clone resumes the same recorded target store and identity
+ok 148 - an incomplete document clone resumes the same recorded target store and identity
+  ---
+  duration_ms: 182.192
+  type: 'test'
+  ...
+# Subtest: an incomplete document clone still refuses changed source config
+ok 149 - an incomplete document clone still refuses changed source config
+  ---
+  duration_ms: 148.243292
+  type: 'test'
+  ...
+# Subtest: an incomplete document clone still refuses changed source skills
+ok 150 - an incomplete document clone still refuses changed source skills
+  ---
+  duration_ms: 133.680791
+  type: 'test'
+  ...
+# Subtest: sqlite: Web draft explicit apply preserves source and receipt across stale work view, forget and reopen
+ok 151 - sqlite: Web draft explicit apply preserves source and receipt across stale work view, forget and reopen
+  ---
+  duration_ms: 3479.494125
+  type: 'test'
+  ...
+# Subtest: file-journal: Web draft explicit apply preserves source and receipt across stale work view, forget and reopen
+ok 152 - file-journal: Web draft explicit apply preserves source and receipt across stale work view, forget and reopen
+  ---
+  duration_ms: 4416.390958
+  type: 'test'
+  ...
+# Subtest: Web resumes a prepared apply ID after input failure using saved content, not later editor bytes
+ok 153 - Web resumes a prepared apply ID after input failure using saved content, not later editor bytes
+  ---
+  duration_ms: 918.218875
+  type: 'test'
+  ...
+# Subtest: Web unchanged draft records its status without a new user message or memory revision
+ok 154 - Web unchanged draft records its status without a new user message or memory revision
+  ---
+  duration_ms: 577.269334
+  type: 'test'
+  ...
+# Subtest: Web draft apply, status and resume reject another selected session and read-only mutations
+ok 155 - Web draft apply, status and resume reject another selected session and read-only mutations
+  ---
+  duration_ms: 672.076708
+  type: 'test'
+  ...
+# Subtest: Web draft transport rejects arbitrary paths and identities before accessing draft files
+ok 156 - Web draft transport rejects arbitrary paths and identities before accessing draft files
+  ---
+  duration_ms: 294.783208
+  type: 'test'
+  ...
+# Subtest: default SQLite profile advertises no document drafts and refuses draft creation
+ok 157 - default SQLite profile advertises no document drafts and refuses draft creation
+  ---
+  duration_ms: 143.032541
+  type: 'test'
+  ...
+# Subtest: draft completion text describes its recorded revision without claiming it is the current active memory
+ok 158 - draft completion text describes its recorded revision without claiming it is the current active memory
+  ---
+  duration_ms: 0.159208
+  type: 'test'
+  ...
+# Subtest: sqlite: installed CLI continues X → process restart → Y with exact raw input and owned stores
+ok 159 - sqlite: installed CLI continues X → process restart → Y with exact raw input and owned stores
+  ---
+  duration_ms: 1183.940709
+  type: 'test'
+  ...
+# Subtest: file-journal: installed CLI continues X → process restart → Y with exact raw input and owned stores
+ok 160 - file-journal: installed CLI continues X → process restart → Y with exact raw input and owned stores
+  ---
+  duration_ms: 1692.362041
+  type: 'test'
+  ...
+# Subtest: installed CLI input is durable once, new sessions are explicit, and foreign agent sessions remain unavailable
+ok 161 - installed CLI input is durable once, new sessions are explicit, and foreign agent sessions remain unavailable
+  ---
+  duration_ms: 2306.7395
+  type: 'test'
+  ...
+# Subtest: sqlite: Web auth reconnect preserves one durable conversation and common atomic question intake
+ok 162 - sqlite: Web auth reconnect preserves one durable conversation and common atomic question intake
+  ---
+  duration_ms: 560.816541
+  type: 'test'
+  ...
+# Subtest: file-journal: Web auth reconnect preserves one durable conversation and common atomic question intake
+ok 163 - file-journal: Web auth reconnect preserves one durable conversation and common atomic question intake
+  ---
+  duration_ms: 2345.847041
+  type: 'test'
+  ...
+# Subtest: personal memory reuses applied original and survives restart without copying conversation (sqlite)
+ok 164 - personal memory reuses applied original and survives restart without copying conversation (sqlite)
+  ---
+  duration_ms: 256.944
+  type: 'test'
+  ...
+# Subtest: personal memory reuses applied original and survives restart without copying conversation (file-journal)
+ok 165 - personal memory reuses applied original and survives restart without copying conversation (file-journal)
+  ---
+  duration_ms: 255.473042
+  type: 'test'
+  ...
+# Subtest: personal correction uses a new applied original and invalidates the old dependency
+ok 166 - personal correction uses a new applied original and invalidates the old dependency
+  ---
+  duration_ms: 146.345083
+  type: 'test'
+  ...
+# Subtest: forget removes active body and quote, preserves originals and never revives an old create
+ok 167 - forget removes active body and quote, preserves originals and never revives an old create
+  ---
+  duration_ms: 195.241125
+  type: 'test'
+  ...
+# Subtest: personal source never becomes shareable Evidence or a derived work-knowledge fact
+ok 168 - personal source never becomes shareable Evidence or a derived work-knowledge fact
+  ---
+  duration_ms: 119.348458
+  type: 'test'
+  ...
+# Subtest: current user-source labels prevents cached read and dependency reuse
+ok 169 - current user-source labels prevents cached read and dependency reuse
+  ---
+  duration_ms: 173.532541
+  type: 'test'
+  ...
+# Subtest: current user-source scope prevents cached read and dependency reuse
+ok 170 - current user-source scope prevents cached read and dependency reuse
+  ---
+  duration_ms: 179.776916
+  type: 'test'
+  ...
+# Subtest: current user-source destination prevents cached read and dependency reuse
+ok 171 - current user-source destination prevents cached read and dependency reuse
+  ---
+  duration_ms: 212.202292
+  type: 'test'
+  ...
+# Subtest: current user-source principal prevents cached read and dependency reuse
+ok 172 - current user-source principal prevents cached read and dependency reuse
+  ---
+  duration_ms: 248.022875
+  type: 'test'
+  ...
+# Subtest: current user-source tenant prevents cached read and dependency reuse
+ok 173 - current user-source tenant prevents cached read and dependency reuse
+  ---
+  duration_ms: 274.182
+  type: 'test'
+  ...
+# Subtest: current user-source generation prevents cached read and dependency reuse
+ok 174 - current user-source generation prevents cached read and dependency reuse
+  ---
+  duration_ms: 215.60325
+  type: 'test'
+  ...
+# Subtest: host caller restrictions reach the actual reader and do not prevent authorized forgetting
+ok 175 - host caller restrictions reach the actual reader and do not prevent authorized forgetting
+  ---
+  duration_ms: 201.107792
+  type: 'test'
+  ...
+# Subtest: reviewer grants cannot expose another user personal record or command receipt
+ok 176 - reviewer grants cannot expose another user personal record or command receipt
+  ---
+  duration_ms: 222.083292
+  type: 'test'
+  ...
+# Subtest: personal original history boundary is checked against actual stored intake
+ok 177 - personal original history boundary is checked against actual stored intake
+  ---
+  duration_ms: 259.204833
+  type: 'test'
+  ...
+# Subtest: personal original receipt-digest boundary is checked against actual stored intake
+ok 178 - personal original receipt-digest boundary is checked against actual stored intake
+  ---
+  duration_ms: 237.696791
+  type: 'test'
+  ...
+# Subtest: personal original pending boundary is checked against actual stored intake
+ok 179 - personal original pending boundary is checked against actual stored intake
+  ---
+  duration_ms: 203.415959
+  type: 'test'
+  ...
+# Subtest: personal original rejected boundary is checked against actual stored intake
+ok 180 - personal original rejected boundary is checked against actual stored intake
+  ---
+  duration_ms: 232.955167
+  type: 'test'
+  ...
+# Subtest: personal original missing boundary is checked against actual stored intake
+ok 181 - personal original missing boundary is checked against actual stored intake
+  ---
+  duration_ms: 193.9315
+  type: 'test'
+  ...
+# Subtest: fabricated or assistant text cannot be an explicit user-memory source
+ok 182 - fabricated or assistant text cannot be an explicit user-memory source
+  ---
+  duration_ms: 163.331584
+  type: 'test'
+  ...
+# Subtest: commit response loss resumes from scoped receipt with one personal revision
+ok 183 - commit response loss resumes from scoped receipt with one personal revision
+  ---
+  duration_ms: 181.474625
+  type: 'test'
+  ...
+# Subtest: user-source inspection does not inherit unrelated model inputs or form a work-memory cycle
+ok 184 - user-source inspection does not inherit unrelated model inputs or form a work-memory cycle
+  ---
+  duration_ms: 190.569875
+  type: 'test'
+  ...
+# Subtest: recorded derived-copy quarantine does not revoke the new user correction it will consume
+ok 185 - recorded derived-copy quarantine does not revoke the new user correction it will consume
+  ---
+  duration_ms: 154.902209
+  type: 'test'
+  ...
+# Subtest: sqlite: actual memory tools recall personal cards across work scopes without accepting caller ownership
+ok 186 - sqlite: actual memory tools recall personal cards across work scopes without accepting caller ownership
+  ---
+  duration_ms: 198.949125
+  type: 'test'
+  ...
+# Subtest: documents: actual memory tools recall personal cards across work scopes without accepting caller ownership
+ok 187 - documents: actual memory tools recall personal cards across work scopes without accepting caller ownership
+  ---
+  duration_ms: 785.000375
+  type: 'test'
+  ...
+# Subtest: sqlite/sqlite: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+ok 188 - sqlite/sqlite: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+  ---
+  duration_ms: 580.788584
+  type: 'test'
+  ...
+# Subtest: sqlite/documents: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+ok 189 - sqlite/documents: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+  ---
+  duration_ms: 2494.868083
+  type: 'test'
+  ...
+# Subtest: file-journal/sqlite: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+ok 190 - file-journal/sqlite: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+  ---
+  duration_ms: 812.063792
+  type: 'test'
+  ...
+# Subtest: file-journal/documents: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+ok 191 - file-journal/documents: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+  ---
+  duration_ms: 2847.4045
+  type: 'test'
+  ...
+# Subtest: omitted, forged or unavailable personal context cannot stage or validate a selected work frame
+ok 192 - omitted, forged or unavailable personal context cannot stage or validate a selected work frame
+  ---
+  duration_ms: 255.276334
+  type: 'test'
+  ...
+# Subtest: selection is idempotent and refuses a same-goal newer input, foreign owner, and a cancelled work
+ok 193 - selection is idempotent and refuses a same-goal newer input, foreign owner, and a cancelled work
+  ---
+  duration_ms: 194.010375
+  type: 'test'
+  ...
+# Subtest: sqlite: forgetting during a real delayed synthetic model call rejects the reply while preserving reported usage
+ok 194 - sqlite: forgetting during a real delayed synthetic model call rejects the reply while preserving reported usage
+  ---
+  duration_ms: 355.720083
+  type: 'test'
+  ...
+# Subtest: documents: forgetting during a real delayed synthetic model call rejects the reply while preserving reported usage
+ok 195 - documents: forgetting during a real delayed synthetic model call rejects the reply while preserving reported usage
+  ---
+  duration_ms: 1980.955375
+  type: 'test'
+  ...
+# Subtest: a changed revision invalidates an existing frame and the replacement needs a fresh explicit selection
+ok 196 - a changed revision invalidates an existing frame and the replacement needs a fresh explicit selection
+  ---
+  duration_ms: 329.665584
+  type: 'test'
+  ...
+# Subtest: clear preserves a pre-existing work-memory quarantine review and its completion gate
+ok 197 - clear preserves a pre-existing work-memory quarantine review and its completion gate
+  ---
+  duration_ms: 173.628291
+  type: 'test'
+  ...
+# Subtest: recall preserves a pre-existing work-memory quarantine review and its completion gate
+ok 198 - recall preserves a pre-existing work-memory quarantine review and its completion gate
+  ---
+  duration_ms: 237.073041
+  type: 'test'
+  ...
+# Subtest: replacing a selection waives only its newly created quarantine review
+ok 199 - replacing a selection waives only its newly created quarantine review
+  ---
+  duration_ms: 180.781667
+  type: 'test'
+  ...
+# Subtest: built CLI exports, applies and resumes one edited document with stable request identity
+ok 200 - built CLI exports, applies and resumes one edited document with stable request identity
+  ---
+  duration_ms: 1693.970667
+  type: 'test'
+  ...
+# Subtest: draft flow sqlite: editor rename applies one source and revision, invalidates selected memory and survives reopen
+ok 201 - draft flow sqlite: editor rename applies one source and revision, invalidates selected memory and survives reopen
+  ---
+  duration_ms: 2357.5355
+  type: 'test'
+  ...
+# Subtest: draft flow file-journal: editor rename applies one source and revision, invalidates selected memory and survives reopen
+ok 202 - draft flow file-journal: editor rename applies one source and revision, invalidates selected memory and survives reopen
+  ---
+  duration_ms: 2838.926
+  type: 'test'
+  ...
+# Subtest: draft no-change and read-only status create no new raw input or memory revision
+ok 203 - draft no-change and read-only status create no new raw input or memory revision
+  ---
+  duration_ms: 550.244416
+  type: 'test'
+  ...
+# Subtest: draft past result remains revision two after a later revision and forget; resume ignores edited or missing draft
+ok 204 - draft past result remains revision two after a later revision and forget; resume ignores edited or missing draft
+  ---
+  duration_ms: 892.992208
+  type: 'test'
+  ...
+# Subtest: draft stale target, read-only actor and other owner are refused before a source input is created
+ok 205 - draft stale target, read-only actor and other owner are refused before a source input is created
+  ---
+  duration_ms: 576.884333
+  type: 'test'
+  ...
+# Subtest: draft source applied before a competing memory revision remains an explicit partial result
+ok 206 - draft source applied before a competing memory revision remains an explicit partial result
+  ---
+  duration_ms: 777.627083
+  type: 'test'
+  ...
+# Subtest: a stale absent-operation observation joins the exact apply completed by another profile
+ok 207 - a stale absent-operation observation joins the exact apply completed by another profile
+  ---
+  duration_ms: 716.488959
+  type: 'test'
+  ...
+# Subtest: real source snapshot contention at preflight converges on the same apply receipt
+ok 208 - real source snapshot contention at preflight converges on the same apply receipt
+  ---
+  duration_ms: 788.004084
+  type: 'test'
+  ...
+# Subtest: real source snapshot contention at after-intent converges on the same apply receipt
+ok 209 - real source snapshot contention at after-intent converges on the same apply receipt
+  ---
+  duration_ms: 743.245375
+  type: 'test'
+  ...
+# Subtest: contention reported after the real memory commit rechecks the original receipt without another revision
+ok 210 - contention reported after the real memory commit rechecks the original receipt without another revision
+  ---
+  duration_ms: 584.379375
+  type: 'test'
+  ...
+# Subtest: persistent knowledge contention is bounded and does not publish source input
+ok 211 - persistent knowledge contention is bounded and does not publish source input
+  ---
+  duration_ms: 383.169208
+  type: 'test'
+  ...
+# Subtest: draft SIGKILL sqlite/intent: resume uses fixed intent and the same source and memory receipts
+ok 212 - draft SIGKILL sqlite/intent: resume uses fixed intent and the same source and memory receipts
+  ---
+  duration_ms: 1129.953916
+  type: 'test'
+  ...
+# Subtest: draft SIGKILL sqlite/source: resume uses fixed intent and the same source and memory receipts
+ok 213 - draft SIGKILL sqlite/source: resume uses fixed intent and the same source and memory receipts
+  ---
+  duration_ms: 1028.08
+  type: 'test'
+  ...
+# Subtest: draft SIGKILL sqlite/memory: resume uses fixed intent and the same source and memory receipts
+ok 214 - draft SIGKILL sqlite/memory: resume uses fixed intent and the same source and memory receipts
+  ---
+  duration_ms: 1008.10975
+  type: 'test'
+  ...
+# Subtest: draft SIGKILL file-journal/intent: resume uses fixed intent and the same source and memory receipts
+ok 215 - draft SIGKILL file-journal/intent: resume uses fixed intent and the same source and memory receipts
+  ---
+  duration_ms: 1176.096708
+  type: 'test'
+  ...
+# Subtest: draft SIGKILL file-journal/source: resume uses fixed intent and the same source and memory receipts
+ok 216 - draft SIGKILL file-journal/source: resume uses fixed intent and the same source and memory receipts
+  ---
+  duration_ms: 1731.20625
+  type: 'test'
+  ...
+# Subtest: draft SIGKILL file-journal/memory: resume uses fixed intent and the same source and memory receipts
+ok 217 - draft SIGKILL file-journal/memory: resume uses fixed intent and the same source and memory receipts
+  ---
+  duration_ms: 1288.259875
+  type: 'test'
+  ...
+# Subtest: two actual processes applying the same draft converge on one source and one revision
+ok 218 - two actual processes applying the same draft converge on one source and one revision
+  ---
+  duration_ms: 1008.666667
+  type: 'test'
+  ...
+# Subtest: draft export preserves an editable rename, exact body and immutable origin on duplicate create
+ok 219 - draft export preserves an editable rename, exact body and immutable origin on duplicate create
+  ---
+  duration_ms: 100.476417
+  type: 'test'
+  ...
+# Subtest: intent binding is immutable, owner scoped and resumes without the editable file
+ok 220 - intent binding is immutable, owner scoped and resumes without the editable file
+  ---
+  duration_ms: 95.29725
+  type: 'test'
+  ...
+# Subtest: draft parsing supports CRLF front matter but rejects nontext metadata, invalid UTF-8 and invalid content
+ok 221 - draft parsing supports CRLF front matter but rejects nontext metadata, invalid UTF-8 and invalid content
+  ---
+  duration_ms: 93.535709
+  type: 'test'
+  ...
+# Subtest: draft paths reject symlinks, external hardlinks and permissive editor saves without chmod or fallback
+ok 222 - draft paths reject symlinks, external hardlinks and permissive editor saves without chmod or fallback
+  ---
+  duration_ms: 272.853417
+  type: 'test'
+  ...
+# Subtest: draft namespace and individual byte limits reject explicitly before another export is published
+ok 223 - draft namespace and individual byte limits reject explicitly before another export is published
+  ---
+  duration_ms: 1899.851459
+  type: 'test'
+  ...
+# Subtest: a pending unlink during an observed draft read is re-enumerated without losing immutable bytes
+ok 224 - a pending unlink during an observed draft read is re-enumerated without losing immutable bytes
+  ---
+  duration_ms: 60.729458
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at draft candidate resumes one intent without needing the editable file
+ok 225 - actual SIGKILL at draft candidate resumes one intent without needing the editable file
+  ---
+  duration_ms: 156.929917
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at draft intent resumes one intent without needing the editable file
+ok 226 - actual SIGKILL at draft intent resumes one intent without needing the editable file
+  ---
+  duration_ms: 137.095291
+  type: 'test'
+  ...
+# Subtest: draft intent sync EIO preserves its original cause and published status before read-side retry
+ok 227 - draft intent sync EIO preserves its original cause and published status before read-side retry
+  ---
+  duration_ms: 130.446459
+  type: 'test'
+  ...
+# Subtest: two processes bind one apply ID once and reject different immutable intent bytes
+ok 228 - two processes bind one apply ID once and reject different immutable intent bytes
+  ---
+  duration_ms: 153.178792
+  type: 'test'
+  ...
+# Subtest: sqlite: Web personal memory crosses a completed work and restart, with explicit current-version recall and forget
+ok 229 - sqlite: Web personal memory crosses a completed work and restart, with explicit current-version recall and forget
+  ---
+  duration_ms: 883.239916
+  type: 'test'
+  ...
+# Subtest: file-journal: Web personal memory crosses a completed work and restart, with explicit current-version recall and forget
+ok 230 - file-journal: Web personal memory crosses a completed work and restart, with explicit current-version recall and forget
+  ---
+  duration_ms: 2835.017041
+  type: 'test'
+  ...
+# Subtest: installed CLI records a real source and uses explicit memory revision, then clears and forgets after restart
+ok 231 - installed CLI records a real source and uses explicit memory revision, then clears and forgets after restart
+  ---
+  duration_ms: 3858.891333
+  type: 'test'
+  ...
+# Subtest: new-input remember retries reuse the applied user message after a memory failure and after response loss
+ok 232 - new-input remember retries reuse the applied user message after a memory failure and after response loss
+  ---
+  duration_ms: 184.553
+  type: 'test'
+  ...
+# Subtest: surface authority rejects other users, labels, destinations and session work selection while same-owner memory remains cross-session
+ok 233 - surface authority rejects other users, labels, destinations and session work selection while same-owner memory remains cross-session
+  ---
+  duration_ms: 452.734709
+  type: 'test'
+  ...
+# Subtest: Web memory mutations preserve CSRF and strict owner-free schemas, reject stale work input and do not append operation notices
+ok 234 - Web memory mutations preserve CSRF and strict owner-free schemas, reject stale work input and do not append operation notices
+  ---
+  duration_ms: 253.853
+  type: 'test'
+  ...
+# Subtest: legacy synthetic directory exposes no personal-memory service and does not reinterpret old knowledge
+ok 235 - legacy synthetic directory exposes no personal-memory service and does not reinterpret old knowledge
+  ---
+  duration_ms: 147.788167
+  type: 'test'
+  ...
+# Subtest: memory source controls reject assistant text, invented quotes and unbound new input without creating memory
+ok 236 - memory source controls reject assistant text, invented quotes and unbound new input without creating memory
+  ---
+  duration_ms: 142.595042
+  type: 'test'
+  ...
+# Subtest: sqlite: a correction receipt reports its original revision after later correction and forgetting
+ok 237 - sqlite: a correction receipt reports its original revision after later correction and forgetting
+  ---
+  duration_ms: 282.358125
+  type: 'test'
+  ...
+# Subtest: documents: a correction receipt reports its original revision after later correction and forgetting
+ok 238 - documents: a correction receipt reports its original revision after later correction and forgetting
+  ---
+  duration_ms: 683.000333
+  type: 'test'
+  ...
+# Subtest: revision status checks the entire original command and returns no source or body fields
+ok 239 - revision status checks the entire original command and returns no source or body fields
+  ---
+  duration_ms: 206.832542
+  type: 'test'
+  ...
+# Subtest: duplicate correction joins an original commit that finishes after its initial record read
+ok 240 - duplicate correction joins an original commit that finishes after its initial record read
+  ---
+  duration_ms: 210.361583
+  type: 'test'
+  ...
+# Subtest: revision status hides current metadata after label narrowing and rejects namespace or host-owner loss
+ok 241 - revision status hides current metadata after label narrowing and rejects namespace or host-owner loss
+  ---
+  duration_ms: 189.506708
+  type: 'test'
+  ...
+# Subtest: revision status rechecks authority after storage and rejects a forged receipt revision or owner
+ok 242 - revision status rechecks authority after storage and rejects a forged receipt revision or owner
+  ---
+  duration_ms: 221.320125
+  type: 'test'
+  ...
+# Subtest: document event-only correction recovers its witness through status without another source intake or commit
+ok 243 - document event-only correction recovers its witness through status without another source intake or commit
+  ---
+  duration_ms: 540.390292
+  type: 'test'
+  ...
+# Subtest: session context: Y receives prior utterances with source IDs while its work state and protected input remain independent
+ok 244 - session context: Y receives prior utterances with source IDs while its work state and protected input remain independent
+  ---
+  duration_ms: 24.329958
+  type: 'test'
+  ...
+# Subtest: session context: omitted, rewritten and foreign session packets are rejected even with an unchanged work revision
+ok 245 - session context: omitted, rewritten and foreign session packets are rejected even with an unchanged work revision
+  ---
+  duration_ms: 7.605709
+  type: 'test'
+  ...
+# Subtest: session context: oversized protected history refuses the model input instead of silently discarding prior agreements
+ok 246 - session context: oversized protected history refuses the model input instead of silently discarding prior agreements
+  ---
+  duration_ms: 3.948208
+  type: 'test'
+  ...
+# Subtest: session frame store: stage rejects altered text and previous refuses foreign or stale session bases
+ok 247 - session frame store: stage rejects altered text and previous refuses foreign or stale session bases
+  ---
+  duration_ms: 9.388125
+  type: 'test'
+  ...
+# Subtest: session planning: semantic version 3 reaches the actual planner and a newer unrelated session tail does not invalidate its fixed input
+ok 248 - session planning: semantic version 3 reaches the actual planner and a newer unrelated session tail does not invalidate its fixed input
+  ---
+  duration_ms: 11.122459
+  type: 'test'
+  ...
+# Subtest: session planning: an applied input invalidates a reserved call without copying or invoking its obsolete packet
+ok 249 - session planning: an applied input invalidates a reserved call without copying or invoking its obsolete packet
+  ---
+  duration_ms: 5.11
+  type: 'test'
+  ...
+# Subtest: session planning: input applied during a model call rejects the late plan but retains reported usage
+ok 250 - session planning: input applied during a model call rejects the late plan but retains reported usage
+  ---
+  duration_ms: 6.914375
+  type: 'test'
+  ...
+# Subtest: session planning: losing access to the referenced conversation after execution prevents plan adoption
+ok 251 - session planning: losing access to the referenced conversation after execution prevents plan adoption
+  ---
+  duration_ms: 5.887208
+  type: 'test'
+  ...
+# Subtest: session planning: legacy non-session calls retain semantic version 2 and need no session provider
+ok 252 - session planning: legacy non-session calls retain semantic version 2 and need no session provider
+  ---
+  duration_ms: 5.39375
+  type: 'test'
+  ...
+# Subtest: session recovery: reconstruction retains source conversation, reuses an equal packet and refuses unavailable session inputs
+ok 253 - session recovery: reconstruction retains source conversation, reuses an equal packet and refuses unavailable session inputs
+  ---
+  duration_ms: 5.328333
+  type: 'test'
+  ...
+# Subtest: sqlite: actual session input cancels an unsent model reservation and returns its allocation
+ok 254 - sqlite: actual session input cancels an unsent model reservation and returns its allocation
+  ---
+  duration_ms: 226.267125
+  type: 'test'
+  ...
+# Subtest: sqlite: real session input during a model call rejects the late proposal and preserves usage
+ok 255 - sqlite: real session input during a model call rejects the late proposal and preserves usage
+  ---
+  duration_ms: 206.155875
+  type: 'test'
+  ...
+# Subtest: sqlite: real session cancel during a model call rejects the late proposal and preserves usage
+ok 256 - sqlite: real session cancel during a model call rejects the late proposal and preserves usage
+  ---
+  duration_ms: 203.344208
+  type: 'test'
+  ...
+# Subtest: sqlite: durable raw input left pending prevents tool execution and outbox sends until the same input is recovered
+ok 257 - sqlite: durable raw input left pending prevents tool execution and outbox sends until the same input is recovered
+  ---
+  duration_ms: 144.427375
+  type: 'test'
+  ...
+# Subtest: file-journal: actual session input cancels an unsent model reservation and returns its allocation
+ok 258 - file-journal: actual session input cancels an unsent model reservation and returns its allocation
+  ---
+  duration_ms: 375.609375
+  type: 'test'
+  ...
+# Subtest: file-journal: real session input during a model call rejects the late proposal and preserves usage
+ok 259 - file-journal: real session input during a model call rejects the late proposal and preserves usage
+  ---
+  duration_ms: 383.045
+  type: 'test'
+  ...
+# Subtest: file-journal: real session cancel during a model call rejects the late proposal and preserves usage
+ok 260 - file-journal: real session cancel during a model call rejects the late proposal and preserves usage
+  ---
+  duration_ms: 354.838584
+  type: 'test'
+  ...
+# Subtest: file-journal: durable raw input left pending prevents tool execution and outbox sends until the same input is recovered
+ok 261 - file-journal: durable raw input left pending prevents tool execution and outbox sends until the same input is recovered
+  ---
+  duration_ms: 326.881292
+  type: 'test'
+  ...
+# Subtest: real session provider rejects a full pending page even when the blocked work appears only after that page
+ok 262 - real session provider rejects a full pending page even when the blocked work appears only after that page
+  ---
+  duration_ms: 208.476667
+  type: 'test'
+  ...
+# Subtest: real session history does not authorize a missing source artifact merely because a derived context remains readable
+ok 263 - real session history does not authorize a missing source artifact merely because a derived context remains readable
+  ---
+  duration_ms: 275.627625
+  type: 'test'
+  ...
+# Subtest: sqlite: real SIGKILL after inbox resumes the same input/work/delivery
+ok 264 - sqlite: real SIGKILL after inbox resumes the same input/work/delivery
+  ---
+  duration_ms: 299.353875
+  type: 'test'
+  ...
+# Subtest: sqlite: real SIGKILL after work resumes the same input/work/delivery
+ok 265 - sqlite: real SIGKILL after work resumes the same input/work/delivery
+  ---
+  duration_ms: 317.181708
+  type: 'test'
+  ...
+# Subtest: sqlite: real SIGKILL after delivery resumes the same input/work/delivery
+ok 266 - sqlite: real SIGKILL after delivery resumes the same input/work/delivery
+  ---
+  duration_ms: 277.146833
+  type: 'test'
+  ...
+# Subtest: file-journal: real SIGKILL after inbox resumes the same input/work/delivery
+ok 267 - file-journal: real SIGKILL after inbox resumes the same input/work/delivery
+  ---
+  duration_ms: 519.605167
+  type: 'test'
+  ...
+# Subtest: file-journal: real SIGKILL after work resumes the same input/work/delivery
+ok 268 - file-journal: real SIGKILL after work resumes the same input/work/delivery
+  ---
+  duration_ms: 540.599666
+  type: 'test'
+  ...
+# Subtest: file-journal: real SIGKILL after delivery resumes the same input/work/delivery
+ok 269 - file-journal: real SIGKILL after delivery resumes the same input/work/delivery
+  ---
+  duration_ms: 508.696042
+  type: 'test'
+  ...
+# Subtest: sqlite: completed X and restarted Y share raw conversation but not work/evidence/budget
+ok 270 - sqlite: completed X and restarted Y share raw conversation but not work/evidence/budget
+  ---
+  duration_ms: 478.691875
+  type: 'test'
+  ...
+# Subtest: file-journal: completed X and restarted Y share raw conversation but not work/evidence/budget
+ok 271 - file-journal: completed X and restarted Y share raw conversation but not work/evidence/budget
+  ---
+  duration_ms: 1365.99
+  type: 'test'
+  ...
+# Subtest: same message retransmission recovers stable work; conflicting raw text is rejected before extra work
+ok 272 - same message retransmission recovers stable work; conflicting raw text is rejected before extra work
+  ---
+  duration_ms: 222.307
+  type: 'test'
+  ...
+# Subtest: input/work linkage recovers after a failure following the durable work commit
+ok 273 - input/work linkage recovers after a failure following the durable work commit
+  ---
+  duration_ms: 205.618583
+  type: 'test'
+  ...
+# Subtest: agents/users/new sessions cannot access or inject another session even with a known session ID
+ok 274 - agents/users/new sessions cannot access or inject another session even with a known session ID
+  ---
+  duration_ms: 460.827875
+  type: 'test'
+  ...
+# Subtest: new applied text invalidates old context and requires review; a rejected command does not block the next input
+ok 275 - new applied text invalidates old context and requires review; a rejected command does not block the next input
+  ---
+  duration_ms: 353.340042
+  type: 'test'
+  ...
+# Subtest: Y can prepare before X without trapping X or regressing the active session head
+ok 276 - Y can prepare before X without trapping X or regressing the active session head
+  ---
+  duration_ms: 251.3885
+  type: 'test'
+  ...
+# Subtest: context capacity is explicit and preserves the received original for later compact
+ok 277 - context capacity is explicit and preserves the received original for later compact
+  ---
+  duration_ms: 224.7645
+  type: 'test'
+  ...
+# Subtest: sqlite: inputOnly resumes the same original once and still acknowledges it after completed work
+ok 278 - sqlite: inputOnly resumes the same original once and still acknowledges it after completed work
+  ---
+  duration_ms: 573.469208
+  type: 'test'
+  ...
+# Subtest: sqlite: inputOnly leaves later work and command intakes pending, while ordinary resume still applies both
+ok 279 - sqlite: inputOnly leaves later work and command intakes pending, while ordinary resume still applies both
+  ---
+  duration_ms: 287.506
+  type: 'test'
+  ...
+# Subtest: file-journal: inputOnly resumes the same original once and still acknowledges it after completed work
+ok 280 - file-journal: inputOnly resumes the same original once and still acknowledges it after completed work
+  ---
+  duration_ms: 1156.746042
+  type: 'test'
+  ...
+# Subtest: file-journal: inputOnly leaves later work and command intakes pending, while ordinary resume still applies both
+ok 281 - file-journal: inputOnly leaves later work and command intakes pending, while ordinary resume still applies both
+  ---
+  duration_ms: 537.3995
+  type: 'test'
+  ...
+# Subtest: inputOnly does not overtake an earlier pending work or automatically create another original
+ok 282 - inputOnly does not overtake an earlier pending work or automatically create another original
+  ---
+  duration_ms: 276.837083
+  type: 'test'
+  ...
+# Subtest: inputOnly catches a predecessor arriving between its preflight and durable receive
+ok 283 - inputOnly catches a predecessor arriving between its preflight and durable receive
+  ---
+  duration_ms: 235.374542
+  type: 'test'
+  ...
+# Subtest: inputOnly recovers a committed work command whose inbox settlement was interrupted
+ok 284 - inputOnly recovers a committed work command whose inbox settlement was interrupted
+  ---
+  duration_ms: 221.409084
+  type: 'test'
+  ...
+# Subtest: inputOnly keeps authorization, session binding, and stale revision rejection before memory capture
+ok 285 - inputOnly keeps authorization, session binding, and stale revision rejection before memory capture
+  ---
+  duration_ms: 201.031625
+  type: 'test'
+  ...
+# Subtest: owned v1 migration preserves exact work JSON, sources, receipts and index state without personal adoption
+ok 286 - owned v1 migration preserves exact work JSON, sources, receipts and index state without personal adoption
+  ---
+  duration_ms: 47.380791
+  type: 'test'
+  ...
+# Subtest: migration copy failure rolls back schema and all data, then the same owner can retry
+ok 287 - migration copy failure rolls back schema and all data, then the same owner can retry
+  ---
+  duration_ms: 31.405916
+  type: 'test'
+  ...
+# Subtest: unowned, foreign-owned and malformed legacy databases cannot be silently migrated
+ok 288 - unowned, foreign-owned and malformed legacy databases cannot be silently migrated
+  ---
+  duration_ms: 66.969167
+  type: 'test'
+  ...
+# Subtest: independent scoped reopens retain legacy shared/reviewed records and work index lag semantics
+ok 289 - independent scoped reopens retain legacy shared/reviewed records and work index lag semantics
+  ---
+  duration_ms: 25.349583
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at migration copied preserves the atomic schema and original receipt
+ok 290 - actual SIGKILL at migration copied preserves the atomic schema and original receipt
+  ---
+  duration_ms: 71.890041
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at migration committed preserves the atomic schema and original receipt
+ok 291 - actual SIGKILL at migration committed preserves the atomic schema and original receipt
+  ---
+  duration_ms: 73.103708
+  type: 'test'
+  ...
+# Subtest: personal commit indexes immediately, survives reopen, uses CAS and retains receipts after forgetting
+ok 292 - personal commit indexes immediately, survives reopen, uses CAS and retains receipts after forgetting
+  ---
+  duration_ms: 27.13925
+  type: 'test'
+  ...
+# Subtest: shared handles isolate identical IDs, receipts, heads and indexes across agents, users and tenants
+ok 293 - shared handles isolate identical IDs, receipts, heads and indexes across agents, users and tenants
+  ---
+  duration_ms: 14.424417
+  type: 'test'
+  ...
+# Subtest: personal scope is explicit and cannot enter legacy/work partitions or reviewer searches
+ok 294 - personal scope is explicit and cannot enter legacy/work partitions or reviewer searches
+  ---
+  duration_ms: 9.432291
+  type: 'test'
+  ...
+# Subtest: shared registration is explicit, immutable, distinct from single-agent owner and checked on reuse
+ok 295 - shared registration is explicit, immutable, distinct from single-agent owner and checked on reuse
+  ---
+  duration_ms: 24.651834
+  type: 'test'
+  ...
+# Subtest: personal record, index, head and receipt roll back together at index and receipt failures
+ok 296 - personal record, index, head and receipt roll back together at index and receipt failures
+  ---
+  duration_ms: 11.143083
+  type: 'test'
+  ...
+# Subtest: scoped canonical rows reject body identity tampering rather than returning another user record
+ok 297 - scoped canonical rows reject body identity tampering rather than returning another user record
+  ---
+  duration_ms: 9.862
+  type: 'test'
+  ...
+# Subtest: session aliases persist by owner and route; explicit identifiers only resume their exact scope
+ok 298 - session aliases persist by owner and route; explicit identifiers only resume their exact scope
+  ---
+  duration_ms: 5.241333
+  type: 'test'
+  ...
+# Subtest: intake receipt is durable and idempotent; late settlement never replaces a newer active work
+ok 299 - intake receipt is durable and idempotent; late settlement never replaces a newer active work
+  ---
+  duration_ms: 7.75475
+  type: 'test'
+  ...
+# Subtest: head CAS retains tail and historic prefixes, assigning each candidate one permanent revision
+ok 300 - head CAS retains tail and historic prefixes, assigning each candidate one permanent revision
+  ---
+  duration_ms: 3.844875
+  type: 'test'
+  ...
+# Subtest: local response reference and canonical message commit atomically, with no response-body copy
+ok 301 - local response reference and canonical message commit atomically, with no response-body copy
+  ---
+  duration_ms: 4.896875
+  type: 'test'
+  ...
+# Subtest: a failed user-reference transaction leaves neither receipt nor consumed sequence
+ok 302 - a failed user-reference transaction leaves neither receipt nor consumed sequence
+  ---
+  duration_ms: 2.409833
+  type: 'test'
+  ...
+# Subtest: history applies label and destination policy before paging and binds cursors to a fixed scope/policy/prefix
+ok 303 - history applies label and destination policy before paging and binds cursors to a fixed scope/policy/prefix
+  ---
+  duration_ms: 4.517333
+  type: 'test'
+  ...
+# Subtest: delivery scope mismatch cannot append a message, and a missing session reference cannot claim delivered
+ok 304 - delivery scope mismatch cannot append a message, and a missing session reference cannot claim delivered
+  ---
+  duration_ms: 2.688792
+  type: 'test'
+  ...
+# Subtest: enabling sessions never adopts legacy local message bodies into a new session
+ok 305 - enabling sessions never adopts legacy local message bodies into a new session
+  ---
+  duration_ms: 2.1835
+  type: 'test'
+  ...
+# Subtest: agent-store composition exposes owner-bound sessions separately from each agents long-term memory
+ok 306 - agent-store composition exposes owner-bound sessions separately from each agents long-term memory
+  ---
+  duration_ms: 277.916625
+  type: 'test'
+  ...
+1..306
+# tests 306
+# suites 0
+# pass 306
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 70270.288833

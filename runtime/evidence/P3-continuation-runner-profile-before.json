@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "kind": "local_intermediate_computer_continuation_profile",
+  "label": "before head-publication merge",
+  "recordedLocalDate": "2026-09-06",
+  "environment": {
+    "cwd": "/Users/seunghanee/Documents/secumon/runtime",
+    "node": "v24.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "backend": "file-journal",
+    "fixtureClock": 1000,
+    "runtimeLeaseMs": 10000,
+    "parallelism": "One isolated profiling process; parent may have been doing independent local work. No suite-wide load control."
+  },
+  "command": {
+    "original": ".tools/node-v24.20.0-darwin-arm64/bin/node --input-type=module (inline module via stdin)",
+    "reproduction": ".tools/node-v24.20.0-darwin-arm64/bin/node evidence/P3-continuation-runner-profile.mjs",
+    "note": "The retained reproduction script expresses the same fixture, instrumentation and phase boundaries. It was reconstructed after the original inline invocation; the original stdout values below are preserved without relabelling them as a rerun."
+  },
+  "scenario": "Synthetic Search applied_unknown, explicit settled reconciliation, then one continuation executing only fill Note and Save. Child reserved before standalone resolve/current measurements; execution measurement ends after settlePending, before adoption.",
+  "measurement": "Public state/artifact API and internal proof method counts, FileArtifactStore physical metrics, FileJournalStateRepository verified-record metrics are per-phase deltas. Setup, parent actions/reconciliation, child reservation and final status reads excluded. Repeated record bytes are actual repeated reads, not unique content size. Single timing observation only; no performance acceptance or actual-driver claim.",
+  "phases": [
+    {
+      "phase": "resolve",
+      "ms": 21.905625,
+      "valid": true,
+      "state": { "get": 8, "receipt": 18, "commit": 0 },
+      "artifact": { "get": 30, "exists": 0, "put": 0 },
+      "calls": { "continuation.resolve": 1, "continuation.derive": 1, "continuation.canonical": 2, "continuation.resultCurrent": 1, "computer.inspectCheckpoint": 1, "computer.verifyCheckpoint": 4, "computer.validateResult": 1, "reconciliation.proofCurrent": 1 },
+      "physical": { "bodyReadOperations": 30, "bodyReadBytes": 40576, "hashCalls": 30, "hashBytes": 40576 },
+      "journal": { "recordReads": 624, "recordBytes": 3980340, "rawHashCalls": 624, "rawHashBytes": 3980340, "metadataChecks": 2236, "headerReads": 78, "headerBytes": 8034, "directorySyncs": 78, "cacheHits": 624, "parsedRecords": 0, "replayedRecords": 0 }
+    },
+    {
+      "phase": "current",
+      "ms": 23.649625,
+      "valid": true,
+      "state": { "get": 10, "receipt": 18, "commit": 0 },
+      "artifact": { "get": 30, "exists": 0, "put": 0 },
+      "calls": { "continuation.current": 1, "continuation.resolve": 1, "continuation.derive": 1, "continuation.canonical": 4, "continuation.resultCurrent": 2, "computer.inspectCheckpoint": 1, "computer.verifyCheckpoint": 4, "computer.validateResult": 1, "reconciliation.proofCurrent": 1 },
+      "physical": { "bodyReadOperations": 30, "bodyReadBytes": 40576, "hashCalls": 30, "hashBytes": 40576 },
+      "journal": { "recordReads": 672, "recordBytes": 4286520, "rawHashCalls": 672, "rawHashBytes": 4286520, "metadataChecks": 2408, "headerReads": 84, "headerBytes": 8652, "directorySyncs": 84, "cacheHits": 672, "parsedRecords": 0, "replayedRecords": 0 }
+    },
+    {
+      "phase": "execute",
+      "ms": 3321.5687080000002,
+      "attemptStatus": "received",
+      "error": null,
+      "state": { "get": 915, "receipt": 1794, "commit": 19 },
+      "artifact": { "get": 2980, "exists": 348, "put": 18 },
+      "calls": { "continuation.current": 2, "computer.current": 45, "computer.validateResult": 99, "computer.verifyCheckpoint": 394, "reconciliation.proofCurrent": 99, "continuation.canonical": 198, "continuation.derive": 97, "computer.inspectCheckpoint": 97, "continuation.resultCurrent": 99, "continuation.resolve": 97 },
+      "physical": { "getCalls": 2980, "existsCalls": 366, "putCalls": 18, "metadataReadOperations": 3328, "metadataReadBytes": 802048, "bodyReadOperations": 3328, "bodyReadBytes": 4951304, "hashCalls": 3364, "hashBytes": 5020180, "fileWrites": 36, "metadataWriteBytes": 4338, "bodyWriteBytes": 66194, "readFailures": 18, "verificationFailures": 18, "deniedReads": 0, "writeFailures": 0 },
+      "journal": { "headerReads": 8279, "headerBytes": 852737, "recordReads": 89107, "recordBytes": 743147779, "rawHashCalls": 89107, "rawHashBytes": 743147779, "checksumHashCalls": 18, "checksumHashBytes": 260135, "parsedRecords": 18, "replayedRecords": 18, "discoveryParses": 0, "cacheHits": 89089, "cacheEvictions": 0, "metadataChecks": 305950, "directorySyncs": 8241, "inspectedWorks": 0, "retainedProjectionBytes": 267060, "cachedWorks": 0, "observedRecordIdentities": 18, "observedWorks": 0, "observedDirectories": 0 },
+      "inputCount": 3,
+      "saveCount": 1
+    }
+  ],
+  "pins": [
+    { "file": "dist/application/computer-continuations.js", "sha256": "0b3ccd73f632060e0c0ae2262318483e87570a3decd73d4276aaf200cf8c06fe" },
+    { "file": "dist/application/computer-use.js", "sha256": "0f4dd1c20926ab5f679880f73154417c52dd742040d4d20a2094691487015022" }
+  ],
+  "scope": { "syntheticOnly": true, "actualComputerDriverCalls": 0, "externalServiceCalls": 0, "modelCalls": 0, "performanceAcceptance": false, "sourceOrDistEditedByProfiler": false },
+  "limitations": [
+    "One local intermediate observation is insufficient for general timing or concurrency claims.",
+    "Original inline invocation did not persist a full source/build manifest; only the two observed compiled module hashes are pinned here.",
+    "Standalone physical metric objects preserve the fields available in the retained tool summary; the execute metric object preserves its full stdout.",
+    "Depth-eight continuation cost was not measured. Raw original proof reads cannot be reused across driver or later request boundaries.",
+    "Positive missing-file checks during put may increment read/verification failure counters; these are not equivalent to failed tool execution."
+  ]
+}

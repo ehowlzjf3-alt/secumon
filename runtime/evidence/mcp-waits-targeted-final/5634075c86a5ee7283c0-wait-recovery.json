@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "kind": "mcp_wait_recovery",
+  "test": "sqlite: MCP whole wait survives SIGKILL and reopens without resetting its due time or consuming an early successor",
+  "backend": "sqlite",
+  "waitKind": "whole",
+  "codeDigest": "d9356ffc2b0bdf3442cc863a2b7e17bd66b9204be200f5dab3a1ca5d6e9cec48",
+  "marker": {
+    "schemaVersion": 1,
+    "backend": "sqlite",
+    "kind": "whole",
+    "workId": "mcp-wait-recovery",
+    "workerPid": 38774,
+    "peerPid": 38776,
+    "owner": "mcp-wait-before",
+    "parentAttemptId": "attempt-2880f408-4576-4535-beb5-06e028c14adb",
+    "successorTaskId": "resume-after-wait",
+    "head": {
+      "id": "ac98399c2604fd2c383d516d270ab123b1ab7f6ca5463812c4495052a80c416a",
+      "sha256": "26db453ce54cde85c871d9f936e8647278105094b1e5b3942d67db9a5fa59870",
+      "byteLength": 978,
+      "mediaType": "application/json",
+      "tenantId": "tenant-a",
+      "labels": [
+        "synthetic"
+      ]
+    },
+    "resume": {
+      "id": "4ce39b087cde089c402ca40fdab7bd6936900263208ef69b77432fc0ea57b326",
+      "sha256": "6e90f0ebbefde2aa126a4559733a4153c873cf6ac6ab4d22690e30eeba2a46bc",
+      "byteLength": 8416,
+      "mediaType": "application/json",
+      "tenantId": "tenant-a",
+      "labels": [
+        "synthetic"
+      ]
+    },
+    "checkpointDigest": "f8c6c578cf15d14a8ffaafeca8b5873f37fbf293103c9e40de6e3c09f4538262",
+    "stateDigest": "e00aa81fe62d11e3a4f3e2b6513d479ff26008d05284544cf079de81bcea3f20",
+    "at": 1000,
+    "retryAt": 3500,
+    "deadlineAt": 61000,
+    "revision": 12,
+    "budget": {
+      "limits": {
+        "toolCalls": 10,
+        "modelCalls": 5,
+        "tokens": 10000,
+        "replans": 5,
+        "wallTimeMs": 60000
+      },
+      "used": {
+        "toolCalls": 1,
+        "modelCalls": 0,
+        "tokens": 0,
+        "replans": 1,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "calls": [
+      {
+        "request": {
+          "requestId": "read_request-6757ec81-439a-4ae9-89a9-106ec3f5981b",
+          "cursor": null,
+          "snapshot": null,
+          "retryItems": null,
+          "itemLimit": 4
+        },
+        "attemptId": "attempt-2880f408-4576-4535-beb5-06e028c14adb",
+        "status": "deferred",
+        "response": {
+          "id": "9949503144e4db6d38b24ec099f6423d75924d0c66507ad0e5c95185e1f31a81",
+          "sha256": "82438503df1b7e633fb9fcabe190f9ad0b69839fa6db23c272ec38e264c04862",
+          "byteLength": 470,
+          "mediaType": "application/json",
+          "tenantId": "tenant-a",
+          "labels": [
+            "synthetic"
+          ]
+        },
+        "dispatchedAt": 1000,
+        "receivedAt": 1000,
+        "errorCode": "read_rate_limited"
+      }
+    ],
+    "acceptedResponses": 0,
+    "completedItemIds": []
+  },
+  "beforeAudit": [
+    {
+      "sequence": 1,
+      "pid": 38776,
+      "event": "start",
+      "mode": "whole-rate-limit",
+      "retryAfterMs": 2500
+    },
+    {
+      "sequence": 2,
+      "pid": 38776,
+      "event": "method",
+      "method": "server/discover"
+    },
+    {
+      "sequence": 3,
+      "pid": 38776,
+      "event": "method",
+      "method": "tools/list"
+    },
+    {
+      "sequence": 4,
+      "pid": 38776,
+      "event": "method",
+      "method": "tools/call"
+    },
+    {
+      "sequence": 5,
+      "pid": 38776,
+      "event": "call",
+      "tool": "documents.batch",
+      "mode": "whole-rate-limit",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-6757ec81-439a-4ae9-89a9-106ec3f5981b",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null
+    },
+    {
+      "sequence": 6,
+      "pid": 38776,
+      "event": "handler-ready",
+      "tool": "documents.batch",
+      "mode": "whole-rate-limit",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-6757ec81-439a-4ae9-89a9-106ec3f5981b",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null,
+      "responseKind": "rate_limit",
+      "retryAfterMs": 2500,
+      "returnedIds": []
+    },
+    {
+      "sequence": 7,
+      "pid": 38776,
+      "event": "response-sent",
+      "tool": "documents.batch",
+      "mode": "whole-rate-limit",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-6757ec81-439a-4ae9-89a9-106ec3f5981b",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null,
+      "responseKind": "rate_limit",
+      "retryAfterMs": 2500,
+      "returnedIds": []
+    },
+    {
+      "sequence": 8,
+      "pid": 38776,
+      "event": "close",
+      "reason": "stdin-ended"
+    }
+  ],
+  "afterAudit": [
+    {
+      "sequence": 1,
+      "pid": 38782,
+      "event": "start",
+      "mode": "normal",
+      "retryAfterMs": 2500
+    },
+    {
+      "sequence": 2,
+      "pid": 38782,
+      "event": "method",
+      "method": "server/discover"
+    },
+    {
+      "sequence": 3,
+      "pid": 38782,
+      "event": "method",
+      "method": "tools/list"
+    },
+    {
+      "sequence": 4,
+      "pid": 38782,
+      "event": "method",
+      "method": "tools/call"
+    },
+    {
+      "sequence": 5,
+      "pid": 38782,
+      "event": "call",
+      "tool": "documents.batch",
+      "mode": "normal",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-a3753c84-e535-4ad3-9587-83b40940d9ce",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null
+    },
+    {
+      "sequence": 6,
+      "pid": 38782,
+      "event": "handler-ready",
+      "tool": "documents.batch",
+      "mode": "normal",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-a3753c84-e535-4ad3-9587-83b40940d9ce",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null,
+      "responseKind": "page",
+      "retryAfterMs": 2500,
+      "returnedIds": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "sequence": 7,
+      "pid": 38782,
+      "event": "response-sent",
+      "tool": "documents.batch",
+      "mode": "normal",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-a3753c84-e535-4ad3-9587-83b40940d9ce",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null,
+      "responseKind": "page",
+      "retryAfterMs": 2500,
+      "returnedIds": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "sequence": 8,
+      "pid": 38782,
+      "event": "close",
+      "reason": "stdin-ended"
+    }
+  ],
+  "transport": {
+    "endpointId": "wait-recovery-fixture",
+    "pid": null,
+    "generation": 2,
+    "connected": false,
+    "dirty": true,
+    "closed": true,
+    "activeCalls": 0,
+    "discovering": false,
+    "processStarts": 1,
+    "processCloses": 1,
+    "wireRequests": 3,
+    "toolCalls": 1,
+    "listPages": 1,
+    "requestBytes": 989,
+    "responseBytes": 7685,
+    "protocolErrors": 0
+  },
+  "shutdown": {
+    "pids": {
+      "worker": 38774,
+      "peerBefore": 38776,
+      "peerAfter": 38782
+    },
+    "probe": "ESRCH"
+  },
+  "hostScheduling": "FakeClock and explicit runnable/workflow calls; no background daemon",
+  "final": {
+    "revision": 20,
+    "retryWakeAt": null,
+    "deadlineAt": 61000,
+    "budget": {
+      "limits": {
+        "toolCalls": 10,
+        "modelCalls": 5,
+        "tokens": 10000,
+        "replans": 5,
+        "wallTimeMs": 60000
+      },
+      "used": {
+        "toolCalls": 2,
+        "modelCalls": 0,
+        "tokens": 0,
+        "replans": 1,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "attempts": [
+      {
+        "id": "attempt-2880f408-4576-4535-beb5-06e028c14adb",
+        "owner": "mcp-wait-before",
+        "status": "partial",
+        "adopted": true,
+        "readProgress": {
+          "operationId": "read-70309c1e-2fff-45ff-b52d-4b6222d853ce",
+          "head": {
+            "id": "ac98399c2604fd2c383d516d270ab123b1ab7f6ca5463812c4495052a80c416a",
+            "sha256": "26db453ce54cde85c871d9f936e8647278105094b1e5b3942d67db9a5fa59870",
+            "byteLength": 978,
+            "mediaType": "application/json",
+            "tenantId": "tenant-a",
+            "labels": [
+              "synthetic"
+            ]
+          },
+          "callCount": 1,
+          "remainingCalls": 2,
+          "completedPages": 0,
+          "completedItems": 0,
+          "pendingItems": 0,
+          "unknownCalls": 0,
+          "phase": "partial",
+          "successorAttemptId": "attempt-17de63c5-385b-42de-bde3-75e9797c72ab",
+          "retryAt": 3500,
+          "queryDigest": "f93f72a08df5ac90269e07ff51346a37e0b054f701e43945bbd7367e9f7f9e78"
+        }
+      },
+      {
+        "id": "attempt-17de63c5-385b-42de-bde3-75e9797c72ab",
+        "owner": "mcp-wait-after-3",
+        "status": "succeeded",
+        "adopted": true,
+        "readProgress": {
+          "operationId": "read-70309c1e-2fff-45ff-b52d-4b6222d853ce",
+          "head": {
+            "id": "e00bac195e63bb9208725a93a5df1b57e754d7ce0a0f0d5904e891d950d0060f",
+            "sha256": "be17106ac0884ede8654eb2052380131935b4c111c4c9e26b4a7fb5b58bb2167",
+            "byteLength": 964,
+            "mediaType": "application/json",
+            "tenantId": "tenant-a",
+            "labels": [
+              "synthetic"
+            ]
+          },
+          "callCount": 2,
+          "remainingCalls": 1,
+          "completedPages": 1,
+          "completedItems": 2,
+          "pendingItems": 0,
+          "unknownCalls": 0,
+          "phase": "complete",
+          "successorAttemptId": null,
+          "retryAt": null,
+          "queryDigest": "f93f72a08df5ac90269e07ff51346a37e0b054f701e43945bbd7367e9f7f9e78"
+        }
+      }
+    ]
+  },
+  "tempCleaned": true
+}

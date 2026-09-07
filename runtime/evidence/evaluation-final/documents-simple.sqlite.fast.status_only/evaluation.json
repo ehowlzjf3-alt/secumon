@@ -1,0 +1,601 @@
+{
+  "version": 1,
+  "workId": "work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39",
+  "pins": {
+    "suite": "86134894b8a52306c651e3c96d743adcac50b7e4c21e5b1b23cf12d21f556649",
+    "code": "b110a36700df317b04c5eb4ded4f84780a6af3bd4463a179b7892cc8e429be5a",
+    "fixture": "eb0d371e6b6c8fbfda1831ead9e515028ef088de4e8586a102e387bc1678b1eb",
+    "caseDefinition": "7b2be2e41d9f6ccfce9e805d3b2db47c80b0c81001dbb67a90e388501a753efb",
+    "configuration": "fdbda3376de3a5caaabe65875e233a3b50de6bd9758f3e8d38342ac7c61113c6",
+    "environment": {
+      "node": "v24.20.0",
+      "platform": "darwin",
+      "arch": "arm64",
+      "inference": "scripted",
+      "externalCallsAllowed": false
+    }
+  },
+  "sample": {
+    "case": {
+      "id": "documents-simple.sqlite.fast.status_only",
+      "family": "document_comparison",
+      "fixtureId": "documents-simple",
+      "backend": "sqlite",
+      "mode": "fast",
+      "variant": "status_only",
+      "oracle": {
+        "expectedFinal": "unchanged",
+        "completionEligible": false,
+        "requiredEvidenceIds": [
+          "doc-current"
+        ],
+        "originals": [
+          {
+            "id": "doc-current",
+            "sourceId": "doc-current",
+            "lineageId": "doc-current",
+            "observedAt": 1788566400000
+          }
+        ],
+        "facts": {
+          "retention.days": 30
+        },
+        "finalHypothesis": null,
+        "forbiddenEvidenceIds": [
+          "private-doc",
+          "other-tenant",
+          "bad-amendment"
+        ],
+        "noCompletionBefore": null
+      }
+    },
+    "observations": [
+      {
+        "at": 1788566400002,
+        "stage": "status_only",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39",
+          "revision": 3,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-f96828caf4f2592a81f55681b8a91498e40c59307f151a860a71e5b2ea1e99b0",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-f96828caf4f2592a81f55681b8a91498e40c59307f151a860a71e5b2ea1e99b0",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-359bbeccc441826d84e33cc6b40746647e7de542d90168fcac0cea5402e5abdd",
+            "context": {
+              "binding": {
+                "id": "binding-f96828caf4f2592a81f55681b8a91498e40c59307f151a860a71e5b2ea1e99b0",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "status_only",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39",
+          "revision": 3,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-f96828caf4f2592a81f55681b8a91498e40c59307f151a860a71e5b2ea1e99b0",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-f96828caf4f2592a81f55681b8a91498e40c59307f151a860a71e5b2ea1e99b0",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-359bbeccc441826d84e33cc6b40746647e7de542d90168fcac0cea5402e5abdd",
+            "context": {
+              "binding": {
+                "id": "binding-f96828caf4f2592a81f55681b8a91498e40c59307f151a860a71e5b2ea1e99b0",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      },
+      {
+        "at": 1788566400002,
+        "stage": "status_only",
+        "state": {
+          "schemaVersion": 1,
+          "id": "work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39",
+          "revision": 3,
+          "goal": {
+            "revision": 1,
+            "description": "현행 보존기간을 근거와 함께 알려줘",
+            "scope": "docs-simple",
+            "mode": "fast",
+            "criteria": [
+              {
+                "id": "retention",
+                "description": "근거로 retention.days 확인",
+                "key": "retention.days",
+                "operator": "present",
+                "equals": null,
+                "minIndependentSources": 1,
+                "requireCompleteCoverage": true
+              }
+            ]
+          },
+          "policy": {
+            "tenantId": "synthetic",
+            "principalId": "learner",
+            "allowedTools": [
+              "fixture.read"
+            ],
+            "allowedLabels": [
+              "synthetic",
+              "public"
+            ],
+            "allowedDestinations": [
+              "local"
+            ],
+            "allowWrites": false
+          },
+          "executionControl": {
+            "revision": 1,
+            "requestedMode": "fast",
+            "strategy": "direct",
+            "policy": {
+              "version": "local-v1",
+              "fast": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "replans": 0,
+                "maxPendingTasks": 1,
+                "maxHypotheses": 0
+              }
+            },
+            "pending": null,
+            "lastReason": "mode_fast"
+          },
+          "status": "ready",
+          "statusReason": "request_accepted",
+          "budget": {
+            "limits": {
+              "toolCalls": 20,
+              "modelCalls": 10,
+              "tokens": 1000000,
+              "replans": 5,
+              "wallTimeMs": 172800000
+            },
+            "used": {
+              "toolCalls": 0,
+              "modelCalls": 0,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "reservedToolCalls": 0,
+            "reservedModelCalls": 0,
+            "reservedTokens": 0
+          },
+          "plan": null,
+          "attempts": [],
+          "modelCalls": [],
+          "evidence": [],
+          "hypotheses": [],
+          "hypothesisAssessment": null,
+          "obligations": [
+            {
+              "id": "response-delivery:1",
+              "kind": "delivery",
+              "reason": "result_delivery_required",
+              "status": "pending",
+              "wakeKey": "response-delivery:1",
+              "dueAt": 1788739200000
+            }
+          ],
+          "artifacts": [],
+          "conversation": {
+            "bindings": [
+              {
+                "id": "binding-f96828caf4f2592a81f55681b8a91498e40c59307f151a860a71e5b2ea1e99b0",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              }
+            ],
+            "primaryBindingId": "binding-f96828caf4f2592a81f55681b8a91498e40c59307f151a860a71e5b2ea1e99b0",
+            "completionRequiresDelivery": true,
+            "result": null
+          },
+          "createdAt": 1788566400000,
+          "updatedAt": 1788566400002,
+          "deadlineAt": 1788739200000
+        },
+        "eventTypes": [],
+        "deliveries": [
+          {
+            "id": "ack",
+            "workId": "work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39",
+            "goalRevision": 1,
+            "destination": "local",
+            "kind": "ack",
+            "text": "[work-43f6b5b6e7bc90718b5199868618dc735d5fcbb93e68ed3e968f3156c325aa39] 요청을 접수했습니다.",
+            "status": "delivered",
+            "externalId": "local-359bbeccc441826d84e33cc6b40746647e7de542d90168fcac0cea5402e5abdd",
+            "context": {
+              "binding": {
+                "id": "binding-f96828caf4f2592a81f55681b8a91498e40c59307f151a860a71e5b2ea1e99b0",
+                "channel": "test",
+                "conversationId": "documents-simple.sqlite.fast.status_only",
+                "recipientId": "learner",
+                "destination": "local",
+                "tenantId": "synthetic",
+                "principalId": "learner"
+              },
+              "labels": [],
+              "sourceRevision": 1,
+              "dataGeneration": 0,
+              "responseId": null,
+              "evidenceIds": [],
+              "evidenceDigest": null,
+              "obligationIds": [],
+              "artifact": null
+            },
+            "dispatch": {
+              "owner": "evaluation-1",
+              "leaseUntil": 0,
+              "attempts": 1,
+              "lastError": null
+            }
+          }
+        ]
+      }
+    ],
+    "entries": [],
+    "finalControl": "unchanged",
+    "startedAt": 1788566400002,
+    "finishedAt": 1788566400002,
+    "wallElapsedMs": 0.21329200000036508,
+    "runError": null
+  },
+  "sampleDigest": "5ff86e9c3336c7004c265732f68c90cc7eee272c0a0a7303fd1b670bd3058d83",
+  "score": {
+    "caseId": "documents-simple.sqlite.fast.status_only",
+    "contractPassed": true,
+    "goalCompleted": false,
+    "falseCompletionRevisions": [],
+    "failures": [],
+    "finalControl": "unchanged",
+    "usage": {
+      "limits": {
+        "toolCalls": 20,
+        "modelCalls": 10,
+        "tokens": 1000000,
+        "replans": 5,
+        "wallTimeMs": 172800000
+      },
+      "used": {
+        "toolCalls": 0,
+        "modelCalls": 0,
+        "tokens": 0,
+        "replans": 0,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "calls": {
+      "modelEntries": 0,
+      "toolEntries": 0,
+      "sends": 0,
+      "lookups": 0,
+      "uniqueQueries": 0,
+      "repeatedQueries": 0,
+      "adoptedTools": 0,
+      "reusedTools": 0
+    },
+    "context": {
+      "requestBytes": 0,
+      "estimatedTokens": 0,
+      "sourceReads": 0,
+      "evictions": 0,
+      "reloads": 0
+    },
+    "latency": {
+      "ackMs": null,
+      "firstEvidenceMs": null,
+      "firstUsefulAnswerMs": null,
+      "verifiedCompletionMs": null,
+      "simulatedElapsedMs": 0,
+      "wallElapsedMs": 0.21329200000036508
+    },
+    "interventions": 0,
+    "promotions": 0
+  },
+  "scoreDigest": "3812745341ba0c928f6967960ce1788783ccadbb29dd636b8e681ef5da63df7f",
+  "finalStateDigest": "1fb1d166c9ed6498f54ab717192d7906d61d6ecbd91de58ff431607b336751dc",
+  "eventsDigest": "cd5a336bc61a995657f0f581e017cacf30d03827cf44416a5f85de819d09951b",
+  "deliveriesDigest": "81fd08ab04b650dfdec975474d92f87522ace8844c17c265d57b19b4b25de487",
+  "receipts": [
+    {
+      "commandId": "conversation.accept",
+      "digest": "4eee7bd05f9f80f730875bd7273176954d4486aebb2e20270df4a1350042caa8",
+      "stateRevision": 1,
+      "stateDigest": "66719d746465cf9104c9ebb3e9c6ae380d1a973baf841a8ca3345e039bc69e17"
+    },
+    {
+      "commandId": "delivery-claim:ack:1",
+      "digest": "423f4b2fbfd0c0b567fe06874475ded32d9826b59e26eaea0d04d785eb46953b",
+      "stateRevision": 2,
+      "stateDigest": "f588e24839146909821123f39130081a90c6c4d7080e9d0d03246614d00457fa"
+    },
+    {
+      "commandId": "delivery-settle:ack:1:delivered:2",
+      "digest": "a5cc9d6aa107cf2c20fac274e40f87ff93b482dc3216e00c302efd1e65e6a677",
+      "stateRevision": 3,
+      "stateDigest": "1fb1d166c9ed6498f54ab717192d7906d61d6ecbd91de58ff431607b336751dc"
+    }
+  ],
+  "artifacts": [],
+  "checkpoint": null
+}

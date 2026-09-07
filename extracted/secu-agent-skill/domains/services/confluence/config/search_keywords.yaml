@@ -1,0 +1,139 @@
+# Confluence 브라우저 키워드 검색 큐 시드(confluence_search_target).
+#
+# 이 인스턴스는 REST CQL 검색이 정책상 영구 차단(rate-limit 0)이라, 승인된 내부 보안 점검은
+# 브라우저 검색창(dosearchsite)으로 아래 "시크릿 지표" 키워드를 검색해 접근 가능한 page 중
+# 부적절 노출을 찾는다. 여기 값은 일반 시크릿/민감정보 지표일 뿐 실제 계정/CIDR/시크릿이 아니다.
+#
+# 동기화: `python -m service.agents.confluence_discovery_agent --search-sync`
+#   또는 env override: CONFLUENCE_SEARCH_KEYWORDS="a,b,c" / CONFLUENCE_SEARCH_KEYWORDS_FILE=<path>
+#
+# scope(선택): 특정 space 안에서만 검색하려면 keyword 항목에 space_keys 를 준다(없으면 접근가능 전 space).
+# 2026-07-27 확장: 기존 15개 중 8개가 이미 `no sensitive data found` 로 소진돼
+# 도메인이 침묵했다(finding 총 5건). 커버리지 상한이 곧 키워드 수였다.
+# 확장 원칙:
+#   1) **값 접두**(ghp_/AKIA/xoxb- 등)가 최우선 — 오탐이 거의 없고 신호가 확실하다.
+#   2) 검색 파서가 필드 구분으로 오해할 수 있으므로 `:` 를 쓰지 않는다(URL 인코딩은 되지만
+#      Confluence Lucene 이 `jdbc:` 를 필드로 파싱할 여지가 있어 `jdbc` 로 둔다).
+#   3) 국문이 4개뿐이라 실제 사내 문서 어휘를 늘린다.
+# 기존 키워드의 진행상태는 sync 시 보존된다(scope/config_version 만 갱신).
+version: "2026-08-16.1"
+keywords:
+  # ── 자격증명/시크릿 지표(영문) — 기존
+  - keyword: password
+  - keyword: passwd
+  - keyword: api_key
+  - keyword: apikey
+  - keyword: secret_key
+  - keyword: access_key
+  - keyword: private_key
+  - keyword: client_secret
+  - keyword: aws_secret_access_key
+  - keyword: connectionstring
+  - keyword: "BEGIN RSA PRIVATE KEY"
+  # ── 값 접두(고신호·저오탐): 실제 시크릿 값이 그대로 붙여넣어진 경우
+  - keyword: ghp_
+  - keyword: xoxb-
+  - keyword: AKIA
+  - keyword: "BEGIN OPENSSH PRIVATE KEY"
+  - keyword: "BEGIN PRIVATE KEY"
+  - keyword: "BEGIN CERTIFICATE"
+  # ── 자격증명 표현 변형
+  - keyword: credential
+  - keyword: passphrase
+  - keyword: access_token
+  - keyword: refresh_token
+  - keyword: bearer
+  - keyword: "personal access token"
+  - keyword: service_account
+  # ── 접속문자열/인프라
+  - keyword: jdbc
+  - keyword: mongodb
+  - keyword: sqlplus
+  - keyword: keystore
+  - keyword: truststore
+  - keyword: authorized_keys
+  - keyword: id_rsa
+  - keyword: htpasswd
+  # ── 자격증명/민감정보 지표(국문) — 기존
+  - keyword: 비밀번호
+  - keyword: 접속정보
+  - keyword: 계정정보
+  - keyword: 관리자계정
+  # ── 국문 확장(사내 문서 실제 어휘)
+  - keyword: 패스워드
+  - keyword: 초기비밀번호
+  - keyword: 공용계정
+  - keyword: 테스트계정
+  - keyword: 인증키
+  - keyword: 개인키
+  - keyword: 계정발급
+  - keyword: 디비접속
+  - keyword: 대외비
+  - keyword: 기밀
+
+  # ══════════════════════════════════════════════════════════════════════
+  # 2026-08-16 확장 — 자격증명 밖으로. 사용자 지시: "컨피덴셜 말고 경영진
+  # 회의록이라던가 개인정보도 포함해서".
+  #
+  # 왜 지금 되나: worker.md 의 판정 축은 이미
+  #   "credentials/secrets, **bulk personal or HR data**,
+  #    **executive/business meeting material**, critical process data"
+  # 를 포함한다. 판정은 되는데 **그런 페이지를 찾아올 키워드가 없었다** —
+  # 기존 46개가 100% 자격증명 어휘였다. 커버리지 상한이 곧 키워드였다(2026-07-27 과 동일 병목).
+  #
+  # 안전 근거: 검색은 호출당 max_pages 예산을 키워드끼리 나눠 쓰므로(browser_search_tool)
+  # 일반 어휘 하나가 큐를 폭파시키지 않는다. github 쪽 "일반 어휘 금지" 원칙은
+  # repo 단위 발견이라 적용되는 것이고, confluence 는 page 단위라 반대다.
+  #
+  # ⚠️ 값이 아니라 **라벨**을 찾는다. 실제 주민번호/카드번호 값은 코어 detector
+  #   (kr_rrn·credit_card·kr_phone·bank_account_with_label·address_with_label)가 잡는다.
+  #   키워드는 그 detector 를 태울 **페이지를 데려오는** 역할이다.
+
+  # ── 개인정보: 식별번호 라벨 (값은 detector 소관)
+  - keyword: 주민등록번호
+  - keyword: 주민번호
+  - keyword: 여권번호
+  - keyword: 운전면허번호
+  - keyword: 외국인등록번호
+  - keyword: 계좌번호
+  - keyword: 카드번호
+  # ── 개인정보: 대량 명부 — 가장 흔한 유출 형태(1인 정보보다 명부가 위험하다)
+  - keyword: 비상연락망
+  - keyword: 주소록
+  - keyword: 직원명단
+  - keyword: 사원명단
+  - keyword: 참석자명단
+  - keyword: 연락처현황
+  # ── 인사/급여 (HR data)
+  - keyword: 인사평가
+  - keyword: 인사기록
+  - keyword: 인사발령
+  - keyword: 급여명세
+  - keyword: 연봉
+  - keyword: 퇴직금
+  - keyword: 건강검진
+  # ── 개인정보/HR 영문
+  - keyword: "personal information"
+  - keyword: payroll
+  - keyword: "employee list"
+  - keyword: "resident registration"
+  # ── 경영진 회의/보고 (executive/business meeting material)
+  - keyword: 경영회의
+  - keyword: 임원회의
+  - keyword: 이사회
+  - keyword: 임원보고
+  - keyword: 경영실적
+  - keyword: 사업계획
+  - keyword: 투자심의
+  - keyword: 손익
+  - keyword: 인수합병
+  - keyword: "board meeting"
+  - keyword: "executive summary"
+  # ── 원가/거래 조건 (business confidential — 반도체는 원가·단가가 핵심 기밀)
+  - keyword: 원가
+  - keyword: 단가표
+  - keyword: 견적서
+  # ── 문서 등급 표기 (기존 대외비/기밀 보완)
+  - keyword: 사외비
+  - keyword: 사내한
+  - keyword: 극비

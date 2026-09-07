@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 1,
+  "status": "selection_proposal_not_executed",
+  "recordedAt": "2026-09-07T15:06:31.066638+00:00",
+  "basis": {
+    "integration": "evidence/C05-mcp-collections-integration1.json",
+    "integrationSha256": "1dbe4128c91b1f32aba4b405dd0d3395565e1a14895c1f7b157776dccefea6a4",
+    "integrationStatus": "applied_unverified",
+    "sourceDigestRecordedByIntegration": "475ddda36a0edcb5dbd17995448df73f039ef95de60ae2d105fba372c25ff77d",
+    "buildStatus": "Parent reported build1 in progress; this note does not assert its outcome."
+  },
+  "scope": "metadata/context/planner plus collection/runtime guard and early settlement related regressions",
+  "fileCount": 35,
+  "files": [
+    "dist/tests/context-compiler.test.js",
+    "dist/tests/context-store.test.js",
+    "dist/tests/context-reservation.test.js",
+    "dist/tests/context-dispatch.test.js",
+    "dist/tests/context-inspection-selection.test.js",
+    "dist/tests/model-tool-availability.test.js",
+    "dist/tests/model-runtime.test.js",
+    "dist/tests/model-boundaries.test.js",
+    "dist/tests/model-input-profile-runtime.test.js",
+    "dist/tests/agent-turn-boundaries.test.js",
+    "dist/tests/structured-planner.test.js",
+    "dist/tests/agent-turn-adapter.test.js",
+    "dist/tests/agent-turn-compact.test.js",
+    "dist/tests/disclosure-boundaries.test.js",
+    "dist/tests/effect-proofs.test.js",
+    "dist/tests/execution-authority.test.js",
+    "dist/tests/read-collections.test.js",
+    "dist/tests/read-checkpoints.test.js",
+    "dist/tests/read-page-proof.test.js",
+    "dist/tests/read-deferral-proof.test.js",
+    "dist/tests/read-wait-control.test.js",
+    "dist/tests/mcp-read-collections.test.js",
+    "dist/tests/mcp-read-settlement-recovery.test.js",
+    "dist/tests/mcp-read-waits.test.js",
+    "dist/tests/mcp-read-waits-recovery.test.js",
+    "dist/tests/stored-result-workflow.test.js",
+    "dist/tests/mcp-custody-workflow.test.js",
+    "dist/tests/workflow.test.js",
+    "dist/tests/tool-availability-runtime.test.js",
+    "dist/tests/tool-broker-refresh.test.js",
+    "dist/tests/tool-efficiency-runtime.test.js",
+    "dist/tests/host-tools.test.js",
+    "dist/tests/mcp-host-tools.test.js",
+    "dist/tests/mcp-stored-host-tools.test.js",
+    "dist/tests/mcp-offline-entry.test.js"
+  ],
+  "selection": [
+    {
+      "source": "src/tests/context-compiler.test.ts",
+      "compiled": "dist/tests/context-compiler.test.js",
+      "group": "context",
+      "reason": "기존 반복 working set, 반증·의무 보존과 실제 요청 bytes: marker가 기존 필수 입력 선택을 약화하지 않는지"
+    },
+    {
+      "source": "src/tests/context-store.test.ts",
+      "compiled": "dist/tests/context-store.test.js",
+      "group": "context",
+      "reason": "선택 frame/head의 strict schema, 재접속·손상 재생성과 I/O 중 현재성: packet optional 필드 연결"
+    },
+    {
+      "source": "src/tests/context-reservation.test.ts",
+      "compiled": "dist/tests/context-reservation.test.js",
+      "group": "context",
+      "reason": "원문이 head 검증·commit 중 사라질 때 예약/게시를 막는 기존 경계"
+    },
+    {
+      "source": "src/tests/context-dispatch.test.ts",
+      "compiled": "dist/tests/context-dispatch.test.js",
+      "group": "context",
+      "reason": "저장 요청의 도구·guidance 변경을 미송신 단계에서 거절하고 원 입력/회계를 보존"
+    },
+    {
+      "source": "src/tests/context-inspection-selection.test.ts",
+      "compiled": "dist/tests/context-inspection-selection.test.js",
+      "group": "context",
+      "reason": "정확히 맞는 최소 필수 입력, 무쓰기 inspect와 invalid estimator 구분"
+    },
+    {
+      "source": "src/tests/model-tool-availability.test.ts",
+      "compiled": "dist/tests/model-tool-availability.test.js",
+      "group": "model",
+      "reason": "callable 전송 필터와 received proof 분리, tools revision cache, 자동/명시 compact 분기"
+    },
+    {
+      "source": "src/tests/model-runtime.test.ts",
+      "compiled": "dist/tests/model-runtime.test.js",
+      "group": "model",
+      "reason": "새 legacy 입력 읽기가 정상 plan 채택·reopen·counterevidence·원 usage에 미치는 영향"
+    },
+    {
+      "source": "src/tests/model-boundaries.test.ts",
+      "compiled": "dist/tests/model-boundaries.test.js",
+      "group": "model",
+      "reason": "저장 입력 읽기 이후 취소/기한/권한 경합과 늦은 응답 정산·중복 dispatch 차단"
+    },
+    {
+      "source": "src/tests/model-input-profile-runtime.test.ts",
+      "compiled": "dist/tests/model-input-profile-runtime.test.js",
+      "group": "model",
+      "reason": "고정 template 입력 pin과 구형 unpinned 입력, capacity 변경 뒤 received 채택은 별개"
+    },
+    {
+      "source": "src/tests/agent-turn-boundaries.test.ts",
+      "compiled": "dist/tests/agent-turn-boundaries.test.js",
+      "group": "model",
+      "reason": "고정 prompt 변경, 새 입력·취소 뒤 late answer와 unknown usage를 기존대로 처리"
+    },
+    {
+      "source": "src/tests/structured-planner.test.ts",
+      "compiled": "dist/tests/structured-planner.test.js",
+      "group": "model",
+      "reason": "legacy 고정 지침 변경 후 strict proposal·송신 snapshot·estimation bytes와 usage 전달"
+    },
+    {
+      "source": "src/tests/agent-turn-adapter.test.ts",
+      "compiled": "dist/tests/agent-turn-adapter.test.js",
+      "group": "model",
+      "reason": "공용 packet schema/고정 prompt 변경 후 일반 주턴 answer/question/plan 엄격성"
+    },
+    {
+      "source": "src/tests/agent-turn-compact.test.ts",
+      "compiled": "dist/tests/agent-turn-compact.test.js",
+      "group": "model",
+      "reason": "실제 세션 반복 compact에서 일반 주턴 인용·후속 입력을 보존하는 기존 비수집 흐름"
+    },
+    {
+      "source": "src/tests/disclosure-boundaries.test.ts",
+      "compiled": "dist/tests/disclosure-boundaries.test.js",
+      "group": "authority",
+      "reason": "입력 read 횟수가 늘어도 pre/post-dispatch disclosure 및 tool/outbox 마지막 경계 유지"
+    },
+    {
+      "source": "src/tests/effect-proofs.test.ts",
+      "compiled": "dist/tests/effect-proofs.test.js",
+      "group": "authority",
+      "reason": "원 proof 소실의 predispatch 예약 불변과 postdispatch 정산·채택 거절을 구분"
+    },
+    {
+      "source": "src/tests/execution-authority.test.ts",
+      "compiled": "dist/tests/execution-authority.test.js",
+      "group": "authority",
+      "reason": "새 비동기 inspectedControl/복구 경계의 host lease, 축소 disclosure, 늦은 usage와 legacy guard"
+    },
+    {
+      "source": "src/tests/read-collections.test.ts",
+      "compiled": "dist/tests/read-collections.test.js",
+      "group": "collections",
+      "reason": "online paged/batch 자동 진행, 명시 partial successor, 취소/권한/계약 및 지속 call 예산 원동작"
+    },
+    {
+      "source": "src/tests/read-checkpoints.test.ts",
+      "compiled": "dist/tests/read-checkpoints.test.js",
+      "group": "collections",
+      "reason": "완전 orphan 로컬 project, exact parent/head/query/원문 위조 거절과 successor 원문/usage 귀속"
+    },
+    {
+      "source": "src/tests/read-page-proof.test.ts",
+      "compiled": "dist/tests/read-page-proof.test.js",
+      "group": "collections",
+      "reason": "원 dispatch task와 page callback, callback 뒤 원문·registry/권한 경합 및 최종 fence"
+    },
+    {
+      "source": "src/tests/read-deferral-proof.test.ts",
+      "compiled": "dist/tests/read-deferral-proof.test.js",
+      "group": "collections",
+      "reason": "read wait 원 proof callback의 capture와 비동기 같은 버전 교체 거절"
+    },
+    {
+      "source": "src/tests/read-wait-control.test.ts",
+      "compiled": "dist/tests/read-wait-control.test.js",
+      "group": "collections",
+      "reason": "원 retryAt 이전 successor/이름 변경 우회 금지와 독립 업무·기한·취소·예산 판정"
+    },
+    {
+      "source": "src/tests/mcp-read-collections.test.ts",
+      "compiled": "dist/tests/mcp-read-collections.test.js",
+      "group": "collections",
+      "reason": "기존 실제 local stdio online collection 원문·partial/empty/오류·changed-query 및 전송 권한"
+    },
+    {
+      "source": "src/tests/mcp-read-settlement-recovery.test.ts",
+      "compiled": "dist/tests/mcp-read-settlement-recovery.test.js",
+      "group": "collections",
+      "reason": "실제 SIGKILL의 저장 response 선행 reconciliation, 손상/동시 복구 및 부모 상태/비용 유지"
+    },
+    {
+      "source": "src/tests/mcp-read-waits.test.ts",
+      "compiled": "dist/tests/mcp-read-waits.test.js",
+      "group": "collections",
+      "reason": "readReadyCheckpoints 리팩터 뒤 MCP whole/item wait 원문·retryAt·요약 변조의 실제 경계"
+    },
+    {
+      "source": "src/tests/mcp-read-waits-recovery.test.ts",
+      "compiled": "dist/tests/mcp-read-waits-recovery.test.js",
+      "group": "collections",
+      "reason": "실제 SIGKILL/reopen에서 due time과 원 owner/체크포인트를 잃지 않는 기존 wait 복구"
+    },
+    {
+      "source": "src/tests/stored-result-workflow.test.ts",
+      "compiled": "dist/tests/stored-result-workflow.test.js",
+      "group": "workflow",
+      "reason": "새 collection 선행 분기가 기존 단순 MCP receive/adopt→compact 순서와 maxSteps를 깨지 않음"
+    },
+    {
+      "source": "src/tests/mcp-custody-workflow.test.ts",
+      "compiled": "dist/tests/mcp-custody-workflow.test.js",
+      "group": "workflow",
+      "reason": "선행 reconciliation 삽입 뒤 once usage, 미송신 reservation 제외, 취소/소유자·scope 검증 유지"
+    },
+    {
+      "source": "src/tests/workflow.test.ts",
+      "compiled": "dist/tests/workflow.test.js",
+      "group": "workflow",
+      "reason": "일반 저장 model reply·배송·취소·무 planner·최종 checkpoint의 기존 loop/yield 동작"
+    },
+    {
+      "source": "src/tests/tool-availability-runtime.test.ts",
+      "compiled": "dist/tests/tool-availability-runtime.test.js",
+      "group": "broker",
+      "reason": "local complete 예외가 fresh stored-only 호출 허용으로 퍼지지 않고 독립 업무/예약/received를 유지"
+    },
+    {
+      "source": "src/tests/tool-broker-refresh.test.ts",
+      "compiled": "dist/tests/tool-broker-refresh.test.js",
+      "group": "broker",
+      "reason": "새 local 분기 외의 reuse miss/legacy 같은버전 교체와 await 후 최종 계약/availability 확인"
+    },
+    {
+      "source": "src/tests/tool-efficiency-runtime.test.ts",
+      "compiled": "dist/tests/tool-efficiency-runtime.test.js",
+      "group": "broker",
+      "reason": "local consume에서 reuse hook을 건너뛰어도 기존 일반 reuse·unknown 비용·원문 재검증은 유지"
+    },
+    {
+      "source": "src/tests/host-tools.test.ts",
+      "compiled": "dist/tests/host-tools.test.js",
+      "group": "host",
+      "reason": "collectionTools 추가 후 기존 plain tool metadata/callback capture·권한·once cleanup 의미 유지"
+    },
+    {
+      "source": "src/tests/mcp-host-tools.test.ts",
+      "compiled": "dist/tests/mcp-host-tools.test.js",
+      "group": "host",
+      "reason": "mixed collection 지원 후 기존 plain-only discovery/custody/peer 수명과 host 권한 비확대"
+    },
+    {
+      "source": "src/tests/mcp-stored-host-tools.test.ts",
+      "compiled": "dist/tests/mcp-stored-host-tools.test.js",
+      "group": "host",
+      "reason": "기존 static stored-only plain 도구는 peer/온라인 fallback 없이 같은 custody를 사용"
+    },
+    {
+      "source": "src/tests/mcp-offline-entry.test.ts",
+      "compiled": "dist/tests/mcp-offline-entry.test.js",
+      "group": "host",
+      "reason": "기존 일반 CLI 원응답 복구·HTTP 무 peer 복구/connection wait→online 재열기 소비 경로 유지"
+    }
+  ],
+  "alreadyScheduledSeparately": [
+    "dist/tests/host-collection-profile.test.js",
+    "dist/tests/read-complete-resume.test.js",
+    "dist/tests/mcp-stored-read-collections.test.js",
+    "dist/tests/mcp-collection-host-tools.test.js",
+    "dist/tests/read-connection-control.test.js",
+    "dist/tests/read-resume-options.test.js",
+    "dist/tests/read-collection-context.test.js"
+  ],
+  "deferredUnlessFailureOrRelevantEdit": [
+    {
+      "files": [
+        "dist/tests/context-copy.test.js",
+        "dist/tests/context-guidance.test.js",
+        "dist/tests/context-lifecycle.test.js"
+      ],
+      "trigger": "권한/출처/derived-head 실패가 해당 nested copy·guidance·lifecycle 경로로 좁혀질 때. 현재 초기 묶음의 compiler/store/권한 시험과 중복 확대하지 않음."
+    },
+    {
+      "files": [
+        "dist/tests/context-inspection-summary-race.test.js",
+        "dist/tests/agent-turn-window-flow.test.js",
+        "dist/tests/model-window-runtime.test.js"
+      ],
+      "trigger": "새 marker의 최소 입력이나 compact/inspect 캐시 실패가 반복 세션/모델 창 흐름과 연결될 때. 일반 CLI/HTTP collection compact 인수는 별도 신규 시험이 필요."
+    },
+    {
+      "files": [
+        "dist/tests/mcp-read-collections-recovery.test.js",
+        "dist/tests/workflow-crash.test.js"
+      ],
+      "trigger": "원 intent-only/기존 일반 프로세스 재개 회계가 바뀌거나 선정된 settlement/wait SIGKILL 시험에서 회복 실패가 나타날 때. 이들은 선정된 SIGKILL과 다른 경계이며 영구 제외 아님."
+    },
+    {
+      "files": [
+        "dist/tests/read-checkpoint-record.test.js",
+        "dist/tests/read-checkpoint-store.test.js",
+        "dist/tests/read-collection-io.test.js"
+      ],
+      "trigger": "현재 변경하지 않은 delta codec/store/원문 I/O 최적화까지 수정하게 될 때. 현 단계는 ReadCheckpoints 원문 검증과 실제 MCP 기록을 우선."
+    },
+    {
+      "files": [
+        "dist/tests/budget-delegation-runtime.test.js"
+      ],
+      "trigger": "grant/child resource authority나 사용량 예약/반납 구현이 추가로 바뀌거나 비용 불일치가 관측될 때."
+    }
+  ],
+  "runGuidance": [
+    "새 6파일과 기존 read-collection-context의 원 실패/수정 검증은 부모의 별도 단계이며 related에 중복 넣지 않음.",
+    "파일 단위 실행을 권고한다. loop/두 backend/실제 peer 및 SIGKILL 사례를 이름 패턴으로 잘라 성공 수를 부풀리지 않는다.",
+    "부모의 repo-native Node24 build 결과/dist와 per-run source/build pin을 확인한 동일 runner에서 실행한다. 실제 TAP/exit만 결과이며 예상 총 시험 수는 하드코딩하지 않는다.",
+    "기존 847개(67파일) 전체를 재사용하지 않고 35파일로 선정했다. 이후 수정/실패의 실제 경로가 생기면 deferred 목록에서 필요한 파일만 추가한다.",
+    "이 묶음은 현재 변경의 관련 회귀이며 일반 CLI/HTTP collection SIGKILL·낮은 세션 compact·명시 successor·local consume의 새 사용자흐름 인수를 대체하지 않는다.",
+    "실제 사내 MCP/모델/API·Windows·PostgreSQL 검증 또는 전체 목표 완료를 의미하지 않는다."
+  ],
+  "readOnlyReview": [
+    "Applied integration records and root workflow/read reconciliation/read waits/tool broker diffs reviewed.",
+    "Selected repo-native test declarations and relevant boundary implementations reviewed."
+  ],
+  "notPerformed": [
+    "source/test/staging edits",
+    "build/typecheck/test execution",
+    "NAS/SSH/network/model API",
+    "evidence overwrite",
+    "test count or pass claim"
+  ]
+}

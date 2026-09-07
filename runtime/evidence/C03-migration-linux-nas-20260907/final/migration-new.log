@@ -1,0 +1,238 @@
+TAP version 13
+# Subtest: v2 seed preserves latest records, every original receipt and audit, logical head, and ordinary CAS after reopen
+ok 1 - v2 seed preserves latest records, every original receipt and audit, logical head, and ordinary CAS after reopen
+  ---
+  duration_ms: 676.211522
+  type: 'test'
+  ...
+# Subtest: import receipt is exact and idempotent while changed identity/source and an existing v1 store are refused
+ok 2 - import receipt is exact and idempotent while changed identity/source and an existing v1 store are refused
+  ---
+  duration_ms: 87.4978
+  type: 'test'
+  ...
+# Subtest: seeded namespaces remain isolated and a newly introduced scope starts with an ordinary v2 event
+ok 3 - seeded namespaces remain isolated and a newly introduced scope starts with an ordinary v2 event
+  ---
+  duration_ms: 239.237086
+  type: 'test'
+  ...
+# Subtest: preview rejects unsupported receipts, discontinuous audit, head mismatch and oversize seed before target creation
+ok 4 - preview rejects unsupported receipts, discontinuous audit, head mismatch and oversize seed before target creation
+  ---
+  duration_ms: 50.541189
+  type: 'test'
+  ...
+# Subtest: missing seed tail or a complete namespace is refused even when corresponding witnesses were also removed
+ok 5 - missing seed tail or a complete namespace is refused even when corresponding witnesses were also removed
+  ---
+  duration_ms: 158.474445
+  type: 'test'
+  ...
+# Subtest: seed checksum corruption and external hard links remain unsafe; foreign bytes are not overwritten on resume
+ok 6 - seed checksum corruption and external hard links remain unsafe; foreign bytes are not overwritten on resume
+  ---
+  duration_ms: 185.814952
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL after seed publication resumes exact import and preserves canonical bytes
+ok 7 - actual SIGKILL after seed publication resumes exact import and preserves canonical bytes
+  ---
+  duration_ms: 325.724561
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL after format publication resumes exact import and preserves canonical bytes
+ok 8 - actual SIGKILL after format publication resumes exact import and preserves canonical bytes
+  ---
+  duration_ms: 317.247882
+  type: 'test'
+  ...
+# Subtest: post-seed fsync EIO keeps the original cause and published status, then exact resume restores witnesses
+ok 9 - post-seed fsync EIO keeps the original cause and published status, then exact resume restores witnesses
+  ---
+  duration_ms: 303.96631
+  type: 'test'
+  ...
+# Subtest: an empty ready namespace imports its original zero head and leaves room for its first ordinary memory
+ok 10 - an empty ready namespace imports its original zero head and leaves room for its first ordinary memory
+  ---
+  duration_ms: 158.900055
+  type: 'test'
+  ...
+# Subtest: dedicated backup worker preserves the pinned personal receipts and work data, publishes completion last and reuses the same identity
+ok 11 - dedicated backup worker preserves the pinned personal receipts and work data, publishes completion last and reuses the same identity
+  ---
+  duration_ms: 804.715051
+  type: 'test'
+  ...
+# Subtest: same operation rejects a changed fixed work fingerprint before publication and preserves its incomplete candidate
+ok 12 - same operation rejects a changed fixed work fingerprint before publication and preserves its incomplete candidate
+  ---
+  duration_ms: 214.468363
+  type: 'test'
+  ...
+# Subtest: link succeeds then reports EIO: original and cleanup errors survive and same operation repairs the exact two-link candidate
+ok 13 - link succeeds then reports EIO: original and cleanup errors survive and same operation repairs the exact two-link candidate
+  ---
+  duration_ms: 562.649764
+  type: 'test'
+  ...
+# Subtest: post-link directory sync failure retains sync operation and original EIO, then resume repairs the barrier without another snapshot
+ok 14 - post-link directory sync failure retains sync operation and original EIO, then resume repairs the barrier without another snapshot
+  ---
+  duration_ms: 583.342355
+  type: 'test'
+  ...
+# Subtest: completed receipt rejects a byte-identical replacement inode and does not overwrite or adopt it
+ok 15 - completed receipt rejects a byte-identical replacement inode and does not overwrite or adopt it
+  ---
+  duration_ms: 489.830851
+  type: 'test'
+  ...
+# Subtest: completed backup can resume after the source migration fence advances schema, without taking a new source snapshot
+ok 16 - completed backup can resume after the source migration fence advances schema, without taking a new source snapshot
+  ---
+  duration_ms: 755.883471
+  type: 'test'
+  ...
+# Subtest: dedicated backup worker exits when its supervising IPC connection disappears and cannot publish a canonical file
+ok 17 - dedicated backup worker exits when its supervising IPC connection disappears and cannot publish a canonical file
+  ---
+  duration_ms: 148.674446
+  type: 'test'
+  ...
+# Subtest: actual supervisor SIGKILL during native backup preserves the source and incomplete candidate, and the orphan worker exits before resume
+ok 18 - actual supervisor SIGKILL during native backup preserves the source and incomplete candidate, and the orphan worker exits before resume
+  ---
+  duration_ms: 819.464269
+  type: 'test'
+  ...
+# Subtest: backup scope cannot overlap its source parent and bounded failed attempts cannot silently allocate a fifth candidate
+ok 19 - backup scope cannot overlap its source parent and bounded failed attempts cannot silently allocate a fifth candidate
+  ---
+  duration_ms: 183.454316
+  type: 'test'
+  ...
+# Subtest: activation publication fsync failure preserves its cause and resume synchronizes the same visible activation before selecting documents
+ok 20 - activation publication fsync failure preserves its cause and resume synchronizes the same visible activation before selecting documents
+  ---
+  duration_ms: 776.497966
+  type: 'test'
+  ...
+# Subtest: migration preserves compacted session, profile bytes and receipts; ordinary memory edits continue on documents
+ok 21 - migration preserves compacted session, profile bytes and receipts; ordinary memory edits continue on documents
+  ---
+  duration_ms: 2733.109571
+  type: 'test'
+  ...
+# Subtest: management CLI rejects unconfirmed or stale previews without creating an operation, then activates the fixed request
+ok 22 - management CLI rejects unconfirmed or stale previews without creating an operation, then activates the fixed request
+  ---
+  duration_ms: 2052.104909
+  type: 'test'
+  ...
+# Subtest: activation loss gates ordinary opening; same-operation resume restores routing and a damaged target never falls back
+ok 23 - activation loss gates ordinary opening; same-operation resume restores routing and a damaged target never falls back
+  ---
+  duration_ms: 965.279863
+  type: 'test'
+  ...
+# Subtest: preview does not adopt an invalid original personal-memory assignment or conflicting ready marker
+ok 24 - preview does not adopt an invalid original personal-memory assignment or conflicting ready marker
+  ---
+  duration_ms: 274.263634
+  type: 'test'
+  ...
+# Subtest: lost migration metadata cannot reopen a fenced source or create replacement state and channel stores
+ok 25 - lost migration metadata cannot reopen a fenced source or create replacement state and channel stores
+  ---
+  duration_ms: 746.622572
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL before-activation resumes the same agent and migration
+ok 26 - actual SIGKILL before-activation resumes the same agent and migration
+  ---
+  duration_ms: 1488.609837
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL after-activation resumes the same agent and migration
+ok 27 - actual SIGKILL after-activation resumes the same agent and migration
+  ---
+  duration_ms: 1399.656427
+  type: 'test'
+  ...
+# Subtest: fixed source snapshot preserves active, retracted and deleted rows, all original receipts and raw audit strings across owners
+ok 28 - fixed source snapshot preserves active, retracted and deleted rows, all original receipts and raw audit strings across owners
+  ---
+  duration_ms: 66.204061
+  type: 'test'
+  ...
+# Subtest: scope union rejects orphan receipts, missing heads, stale index and malformed audits without changing the source
+ok 29 - scope union rejects orphan receipts, missing heads, stale index and malformed audits without changing the source
+  ---
+  duration_ms: 173.519943
+  type: 'test'
+  ...
+# Subtest: source cell byte cap rejects oversized SQL strings before any record is yielded
+ok 30 - source cell byte cap rejects oversized SQL strings before any record is yielded
+  ---
+  duration_ms: 37.389673
+  type: 'test'
+  ...
+# Subtest: normal fence discovery accepts missing, exclusive-created empty, owner-only and valid legacy1 but administrative snapshot never adopts them
+ok 31 - normal fence discovery accepts missing, exclusive-created empty, owner-only and valid legacy1 but administrative snapshot never adopts them
+  ---
+  duration_ms: 13.543308
+  type: 'test'
+  ...
+# Subtest: foreign and unowned existing sources cannot acquire a fence or owner
+ok 32 - foreign and unowned existing sources cannot acquire a fence or owner
+  ---
+  duration_ms: 9.56267
+  type: 'test'
+  ...
+# Subtest: fresh writer snapshot must still match both personal and work digests before the first fence
+ok 33 - fresh writer snapshot must still match both personal and work digests before the first fence
+  ---
+  duration_ms: 70.362914
+  type: 'test'
+  ...
+# Subtest: source retirement blocks every personal SQL write and old prepared handle while current work reads and commits continue
+ok 34 - source retirement blocks every personal SQL write and old prepared handle while current work reads and commits continue
+  ---
+  duration_ms: 42.155962
+  type: 'test'
+  ...
+# Subtest: failure during source fence installation rolls back triggers, version and marker together
+ok 35 - failure during source fence installation rolls back triggers, version and marker together
+  ---
+  duration_ms: 32.858389
+  type: 'test'
+  ...
+# Subtest: a missing persistent trigger is rejected rather than accepting an apparently retired source
+ok 36 - a missing persistent trigger is rejected rather than accepting an apparently retired source
+  ---
+  duration_ms: 26.310633
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL before-commit keeps all source rows and an atomic resumable fence
+ok 37 - actual SIGKILL before-commit keeps all source rows and an atomic resumable fence
+  ---
+  duration_ms: 192.877999
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL after-commit keeps all source rows and an atomic resumable fence
+ok 38 - actual SIGKILL after-commit keeps all source rows and an atomic resumable fence
+  ---
+  duration_ms: 174.989713
+  type: 'test'
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13707.475882

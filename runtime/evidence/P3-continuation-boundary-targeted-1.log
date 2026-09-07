@@ -1,0 +1,152 @@
+✔ computer continuation contract: optional fields leave legacy state, context and task digests unchanged (6.740417ms)
+✔ computer continuation contract: control metadata cannot carry raw actions, offsets or two resume mechanisms (0.744ms)
+✔ computer continuation contract: counters, depth and mode cannot revive the action window or exceed inherited limits (13.164875ms)
+✔ computer continuation planning: exact parent and proof participate in task identity, including historical plans (12.549792ms)
+✔ computer continuation tools: proof metadata is mandatory and refresh cannot install an invalid or cacheable adapter (7.276834ms)
+✔ computer continuation tools: resume is required exactly for marked tools and verify needs no write permission (3.301584ms)
+✔ computer continuation transition: claim and a new reserved attempt plus budget must be committed together (0.610541ms)
+✔ computer continuation transition: a claimed parent cannot be replaced, removed or assigned a second sibling (0.851292ms)
+✔ computer continuation transition: source result, checkpoint and task identity stay immutable while the child progresses (0.427083ms)
+✔ computer continuation transition: an unknown parent requires the exact settled proof and source basis (0.416792ms)
+✔ computer continuation transition: a later generation inherits root limits and cannot reset counters, depth or the action deadline (0.487083ms)
+✔ memory: continuation CAS admits one sibling, preserves its receipt on retry and rejects history edits atomically (5.934583ms)
+✔ sqlite: continuation CAS admits one sibling, preserves its receipt on retry and rejects history edits atomically (7.070416ms)
+✔ file-journal: continuation CAS admits one sibling, preserves its receipt on retry and rejects history edits atomically (247.473833ms)
+✔ effect proofs: a legacy work uses neither the optional checker nor any refresh mutation (18.08675ms)
+✔ effect proofs: settled claims require a checker and checker failures stay unavailable (9.567834ms)
+✔ effect proofs: missing checker reopens the original obligation and cancels ordinary reservations once without rewriting proof history (6.615791ms)
+✔ effect proofs: expired reserved lookup releases only an undispatched reservation and preserves measured uncertainty (4.092167ms)
+✔ effect proofs: expired running lookup releases only an undispatched reservation and preserves measured uncertainty (4.947125ms)
+✔ effect proofs: lifecycle deletion reopens a settled effect and quarantines all linked references without changing received facts or timestamps (7.894ms)
+✔ effect proofs: a committed tool dispatch with missing proof authority cannot silently bypass the broker (8.561125ms)
+✔ effect proofs: a committed tool dispatch with invalid proof authority cannot silently bypass the broker (4.364ms)
+✔ effect proofs: a committed tool dispatch with valid proof authority cannot silently bypass the broker (4.908042ms)
+✔ effect proofs: a reuse await that loses proof validity is checked before implementation entry (4.753917ms)
+✔ effect proofs: invalid proof prevents new model reservation before compiling input (4.089875ms)
+✔ effect proofs: losing proof during model input read prevents actual planner entry and still settles the dispatched call (8.6415ms)
+✔ effect proofs: loss during adoption artifact checks rejects a stored model proposal while preserving usage (6.48ms)
+✔ effect proofs: a valid checker permits one model invocation and adoption with the historical proof unchanged (5.185375ms)
+✔ effect proofs: proof loss during result body storage prevents response publication (4.218333ms)
+✔ effect proofs: a same-revision snapshot suppresses an existing result when its proof becomes unavailable during the read (4.203458ms)
+✖ sqlite: work resource bodies and metadata use canonical effect proof with a narrowed caller and fail without a checker (220.772ms)
+✖ sqlite: proof invalidation during original or stored result I/O cannot return the already read body (153.388917ms)
+✖ sqlite: disclosure release, saved payload, raw read and receiver entry all retain current source effect proof (113.650833ms)
+✖ sqlite: private, derived and cached shared memory cannot outlive the original work effect proof (115.289292ms)
+✔ sqlite: source proof authentication does not recursively validate memory copied into that same work (448.193084ms)
+✖ file-journal: work resource bodies and metadata use canonical effect proof with a narrowed caller and fail without a checker (255.130166ms)
+✖ file-journal: proof invalidation during original or stored result I/O cannot return the already read body (298.452958ms)
+✖ file-journal: disclosure release, saved payload, raw read and receiver entry all retain current source effect proof (259.511708ms)
+✖ file-journal: private, derived and cached shared memory cannot outlive the original work effect proof (280.669333ms)
+✔ file-journal: source proof authentication does not recursively validate memory copied into that same work (955.666416ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 32
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3188.273458
+
+✖ failing tests:
+
+test at dist/tests/effect-source-consumers.test.js:128:5
+✖ sqlite: work resource bodies and metadata use canonical effect proof with a narrowed caller and fail without a checker (220.772ms)
+  Error: evidence_unavailable
+      at WorkResources.original (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-resources.js:98:19)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:131:23)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at dist/tests/effect-source-consumers.test.js:145:5
+✖ sqlite: proof invalidation during original or stored result I/O cannot return the already read body (153.388917ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /resource_state_changed/. Input:
+  
+  'Error: evidence_unavailable'
+  
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:154:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: evidence_unavailable
+        at WorkResources.original (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-resources.js:98:19)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:154:9)
+        at async Test.run (node:internal/test_runner/test:1404:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:969:7),
+    expected: /resource_state_changed/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at dist/tests/effect-source-consumers.test.js:165:5
+✖ sqlite: disclosure release, saved payload, raw read and receiver entry all retain current source effect proof (113.650833ms)
+  Error: disclosure_source_unavailable
+      at visit (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/disclosure-service.js:69:23)
+      at DisclosureService.originals (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/disclosure-service.js:76:13)
+      at DisclosureService.release (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/disclosure-service.js:142:38)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:168:26)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+
+test at dist/tests/effect-source-consumers.test.js:193:5
+✖ sqlite: private, derived and cached shared memory cannot outlive the original work effect proof (115.289292ms)
+  Error: knowledge_unavailable
+      at unavailable (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/knowledge-service.js:6:27)
+      at #source (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/knowledge-service.js:44:19)
+      at KnowledgeService.create (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/knowledge-service.js:268:38)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:200:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+
+test at dist/tests/effect-source-consumers.test.js:128:5
+✖ file-journal: work resource bodies and metadata use canonical effect proof with a narrowed caller and fail without a checker (255.130166ms)
+  Error: evidence_unavailable
+      at WorkResources.original (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-resources.js:98:19)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:131:23)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+
+test at dist/tests/effect-source-consumers.test.js:145:5
+✖ file-journal: proof invalidation during original or stored result I/O cannot return the already read body (298.452958ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /resource_state_changed/. Input:
+  
+  'Error: evidence_unavailable'
+  
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:154:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: evidence_unavailable
+        at WorkResources.original (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-resources.js:98:19)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:154:9)
+        at async Test.run (node:internal/test_runner/test:1404:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:969:7),
+    expected: /resource_state_changed/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at dist/tests/effect-source-consumers.test.js:165:5
+✖ file-journal: disclosure release, saved payload, raw read and receiver entry all retain current source effect proof (259.511708ms)
+  Error: disclosure_source_unavailable
+      at visit (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/disclosure-service.js:69:23)
+      at DisclosureService.originals (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/disclosure-service.js:76:13)
+      at DisclosureService.release (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/disclosure-service.js:142:38)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:168:26)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+
+test at dist/tests/effect-source-consumers.test.js:193:5
+✖ file-journal: private, derived and cached shared memory cannot outlive the original work effect proof (280.669333ms)
+  Error: knowledge_unavailable
+      at unavailable (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/knowledge-service.js:6:27)
+      at #source (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/knowledge-service.js:44:19)
+      at KnowledgeService.create (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/knowledge-service.js:268:38)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/effect-source-consumers.test.js:200:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)

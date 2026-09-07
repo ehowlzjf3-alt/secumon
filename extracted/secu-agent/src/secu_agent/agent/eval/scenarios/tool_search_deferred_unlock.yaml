@@ -1,0 +1,44 @@
+name: tool_search_deferred_unlock
+description: |
+  사용자가 의심 파일 분석 요청. agent 는 system prompt 에 schema 가 없는
+  run_in_sandbox 도구를 deferred listing 에서 보고, 먼저 tool_search 로 unlock
+  한 다음 호출해야 한다. tool_search → run_in_sandbox → 결과 정리 순서.
+task_type: operator
+user_input: "/tmp/payload.bin 의심파일 sandbox 에서 분석해줘."
+tool_stubs:
+  - name: tool_search
+    description: deferred tool schema unlock
+    success_message: |
+      loaded 1 tools for query 'sandbox':
+      - **run_in_sandbox** — ai-sandbox microVM 에서 의심 파일 격리 실행 + strace
+        hint: sandbox isolation strace
+  - name: run_in_sandbox
+    description: sandbox execution
+    success_message: |
+      exit_code=0
+      duration_sec=3.40
+
+      --- stdout ---
+      ELF analysis: outbound connect to 203.0.113.5:4444 — beacon pattern detected.
+script:
+  - reasoning: "deferred 도구 schema 가 없으니 tool_search 로 unlock 먼저."
+    tool_calls:
+      - name: tool_search
+        input:
+          query: "select:run_in_sandbox"
+          max_results: 5
+  - reasoning: "schema 로드 완료. 이제 격리 실행."
+    tool_calls:
+      - name: run_in_sandbox
+        input:
+          file_path: "/tmp/payload.bin"
+          command: "./payload.bin"
+          timeout_sec: 30
+          rationale: "사용자 요청 — 의심 파일 1차 triage"
+  - text: |
+      sandbox 분석 완료: payload.bin 이 203.0.113.5:4444 로 outbound beacon 시도.
+      C2 의심 — 격리/차단 권고.
+expectations:
+  tools_called: ["tool_search", "run_in_sandbox"]
+  final_text_contains: ["sandbox", "beacon"]
+  min_turns: 3

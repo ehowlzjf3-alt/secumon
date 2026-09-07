@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "kind": "mcp_stored_response_settlement_recovery",
+  "test": "sqlite: SIGKILL at raw-receipt-complete settles the original response offline before explicit continuation",
+  "backend": "sqlite",
+  "stage": "raw-receipt-complete",
+  "codeDigest": "74e3cde8c22dca7d825905e9811b3e3c4a3a2e8dd1f98a66f64a55911ff6e249",
+  "marker": {
+    "schemaVersion": 1,
+    "backend": "sqlite",
+    "stage": "raw-receipt-complete",
+    "workId": "mcp-settlement-recovery",
+    "workerPid": 41676,
+    "peerPid": 41679,
+    "owner": "mcp-settlement-before",
+    "attemptId": "attempt-005315b6-3c3d-416f-88a2-085428d2f52a",
+    "session": {
+      "endpointId": "settlement-recovery-fixture",
+      "generation": 1,
+      "protocolVersion": "2026-07-28",
+      "discoveryDigest": "ebe7126ac00509aab8ce1cca8d5b05246166a94f5c774de92e17e3c11a14e0b7"
+    },
+    "at": 1000,
+    "leaseUntil": 31000,
+    "deadlineAt": 61000,
+    "revision": 7,
+    "stateDigest": "3cb2b663c69dd88446fae0b446967e668e30fd9dbec3a7a82b247befd440936f",
+    "head": {
+      "id": "a95bf5440655d7437ebd65df84ff6fe0924dc0f454f1f94e266e51ad9bf797af",
+      "sha256": "f56a6b38aa8c3a75531f582a4ee2273d46c03c59b329bb6bbe8fac1c3a55c667",
+      "byteLength": 724,
+      "mediaType": "application/json",
+      "tenantId": "tenant-a",
+      "labels": [
+        "synthetic"
+      ]
+    },
+    "checkpointDigest": "dc4d0a785596be1c92a92a5d1491fe55a01f87c32c1caedc846206331e7b1545",
+    "request": {
+      "requestId": "read_request-cc3d3c4e-1197-4f5b-98f1-a671f5b12ed6",
+      "cursor": null,
+      "snapshot": null,
+      "retryItems": null,
+      "itemLimit": 4
+    },
+    "responseCommandId": "mcp-page:attempt-005315b6-3c3d-416f-88a2-085428d2f52a:read_request-cc3d3c4e-1197-4f5b-98f1-a671f5b12ed6",
+    "responseDigest": "dc3345da12f6d2411ff5f0d25ed4ed26109118ba59d3007041ef29e45b759761",
+    "responseArtifact": {
+      "id": "4e60890c31c089fa4de1ad6add1b5a3d801d6bc0f7c6485fafdacb63f99fa812",
+      "sha256": "e3cb4729b7d5d7c4cab55e7f723bd03ef322e05f7e4f325649dd7818689a5332",
+      "byteLength": 1984,
+      "mediaType": "application/json",
+      "tenantId": "tenant-a",
+      "labels": [
+        "synthetic"
+      ]
+    },
+    "receivedAt": 1000,
+    "budget": {
+      "limits": {
+        "toolCalls": 10,
+        "modelCalls": 5,
+        "tokens": 10000,
+        "replans": 5,
+        "wallTimeMs": 60000
+      },
+      "used": {
+        "toolCalls": 1,
+        "modelCalls": 0,
+        "tokens": 0,
+        "replans": 0,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "maxCalls": 3,
+    "remainingCalls": 2,
+    "serverCalls": 1,
+    "retryAt": null
+  },
+  "beforeAudit": [
+    {
+      "sequence": 1,
+      "pid": 41679,
+      "event": "start"
+    },
+    {
+      "sequence": 2,
+      "pid": 41679,
+      "event": "method",
+      "method": "server/discover"
+    },
+    {
+      "sequence": 3,
+      "pid": 41679,
+      "event": "method",
+      "method": "tools/list"
+    },
+    {
+      "sequence": 4,
+      "pid": 41679,
+      "event": "method",
+      "method": "tools/call"
+    },
+    {
+      "sequence": 5,
+      "pid": 41679,
+      "event": "call",
+      "tool": "documents.batch",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-cc3d3c4e-1197-4f5b-98f1-a671f5b12ed6",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null
+    },
+    {
+      "sequence": 6,
+      "pid": 41679,
+      "event": "handler-ready",
+      "tool": "documents.batch",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-cc3d3c4e-1197-4f5b-98f1-a671f5b12ed6",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null,
+      "returnedIds": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "sequence": 7,
+      "pid": 41679,
+      "event": "response-sent",
+      "tool": "documents.batch",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-cc3d3c4e-1197-4f5b-98f1-a671f5b12ed6",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null,
+      "returnedIds": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "sequence": 8,
+      "pid": 41679,
+      "event": "close",
+      "reason": "stdin-ended"
+    }
+  ],
+  "afterAudit": [],
+  "recovery": {
+    "revision": 9,
+    "budget": {
+      "limits": {
+        "toolCalls": 10,
+        "modelCalls": 5,
+        "tokens": 10000,
+        "replans": 5,
+        "wallTimeMs": 60000
+      },
+      "used": {
+        "toolCalls": 1,
+        "modelCalls": 0,
+        "tokens": 0,
+        "replans": 0,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "deadlineAt": 61000,
+    "attempts": [
+      {
+        "id": "attempt-005315b6-3c3d-416f-88a2-085428d2f52a",
+        "taskId": "before-interruption",
+        "planRevision": 1,
+        "goalRevision": 1,
+        "toolId": "fixture.collection",
+        "toolVersion": "1.bf9211497371c90c717529f0",
+        "inputDigest": "2d286f8de1de3796dfaf324314915fe41673355d46afee1126fb3c61a366e8bb",
+        "scope": "fixture",
+        "contractDigest": "bb36341c3771240e13bdec77b7be78ce63f931c91c7f29bb1c4511264f221c08",
+        "execution": {
+          "mode": "unreported",
+          "implementationCalls": null,
+          "usage": {
+            "transportCalls": null,
+            "internalOperations": null,
+            "imageBytes": null,
+            "waitMs": null
+          }
+        },
+        "readProgress": {
+          "operationId": "read-dae13807-a3b2-4889-a212-c751af524e03",
+          "head": {
+            "id": "24feef02f410a7c0a5d4f0f8229090b82fa7278094e62d08e7c88ea8324b4a3c",
+            "sha256": "d42f3006e9659f65d1eca9dc509e7fbedeb02bdcca5268ad8a2eb5edfe62a7fe",
+            "byteLength": 964,
+            "mediaType": "application/json",
+            "tenantId": "tenant-a",
+            "labels": [
+              "synthetic"
+            ]
+          },
+          "callCount": 1,
+          "remainingCalls": 2,
+          "completedPages": 1,
+          "completedItems": 2,
+          "pendingItems": 0,
+          "unknownCalls": 0,
+          "phase": "complete",
+          "successorAttemptId": null
+        },
+        "effect": "read",
+        "effectState": "none",
+        "status": "failed",
+        "owner": "mcp-settlement-before",
+        "leaseUntil": 31000,
+        "startedAt": 1000,
+        "finishedAt": 31001,
+        "resultId": null,
+        "resultArtifact": null,
+        "adopted": false,
+        "error": {
+          "code": "lease_expired",
+          "retryable": true
+        }
+      }
+    ],
+    "evidence": [],
+    "transport": {
+      "endpointId": "settlement-recovery-fixture",
+      "pid": null,
+      "generation": 0,
+      "connected": false,
+      "dirty": true,
+      "closed": false,
+      "activeCalls": 0,
+      "discovering": false,
+      "processStarts": 0,
+      "processCloses": 0,
+      "wireRequests": 0,
+      "toolCalls": 0,
+      "listPages": 0,
+      "requestBytes": 0,
+      "responseBytes": 0,
+      "protocolErrors": 0
+    },
+    "forbiddenCalls": 0,
+    "discoveryCalls": 0
+  },
+  "final": {
+    "revision": 15,
+    "budget": {
+      "limits": {
+        "toolCalls": 10,
+        "modelCalls": 5,
+        "tokens": 10000,
+        "replans": 5,
+        "wallTimeMs": 60000
+      },
+      "used": {
+        "toolCalls": 2,
+        "modelCalls": 0,
+        "tokens": 0,
+        "replans": 1,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "deadlineAt": 61000,
+    "modelCalls": 0,
+    "plannerCalls": 0,
+    "attempts": [
+      {
+        "id": "attempt-005315b6-3c3d-416f-88a2-085428d2f52a",
+        "owner": "mcp-settlement-before",
+        "status": "failed",
+        "adopted": false,
+        "readProgress": {
+          "operationId": "read-dae13807-a3b2-4889-a212-c751af524e03",
+          "head": {
+            "id": "24feef02f410a7c0a5d4f0f8229090b82fa7278094e62d08e7c88ea8324b4a3c",
+            "sha256": "d42f3006e9659f65d1eca9dc509e7fbedeb02bdcca5268ad8a2eb5edfe62a7fe",
+            "byteLength": 964,
+            "mediaType": "application/json",
+            "tenantId": "tenant-a",
+            "labels": [
+              "synthetic"
+            ]
+          },
+          "callCount": 1,
+          "remainingCalls": 2,
+          "completedPages": 1,
+          "completedItems": 2,
+          "pendingItems": 0,
+          "unknownCalls": 0,
+          "phase": "complete",
+          "successorAttemptId": "attempt-08bf080d-76fa-4438-a8e2-e95e2484c2ab"
+        }
+      },
+      {
+        "id": "attempt-08bf080d-76fa-4438-a8e2-e95e2484c2ab",
+        "owner": "mcp-settlement-after",
+        "status": "succeeded",
+        "adopted": true,
+        "readProgress": {
+          "operationId": "read-dae13807-a3b2-4889-a212-c751af524e03",
+          "head": {
+            "id": "031f67628c4181acea15f295a7b90c81b6e5e5d00045176bcef0e0ffe55ee79a",
+            "sha256": "0883d0911f0df2b6ae65cc15abd0cd27979683030266d3034d91a8f0720397bb",
+            "byteLength": 515,
+            "mediaType": "application/json",
+            "tenantId": "tenant-a",
+            "labels": [
+              "synthetic"
+            ]
+          },
+          "callCount": 1,
+          "remainingCalls": 2,
+          "completedPages": 1,
+          "completedItems": 2,
+          "pendingItems": 0,
+          "unknownCalls": 0,
+          "phase": "complete",
+          "successorAttemptId": null
+        }
+      }
+    ]
+  },
+  "transport": {
+    "endpointId": "settlement-recovery-fixture",
+    "pid": null,
+    "generation": 1,
+    "connected": false,
+    "dirty": true,
+    "closed": true,
+    "activeCalls": 0,
+    "discovering": false,
+    "processStarts": 0,
+    "processCloses": 0,
+    "wireRequests": 0,
+    "toolCalls": 0,
+    "listPages": 0,
+    "requestBytes": 0,
+    "responseBytes": 0,
+    "protocolErrors": 0
+  },
+  "forbiddenCalls": 0,
+  "discoveryCalls": 0,
+  "shutdown": {
+    "worker": {
+      "pid": 41676,
+      "signal": "SIGKILL",
+      "probe": "ESRCH"
+    },
+    "peerBefore": {
+      "pid": 41679,
+      "reason": "stdin-ended",
+      "probe": "ESRCH"
+    },
+    "peerAfter": {
+      "started": false
+    }
+  },
+  "hostScheduling": "FakeClock and explicit recover/reserve/execute calls; no background daemon",
+  "tempCleaned": true
+}

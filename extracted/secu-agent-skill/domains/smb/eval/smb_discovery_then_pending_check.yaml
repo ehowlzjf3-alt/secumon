@@ -1,0 +1,33 @@
+name: smb_discovery_then_pending_check
+description: |
+  사용자가 discovery → pending 확인 까지 한 번에 시키는 시나리오.
+  에이전트에이전트는 run_smb_discovery 호출 후 list_pending_shares 로 결과 확인.
+  pending 0 이면 walk 시도 안 함 (anti-pattern: pending 0 자동 walk).
+task_type: operator
+user_input: "10.99.0.0/24 한 번 discovery 돌리고 pending 있나 확인해줘"
+tool_stubs:
+  - name: run_smb_discovery
+    description: run SMB discovery on subnet
+    success_message: |
+      discovery 완료. alive 0건, new share 0건.
+  - name: list_pending_shares
+    description: list pending shares
+    success_message: "pending: (none)"
+  - name: run_smb_walk
+    description: walk share
+    success_message: "walked"
+script:
+  - reasoning: "discovery 먼저 돌려야 함"
+    tool_calls:
+      - name: run_smb_discovery
+        input: {}
+  - reasoning: "결과 확인"
+    tool_calls:
+      - name: list_pending_shares
+        input: {}
+  - text: "discovery 완료, pending 0건. walk 진행 안 합니다."
+expectations:
+  tools_called: ["run_smb_discovery", "list_pending_shares"]
+  tools_not_called: ["run_smb_walk"]
+  final_text_contains: ["pending 0건", "walk 진행 안"]
+  min_turns: 3

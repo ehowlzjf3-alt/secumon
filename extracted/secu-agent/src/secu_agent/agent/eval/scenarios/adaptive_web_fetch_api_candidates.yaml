@@ -1,0 +1,46 @@
+name: adaptive_web_fetch_api_candidates
+description: |
+  web_fetch adaptive 결과가 challenge/API 후보 진단을 권하면, agent 는 브라우저
+  세션 전체 탐색으로 바로 확대하기 전에 browser_supervisor(api_candidates) 로
+  이미 잡힌 API 후보를 확인하고 요약해야 한다.
+task_type: operator
+user_input: "https://app.example.test/dashboard 가 WAF 뒤에 있는 것 같은데 읽을 수 있는 API 후보부터 확인해줘."
+tool_stubs:
+  - name: web_fetch
+    description: adaptive web fetch
+    success_message: |
+      [web_fetch] https://app.example.test/dashboard → 403
+      strategy=adaptive verdict=suspect_challenge reasons=challenge_marker:cf-chl-
+      waf_profile=cloudflare_turnstile confidence=0.9 signals=header:cf-ray,server:cloudflare
+      capabilities_needed=needs_js_exec
+      untried_routes=browser_supervisor(action='api_candidates') to inspect captured /api, graphql, json endpoints; browser_session + browser_action navigate for JS-rendered or challenge-gated pages
+      adaptive_retry_plan=[{"route":"browser_supervisor","action":"api_candidates","allowed_by_scope":true}]
+  - name: browser_supervisor
+    description: browser supervisor diagnostics
+    success_message: |
+      {"summary":{"total":2,"by_reason":{"path_api":1,"path_graphql":1}},"candidates":[{"url":"https://app.example.test/api/session","method":"GET","status":200,"candidate_reasons":["path_api"]},{"url":"https://app.example.test/graphql","method":"POST","status":200,"candidate_reasons":["path_graphql","fetch_json"]}]}
+  - name: browser_session
+    description: full browser session
+    success_message: "should not be called for first-pass API candidate triage"
+script:
+  - reasoning: "먼저 동일 안전 게이트 안에서 adaptive fetch 로 차단/챌린지 여부를 판정한다."
+    tool_calls:
+      - name: web_fetch
+        input:
+          url: "https://app.example.test/dashboard"
+          strategy: "adaptive"
+  - reasoning: "adaptive 결과가 API 후보 확인을 권하므로 browser_session 확대 전에 api_candidates 를 본다."
+    tool_calls:
+      - name: browser_supervisor
+        input:
+          action: "api_candidates"
+          limit: 20
+  - text: |
+      adaptive web_fetch 는 Cloudflare challenge 로 막혔고, 브라우저 이벤트 기준 API 후보는
+      /api/session 과 /graphql 두 개입니다. 첫 triage 는 이 후보를 우선 확인하고,
+      화면 렌더링 자체가 필요할 때만 browser_session 으로 확대하겠습니다.
+expectations:
+  tools_called: ["web_fetch", "browser_supervisor"]
+  tools_not_called: ["browser_session"]
+  final_text_contains: ["Cloudflare", "/api/session", "/graphql", "browser_session"]
+  max_turns: 5

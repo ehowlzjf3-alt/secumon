@@ -1,0 +1,24 @@
+{
+  "kind": "single-deterministic-original-dist-namespace-stale-list-probe",
+  "status": "baseline_defect_reproduced",
+  "node": "v24.20.0",
+  "startedAt": "2026-09-07T02:37:17.728Z",
+  "scriptSha256": "19a1d6d9c2ecc45b8d84d9dfd43a6fedfa5448af80b9d99647444d94fa325717",
+  "ownerModuleSha256": "7fbe08c8be2866d5c059fa46967319588aece374d0c2c54bc7319af319989d20",
+  "namespaceModuleSha256": "c9bb628befe2fab4c4442f1a3b10e3bb9dc82f1efae033e2a3d2103af090a747",
+  "fixtures": 1,
+  "automaticRetries": 0,
+  "originalNASFailureCauseEstablished": false,
+  "externalCalls": false,
+  "cleanup": true,
+  "actualError": {
+    "name": "Error",
+    "message": "metadata_read_unsafe",
+    "code": "unsafe",
+    "operation": "read",
+    "stack": "Error: metadata_read_unsafe\n    at PosixMetadataFiles.readStableRegularFile (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/posix-metadata-files.js:152:27)\n    at metadata.readStableRegularFile (file:///Users/seunghanee/Documents/secumon/runtime/evidence/C03-drafts-namespace-stale-list-probe.mjs:32:21)\n    at DocumentFiles.read (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/document-knowledge-owner.js:75:34)\n    at DocumentFiles.pending (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/document-knowledge-owner.js:100:27)\n    at #scan (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/document-knowledge.js:57:25)\n    at #snapshot (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/document-knowledge.js:154:37)\n    at DocumentKnowledgeRepository.commit (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/document-knowledge.js:232:44)\n    at file:///Users/seunghanee/Documents/secumon/runtime/evidence/C03-drafts-namespace-stale-list-probe.mjs:36:26\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26"
+  },
+  "injectedRealLink": true,
+  "interpretation": "The public commit fails on a valid pending/canonical inode pair when enumeration predates the link. This establishes the namespace defect, not the missing child error from NAS #113.",
+  "finishedAt": "2026-09-07T02:37:17.765Z"
+}

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "scope": "mcp_collection_custody_C_crash_candidate_only",
+  "status": "frozen_unintegrated_unexecuted_incomplete",
+  "observedAt": "2026-09-07T18:47:54.394883+00:00",
+  "stoppedBecause": "Parent instruction prioritizes C07-C09 and stops further C05 review/validation. Preserve this candidate for later integrated verification.",
+  "files": [
+    {
+      "path": "src/tests/mcp-collection-custody-crash-fixture.ts",
+      "sha256": "99f59397688ad4dfa50b23ba1ab4d1bb82ee83aa7e21b976ff979360086aa43a",
+      "bytes": 5693,
+      "productOriginalExists": false
+    },
+    {
+      "path": "src/tests/mcp-collection-custody-crash-worker.ts",
+      "sha256": "a44625058afb84d5402c83bac031b842e123d748223d495efbd0c19d65639d53",
+      "bytes": 14676,
+      "productOriginalExists": false
+    },
+    {
+      "path": "src/tests/mcp-collection-custody-crash.test.ts",
+      "sha256": "0be55d3401bd202648a183046b94ee1053aa7ac0b67044cc40fa255bc9486560",
+      "bytes": 10063,
+      "productOriginalExists": false
+    }
+  ],
+  "expectedRegisteredTests": 6,
+  "expectedCases": "3 crash boundaries (raw file only, response receipt committed, usage committed) multiplied by SQLite/file-journal",
+  "executedTests": false,
+  "buildRun": false,
+  "typecheckRun": false,
+  "sshOrNetworkRun": false,
+  "integrated": false,
+  "reviewStatus": "Static preparation in progress when stopped; no final review or validation claim",
+  "candidateDesign": {
+    "transport": "Existing local stdio collection fixture with actual SDK capture forwarding; NOT executed in this preparation",
+    "storage": "Existing C01 agent stores; no CLI/HTTP general entry",
+    "kill": "Parent IPC observation then SIGKILL of owned worker; new stored-only accounting process",
+    "rawOnly": "Unknown transport usage; no receipt means orphan raw is not supplied to recovery or promoted to known",
+    "preservation": "Original owner/lease/head/policy/budget/result/receipts; accounting may change only measurement plus transaction revision/time",
+    "repetition": "Repeated recordStoredUsage/reconcile and storage reopen intended to assert idempotence",
+    "bounds": {
+      "workerDeadlineMs": 30000,
+      "parentObservationMs": 20000,
+      "exitWaitMs": 5000,
+      "testTimeoutMs": 60000,
+      "observationMaxBytes": 1048576,
+      "stderrMaxCharacters": 16384,
+      "accountingReadRefsMax": 10000
+    }
+  },
+  "excluded": [
+    "C completion claim",
+    "general CLI/HTTP reopen",
+    "profile drain",
+    "SDK postcheck failure SIGKILL case",
+    "model/API/internal-service/network validation"
+  ],
+  "reuseSources": [
+    "runtime/src/tests/mcp-custody-crash-worker.ts",
+    "runtime/src/tests/mcp-custody-crash.test.ts",
+    "runtime/src/tests/mcp-collection-entry-worker.ts",
+    "runtime/src/tests/helpers/mcp-collection-binding.ts",
+    "runtime/src/tests/helpers/mcp-collection-fixture-server.ts",
+    "runtime/src/tests/mcp-agent-profile-helper.ts"
+  ],
+  "changesLimitedTo": "New files in this crash-tests staging directory; no product or existing test modifications"
+}

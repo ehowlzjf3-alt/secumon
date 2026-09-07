@@ -1,0 +1,79 @@
+# secu-agent 점검 타겟 정의.
+# 각 task는 한 스코프 1회 = agent 한 사이클.
+#
+# **권한 (감사용)**: 모든 task는 charter_ref(승인 티켓/공식 권한) 명시 권장.
+# 사내 SecOps 권한 없이 다른 부서 자산을 스캔하면 정책 위반.
+
+tasks:
+
+  # === SMB 오픈 셰어 ===
+  - id: smb-corp-net
+    type: smb
+    enabled: true
+    charter_ref: SECOPS-2026-001     # 사내 보안팀 점검 권한 티켓
+    target:
+      # CIDR 또는 IP 리스트. 사내 정책상 prod 서브넷 제외.
+      subnets:
+        - 10.20.0.0/24
+        - 10.20.1.0/24
+      # 익명/guest만 시도. 인증 자격으로 brute 절대 금지.
+      try_anonymous: true
+      try_guest: true
+    interval_hours: 12
+
+  # === 사내 GitHub Enterprise ===
+  - id: github-myorg
+    type: github
+    enabled: true
+    charter_ref: SECOPS-2026-001
+    target:
+      org: my-org
+      # 최근 push된 repo 우선. private 포함.
+      repo_limit: 200
+      include_archived: false
+      # 검색 키워드 (secret 패턴은 detector가 본문에서 자동 검출, 여기는 좁힘용)
+      hot_paths:
+        - .env
+        - config/secrets
+        - Jenkinsfile
+        - terraform
+    interval_hours: 24
+
+  # === 사내 Jenkins ===
+  - id: jenkins-build
+    type: jenkins
+    enabled: true
+    charter_ref: SECOPS-2026-001
+    target:
+      # job config.xml + 최근 N개 build console log
+      console_log_count_per_job: 3
+      job_limit: 300
+    interval_hours: 24
+
+  # === 사내 Confluence ===
+  - id: confluence-spaces
+    type: confluence
+    enabled: true
+    charter_ref: SECOPS-2026-001
+    target:
+      spaces:
+        - ENG
+        - INFRA
+        - OPS
+      page_limit_per_space: 500
+      include_attachments: true
+    interval_hours: 48
+
+  # === 개인 호스팅 도메인 ===
+  - id: personal-domains
+    type: web
+    enabled: true
+    charter_ref: SECOPS-2026-001
+    target:
+      # 사내 DNS에서 *.intra.example.com 중 개인이 띄운 도메인
+      domains:
+        - http://kim-test.intra.example.com
+        - http://lee-demo.intra.example.com:8080
+      max_pages_per_domain: 50
+      vuln_probe: true   # 비파괴 점검만 (헤더/.git/.env/default page/reflective XSS)
+    interval_hours: 24

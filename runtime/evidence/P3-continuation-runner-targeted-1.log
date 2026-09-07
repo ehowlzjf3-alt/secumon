@@ -1,0 +1,204 @@
+✔ checkpoint v2: v1 retains its exact serialized shape and rejects v2 fields (7.180125ms)
+✔ checkpoint v2: an initial head preserves historical refs before any fresh observation (1.924ms)
+✔ checkpoint v2: fresh observation and input intent each require their retained reservation (0.42725ms)
+✔ checkpoint v2: root identity, lifetime and bounded counters cannot be reset or enlarged (0.352875ms)
+✔ checkpoint v2: a child binds its own task and policy basis to the immutable claim (0.560917ms)
+✔ checkpoint v2: child actions use local indexes and cannot prepend the parent prefix or skip intent accounting (0.311875ms)
+✔ checkpoint v2: inherited conditions must be observed before a successor can issue an input (0.215792ms)
+✔ checkpoint v2: only verification may get a fresh read deadline after the root input deadline (0.194792ms)
+✔ checkpoint v2: completing a suffix requires every own input and every condition to be confirmed (0.489ms)
+✔ checkpoint v2: zero-input completion requires a fully applied parent and fresh inheritance verification (4.227084ms)
+✔ checkpoint v2: strict parsing detaches the lineage and claim without silently accepting extra capabilities (1.595875ms)
+✔ continuation context sqlite: contract-seeded claim and latest parent originals survive five compactions and reopen (2169.863834ms)
+✔ continuation context sqlite: a final v2 child preserves historical, entry and inherited observations through compact and reopen (1971.757625ms)
+✔ continuation context sqlite: missing v2 entry reference invalidates an unchanged final child (1606.835542ms)
+✔ continuation context sqlite: missing v2 inherited reference invalidates an unchanged final child (1591.436083ms)
+✔ continuation context sqlite: v2 child rejects a forged canonical claim, unrelated initial basis and foreign observation owner (1694.492959ms)
+✔ continuation context sqlite: v2 inherited observation loss during model_context staging prevents return (1623.78525ms)
+✔ continuation context sqlite: v2 inherited observation loss during runtime_resume staging prevents return (1519.956958ms)
+✔ continuation context sqlite: late malformed parent receive cannot rewrite a claimed source (1090.897792ms)
+✔ continuation context sqlite: missing head fences an otherwise unchanged claim (1190.66025ms)
+✔ continuation context sqlite: missing result fences an otherwise unchanged claim (1239.35ms)
+✔ continuation context sqlite: missing observation fences an otherwise unchanged claim (1197.120416ms)
+✔ continuation context sqlite: corrupt parent data and invalid bounded decode never produce a resume (1033.506291ms)
+✔ continuation context sqlite: original loss during model_context storage is checked before return (1004.694041ms)
+✔ continuation context sqlite: original loss during runtime_resume storage is checked before return (1174.372875ms)
+✔ continuation context sqlite: visibility hides a claim while obligations remain and undeclared raw fields are discarded (1054.198875ms)
+✔ continuation context sqlite: unavailable continuation proof readers fail closed even without reconciliation records (1123.902791ms)
+✔ continuation context file-journal: contract-seeded claim and latest parent originals survive five compactions and reopen (6068.867875ms)
+✔ continuation context file-journal: a final v2 child preserves historical, entry and inherited observations through compact and reopen (4668.166458ms)
+✔ continuation context file-journal: missing v2 entry reference invalidates an unchanged final child (2736.531709ms)
+✔ continuation context file-journal: missing v2 inherited reference invalidates an unchanged final child (3426.120792ms)
+✔ continuation context file-journal: v2 child rejects a forged canonical claim, unrelated initial basis and foreign observation owner (2723.172ms)
+✔ continuation context file-journal: v2 inherited observation loss during model_context staging prevents return (2182.66675ms)
+✔ continuation context file-journal: v2 inherited observation loss during runtime_resume staging prevents return (2061.5085ms)
+✔ continuation context file-journal: late malformed parent receive cannot rewrite a claimed source (1745.118667ms)
+✔ continuation context file-journal: missing head fences an otherwise unchanged claim (1894.554708ms)
+✔ continuation context file-journal: missing result fences an otherwise unchanged claim (1839.340291ms)
+✔ continuation context file-journal: missing observation fences an otherwise unchanged claim (1102.082375ms)
+✔ continuation context file-journal: corrupt parent data and invalid bounded decode never produce a resume (891.040084ms)
+✔ continuation context file-journal: original loss during model_context storage is checked before return (1353.832375ms)
+✔ continuation context file-journal: original loss during runtime_resume storage is checked before return (1134.669625ms)
+✔ continuation context file-journal: visibility hides a claim while obligations remain and undeclared raw fields are discarded (964.220041ms)
+✔ continuation context file-journal: unavailable continuation proof readers fail closed even without reconciliation records (1025.368209ms)
+✔ sqlite: an applied-unknown prefix is reconciled once and only the two remaining inputs run (3866.0365ms)
+✔ sqlite: an unknown saved input is verified after the old action deadline without saving twice (2579.293584ms)
+✔ sqlite: a known not-applied input may be retried once while its applied prefix remains immutable (2412.927792ms)
+✔ sqlite: a later value supersedes the same field's earlier condition at the continuation frontier (3039.114667ms)
+✔ sqlite: changed inherited conditions stop a successor without repeating or extending the applied prefix (2058.086167ms)
+✔ sqlite: concurrent reservations create at most one successor and consume one work reservation (2251.783791ms)
+✔ sqlite: lineage observation and input budgets stay spent across failed successors (2383.94925ms)
+✔ sqlite: a new successor cannot reset the original action deadline (1102.975125ms)
+✖ file-journal: an applied-unknown prefix is reconciled once and only the two remaining inputs run (17880.594375ms)
+✔ file-journal: an unknown saved input is verified after the old action deadline without saving twice (11242.562583ms)
+✔ file-journal: a known not-applied input may be retried once while its applied prefix remains immutable (5025.134833ms)
+✔ file-journal: a later value supersedes the same field's earlier condition at the continuation frontier (4690.516208ms)
+✔ file-journal: changed inherited conditions stop a successor without repeating or extending the applied prefix (2389.353875ms)
+✔ file-journal: concurrent reservations create at most one successor and consume one work reservation (2147.9085ms)
+✔ file-journal: lineage observation and input budgets stay spent across failed successors (2268.606709ms)
+✔ file-journal: a new successor cannot reset the original action deadline (779.607416ms)
+✔ sqlite: structurally valid continue and verify plans fail before acceptance or cost (68.624791ms)
+✔ sqlite: a stored continuation plan cannot create a new attempt or budget reservation (30.427042ms)
+✔ sqlite: a stored continuation reservation cannot dispatch or enter through execute (157.025458ms)
+✔ sqlite: even an existing dispatch receipt cannot invoke a continuation adapter or its reuse hook (95.937292ms)
+✔ file-journal: structurally valid continue and verify plans fail before acceptance or cost (737.784583ms)
+✔ file-journal: a stored continuation plan cannot create a new attempt or budget reservation (1016.583917ms)
+✔ file-journal: a stored continuation reservation cannot dispatch or enter through execute (934.263959ms)
+✔ file-journal: even an existing dispatch receipt cannot invoke a continuation adapter or its reuse hook (734.334292ms)
+✔ sqlite: continuation prepare pins only the unperformed suffix and preserves canonical state and driver input (1492.074125ms)
+✔ sqlite: continuation prepare refuses legacy checkpoint counters without upgrading or resetting the original deadline (1336.678166ms)
+✔ sqlite: continuation preparation rechecks canonical state after original checkpoint I/O (1276.957334ms)
+✔ sqlite: continuation resolve authenticates the canonical reservation receipt and never inspects the child's checkpoint (1306.170791ms)
+✔ sqlite: invalid claim graph is rejected before recursive original reads and raw proof checks never call knowledge (1264.98175ms)
+✔ sqlite: missing originals install a durable blocking obligation, cancel reservations, and recover without rewriting claims (1380.663375ms)
+✔ file-journal: continuation prepare pins only the unperformed suffix and preserves canonical state and driver input (5412.090667ms)
+✔ file-journal: continuation prepare refuses legacy checkpoint counters without upgrading or resetting the original deadline (5068.298875ms)
+✔ file-journal: continuation preparation rechecks canonical state after original checkpoint I/O (4491.837625ms)
+✔ file-journal: continuation resolve authenticates the canonical reservation receipt and never inspects the child's checkpoint (3259.592417ms)
+✔ file-journal: invalid claim graph is rejected before recursive original reads and raw proof checks never call knowledge (2934.210166ms)
+✔ file-journal: missing originals install a durable blocking obligation, cancel reservations, and recover without rewriting claims (3439.704541ms)
+✔ sqlite: explicit reconciliation records a read response and separate effect proof without adopting or changing the original input (1878.284417ms)
+✔ sqlite: recorded not-applied receipts resolve only the unknown step and preserve a prior applied prefix (2582.66775ms)
+✔ sqlite: a missing driver receipt remains unresolved and repeating the same request neither repeats input nor lookup (1094.667541ms)
+✔ sqlite: duplicate command and execution charge one lookup while changed payload conflicts (1441.824167ms)
+✔ sqlite: exhausted lookup budget refuses reservation without a driver call or a stored intent (1249.079625ms)
+✔ sqlite: receipt lookup requires current read authority but does not require permission to issue another input (1489.082125ms)
+✔ sqlite: an expired unused reconciliation reservation is released and the same request never dispatches later (1420.770917ms)
+✔ sqlite: loss of a settled proof reopens the effect obligation while preserving the old receipt, claim, and original head (1467.575583ms)
+✔ file-journal: explicit reconciliation records a read response and separate effect proof without adopting or changing the original input (7826.070709ms)
+✔ file-journal: recorded not-applied receipts resolve only the unknown step and preserve a prior applied prefix (7981.902417ms)
+✔ file-journal: a missing driver receipt remains unresolved and repeating the same request neither repeats input nor lookup (3441.69675ms)
+✔ file-journal: duplicate command and execution charge one lookup while changed payload conflicts (4237.942291ms)
+✔ file-journal: exhausted lookup budget refuses reservation without a driver call or a stored intent (2780.934458ms)
+✔ file-journal: receipt lookup requires current read authority but does not require permission to issue another input (3515.643833ms)
+✔ file-journal: an expired unused reconciliation reservation is released and the same request never dispatches later (2262.205ms)
+✔ file-journal: loss of a settled proof reopens the effect obligation while preserving the old receipt, claim, and original head (3036.358583ms)
+✔ sqlite: a failed observation artifact write retains the driver's measured call (234.643917ms)
+✔ sqlite: intent persistence failure proves no driver entry and keeps the failed step diagnostic (1080.669333ms)
+✔ sqlite: cancellation before driver entry settles no-input and proof revoked=false fences adoption (846.236625ms)
+✔ sqlite: cancellation before driver entry settles no-input and proof revoked=true fences adoption (858.021333ms)
+✔ sqlite: a failure cannot downgrade the committed unknown effect or measured usage prefix (1173.957667ms)
+✔ sqlite: removing the proof provider at the receive commit fence cannot accept a no-effect result (863.907083ms)
+✔ sqlite: provider removal between no-effect validation and adoption cannot skip the captured proof fence (733.905125ms)
+✔ sqlite: completion must match the checkpoint and only explicitly confirmed facts become evidence (1512.210292ms)
+✔ sqlite: losing the checkpoint original between receive and adopt prevents completion (1443.695333ms)
+✔ sqlite: losing the observation original between receive and adopt prevents completion (1560.848542ms)
+✔ sqlite: diagnostic reads recheck retained knowledge before and after original IO (1488.107375ms)
+✔ file-journal: a failed observation artifact write retains the driver's measured call (990.63075ms)
+✔ file-journal: intent persistence failure proves no driver entry and keeps the failed step diagnostic (3419.095584ms)
+✔ file-journal: cancellation before driver entry settles no-input and proof revoked=false fences adoption (3531.763875ms)
+✔ file-journal: cancellation before driver entry settles no-input and proof revoked=true fences adoption (2847.027791ms)
+✔ file-journal: a failure cannot downgrade the committed unknown effect or measured usage prefix (2959.09675ms)
+✔ file-journal: removing the proof provider at the receive commit fence cannot accept a no-effect result (1541.85175ms)
+✔ file-journal: provider removal between no-effect validation and adoption cannot skip the captured proof fence (1852.07475ms)
+✔ file-journal: completion must match the checkpoint and only explicitly confirmed facts become evidence (3050.999ms)
+✔ file-journal: losing the checkpoint original between receive and adopt prevents completion (2635.692958ms)
+✔ file-journal: losing the observation original between receive and adopt prevents completion (2318.087333ms)
+✔ file-journal: diagnostic reads recheck retained knowledge before and after original IO (3271.062833ms)
+✔ sqlite: registered computer tools observe, apply, prove and adopt a completed synthetic note (1802.223291ms)
+✖ sqlite: rerendered or restarted observations stop before the first input (798.985125ms)
+✔ sqlite: a copied observation from another work remains foreign even when its artifact bytes are present (623.101959ms)
+✔ sqlite: ambiguous and partial observations cannot select a target for the batch (1408.83125ms)
+✔ sqlite: step two not-applied preserves the confirmed first input without claiming batch completion (1171.056458ms)
+✔ sqlite: applied-unknown save creates a reconciliation block and neither execute replay nor replanning adds an input (1301.633458ms)
+✔ sqlite: goal, policy and cancellation changes across an awaited response prevent the next input (2353.841375ms)
+✔ sqlite: late readiness is observed through bounded waits before subsequent note inputs (2284.000083ms)
+✔ sqlite: another runtime revoking writes during the driver's own input delay prevents every input (739.14025ms)
+✔ sqlite: false or too-late conditions consume one deadline and cannot reset time or continue to Save (2090.864708ms)
+✔ sqlite: stored successful result can be read and adopted after reopening without replaying app input (1370.957584ms)
+✔ sqlite: strict action contracts reject injected script fields while document text has no command authority (1286.808917ms)
+✔ file-journal: registered computer tools observe, apply, prove and adopt a completed synthetic note (5220.158917ms)
+✖ file-journal: rerendered or restarted observations stop before the first input (1709.429917ms)
+✔ file-journal: a copied observation from another work remains foreign even when its artifact bytes are present (1236.210209ms)
+✔ file-journal: ambiguous and partial observations cannot select a target for the batch (3222.998208ms)
+✔ file-journal: step two not-applied preserves the confirmed first input without claiming batch completion (2747.858292ms)
+✔ file-journal: applied-unknown save creates a reconciliation block and neither execute replay nor replanning adds an input (2396.06975ms)
+✔ file-journal: goal, policy and cancellation changes across an awaited response prevent the next input (4976.763875ms)
+✔ file-journal: late readiness is observed through bounded waits before subsequent note inputs (4001.809458ms)
+✔ file-journal: another runtime revoking writes during the driver's own input delay prevents every input (1414.9515ms)
+✔ file-journal: false or too-late conditions consume one deadline and cannot reset time or continue to Save (3638.261125ms)
+✔ file-journal: stored successful result can be read and adopted after reopening without replaying app input (2074.075167ms)
+✔ file-journal: strict action contracts reject injected script fields while document text has no command authority (1768.929125ms)
+ℹ tests 141
+ℹ suites 0
+ℹ pass 138
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66263.84275
+
+✖ failing tests:
+
+test at dist/tests/computer-continuation-runner.test.js:74:5
+✖ file-journal: an applied-unknown prefix is reconciled once and only the two remaining inputs run (17880.594375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'partial'
+  - 'success'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/computer-continuation-runner.test.js:86:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'partial',
+    expected: 'success',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/computer-use.test.js:70:5
+✖ sqlite: rerendered or restarted observations stop before the first input (798.985125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'partial' !== 'error'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/computer-use.test.js:80:20)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'partial',
+    expected: 'error',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/computer-use.test.js:70:5
+✖ file-journal: rerendered or restarted observations stop before the first input (1709.429917ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'partial' !== 'error'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/computer-use.test.js:80:20)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'partial',
+    expected: 'error',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

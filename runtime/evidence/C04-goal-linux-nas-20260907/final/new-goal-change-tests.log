@@ -1,0 +1,352 @@
+TAP version 13
+# Subtest: sqlite: chat goal retains work and auto mode, answers at the next revision and never executes an old replay
+ok 1 - sqlite: chat goal retains work and auto mode, answers at the next revision and never executes an old replay
+  ---
+  duration_ms: 6592.576127
+  type: 'test'
+  ...
+# Subtest: file-journal: chat goal retains work and auto mode, answers at the next revision and never executes an old replay
+ok 2 - file-journal: chat goal retains work and auto mode, answers at the next revision and never executes an old replay
+  ---
+  duration_ms: 9170.696611
+  type: 'test'
+  ...
+# Subtest: chat goal with omitted mode retains fast and completes within the same work call limit
+ok 3 - chat goal with omitted mode retains fast and completes within the same work call limit
+  ---
+  duration_ms: 2777.15828
+  type: 'test'
+  ...
+# Subtest: chat goal preserves exhausted fast usage; explicit auto spends only the remaining original work budget
+ok 4 - chat goal preserves exhausted fast usage; explicit auto spends only the remaining original work budget
+  ---
+  duration_ms: 4797.181519
+  type: 'test'
+  ...
+# Subtest: chat goal supersedes the old question and prints intake before the new answer; status exposes both revisions
+ok 5 - chat goal supersedes the old question and prints intake before the new answer; status exposes both revisions
+  ---
+  duration_ms: 3610.812958
+  type: 'test'
+  ...
+# Subtest: chat goal refuses invalid or missing revision and unsupported options before profile creation
+ok 6 - chat goal refuses invalid or missing revision and unsupported options before profile creation
+  ---
+  duration_ms: 1750.142255
+  type: 'test'
+  ...
+# Subtest: chat goal preserves selected session and channel authority and rejects stale or conflicting commands
+ok 7 - chat goal preserves selected session and channel authority and rejects stale or conflicting commands
+  ---
+  duration_ms: 5034.797002
+  type: 'test'
+  ...
+# Subtest: chat goal replays an intake interrupted after receipt without model execution; explicit resume continues the new goal
+ok 8 - chat goal replays an intake interrupted after receipt without model execution; explicit resume continues the new goal
+  ---
+  duration_ms: 3760.579503
+  type: 'test'
+  ...
+# Subtest: goal command original remains verifiable after compact and reconnect, without accepting ordinary input as a goal receipt
+ok 9 - goal command original remains verifiable after compact and reconnect, without accepting ordinary input as a goal receipt
+  ---
+  duration_ms: 2158.216882
+  type: 'test'
+  ...
+# Subtest: sqlite: explicit goal intake preserves work, original transcript and budget; replay uses the first command
+ok 10 - sqlite: explicit goal intake preserves work, original transcript and budget; replay uses the first command
+  ---
+  duration_ms: 309.675994
+  type: 'test'
+  ...
+# Subtest: sqlite: after_receive resumes the original goal command after reconnect
+ok 11 - sqlite: after_receive resumes the original goal command after reconnect
+  ---
+  duration_ms: 135.516501
+  type: 'test'
+  ...
+# Subtest: sqlite: after_commit resumes the original goal command after reconnect
+ok 12 - sqlite: after_commit resumes the original goal command after reconnect
+  ---
+  duration_ms: 153.423705
+  type: 'test'
+  ...
+# Subtest: file-journal: explicit goal intake preserves work, original transcript and budget; replay uses the first command
+ok 13 - file-journal: explicit goal intake preserves work, original transcript and budget; replay uses the first command
+  ---
+  duration_ms: 215.912011
+  type: 'test'
+  ...
+# Subtest: file-journal: after_receive resumes the original goal command after reconnect
+ok 14 - file-journal: after_receive resumes the original goal command after reconnect
+  ---
+  duration_ms: 183.658423
+  type: 'test'
+  ...
+# Subtest: file-journal: after_commit resumes the original goal command after reconnect
+ok 15 - file-journal: after_commit resumes the original goal command after reconnect
+  ---
+  duration_ms: 184.139061
+  type: 'test'
+  ...
+# Subtest: a newer applied input rejects the old editor basis durably without changing goal or transcript head
+ok 16 - a newer applied input rejects the old editor basis durably without changing goal or transcript head
+  ---
+  duration_ms: 173.061871
+  type: 'test'
+  ...
+# Subtest: a control change inside the goal commit CAS is rechecked and cannot overwrite the newer mode
+ok 17 - a control change inside the goal commit CAS is rechecked and cannot overwrite the newer mode
+  ---
+  duration_ms: 115.614586
+  type: 'test'
+  ...
+# Subtest: goal intake validates authority, selected session, original IDs, and server-owned fields before receipt publication
+ok 18 - goal intake validates authority, selected session, original IDs, and server-owned fields before receipt publication
+  ---
+  duration_ms: 97.353676
+  type: 'test'
+  ...
+# Subtest: cancelled work stays terminal; rejected input remains auditable and cannot become another work
+ok 19 - cancelled work stays terminal; rejected input remains auditable and cannot become another work
+  ---
+  duration_ms: 104.774531
+  type: 'test'
+  ...
+# Subtest: completed response can receive an explicit new goal while old answer, read artifacts and actual usage remain historical
+ok 20 - completed response can receive an explicit new goal while old answer, read artifacts and actual usage remain historical
+  ---
+  duration_ms: 2238.061708
+  type: 'test'
+  ...
+# Subtest: only an accepted old main-turn question is superseded; external response and evidence obligations survive
+ok 21 - only an accepted old main-turn question is superseded; external response and evidence obligations survive
+  ---
+  duration_ms: 531.373817
+  type: 'test'
+  ...
+# Subtest: narrowed policy at dispatch is rejected instead of expanding the caller authority
+ok 22 - narrowed policy at dispatch is rejected instead of expanding the caller authority
+  ---
+  duration_ms: 101.893838
+  type: 'test'
+  ...
+# Subtest: goal replacement invalidates an old reserved model call and preserves actual accounting
+ok 23 - goal replacement invalidates an old reserved model call and preserves actual accounting
+  ---
+  duration_ms: 244.782498
+  type: 'test'
+  ...
+# Subtest: goal replacement invalidates an old received model call and preserves actual accounting
+ok 24 - goal replacement invalidates an old received model call and preserves actual accounting
+  ---
+  duration_ms: 366.787855
+  type: 'test'
+  ...
+# Subtest: native HTTP general intake acknowledges without inference; explicit execution, reconnect and same-session follow-up preserve the real answer
+ok 25 - native HTTP general intake acknowledges without inference; explicit execution, reconnect and same-session follow-up preserve the real answer
+  ---
+  duration_ms: 2304.187235
+  type: 'test'
+  ...
+# Subtest: native HTTP reading request uses the real task executor once and projects its generated evidence-backed answer
+ok 26 - native HTTP reading request uses the real task executor once and projects its generated evidence-backed answer
+  ---
+  duration_ms: 1307.288449
+  type: 'test'
+  ...
+# Subtest: native HTTP question, explicit original clarification and run resume the same work without pretending the question completed it
+ok 27 - native HTTP question, explicit original clarification and run resume the same work without pretending the question completed it
+  ---
+  duration_ms: 1265.755465
+  type: 'test'
+  ...
+# Subtest: native HTTP another selected conversation cannot read or run a work from the original session
+ok 28 - native HTTP another selected conversation cannot read or run a work from the original session
+  ---
+  duration_ms: 172.39559
+  type: 'test'
+  ...
+# Subtest: native HTTP general requests retain strict actor/policy/scenario rejection and the existing CSRF gate
+ok 29 - native HTTP general requests retain strict actor/policy/scenario rejection and the existing CSRF gate
+  ---
+  duration_ms: 125.159582
+  type: 'test'
+  ...
+# Subtest: native HTTP explicit goal replacement supersedes an old question, acknowledges without inference, then executes the new goal once
+ok 30 - native HTTP explicit goal replacement supersedes an old question, acknowledges without inference, then executes the new goal once
+  ---
+  duration_ms: 1780.702537
+  type: 'test'
+  ...
+# Subtest: native HTTP general goal editor rejects stale inputs and authority injection while preserving received rejection originals
+ok 31 - native HTTP general goal editor rejects stale inputs and authority injection while preserving received rejection originals
+  ---
+  duration_ms: 222.821588
+  type: 'test'
+  ...
+# Subtest: native HTTP command identity survives goal-intent interruption, rejects run collisions and retains legacy session retries
+ok 32 - native HTTP command identity survives goal-intent interruption, rejects run collisions and retains legacy session retries
+  ---
+  duration_ms: 1317.240444
+  type: 'test'
+  ...
+# Subtest: native HTTP run and goal from separate coordinators race on one durable command receipt
+ok 33 - native HTTP run and goal from separate coordinators race on one durable command receipt
+  ---
+  duration_ms: 761.829558
+  type: 'test'
+  ...
+# Subtest: general complex turn: late counterevidence adds only the discriminating task and answers from current independent sources
+ok 34 - general complex turn: late counterevidence adds only the discriminating task and answers from current independent sources
+  ---
+  duration_ms: 2862.811164
+  type: 'test'
+  ...
+# Subtest: general complex turn: failed discriminating read waits for a question without erasing the conflict
+ok 35 - general complex turn: failed discriminating read waits for a question without erasing the conflict
+  ---
+  duration_ms: 1766.37661
+  type: 'test'
+  ...
+# Subtest: general goal draft pins the applied input, sends exact raw text and never accepts a changed edit basis
+ok 36 - general goal draft pins the applied input, sends exact raw text and never accepts a changed edit basis
+  ---
+  duration_ms: 3.994545
+  type: 'test'
+  ...
+# Subtest: browser view: same-revision source invalidation replaces a result without sorting opaque cursors
+ok 37 - browser view: same-revision source invalidation replaces a result without sorting opaque cursors
+  ---
+  duration_ms: 0.686774
+  type: 'test'
+  ...
+# Subtest: browser view: unavailable invalidates pending details and unchanged cannot resurrect revoked content
+ok 38 - browser view: unavailable invalidates pending details and unchanged cannot resurrect revoked content
+  ---
+  duration_ms: 0.425613
+  type: 'test'
+  ...
+# Subtest: browser view: an accepted conversation refresh invalidates an older in-flight detail response
+ok 39 - browser view: an accepted conversation refresh invalidates an older in-flight detail response
+  ---
+  duration_ms: 0.462907
+  type: 'test'
+  ...
+# Subtest: browser view: work identity, level, revision and goal version cannot be mixed or reversed
+ok 40 - browser view: work identity, level, revision and goal version cannot be mixed or reversed
+  ---
+  duration_ms: 0.518604
+  type: 'test'
+  ...
+# Subtest: browser view: repeated message identities update in place while new goal versions have distinct identities
+ok 41 - browser view: repeated message identities update in place while new goal versions have distinct identities
+  ---
+  duration_ms: 0.606643
+  type: 'test'
+  ...
+# Subtest: browser view: snapshots clone data and invalidate other levels without mutating the previous view
+ok 42 - browser view: snapshots clone data and invalidate other levels without mutating the previous view
+  ---
+  duration_ms: 0.50105
+  type: 'test'
+  ...
+# Subtest: browser view: state and cursors remain isolated across two selected works
+ok 43 - browser view: state and cursors remain isolated across two selected works
+  ---
+  duration_ms: 0.394891
+  type: 'test'
+  ...
+# Subtest: browser view: history readers are not treated as pinned to the end of a scroll region
+ok 44 - browser view: history readers are not treated as pinned to the end of a scroll region
+  ---
+  duration_ms: 0.347956
+  type: 'test'
+  ...
+# Subtest: browser reads: serialization starts the next request only after the prior read completes
+ok 45 - browser reads: serialization starts the next request only after the prior read completes
+  ---
+  duration_ms: 0.821458
+  type: 'test'
+  ...
+# Subtest: browser reads: unavailability discards already-queued old reads and a new selection has its own queue epoch
+ok 46 - browser reads: unavailability discards already-queued old reads and a new selection has its own queue epoch
+  ---
+  duration_ms: 0.767496
+  type: 'test'
+  ...
+# Subtest: browser reads: a failed read does not permanently block later explicit reads
+ok 47 - browser reads: a failed read does not permanently block later explicit reads
+  ---
+  duration_ms: 1.291852
+  type: 'test'
+  ...
+# Subtest: browser stream: unchanged events make no reads and a burst of changes has at most one follow-up read
+ok 48 - browser stream: unchanged events make no reads and a burst of changes has at most one follow-up read
+  ---
+  duration_ms: 0.363801
+  type: 'test'
+  ...
+# Subtest: browser stream: an invalidated stream cannot start its queued follow-up refresh
+ok 49 - browser stream: an invalidated stream cannot start its queued follow-up refresh
+  ---
+  duration_ms: 0.236393
+  type: 'test'
+  ...
+# Subtest: browser stream: delayed change notifications only read the current same-revision source state
+ok 50 - browser stream: delayed change notifications only read the current same-revision source state
+  ---
+  duration_ms: 0.242399
+  type: 'test'
+  ...
+# Subtest: browser acceptance: a lost response keeps the same receipt identity for an explicit retry
+ok 51 - browser acceptance: a lost response keeps the same receipt identity for an explicit retry
+  ---
+  duration_ms: 0.2066
+  type: 'test'
+  ...
+# Subtest: browser acceptance: the same receipt after a lost response produces one work in a receipt-based fake receiver
+ok 52 - browser acceptance: the same receipt after a lost response produces one work in a receipt-based fake receiver
+  ---
+  duration_ms: 0.110951
+  type: 'test'
+  ...
+# Subtest: browser status: stored completion is distinct from a currently invalidated result
+ok 53 - browser status: stored completion is distinct from a currently invalidated result
+  ---
+  duration_ms: 0.078846
+  type: 'test'
+  ...
+# Subtest: browser goal editing: changing only the description preserves the current fast mode over the original goal mode
+ok 54 - browser goal editing: changing only the description preserves the current fast mode over the original goal mode
+  ---
+  duration_ms: 0.285545
+  type: 'test'
+  ...
+# Subtest: browser goal editing: a pending requested mode is preserved and its control revision is pinned
+ok 55 - browser goal editing: a pending requested mode is preserved and its control revision is pinned
+  ---
+  duration_ms: 0.160148
+  type: 'test'
+  ...
+# Subtest: browser goal editing: a control, goal or work change rejects submission without changing the input draft
+ok 56 - browser goal editing: a control, goal or work change rejects submission without changing the input draft
+  ---
+  duration_ms: 0.377261
+  type: 'test'
+  ...
+# Subtest: browser goal editing: an explicit refreshed basis retains user edits and adopts the latest requested mode
+ok 57 - browser goal editing: an explicit refreshed basis retains user edits and adopts the latest requested mode
+  ---
+  duration_ms: 0.185781
+  type: 'test'
+  ...
+1..57
+# tests 57
+# suites 0
+# pass 57
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37751.999276

@@ -1,0 +1,8 @@
+{
+  "node": "v24.20.0",
+  "source": "C04-goal-reopen-diagnosis2.json",
+  "blockers": [
+    "response_plan_incomplete"
+  ],
+  "interpretation": "The old goal task graph was retained as history, but responseBlockers checked all plan tasks without matching the current goal revision. Public goal change then produced repeated accepted responses and hit no_progress_limit. The fix scopes response_plan_incomplete to the current goal; old pending attempts and reconciliation obligations still block independently."
+}

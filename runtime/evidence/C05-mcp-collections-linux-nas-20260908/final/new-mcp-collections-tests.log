@@ -1,0 +1,1110 @@
+TAP version 13
+# Subtest: inspect retains a measured fitting optional subset when byte capacity exceeds the chosen items
+ok 1 - inspect retains a measured fitting optional subset when byte capacity exceeds the chosen items
+  ---
+  duration_ms: 165.982827
+  type: 'test'
+  ...
+# {"path":"inspect","proof":{"full":{"tokens":180,"bytes":13723,"method":"fixture-optional-token-pressure"},"intermediate":{"tokens":140,"bytes":9444,"method":"fixture-optional-token-pressure"},"candidateBytes":6259},"selected":["core.catalog.get","core.catalog.search","fixture.a"],"observedEstimates":[{"tools":["core.catalog.get","core.catalog.search"],"tokens":100,"bytes":8165},{"tools":["core.catalog.get","core.catalog.search"],"tokens":100,"bytes":8165},{"tools":[],"tokens":100,"bytes":7548},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a"],"tokens":140,"bytes":9444},{"tools":["core.catalog.get","core.catalog.search","fixture.a"],"tokens":140,"bytes":9444}],"frameWrites":1,"calls":{"modelCalls":0,"toolCalls":0}}
+# Subtest: prepare retains a measured fitting optional subset instead of exhausting unused-byte-budget retries
+ok 2 - prepare retains a measured fitting optional subset instead of exhausting unused-byte-budget retries
+  ---
+  duration_ms: 76.868248
+  type: 'test'
+  ...
+# {"path":"prepare","proof":{"full":{"tokens":180,"bytes":13723,"method":"fixture-optional-token-pressure"},"intermediate":{"tokens":140,"bytes":9444,"method":"fixture-optional-token-pressure"},"candidateBytes":6259},"selected":["core.catalog.get","core.catalog.search","fixture.a"],"observedEstimates":[{"tools":[],"tokens":100,"bytes":7548},{"tools":["core.catalog.get","core.catalog.search","fixture.a","fixture.b"],"tokens":180,"bytes":13723},{"tools":["core.catalog.get","core.catalog.search","fixture.a"],"tokens":140,"bytes":9444},{"tools":["core.catalog.get","core.catalog.search","fixture.a"],"tokens":140,"bytes":9444}],"frameWrites":1,"calls":{"modelCalls":0,"toolCalls":0}}
+# Subtest: current provenance discovery followed by exact body reading earns one further preparation step per evidence
+ok 3 - current provenance discovery followed by exact body reading earns one further preparation step per evidence
+  ---
+  duration_ms: 125.260179
+  type: 'test'
+  ...
+# Subtest: body reading subsumes later provenance discovery without another preparation credit
+ok 4 - body reading subsumes later provenance discovery without another preparation credit
+  ---
+  duration_ms: 54.987074
+  type: 'test'
+  ...
+# Subtest: query, limits, revision, locator, timestamps and alias IDs cannot make the same evidence newly productive
+ok 5 - query, limits, revision, locator, timestamps and alias IDs cannot make the same evidence newly productive
+  ---
+  duration_ms: 56.289072
+  type: 'test'
+  ...
+# Subtest: a genuinely changed current fact body has a distinct body credit while stale copies have none
+ok 6 - a genuinely changed current fact body has a distinct body credit while stale copies have none
+  ---
+  duration_ms: 40.225014
+  type: 'test'
+  ...
+# Subtest: derived copies cannot mint recall credit through fresh lineage or wrapper hashes, and mixed find credits only the original
+ok 7 - derived copies cannot mint recall credit through fresh lineage or wrapper hashes, and mixed find credits only the original
+  ---
+  duration_ms: 95.028793
+  type: 'test'
+  ...
+# Subtest: a valid shortened or paged find card earns only preparation, whereas partial get bodies do not
+ok 8 - a valid shortened or paged find card earns only preparation, whereas partial get bodies do not
+  ---
+  duration_ms: 40.231226
+  type: 'test'
+  ...
+# Subtest: malformed, denied, foreign, noncurrent, reused or unadopted recall cannot fabricate preparation
+ok 9 - malformed, denied, foreign, noncurrent, reused or unadopted recall cannot fabricate preparation
+  ---
+  duration_ms: 36.479873
+  type: 'test'
+  ...
+# Subtest: sqlite: actual find/get adoption earns first recall progress then identical reads stop at the default limit
+ok 10 - sqlite: actual find/get adoption earns first recall progress then identical reads stop at the default limit
+  ---
+  duration_ms: 345.563284
+  type: 'test'
+  ...
+# Subtest: file-journal: actual find/get adoption earns first recall progress then identical reads stop at the default limit
+ok 11 - file-journal: actual find/get adoption earns first recall progress then identical reads stop at the default limit
+  ---
+  duration_ms: 620.901815
+  type: 'test'
+  ...
+# Subtest: sqlite: mixed host collection uses the profile's original stores and one compiled registry through answer and reopen
+ok 12 - sqlite: mixed host collection uses the profile's original stores and one compiled registry through answer and reopen
+  ---
+  duration_ms: 2457.543503
+  type: 'test'
+  ...
+# Subtest: file-journal: mixed host collection uses the profile's original stores and one compiled registry through answer and reopen
+ok 13 - file-journal: mixed host collection uses the profile's original stores and one compiled registry through answer and reopen
+  ---
+  duration_ms: 2940.885242
+  type: 'test'
+  ...
+# Subtest: stored-only collection registration keeps its definition visible without granting new calls or core/skill permissions
+ok 14 - stored-only collection registration keeps its definition visible without granting new calls or core/skill permissions
+  ---
+  duration_ms: 112.017941
+  type: 'test'
+  ...
+# Subtest: a supplied collection list requires real assembly while omitted collection metadata preserves the legacy direct helper
+ok 15 - a supplied collection list requires real assembly while omitted collection metadata preserves the legacy direct helper
+  ---
+  duration_ms: 1.679538
+  type: 'test'
+  ...
+# Subtest: collection/plain identity and provider ownership conflicts fail before model open and close the acquired lease once
+ok 16 - collection/plain identity and provider ownership conflicts fail before model open and close the acquired lease once
+  ---
+  duration_ms: 566.156009
+  type: 'test'
+  ...
+# Subtest: a late collection schema compile failure returns no partial profile and preserves model/tools cleanup failures
+ok 17 - a late collection schema compile failure returns no partial profile and preserves model/tools cleanup failures
+  ---
+  duration_ms: 94.185061
+  type: 'test'
+  ...
+# Subtest: sqlite: SIGKILL collection response resumes through actual CLI, compacts its real session and consumes an explicit complete successor offline
+ok 18 - sqlite: SIGKILL collection response resumes through actual CLI, compacts its real session and consumes an explicit complete successor offline
+  ---
+  duration_ms: 12677.697287
+  type: 'test'
+  ...
+# Subtest: file-journal: SIGKILL collection response resumes through actual CLI, compacts its real session and consumes an explicit complete successor offline
+ok 19 - file-journal: SIGKILL collection response resumes through actual CLI, compacts its real session and consumes an explicit complete successor offline
+  ---
+  duration_ms: 23732.915122
+  type: 'test'
+  ...
+# Subtest: sqlite: SIGKILL at a real nonfinal page resumes through HTTP, waits offline repeatedly and continues only the next online page
+ok 20 - sqlite: SIGKILL at a real nonfinal page resumes through HTTP, waits offline repeatedly and continues only the next online page
+  ---
+  duration_ms: 7365.28995
+  type: 'test'
+  ...
+# Subtest: file-journal: SIGKILL at a real nonfinal page resumes through HTTP, waits offline repeatedly and continues only the next online page
+ok 21 - file-journal: SIGKILL at a real nonfinal page resumes through HTTP, waits offline repeatedly and continues only the next online page
+  ---
+  duration_ms: 8994.421903
+  type: 'test'
+  ...
+# Subtest: sqlite: normally adopted partial batch retains its offline wait and explicitly retries only the failed item online
+ok 22 - sqlite: normally adopted partial batch retains its offline wait and explicitly retries only the failed item online
+  ---
+  duration_ms: 7978.97638
+  type: 'test'
+  ...
+# Subtest: sqlite: mixed MCP host discovers once and registers plain plus collection against the same session
+ok 23 - sqlite: mixed MCP host discovers once and registers plain plus collection against the same session
+  ---
+  duration_ms: 875.637985
+  type: 'test'
+  ...
+# Subtest: file-journal: mixed MCP host discovers once and registers plain plus collection against the same session
+ok 24 - file-journal: mixed MCP host discovers once and registers plain plus collection against the same session
+  ---
+  duration_ms: 944.209432
+  type: 'test'
+  ...
+# Subtest: mixed registration captures one provider and rejects combined count/byte overflow before peer or schema compile
+ok 25 - mixed registration captures one provider and rejects combined count/byte overflow before peer or schema compile
+  ---
+  duration_ms: 46.641148
+  type: 'test'
+  ...
+# Subtest: mixed open preserves final collection compile error without returning a partial lease
+ok 26 - mixed open preserves final collection compile error without returning a partial lease
+  ---
+  duration_ms: 212.348418
+  type: 'test'
+  ...
+# Subtest: mixed open preserves final collection compile error and owned close error without returning a partial lease
+ok 27 - mixed open preserves final collection compile error and owned close error without returning a partial lease
+  ---
+  duration_ms: 237.54424
+  type: 'test'
+  ...
+# Subtest: mixed host fails closed on a missing remote contract and owns independent client lifetimes
+ok 28 - mixed host fails closed on a missing remote contract and owns independent client lifetimes
+  ---
+  duration_ms: 741.546974
+  type: 'test'
+  ...
+# Subtest: plain-only options keep lazy provider discovery and do not gain a collection field or permissions
+ok 29 - plain-only options keep lazy provider discovery and do not gain a collection field or permissions
+  ---
+  duration_ms: 240.836867
+  type: 'test'
+  ...
+# Subtest: stored mixed host verifies online originals without online transport or custody ownership
+ok 30 - stored mixed host verifies online originals without online transport or custody ownership
+  ---
+  duration_ms: 460.94016
+  type: 'test'
+  ...
+# Subtest: stored host captures the deferral mapper and settings without changing the original wait proof
+ok 31 - stored host captures the deferral mapper and settings without changing the original wait proof
+  ---
+  duration_ms: 443.852882
+  type: 'test'
+  ...
+# Subtest: sqlite: stored collection authenticates original page after peer and repository close
+ok 32 - sqlite: stored collection authenticates original page after peer and repository close
+  ---
+  duration_ms: 713.155483
+  type: 'test'
+  ...
+# Subtest: sqlite: stored collection authenticates original deferral after peer and repository close
+ok 33 - sqlite: stored collection authenticates original deferral after peer and repository close
+  ---
+  duration_ms: 532.817866
+  type: 'test'
+  ...
+# Subtest: file-journal: stored collection authenticates original page after peer and repository close
+ok 34 - file-journal: stored collection authenticates original page after peer and repository close
+  ---
+  duration_ms: 558.915345
+  type: 'test'
+  ...
+# Subtest: file-journal: stored collection authenticates original deferral after peer and repository close
+ok 35 - file-journal: stored collection authenticates original deferral after peer and repository close
+  ---
+  duration_ms: 574.799849
+  type: 'test'
+  ...
+# Subtest: stored collection distinguishes absent receipt from changed binding, current policy, request and corrupt original
+ok 36 - stored collection distinguishes absent receipt from changed binding, current policy, request and corrupt original
+  ---
+  duration_ms: 495.331388
+  type: 'test'
+  ...
+# Subtest: stored collection rejects unsupported or fabricated origins and keeps its original custody ports
+ok 37 - stored collection rejects unsupported or fabricated origins and keeps its original custody ports
+  ---
+  duration_ms: 442.140959
+  type: 'test'
+  ...
+# Subtest: read collection context: only visible current goal and scope tips survive; complete unadopted tips remain resumable
+ok 38 - read collection context: only visible current goal and scope tips survive; complete unadopted tips remain resumable
+  ---
+  duration_ms: 9.481744
+  type: 'test'
+  ...
+# Subtest: read collection context: the common packet removes denied head metadata from both execution and resume projections
+ok 39 - read collection context: the common packet removes denied head metadata from both execution and resume projections
+  ---
+  duration_ms: 7.237869
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: five compactions and reopen retain partial resume metadata without page bodies
+ok 40 - read collection context sqlite: five compactions and reopen retain partial resume metadata without page bodies
+  ---
+  duration_ms: 370.462633
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: five compactions and reopen retain complete orphan resume metadata without page bodies
+ok 41 - read collection context sqlite: five compactions and reopen retain complete orphan resume metadata without page bodies
+  ---
+  duration_ms: 295.384459
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: five compactions and reopen retain partial resume metadata without page bodies
+ok 42 - read collection context file-journal: five compactions and reopen retain partial resume metadata without page bodies
+  ---
+  duration_ms: 458.63844
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: five compactions and reopen retain complete orphan resume metadata without page bodies
+ok 43 - read collection context file-journal: five compactions and reopen retain complete orphan resume metadata without page bodies
+  ---
+  duration_ms: 498.905431
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: lost derived frame regenerates while lost original raw response blocks context and recovery
+ok 44 - read collection context sqlite: lost derived frame regenerates while lost original raw response blocks context and recovery
+  ---
+  duration_ms: 136.944001
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: lost derived frame regenerates while lost original raw response blocks context and recovery
+ok 45 - read collection context file-journal: lost derived frame regenerates while lost original raw response blocks context and recovery
+  ---
+  duration_ms: 188.139628
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: source gate rejects omitted, altered, and canonically inconsistent resume metadata
+ok 46 - read collection context sqlite: source gate rejects omitted, altered, and canonically inconsistent resume metadata
+  ---
+  duration_ms: 60.358386
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: source gate rejects omitted, altered, and canonically inconsistent resume metadata
+ok 47 - read collection context file-journal: source gate rejects omitted, altered, and canonically inconsistent resume metadata
+  ---
+  duration_ms: 130.291172
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget
+ok 48 - read collection context sqlite: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget
+  ---
+  duration_ms: 79.530947
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget
+ok 49 - read collection context file-journal: resume metadata is mandatory input and cannot be evicted to satisfy a smaller byte budget
+  ---
+  duration_ms: 122.661864
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: source lifecycle change during checkpoint read prevents staged frame publication
+ok 50 - read collection context sqlite: source lifecycle change during checkpoint read prevents staged frame publication
+  ---
+  duration_ms: 49.332861
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: source lifecycle change during checkpoint read prevents staged frame publication
+ok 51 - read collection context file-journal: source lifecycle change during checkpoint read prevents staged frame publication
+  ---
+  duration_ms: 86.491112
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: contract change during derived resume put is checked before return
+ok 52 - read collection context sqlite: contract change during derived resume put is checked before return
+  ---
+  duration_ms: 100.453094
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: original change during derived resume put is checked before return
+ok 53 - read collection context sqlite: original change during derived resume put is checked before return
+  ---
+  duration_ms: 86.277575
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: contract change during derived resume put is checked before return
+ok 54 - read collection context file-journal: contract change during derived resume put is checked before return
+  ---
+  duration_ms: 125.305583
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: original change during derived resume put is checked before return
+ok 55 - read collection context file-journal: original change during derived resume put is checked before return
+  ---
+  duration_ms: 127.479418
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: completed adopted output retains original proof requirements after leaving the resume list
+ok 56 - read collection context sqlite: completed adopted output retains original proof requirements after leaving the resume list
+  ---
+  duration_ms: 154.465652
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: completed adopted output retains original proof requirements after leaving the resume list
+ok 57 - read collection context file-journal: completed adopted output retains original proof requirements after leaving the resume list
+  ---
+  duration_ms: 205.260026
+  type: 'test'
+  ...
+# Subtest: read collection context sqlite: raw loss during frame staging suppresses completed adopted copies
+ok 58 - read collection context sqlite: raw loss during frame staging suppresses completed adopted copies
+  ---
+  duration_ms: 117.769824
+  type: 'test'
+  ...
+# Subtest: read collection context file-journal: raw loss during frame staging suppresses completed adopted copies
+ok 59 - read collection context file-journal: raw loss during frame staging suppresses completed adopted copies
+  ---
+  duration_ms: 186.61557
+  type: 'test'
+  ...
+# Subtest: sqlite: complete stored-only successor publishes once and adopts without execute, fetch or reuse
+ok 60 - sqlite: complete stored-only successor publishes once and adopts without execute, fetch or reuse
+  ---
+  duration_ms: 548.676211
+  type: 'test'
+  ...
+# Subtest: file-journal: complete stored-only successor publishes once and adopts without execute, fetch or reuse
+ok 61 - file-journal: complete stored-only successor publishes once and adopts without execute, fetch or reuse
+  ---
+  duration_ms: 548.072219
+  type: 'test'
+  ...
+# Subtest: complete local resume refuses partial before a new reservation or request
+ok 62 - complete local resume refuses partial before a new reservation or request
+  ---
+  duration_ms: 166.570713
+  type: 'test'
+  ...
+# Subtest: complete local resume refuses query before a new reservation or request
+ok 63 - complete local resume refuses query before a new reservation or request
+  ---
+  duration_ms: 146.100152
+  type: 'test'
+  ...
+# Subtest: complete local resume refuses head before a new reservation or request
+ok 64 - complete local resume refuses head before a new reservation or request
+  ---
+  duration_ms: 129.860662
+  type: 'test'
+  ...
+# Subtest: complete local resume refuses raw before a new reservation or request
+ok 65 - complete local resume refuses raw before a new reservation or request
+  ---
+  duration_ms: 151.943221
+  type: 'test'
+  ...
+# Subtest: local child original-read: authority prevents checkpoint publication and adoption
+ok 66 - local child original-read: authority prevents checkpoint publication and adoption
+  ---
+  duration_ms: 228.648511
+  type: 'test'
+  ...
+# Subtest: local child original-read: registration prevents checkpoint publication and adoption
+ok 67 - local child original-read: registration prevents checkpoint publication and adoption
+  ---
+  duration_ms: 220.115281
+  type: 'test'
+  ...
+# Subtest: local child original-read: cancel prevents checkpoint publication and adoption
+ok 68 - local child original-read: cancel prevents checkpoint publication and adoption
+  ---
+  duration_ms: 230.153036
+  type: 'test'
+  ...
+# Subtest: local child child-artifact: authority prevents checkpoint publication and adoption
+ok 69 - local child child-artifact: authority prevents checkpoint publication and adoption
+  ---
+  duration_ms: 186.616742
+  type: 'test'
+  ...
+# Subtest: local child child-artifact: registration prevents checkpoint publication and adoption
+ok 70 - local child child-artifact: registration prevents checkpoint publication and adoption
+  ---
+  duration_ms: 222.929706
+  type: 'test'
+  ...
+# Subtest: local child child-artifact: cancel prevents checkpoint publication and adoption
+ok 71 - local child child-artifact: cancel prevents checkpoint publication and adoption
+  ---
+  duration_ms: 220.981441
+  type: 'test'
+  ...
+# Subtest: cancellation after child publication retains its lineage but cannot adopt the local projection
+ok 72 - cancellation after child publication retains its lineage but cannot adopt the local projection
+  ---
+  duration_ms: 407.874662
+  type: 'test'
+  ...
+# Subtest: sqlite: adopted partial requires a connection without changing originals or accounting
+ok 73 - sqlite: adopted partial requires a connection without changing originals or accounting
+  ---
+  duration_ms: 311.180881
+  type: 'test'
+  ...
+# Subtest: sqlite: settled running checkpoint requires a connection without changing originals or accounting
+ok 74 - sqlite: settled running checkpoint requires a connection without changing originals or accounting
+  ---
+  duration_ms: 147.516847
+  type: 'test'
+  ...
+# Subtest: file-journal: adopted partial requires a connection without changing originals or accounting
+ok 75 - file-journal: adopted partial requires a connection without changing originals or accounting
+  ---
+  duration_ms: 317.551601
+  type: 'test'
+  ...
+# Subtest: file-journal: settled running checkpoint requires a connection without changing originals or accounting
+ok 76 - file-journal: settled running checkpoint requires a connection without changing originals or accounting
+  ---
+  duration_ms: 209.122023
+  type: 'test'
+  ...
+# Subtest: sqlite: ordinary executor resume preserves a previously published connection wait
+ok 77 - sqlite: ordinary executor resume preserves a previously published connection wait
+  ---
+  duration_ms: 206.478111
+  type: 'test'
+  ...
+# Subtest: file-journal: ordinary executor resume preserves a previously published connection wait
+ok 78 - file-journal: ordinary executor resume preserves a previously published connection wait
+  ---
+  duration_ms: 308.152617
+  type: 'test'
+  ...
+# Subtest: a verified deferral retains its original deadline then needs a connection when due
+ok 79 - a verified deferral retains its original deadline then needs a connection when due
+  ---
+  duration_ms: 168.855269
+  type: 'test'
+  ...
+# Subtest: permanent/{} keeps the original replan when no proven next request exists
+ok 80 - permanent/{} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 148.538353
+  type: 'test'
+  ...
+# Subtest: partial/{"maxCalls":1} keeps the original replan when no proven next request exists
+ok 81 - partial/{"maxCalls":1} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 151.213203
+  type: 'test'
+  ...
+# Subtest: nonfinal/{"maxPages":1} keeps the original replan when no proven next request exists
+ok 82 - nonfinal/{"maxPages":1} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 106.740584
+  type: 'test'
+  ...
+# Subtest: nonfinal/{"maxItems":2} keeps the original replan when no proven next request exists
+ok 83 - nonfinal/{"maxItems":2} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 104.054253
+  type: 'test'
+  ...
+# Subtest: complete/{} keeps the original replan when no proven next request exists
+ok 84 - complete/{} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 140.824183
+  type: 'test'
+  ...
+# Subtest: intent/{} keeps the original replan when no proven next request exists
+ok 85 - intent/{} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 67.507314
+  type: 'test'
+  ...
+# Subtest: rejected/{} keeps the original replan when no proven next request exists
+ok 86 - rejected/{} keeps the original replan when no proven next request exists
+  ---
+  duration_ms: 135.450635
+  type: 'test'
+  ...
+# Subtest: independent control and review decisions never trigger an extra checkpoint read
+ok 87 - independent control and review decisions never trigger an extra checkpoint read
+  ---
+  duration_ms: 141.889509
+  type: 'test'
+  ...
+# Subtest: a changed current task or successor tip cannot create a connection wait
+ok 88 - a changed current task or successor tip cannot create a connection wait
+  ---
+  duration_ms: 134.654546
+  type: 'test'
+  ...
+# Subtest: corrupt original checkpoint bytes remain an error rather than an ordinary connection wait
+ok 89 - corrupt original checkpoint bytes remain an error rather than an ordinary connection wait
+  ---
+  duration_ms: 134.950427
+  type: 'test'
+  ...
+# Subtest: state changes during original read cannot leave a stale connection wait
+ok 90 - state changes during original read cannot leave a stale connection wait
+  ---
+  duration_ms: 163.804764
+  type: 'test'
+  ...
+# Subtest: registration changes during original read cannot leave a stale connection wait
+ok 91 - registration changes during original read cannot leave a stale connection wait
+  ---
+  duration_ms: 166.642941
+  type: 'test'
+  ...
+# Subtest: host authority revoked before_read cannot become a connection wait
+ok 92 - host authority revoked before_read cannot become a connection wait
+  ---
+  duration_ms: 146.12153
+  type: 'test'
+  ...
+# Subtest: host authority revoked during_read cannot become a connection wait
+ok 93 - host authority revoked during_read cannot become a connection wait
+  ---
+  duration_ms: 191.178194
+  type: 'test'
+  ...
+# Subtest: resume option is optional and strict; old packet JSON is preserved without a default marker
+ok 94 - resume option is optional and strict; old packet JSON is preserved without a default marker
+  ---
+  duration_ms: 169.729858
+  type: 'test'
+  ...
+# Subtest: sqlite: a complete original becomes a planning option online and stored-only without changing canonical state
+ok 95 - sqlite: a complete original becomes a planning option online and stored-only without changing canonical state
+  ---
+  duration_ms: 164.478225
+  type: 'test'
+  ...
+# Subtest: file-journal: a complete original becomes a planning option online and stored-only without changing canonical state
+ok 96 - file-journal: a complete original becomes a planning option online and stored-only without changing canonical state
+  ---
+  duration_ms: 191.129791
+  type: 'test'
+  ...
+# Subtest: a partial checkpoint gets no complete option and a forged mode is rejected by both currentness paths
+ok 97 - a partial checkpoint gets no complete option and a forged mode is rejected by both currentness paths
+  ---
+  duration_ms: 93.976791
+  type: 'test'
+  ...
+# Subtest: an original absent from the current frontier is never reconstructed from checkpoint metadata
+ok 98 - an original absent from the current frontier is never reconstructed from checkpoint metadata
+  ---
+  duration_ms: 86.984667
+  type: 'test'
+  ...
+# Subtest: the complete option and exact frontier are mandatory at the minimum context size; inspection never writes a replacement
+ok 99 - the complete option and exact frontier are mandatory at the minimum context size; inspection never writes a replacement
+  ---
+  duration_ms: 97.444656
+  type: 'test'
+  ...
+# Subtest: canonical four fields, original query and supplied frontier remain mandatory under the annotation
+ok 100 - canonical four fields, original query and supplied frontier remain mandatory under the annotation
+  ---
+  duration_ms: 93.310575
+  type: 'test'
+  ...
+# Subtest: one marked source verification reuses its checkpoint proof rather than rereading dispatch or raw for the annotation
+ok 101 - one marked source verification reuses its checkpoint proof rather than rereading dispatch or raw for the annotation
+  ---
+  duration_ms: 83.431514
+  type: 'test'
+  ...
+# Subtest: availability alone cannot invalidate a stored complete option, while missing original bytes do
+ok 102 - availability alone cannot invalidate a stored complete option, while missing original bytes do
+  ---
+  duration_ms: 82.247199
+  type: 'test'
+  ...
+# Subtest: a state change during original-page verification cannot authenticate the earlier complete option
+ok 103 - a state change during original-page verification cannot authenticate the earlier complete option
+  ---
+  duration_ms: 76.607686
+  type: 'test'
+  ...
+# Subtest: legacy planning adopts an explicit successor after availability changes without rewriting parent ownership, originals or model usage
+ok 104 - legacy planning adopts an explicit successor after availability changes without rewriting parent ownership, originals or model usage
+  ---
+  duration_ms: 188.52454
+  type: 'test'
+  ...
+# Subtest: before_adopt: losing a marked original rejects only the plan body and preserves known accounting
+ok 105 - before_adopt: losing a marked original rejects only the plan body and preserves known accounting
+  ---
+  duration_ms: 163.020947
+  type: 'test'
+  ...
+# Subtest: before_commit: losing a marked original rejects only the plan body and preserves known accounting
+ok 106 - before_commit: losing a marked original rejects only the plan body and preserves known accounting
+  ---
+  duration_ms: 158.31101
+  type: 'test'
+  ...
+# Subtest: missing: a received legacy input must authenticate before deciding that its marker is absent
+ok 107 - missing: a received legacy input must authenticate before deciding that its marker is absent
+  ---
+  duration_ms: 142.144039
+  type: 'test'
+  ...
+# Subtest: same_length_tampering: a received legacy input must authenticate before deciding that its marker is absent
+ok 108 - same_length_tampering: a received legacy input must authenticate before deciding that its marker is absent
+  ---
+  duration_ms: 134.010852
+  type: 'test'
+  ...
+# Subtest: an authenticated unmarked legacy reply retains its existing adoption path without added collection-source reads
+ok 109 - an authenticated unmarked legacy reply retains its existing adoption path without added collection-source reads
+  ---
+  duration_ms: 147.55084
+  type: 'test'
+  ...
+# Subtest: planning uses the inspected connection wait for an incomplete stored-only collection before reservation or automatic compact
+ok 110 - planning uses the inspected connection wait for an incomplete stored-only collection before reservation or automatic compact
+  ---
+  duration_ms: 68.455088
+  type: 'test'
+  ...
+# Subtest: both fixed prompts describe an exact local successor proposal and preserve strict plan/output and prompt fingerprint checks
+ok 111 - both fixed prompts describe an exact local successor proposal and preserve strict plan/output and prompt fingerprint checks
+  ---
+  duration_ms: 82.864399
+  type: 'test'
+  ...
+# Subtest: resource progress: legacy and paged catalog cards share a stable preparation key independent of query and cursor metadata
+ok 112 - resource progress: legacy and paged catalog cards share a stable preparation key independent of query and cursor metadata
+  ---
+  duration_ms: 21.291844
+  type: 'test'
+  ...
+# Subtest: resource progress: exact schema loading earns a distinct credit and also records discovery so reverse-order searches add none
+ok 113 - resource progress: exact schema loading earns a distinct credit and also records discovery so reverse-order searches add none
+  ---
+  duration_ms: 6.171309
+  type: 'test'
+  ...
+# Subtest: resource progress: forged, mismatched or denied tool metadata and too-large responses do not earn preparation credit
+ok 114 - resource progress: forged, mismatched or denied tool metadata and too-large responses do not earn preparation credit
+  ---
+  duration_ms: 3.762533
+  type: 'test'
+  ...
+# Subtest: resource progress: guidance listing metadata does not reset progress and exact body loading subsumes the card
+ok 115 - resource progress: guidance listing metadata does not reset progress and exact body loading subsumes the card
+  ---
+  duration_ms: 5.491791
+  type: 'test'
+  ...
+# Subtest: resource progress: guidance body credit requires permitted manifest, matching indexed original and canonical selection identity
+ok 116 - resource progress: guidance body credit requires permitted manifest, matching indexed original and canonical selection identity
+  ---
+  duration_ms: 3.636365
+  type: 'test'
+  ...
+# Subtest: resource progress: empty results, history/evidence reads and arbitrary new artifacts cannot fabricate preparation
+ok 117 - resource progress: empty results, history/evidence reads and arbitrary new artifacts cannot fabricate preparation
+  ---
+  duration_ms: 0.914788
+  type: 'test'
+  ...
+# Subtest: resource progress: replayed, reused and unadopted resource results cannot earn a new preparation key
+ok 118 - resource progress: replayed, reused and unadopted resource results cannot earn a new preparation key
+  ---
+  duration_ms: 1.309322
+  type: 'test'
+  ...
+# Subtest: resource progress sqlite/documents-simple: default no-progress policy allows discovery, schemas and guidance before the real source
+ok 119 - resource progress sqlite/documents-simple: default no-progress policy allows discovery, schemas and guidance before the real source
+  ---
+  duration_ms: 351.981222
+  type: 'test'
+  ...
+# Subtest: resource progress sqlite/observations-simple: default no-progress policy allows discovery, schemas and guidance before the real source
+ok 120 - resource progress sqlite/observations-simple: default no-progress policy allows discovery, schemas and guidance before the real source
+  ---
+  duration_ms: 214.014271
+  type: 'test'
+  ...
+# Subtest: resource progress sqlite: repeated identical catalog preparation stops after the first credit and three empty steps
+ok 121 - resource progress sqlite: repeated identical catalog preparation stops after the first credit and three empty steps
+  ---
+  duration_ms: 176.632313
+  type: 'test'
+  ...
+# Subtest: resource progress sqlite: repeated identical guidance preparation stops after the first credit and three empty steps
+ok 122 - resource progress sqlite: repeated identical guidance preparation stops after the first credit and three empty steps
+  ---
+  duration_ms: 176.598019
+  type: 'test'
+  ...
+# Subtest: resource progress sqlite: empty searches with different query and task IDs stop at the default limit
+ok 123 - resource progress sqlite: empty searches with different query and task IDs stop at the default limit
+  ---
+  duration_ms: 117.282383
+  type: 'test'
+  ...
+# Subtest: resource progress file-journal/documents-simple: default no-progress policy allows discovery, schemas and guidance before the real source
+ok 124 - resource progress file-journal/documents-simple: default no-progress policy allows discovery, schemas and guidance before the real source
+  ---
+  duration_ms: 477.347742
+  type: 'test'
+  ...
+# Subtest: resource progress file-journal/observations-simple: default no-progress policy allows discovery, schemas and guidance before the real source
+ok 125 - resource progress file-journal/observations-simple: default no-progress policy allows discovery, schemas and guidance before the real source
+  ---
+  duration_ms: 450.950384
+  type: 'test'
+  ...
+# Subtest: resource progress file-journal: repeated identical catalog preparation stops after the first credit and three empty steps
+ok 126 - resource progress file-journal: repeated identical catalog preparation stops after the first credit and three empty steps
+  ---
+  duration_ms: 317.287514
+  type: 'test'
+  ...
+# Subtest: resource progress file-journal: repeated identical guidance preparation stops after the first credit and three empty steps
+ok 127 - resource progress file-journal: repeated identical guidance preparation stops after the first credit and three empty steps
+  ---
+  duration_ms: 378.00663
+  type: 'test'
+  ...
+# Subtest: resource progress file-journal: empty searches with different query and task IDs stop at the default limit
+ok 128 - resource progress file-journal: empty searches with different query and task IDs stop at the default limit
+  ---
+  duration_ms: 221.354159
+  type: 'test'
+  ...
+# Subtest: sqlite: a stored-only task yields a final workflow connection wait with no reservation or invocation
+ok 129 - sqlite: a stored-only task yields a final workflow connection wait with no reservation or invocation
+  ---
+  duration_ms: 247.043877
+  type: 'test'
+  ...
+# Subtest: sqlite: an unavailable ready task does not starve independent work
+ok 130 - sqlite: an unavailable ready task does not starve independent work
+  ---
+  duration_ms: 176.918
+  type: 'test'
+  ...
+# Subtest: sqlite: a stored-only reopen preserves an unsent reservation and online resume dispatches it once
+ok 131 - sqlite: a stored-only reopen preserves an unsent reservation and online resume dispatches it once
+  ---
+  duration_ms: 190.383362
+  type: 'test'
+  ...
+# Subtest: sqlite: offline reservation expiry returns capacity without using an execution attempt
+ok 132 - sqlite: offline reservation expiry returns capacity without using an execution attempt
+  ---
+  duration_ms: 117.858623
+  type: 'test'
+  ...
+# Subtest: sqlite: received results remain adoptable after availability changes
+ok 133 - sqlite: received results remain adoptable after availability changes
+  ---
+  duration_ms: 135.527686
+  type: 'test'
+  ...
+# Subtest: file-journal: a stored-only task yields a final workflow connection wait with no reservation or invocation
+ok 134 - file-journal: a stored-only task yields a final workflow connection wait with no reservation or invocation
+  ---
+  duration_ms: 169.326132
+  type: 'test'
+  ...
+# Subtest: file-journal: an unavailable ready task does not starve independent work
+ok 135 - file-journal: an unavailable ready task does not starve independent work
+  ---
+  duration_ms: 256.758004
+  type: 'test'
+  ...
+# Subtest: file-journal: a stored-only reopen preserves an unsent reservation and online resume dispatches it once
+ok 136 - file-journal: a stored-only reopen preserves an unsent reservation and online resume dispatches it once
+  ---
+  duration_ms: 282.030964
+  type: 'test'
+  ...
+# Subtest: file-journal: offline reservation expiry returns capacity without using an execution attempt
+ok 137 - file-journal: offline reservation expiry returns capacity without using an execution attempt
+  ---
+  duration_ms: 154.746486
+  type: 'test'
+  ...
+# Subtest: file-journal: received results remain adoptable after availability changes
+ok 138 - file-journal: received results remain adoptable after availability changes
+  ---
+  duration_ms: 208.6086
+  type: 'test'
+  ...
+# Subtest: availability changed after reserve staging cannot publish a reservation or charge
+ok 139 - availability changed after reserve staging cannot publish a reservation or charge
+  ---
+  duration_ms: 89.268165
+  type: 'test'
+  ...
+# Subtest: availability changed after dispatch staging cannot publish a reservation or charge
+ok 140 - availability changed after dispatch staging cannot publish a reservation or charge
+  ---
+  duration_ms: 99.484987
+  type: 'test'
+  ...
+# Subtest: a dispatched failure named reservation_expired still consumes maxAttempts
+ok 141 - a dispatched failure named reservation_expired still consumes maxAttempts
+  ---
+  duration_ms: 69.748679
+  type: 'test'
+  ...
+# Subtest: a dispatched failure named reservation_cancelled still consumes maxAttempts
+ok 142 - a dispatched failure named reservation_cancelled still consumes maxAttempts
+  ---
+  duration_ms: 95.270678
+  type: 'test'
+  ...
+# Subtest: a received plain read without restoration still settles its rejection after host authority is revoked
+ok 143 - a received plain read without restoration still settles its rejection after host authority is revoked
+  ---
+  duration_ms: 116.785638
+  type: 'test'
+  ...
+# Subtest: progress runtime sqlite: renamed tasks share failure history and backoff survives workflow runs and reopening
+ok 144 - progress runtime sqlite: renamed tasks share failure history and backoff survives workflow runs and reopening
+  ---
+  duration_ms: 353.301319
+  type: 'test'
+  ...
+# Subtest: progress runtime sqlite: replanning cannot extend the first semantic request retry deadline
+ok 145 - progress runtime sqlite: replanning cannot extend the first semantic request retry deadline
+  ---
+  duration_ms: 138.864592
+  type: 'test'
+  ...
+# Subtest: progress runtime sqlite: successful empty results still stall and mode, compact, resume and reopening cannot erase that state
+ok 146 - progress runtime sqlite: successful empty results still stall and mode, compact, resume and reopening cannot erase that state
+  ---
+  duration_ms: 241.307866
+  type: 'test'
+  ...
+# Subtest: progress runtime sqlite: a stored tool result settles atomically before allocation gates and verified completion still wins
+ok 147 - progress runtime sqlite: a stored tool result settles atomically before allocation gates and verified completion still wins
+  ---
+  duration_ms: 123.603603
+  type: 'test'
+  ...
+# Subtest: progress runtime sqlite: a stored model reply settles after reopening even when new allocations are blocked
+ok 148 - progress runtime sqlite: a stored model reply settles after reopening even when new allocations are blocked
+  ---
+  duration_ms: 137.323873
+  type: 'test'
+  ...
+# Subtest: progress runtime sqlite: repeated invalid model proposals preserve one failure key and persist model backoff
+ok 149 - progress runtime sqlite: repeated invalid model proposals preserve one failure key and persist model backoff
+  ---
+  duration_ms: 305.86811
+  type: 'test'
+  ...
+# Subtest: progress runtime sqlite: a new goal starts a new streak while preserving usage, processed history and failure deadlines
+ok 150 - progress runtime sqlite: a new goal starts a new streak while preserving usage, processed history and failure deadlines
+  ---
+  duration_ms: 83.02547
+  type: 'test'
+  ...
+# Subtest: progress runtime sqlite: an unknown synthetic write remains an obligation ahead of a no-progress allocation stop
+ok 151 - progress runtime sqlite: an unknown synthetic write remains an obligation ahead of a no-progress allocation stop
+  ---
+  duration_ms: 118.655782
+  type: 'test'
+  ...
+# Subtest: progress runtime file-journal: renamed tasks share failure history and backoff survives workflow runs and reopening
+ok 152 - progress runtime file-journal: renamed tasks share failure history and backoff survives workflow runs and reopening
+  ---
+  duration_ms: 446.415464
+  type: 'test'
+  ...
+# Subtest: progress runtime file-journal: replanning cannot extend the first semantic request retry deadline
+ok 153 - progress runtime file-journal: replanning cannot extend the first semantic request retry deadline
+  ---
+  duration_ms: 241.2703
+  type: 'test'
+  ...
+# Subtest: progress runtime file-journal: successful empty results still stall and mode, compact, resume and reopening cannot erase that state
+ok 154 - progress runtime file-journal: successful empty results still stall and mode, compact, resume and reopening cannot erase that state
+  ---
+  duration_ms: 383.917181
+  type: 'test'
+  ...
+# Subtest: progress runtime file-journal: a stored tool result settles atomically before allocation gates and verified completion still wins
+ok 155 - progress runtime file-journal: a stored tool result settles atomically before allocation gates and verified completion still wins
+  ---
+  duration_ms: 156.20635
+  type: 'test'
+  ...
+# Subtest: progress runtime file-journal: a stored model reply settles after reopening even when new allocations are blocked
+ok 156 - progress runtime file-journal: a stored model reply settles after reopening even when new allocations are blocked
+  ---
+  duration_ms: 144.339542
+  type: 'test'
+  ...
+# Subtest: progress runtime file-journal: repeated invalid model proposals preserve one failure key and persist model backoff
+ok 157 - progress runtime file-journal: repeated invalid model proposals preserve one failure key and persist model backoff
+  ---
+  duration_ms: 558.25888
+  type: 'test'
+  ...
+# Subtest: progress runtime file-journal: a new goal starts a new streak while preserving usage, processed history and failure deadlines
+ok 158 - progress runtime file-journal: a new goal starts a new streak while preserving usage, processed history and failure deadlines
+  ---
+  duration_ms: 122.648604
+  type: 'test'
+  ...
+# Subtest: progress runtime file-journal: an unknown synthetic write remains an obligation ahead of a no-progress allocation stop
+ok 159 - progress runtime file-journal: an unknown synthetic write remains an obligation ahead of a no-progress allocation stop
+  ---
+  duration_ms: 156.404355
+  type: 'test'
+  ...
+# Subtest: progress: a unique committed operation contributes once and returned state has no mutable aliases
+ok 160 - progress: a unique committed operation contributes once and returned state has no mutable aliases
+  ---
+  duration_ms: 4.111966
+  type: 'test'
+  ...
+# Subtest: progress: permutations, repeated known keys and new operation IDs cannot fabricate productive steps
+ok 161 - progress: permutations, repeated known keys and new operation IDs cannot fabricate productive steps
+  ---
+  duration_ms: 6.14264
+  type: 'test'
+  ...
+# Subtest: progress: explicit goal epochs reset only the current streak and preserve deduplication and the original retry window
+ok 162 - progress: explicit goal epochs reset only the current streak and preserve deduplication and the original retry window
+  ---
+  duration_ms: 1.521176
+  type: 'test'
+  ...
+# Subtest: progress: processed capacity saturates without evicting prior records or resetting on a new goal
+ok 163 - progress: processed capacity saturates without evicting prior records or resetting on a new goal
+  ---
+  duration_ms: 0.940228
+  type: 'test'
+  ...
+# Subtest: progress: knownKeys capacity saturates without evicting prior records or resetting on a new goal
+ok 164 - progress: knownKeys capacity saturates without evicting prior records or resetting on a new goal
+  ---
+  duration_ms: 0.618994
+  type: 'test'
+  ...
+# Subtest: progress: repeated failures retain their first deadline and use the current backoff without extending the retry window
+ok 165 - progress: repeated failures retain their first deadline and use the current backoff without extending the retry window
+  ---
+  duration_ms: 2.415148
+  type: 'test'
+  ...
+# Subtest: progress: retry gate respects the work deadline and specific repeated-failure limits
+ok 166 - progress: retry gate respects the work deadline and specific repeated-failure limits
+  ---
+  duration_ms: 3.055558
+  type: 'test'
+  ...
+# Subtest: progress: policies remain pinned and invalid counters, times, keys or schema fields fail closed
+ok 167 - progress: policies remain pinned and invalid counters, times, keys or schema fields fail closed
+  ---
+  duration_ms: 2.576539
+  type: 'test'
+  ...
+# Subtest: capture: a new negative observation is productive while aliases, timestamps and duplicate originals are not
+ok 168 - capture: a new negative observation is productive while aliases, timestamps and duplicate originals are not
+  ---
+  duration_ms: 12.247185
+  type: 'test'
+  ...
+# Subtest: capture: changed facts, coverage and an authenticated original version can each carry new information
+ok 169 - capture: changed facts, coverage and an authenticated original version can each carry new information
+  ---
+  duration_ms: 2.331727
+  type: 'test'
+  ...
+# Subtest: capture: derived copies do not add progress or independent completion credit
+ok 170 - capture: derived copies do not add progress or independent completion credit
+  ---
+  duration_ms: 1.317109
+  type: 'test'
+  ...
+# Subtest: capture: tenant evidence cannot earn progress
+ok 171 - capture: tenant evidence cannot earn progress
+  ---
+  duration_ms: 0.786076
+  type: 'test'
+  ...
+# Subtest: capture: scope evidence cannot earn progress
+ok 172 - capture: scope evidence cannot earn progress
+  ---
+  duration_ms: 0.656842
+  type: 'test'
+  ...
+# Subtest: capture: labels evidence cannot earn progress
+ok 173 - capture: labels evidence cannot earn progress
+  ---
+  duration_ms: 0.642111
+  type: 'test'
+  ...
+# Subtest: capture: retracted evidence cannot earn progress
+ok 174 - capture: retracted evidence cannot earn progress
+  ---
+  duration_ms: 3.096393
+  type: 'test'
+  ...
+# Subtest: capture: deleted evidence cannot earn progress
+ok 175 - capture: deleted evidence cannot earn progress
+  ---
+  duration_ms: 0.607605
+  type: 'test'
+  ...
+# Subtest: capture: blocked-artifact evidence cannot earn progress
+ok 176 - capture: blocked-artifact evidence cannot earn progress
+  ---
+  duration_ms: 0.711737
+  type: 'test'
+  ...
+# Subtest: capture: a hypothesis assessment is credited once per semantic evidence basis, not per hypothesis text or evidence ID
+ok 177 - capture: a hypothesis assessment is credited once per semantic evidence basis, not per hypothesis text or evidence ID
+  ---
+  duration_ms: 1.932057
+  type: 'test'
+  ...
+# Subtest: capture: no evidence or a stale hypothesis assessment earns a fresh reasoning credit
+ok 178 - capture: no evidence or a stale hypothesis assessment earns a fresh reasoning credit
+  ---
+  duration_ms: 0.930873
+  type: 'test'
+  ...
+# Subtest: capture: only satisfied obligations contribute and identity or explanation rewrites cannot repeat the credit
+ok 179 - capture: only satisfied obligations contribute and identity or explanation rewrites cannot repeat the credit
+  ---
+  duration_ms: 0.991828
+  type: 'test'
+  ...
+# Subtest: capture: plan, task, revision, mode, usage and replay changes cannot reset a stalled work
+ok 180 - capture: plan, task, revision, mode, usage and replay changes cannot reset a stalled work
+  ---
+  duration_ms: 0.808059
+  type: 'test'
+  ...
+# Subtest: capture: trusted explicit item progress and returned state copies follow the same deduplication contract
+ok 181 - capture: trusted explicit item progress and returned state copies follow the same deduplication contract
+  ---
+  duration_ms: 0.495948
+  type: 'test'
+  ...
+# Subtest: progress sqlite: reopen and duplicate commit preserve settlement counts and the first retry deadline
+ok 182 - progress sqlite: reopen and duplicate commit preserve settlement counts and the first retry deadline
+  ---
+  duration_ms: 48.051261
+  type: 'test'
+  ...
+# Subtest: progress file-journal: reopen and duplicate commit preserve settlement counts and the first retry deadline
+ok 183 - progress file-journal: reopen and duplicate commit preserve settlement counts and the first retry deadline
+  ---
+  duration_ms: 35.648111
+  type: 'test'
+  ...
+1..183
+# tests 183
+# suites 0
+# pass 183
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 62906.761328

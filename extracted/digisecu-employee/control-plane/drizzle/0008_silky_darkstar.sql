@@ -1,0 +1,2 @@
+ALTER TABLE "approvals" DROP CONSTRAINT "approvals_action_check";--> statement-breakpoint
+ALTER TABLE "approvals" ADD CONSTRAINT "approvals_action_check" CHECK ("approvals"."action" in ('hire','terminate','enable_send','delete_pod','budget_override','send_mail'));

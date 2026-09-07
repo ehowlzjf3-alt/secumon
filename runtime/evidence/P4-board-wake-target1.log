@@ -1,0 +1,138 @@
+✔ sqlite/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion (2959.998625ms)
+✔ sqlite/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion (2284.619125ms)
+✔ sqlite: lost offer response restores one obligation from the applied receipt without inventing a result (230.506167ms)
+✔ sqlite: a missing projection is restored and generic wait or resolve cannot forge coordination (241.380375ms)
+✔ sqlite: requester can cancel a waiting request and cancellation is waived rather than satisfied (583.835792ms)
+✔ sqlite: decline does not create an obligation for a recipient who never accepted (293.518333ms)
+✔ sqlite: expiry is actionable review and retains the original pending obligation (336.544583ms)
+✔ sqlite: confirmed answer retraction invalidates the previous completion projection (1844.35075ms)
+✔ sqlite: loss of an applied request receipt cannot silently discharge the response (234.086208ms)
+✔ sqlite: lost acceptance response recovers the assignee obligation and leaves work executable (918.066625ms)
+✔ sqlite: an expired assignee can decline instead of falsely satisfying the answer (648.880792ms)
+✔ sqlite: coordination waits do not become questions for a human (238.679834ms)
+✔ sqlite: withdrawal of current authority denies a retained coordination projection (226.658ms)
+✔ sqlite: request tool contracts reject caller-selected owner, command and action (327.216958ms)
+✔ sqlite: even satisfied goal facts wait for requester confirmation (1578.049208ms)
+✔ file-journal/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion (13609.265375ms)
+✔ file-journal/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion (9528.342167ms)
+✔ file-journal: lost offer response restores one obligation from the applied receipt without inventing a result (437.678667ms)
+✔ file-journal: a missing projection is restored and generic wait or resolve cannot forge coordination (575.959833ms)
+✔ file-journal: requester can cancel a waiting request and cancellation is waived rather than satisfied (1442.478459ms)
+✔ file-journal: decline does not create an obligation for a recipient who never accepted (601.350042ms)
+✔ file-journal: expiry is actionable review and retains the original pending obligation (764.766375ms)
+✔ file-journal: confirmed answer retraction invalidates the previous completion projection (7637.127041ms)
+✔ file-journal: loss of an applied request receipt cannot silently discharge the response (458.429833ms)
+✔ file-journal: lost acceptance response recovers the assignee obligation and leaves work executable (2544.162125ms)
+✔ file-journal: an expired assignee can decline instead of falsely satisfying the answer (1823.8925ms)
+✔ file-journal: coordination waits do not become questions for a human (441.521042ms)
+✔ file-journal: withdrawal of current authority denies a retained coordination projection (442.412209ms)
+✔ file-journal: request tool contracts reject caller-selected owner, command and action (782.809458ms)
+✔ file-journal: even satisfied goal facts wait for requester confirmation (6508.326709ms)
+✖ sqlite/documents: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen (1183.232625ms)
+✖ sqlite/observations: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen (950.538333ms)
+✔ sqlite: duplicate wake is a no-op with zero model, tool and chat delivery activity (189.757292ms)
+✔ sqlite: an unprocessed event rejects stale context and a pending offer blocks completion even after metadata is read (300.944292ms)
+✔ sqlite: a missed wake and a lost checkpoint reply resume with one durable notification (207.206083ms)
+✔ sqlite: notifications and cursor require their original checkpoint and survive compact without omissions (244.098666ms)
+✔ sqlite: request metadata cannot be forged and current authority is rechecked after artifact reads (221.186208ms)
+✔ sqlite: another owner cannot register or close a subscription; revoked access prevents wake (164.645084ms)
+✔ sqlite: expiry before a poll creates no actionable offer and unchanged waiting does not call a model (339.156125ms)
+✔ sqlite: pause preserves the cursor, resume reads missed events, and cancellation closes the inbox (166.847167ms)
+✔ sqlite: metadata pagination is bounded and rejects stale cursors and caller-selected ownership (160.564542ms)
+✖ file-journal/documents: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen (5561.581084ms)
+✖ file-journal/observations: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen (5150.283833ms)
+✔ file-journal: duplicate wake is a no-op with zero model, tool and chat delivery activity (621.970542ms)
+✔ file-journal: an unprocessed event rejects stale context and a pending offer blocks completion even after metadata is read (1104.163625ms)
+✔ file-journal: a missed wake and a lost checkpoint reply resume with one durable notification (631.746542ms)
+✔ file-journal: notifications and cursor require their original checkpoint and survive compact without omissions (646.915834ms)
+✔ file-journal: request metadata cannot be forged and current authority is rechecked after artifact reads (694.824208ms)
+✔ file-journal: another owner cannot register or close a subscription; revoked access prevents wake (523.120041ms)
+✔ file-journal: expiry before a poll creates no actionable offer and unchanged waiting does not call a model (1317.523166ms)
+✔ file-journal: pause preserves the cursor, resume reads missed events, and cancellation closes the inbox (552.811708ms)
+✔ file-journal: metadata pagination is bounded and rejects stale cursors and caller-selected ownership (543.87625ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 48
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 60650.980042
+
+✖ failing tests:
+
+test at dist/tests/board-wake-runtime.test.js:11:9
+✖ sqlite/documents: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen (1183.232625ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.read","toolVersion":"1","inputDigest":"37f4beb741b040c30f1704d900b8051dc7f8aa1aecadaadf4f5a7467dcc1a77c","scope":"fixture","contractDigest":"000794dd77efca160728faae30f61ddf02e70ebbfa2de200d9528e3a45654a20","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"read","effectState":"none","status":"failed","owner":"worker-b","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:failure","resultArtifact":{"id":"5cadb22fcac2cfbfa2cb347d42a439ea6d2e59d87fa0d0639544432119acf082","sha256":"fc0d76fec090c76671c4cb415617ea483abfcaf0fcd127c37c7aec9e63409f3f","byteLength":231,"mediaType":"application/json","tenantId":"tenant-a","labels":[]},"adopted":false,"error":{"code":"tool_proof_unavailable","retryable":false}},"result":{"resultId":"attempt-12:failure","attemptId":"attempt-12","status":"error","effectState":"none","evidence":[],"artifacts":[],"output":null,"error":{"code":"invalid_tool_result","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:75:16)
+      at async Object.readRequests (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:83:24)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:33:30)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-wake-runtime.test.js:11:9
+✖ sqlite/observations: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen (950.538333ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.read","toolVersion":"1","inputDigest":"37f4beb741b040c30f1704d900b8051dc7f8aa1aecadaadf4f5a7467dcc1a77c","scope":"fixture","contractDigest":"000794dd77efca160728faae30f61ddf02e70ebbfa2de200d9528e3a45654a20","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"read","effectState":"none","status":"failed","owner":"worker-b","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:failure","resultArtifact":{"id":"5cadb22fcac2cfbfa2cb347d42a439ea6d2e59d87fa0d0639544432119acf082","sha256":"fc0d76fec090c76671c4cb415617ea483abfcaf0fcd127c37c7aec9e63409f3f","byteLength":231,"mediaType":"application/json","tenantId":"tenant-a","labels":[]},"adopted":false,"error":{"code":"tool_proof_unavailable","retryable":false}},"result":{"resultId":"attempt-12:failure","attemptId":"attempt-12","status":"error","effectState":"none","evidence":[],"artifacts":[],"output":null,"error":{"code":"invalid_tool_result","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:75:16)
+      at async Object.readRequests (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:83:24)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:33:30)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-wake-runtime.test.js:11:9
+✖ file-journal/documents: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen (5561.581084ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.read","toolVersion":"1","inputDigest":"37f4beb741b040c30f1704d900b8051dc7f8aa1aecadaadf4f5a7467dcc1a77c","scope":"fixture","contractDigest":"000794dd77efca160728faae30f61ddf02e70ebbfa2de200d9528e3a45654a20","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"read","effectState":"none","status":"failed","owner":"worker-b","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:failure","resultArtifact":{"id":"5cadb22fcac2cfbfa2cb347d42a439ea6d2e59d87fa0d0639544432119acf082","sha256":"fc0d76fec090c76671c4cb415617ea483abfcaf0fcd127c37c7aec9e63409f3f","byteLength":231,"mediaType":"application/json","tenantId":"tenant-a","labels":[]},"adopted":false,"error":{"code":"tool_proof_unavailable","retryable":false}},"result":{"resultId":"attempt-12:failure","attemptId":"attempt-12","status":"error","effectState":"none","evidence":[],"artifacts":[],"output":null,"error":{"code":"invalid_tool_result","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:75:16)
+      at async Object.readRequests (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:83:24)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:33:30)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-wake-runtime.test.js:11:9
+✖ file-journal/observations: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen (5150.283833ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.read","toolVersion":"1","inputDigest":"37f4beb741b040c30f1704d900b8051dc7f8aa1aecadaadf4f5a7467dcc1a77c","scope":"fixture","contractDigest":"000794dd77efca160728faae30f61ddf02e70ebbfa2de200d9528e3a45654a20","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"read","effectState":"none","status":"failed","owner":"worker-b","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:failure","resultArtifact":{"id":"5cadb22fcac2cfbfa2cb347d42a439ea6d2e59d87fa0d0639544432119acf082","sha256":"fc0d76fec090c76671c4cb415617ea483abfcaf0fcd127c37c7aec9e63409f3f","byteLength":231,"mediaType":"application/json","tenantId":"tenant-a","labels":[]},"adopted":false,"error":{"code":"tool_proof_unavailable","retryable":false}},"result":{"resultId":"attempt-12:failure","attemptId":"attempt-12","status":"error","effectState":"none","evidence":[],"artifacts":[],"output":null,"error":{"code":"invalid_tool_result","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:75:16)
+      at async Object.readRequests (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:83:24)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:33:30)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

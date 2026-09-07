@@ -1,0 +1,64 @@
+✖ clear preserves a pre-existing work-memory quarantine review and its completion gate (159.530792ms)
+✖ recall preserves a pre-existing work-memory quarantine review and its completion gate (150.963042ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 401.638667
+
+✖ failing tests:
+
+test at dist/tests/personal-memory-context.test.js:167:5
+✖ clear preserves a pre-existing work-memory quarantine review and its completion gate (159.530792ms)
+  AssertionError [ERR_ASSERTION]: personal recall or clearing does not resolve a pre-existing work-memory review
+  + actual - expected
+  
+    {
+      dueAt: 1788739574559,
+      id: 'data-review:1',
+      kind: 'evidence',
+      reason: 'knowledge_dependency_changed_review_required',
+  +   status: 'waived',
+  -   status: 'pending',
+      wakeKey: 'data-review:1'
+    }
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-context.test.js:177:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { id: 'data-review:1', kind: 'evidence', reason: 'knowledge_dependency_changed_review_required', status: 'waived', wakeKey: 'data-review:1', dueAt: 1788739574559 },
+    expected: { id: 'data-review:1', kind: 'evidence', reason: 'knowledge_dependency_changed_review_required', status: 'pending', wakeKey: 'data-review:1', dueAt: 1788739574559 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/personal-memory-context.test.js:167:5
+✖ recall preserves a pre-existing work-memory quarantine review and its completion gate (150.963042ms)
+  AssertionError [ERR_ASSERTION]: personal recall or clearing does not resolve a pre-existing work-memory review
+  + actual - expected
+  
+    {
+      dueAt: 1788739574693,
+      id: 'data-review:1',
+      kind: 'evidence',
+      reason: 'knowledge_dependency_changed_review_required',
+  +   status: 'waived',
+  -   status: 'pending',
+      wakeKey: 'data-review:1'
+    }
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-context.test.js:177:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { id: 'data-review:1', kind: 'evidence', reason: 'knowledge_dependency_changed_review_required', status: 'waived', wakeKey: 'data-review:1', dueAt: 1788739574693 },
+    expected: { id: 'data-review:1', kind: 'evidence', reason: 'knowledge_dependency_changed_review_required', status: 'pending', wakeKey: 'data-review:1', dueAt: 1788739574693 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

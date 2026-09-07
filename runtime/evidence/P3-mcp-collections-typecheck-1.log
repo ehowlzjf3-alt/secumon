@@ -1,0 +1,15 @@
+
+> long-horizon-runtime@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+src/infrastructure/mcp-read-collections.ts(121,17): error TS7006: Parameter 'task' implicitly has an 'any' type.
+src/infrastructure/mcp-read-collections.ts(121,23): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/infrastructure/mcp-read-collections.ts(121,32): error TS7006: Parameter 'context' implicitly has an 'any' type.
+src/infrastructure/mcp-read-collections.ts(136,71): error TS7006: Parameter 'key' implicitly has an 'any' type.
+src/tests/helpers/mcp-collection-binding.ts(21,5): error TS2322: Type '(value: Json, task: TaskSpec, request: ReadRequest) => { sourceSnapshot: string; cursor: string | null; nextCursor: string | null; exhausted: boolean; totalItems: number; expected: { ...; }[]; items: { ...; }[]; }' is not assignable to type '(value: Json, task: TaskSpec, request: ReadRequest) => McpCollectionProjection'.
+  Call signature return types '{ sourceSnapshot: string; cursor: string | null; nextCursor: string | null; exhausted: boolean; totalItems: number; expected: { id: string; inputDigest: string; }[]; items: { status: string; output: { ...; } | null; ... 4 more ...; inputDigest: string; }[]; }' and 'McpCollectionProjection' are incompatible.
+    The types of 'items' are incompatible between these types.
+      Type '{ status: string; output: { value: number; } | null; coverage: "complete" | "partial" | "unknown"; error: { code: "forbidden" | "temporary" | "rate_limited"; retryable: boolean; } | null; observations: { ...; }[]; id: string; inputDigest: string; }[]' is not assignable to type 'McpCollectionItem[]'.
+        Type '{ status: string; output: { value: number; } | null; coverage: "complete" | "partial" | "unknown"; error: { code: "temporary" | "rate_limited" | "forbidden"; retryable: boolean; } | null; observations: { ...; }[]; id: string; inputDigest: string; }' is not assignable to type 'McpCollectionItem'.
+          Types of property 'status' are incompatible.
+            Type 'string' is not assignable to type '"partial" | "error" | "success" | "not_run"'.

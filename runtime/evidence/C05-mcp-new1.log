@@ -1,0 +1,389 @@
+✔ assembly preserves actual custody ports and captures schema method before the factory wait (4.07ms)
+✔ invalid assembly is rejected before acquisition and does not fabricate missing ports or a signal (0.509792ms)
+✔ legacy static factories remain valid while a supplied provider list requires real assembly even when empty (0.962459ms)
+✔ provider metadata and bound listing are fixed without granting permissions or compiling schemas during open (11.507959ms)
+✔ duplicate providers, static ownership collisions and malformed sources close the acquired lease exactly once (3.893791ms)
+✔ multiple distinct providers and unrelated static tools keep their independent listing ownership (9.163ms)
+✔ provider pages cannot introduce writes, core tools or broken proof callbacks before publication (26.337375ms)
+✔ host page wrapping leaves shape, namespace and range validation to the existing atomic refresh (11.1125ms)
+✔ source callback failures keep the original cause through refresh and remain owned until explicit close (0.610833ms)
+✔ provider getter failure and failed cleanup preserve both errors without retrying the closer (0.731709ms)
+✖ sqlite: a real CLI child uses its MCP peer and reopens without another tools/call (214.77625ms)
+✖ file-journal: a real CLI child uses its MCP peer and reopens without another tools/call (243.405625ms)
+✖ sqlite: localhost HTTP binds MCP on the host and preserves its result across a new server lifetime (116.46375ms)
+✖ file-journal: localhost HTTP binds MCP on the host and preserves its result across a new server lifetime (103.5385ms)
+✖ sqlite: a C01 MCP profile preserves received proof and completes after reopen without repeating the read (76.157334ms)
+✖ file-journal: a C01 MCP profile preserves received proof and completes after reopen without repeating the read (103.780834ms)
+✖ two C01 agents keep identical MCP tool names and different originals in their own custody (138.611542ms)
+✖ a projector revision change on reopen cannot adopt a prior MCP proof or replace it with a hidden call (115.22975ms)
+✖ failed MCP discovery closes the started peer and model without returning a partial C01 profile (110.26175ms)
+✖ a source failure after real discovery preserves its cause and independent cleanup failure and still stops the peer (68.309166ms)
+✖ normal profile close remains once-only after an MCP cleanup error and closes the model and C01 handles (72.315833ms)
+✔ MCP host registration rejects absent custody and a pre-aborted lifetime before peer discovery (21.986041ms)
+✔ MCP host registration rejects mixed providers, duplicate bindings and unsupported effects without starting a peer (5.520292ms)
+✔ MCP host captures config, policy and projector receiver while keeping real raw custody in the supplied store (150.390042ms)
+✔ opening one MCP registration twice creates independent client sessions and closing one preserves the other (196.053666ms)
+✔ multiple bindings in one provider share a single discovery and retain both executable contracts (117.331542ms)
+✔ MCP discovery does not add registered tools to host permissions (74.359667ms)
+✔ host lifetime cancellation prevents rediscovery and old registered tools from sending a new request (90.527ms)
+✔ a rejected remote manifest preserves the existing catalog and the acquired lease can close its actual peer (68.65275ms)
+✔ transport config validation remains in the existing client and cannot start a peer for an invalid command (2.186375ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 19
+ℹ fail 11
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1689.97075
+
+✖ failing tests:
+
+test at dist/tests/mcp-agent-entry.test.js:50:5
+✖ sqlite: a real CLI child uses its MCP peer and reopens without another tools/call (214.77625ms)
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node --input-type=module -e import {runAgentTurnCli} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js";
+  import {createMcpFixtureHost} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js";
+  await runAgentTurnCli(process.argv.slice(1),createMcpFixtureHost({"auditFile":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/mcp-agent-entry-Xl7FQH/peer-audit.jsonl","documentValue":47}).host); ask --message-id mcp-read --text [합성 MCP] company.mcp.document.read로 good 자료를 읽고 값을 알려 줘. --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/mcp-agent-entry-Xl7FQH/agent --provider registered --json
+  file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10
+      return new Error('mcp_host_registration_invalid', cause === undefined ? undefined : { cause });
+             ^
+  
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 4 lines matching cause stack trace ...
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at file:///Users/seunghanee/Documents/secumon/runtime/[eval1]:3:45
+        at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+        at async node:internal/modules/esm/loader:223:26
+        at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)
+        at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  }
+  
+  Node.js v24.20.0
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:514:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: 1,
+    killed: false,
+    signal: null,
+    cmd: '/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node --input-type=module -e import {runAgentTurnCli} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js";\nimport {createMcpFixtureHost} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js";\nawait runAgentTurnCli(process.argv.slice(1),createMcpFixtureHost({"auditFile":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/mcp-agent-entry-Xl7FQH/peer-audit.jsonl","documentValue":47}).host); ask --message-id mcp-read --text [합성 MCP] company.mcp.document.read로 good 자료를 읽고 값을 알려 줘. --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/mcp-agent-entry-Xl7FQH/agent --provider registered --json',
+    stdout: '',
+    stderr: `file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10\n    return new Error('mcp_host_registration_invalid', cause === undefined ? undefined : { cause });\n           ^\n\nError: mcp_host_registration_invalid\n    at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)\n    at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)\n    at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)\n    ... 4 lines matching cause stack trace ...\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  [cause]: ZodError: [\n    {\n      "code": "custom",\n      "path": [],\n      "message": "tool_id_requires_provider_namespace"\n    }\n  ]\n      at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)\n      at Array.from (<anonymous>)\n      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)\n      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)\n      at file:///Users/seunghanee/Documents/secumon/runtime/[eval1]:3:45\n      at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n      at async node:internal/modules/esm/loader:223:26\n      at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\n      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n}\n\nNode.js v24.20.0\n`
+  }
+
+test at dist/tests/mcp-agent-entry.test.js:50:5
+✖ file-journal: a real CLI child uses its MCP peer and reopens without another tools/call (243.405625ms)
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node --input-type=module -e import {runAgentTurnCli} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js";
+  import {createMcpFixtureHost} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js";
+  await runAgentTurnCli(process.argv.slice(1),createMcpFixtureHost({"auditFile":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/mcp-agent-entry-MgCIji/peer-audit.jsonl","documentValue":47}).host); ask --message-id mcp-read --text [합성 MCP] company.mcp.document.read로 good 자료를 읽고 값을 알려 줘. --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/mcp-agent-entry-MgCIji/agent --provider registered --json
+  file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10
+      return new Error('mcp_host_registration_invalid', cause === undefined ? undefined : { cause });
+             ^
+  
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 4 lines matching cause stack trace ...
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at file:///Users/seunghanee/Documents/secumon/runtime/[eval1]:3:45
+        at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+        at async node:internal/modules/esm/loader:223:26
+        at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)
+        at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+  }
+  
+  Node.js v24.20.0
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:514:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: 1,
+    killed: false,
+    signal: null,
+    cmd: '/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node --input-type=module -e import {runAgentTurnCli} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js";\nimport {createMcpFixtureHost} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js";\nawait runAgentTurnCli(process.argv.slice(1),createMcpFixtureHost({"auditFile":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/mcp-agent-entry-MgCIji/peer-audit.jsonl","documentValue":47}).host); ask --message-id mcp-read --text [합성 MCP] company.mcp.document.read로 good 자료를 읽고 값을 알려 줘. --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/mcp-agent-entry-MgCIji/agent --provider registered --json',
+    stdout: '',
+    stderr: `file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10\n    return new Error('mcp_host_registration_invalid', cause === undefined ? undefined : { cause });\n           ^\n\nError: mcp_host_registration_invalid\n    at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)\n    at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)\n    at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)\n    ... 4 lines matching cause stack trace ...\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  [cause]: ZodError: [\n    {\n      "code": "custom",\n      "path": [],\n      "message": "tool_id_requires_provider_namespace"\n    }\n  ]\n      at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)\n      at Array.from (<anonymous>)\n      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)\n      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)\n      at file:///Users/seunghanee/Documents/secumon/runtime/[eval1]:3:45\n      at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n      at async node:internal/modules/esm/loader:223:26\n      at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\n      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n}\n\nNode.js v24.20.0\n`
+  }
+
+test at dist/tests/mcp-agent-entry.test.js:120:5
+✖ sqlite: localhost HTTP binds MCP on the host and preserves its result across a new server lifetime (116.46375ms)
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 5 lines matching cause stack trace ...
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at connect (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-entry.test.js:95:15)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-entry.test.js:122:25)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+        at Test.postRun (node:internal/test_runner/test:1537:19)
+  }
+
+test at dist/tests/mcp-agent-entry.test.js:120:5
+✖ file-journal: localhost HTTP binds MCP on the host and preserves its result across a new server lifetime (103.5385ms)
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 5 lines matching cause stack trace ...
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at connect (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-entry.test.js:95:15)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-entry.test.js:122:25)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+        at Test.postRun (node:internal/test_runner/test:1537:19)
+  }
+
+test at dist/tests/mcp-agent-profile.test.js:76:5
+✖ sqlite: a C01 MCP profile preserves received proof and completes after reopen without repeating the read (76.157334ms)
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 5 lines matching cause stack trace ...
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at Object.open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:36:26)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:78:30)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.start (node:internal/test_runner/test:1257:17)
+        at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  }
+
+test at dist/tests/mcp-agent-profile.test.js:76:5
+✖ file-journal: a C01 MCP profile preserves received proof and completes after reopen without repeating the read (103.780834ms)
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 5 lines matching cause stack trace ...
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at Object.open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:36:26)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:78:30)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+        at Test.postRun (node:internal/test_runner/test:1537:19)
+  }
+
+test at dist/tests/mcp-agent-profile.test.js:165:1
+✖ two C01 agents keep identical MCP tool names and different originals in their own custody (138.611542ms)
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 5 lines matching cause stack trace ...
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at Object.open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:36:26)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:167:23)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+        at Test.postRun (node:internal/test_runner/test:1537:19)
+  }
+
+test at dist/tests/mcp-agent-profile.test.js:201:1
+✖ a projector revision change on reopen cannot adopt a prior MCP proof or replace it with a hidden call (115.22975ms)
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 5 lines matching cause stack trace ...
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at Object.open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:36:26)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:203:26)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+        at Test.postRun (node:internal/test_runner/test:1537:19)
+  }
+
+test at dist/tests/mcp-agent-profile.test.js:221:1
+✖ failed MCP discovery closes the started peer and model without returning a partial C01 profile (110.26175ms)
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 5 lines matching cause stack trace ...
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:223:24)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+        at Test.postRun (node:internal/test_runner/test:1537:19)
+        at Test.run (node:internal/test_runner/test:1462:12)
+  }
+
+test at dist/tests/mcp-agent-profile.test.js:236:1
+✖ a source failure after real discovery preserves its cause and independent cleanup failure and still stops the peer (68.309166ms)
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 5 lines matching cause stack trace ...
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:238:24)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+        at Test.postRun (node:internal/test_runner/test:1537:19)
+        at Test.run (node:internal/test_runner/test:1462:12)
+  }
+
+test at dist/tests/mcp-agent-profile.test.js:252:1
+✖ normal profile close remains once-only after an MCP cleanup error and closes the model and C01 handles (72.315833ms)
+  Error: mcp_host_registration_invalid
+      at invalid (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:10:12)
+      at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:46:101)
+      at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+      ... 5 lines matching cause stack trace ...
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12) {
+    [cause]: ZodError: [
+      {
+        "code": "custom",
+        "path": [],
+        "message": "tool_id_requires_provider_namespace"
+      }
+    ]
+        at captureBinding (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:13:52)
+        at Array.from (<anonymous>)
+        at createMcpHostTools (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/mcp-host-tools.js:34:26)
+        at createMcpFixtureHost (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile-helper.js:65:26)
+        at Object.open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:36:26)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-agent-profile.test.js:254:28)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+        at Test.postRun (node:internal/test_runner/test:1537:19)
+  }

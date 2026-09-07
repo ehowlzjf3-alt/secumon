@@ -1,0 +1,582 @@
+{
+  "schemaVersion": 1,
+  "chapter": "C03",
+  "scope": "Explicit personal memory register, cross-session recall, source validation, correction/forget, actual context and CLI/Web on scoped SQLite",
+  "status": "verified_partial_chapter",
+  "recordedAt": "2026-09-07T00:13:35.215Z",
+  "chapterComplete": false,
+  "goalComplete": false,
+  "sourceAndBuild": {
+    "sourceDigest": "658c9bd59fc1c1be7c8e71969082ae811839cfb8554634d255cb2a098ab1b824",
+    "filesDigest": "c6a2ce1cbabe723eb92c0ee46e80a08bf88e2af16f1c426e2bab8c5e0a9f914d",
+    "fileCount": 1296
+  },
+  "implementation": [
+    "reused KnowledgeService with tenant/agent/principal personal ownership",
+    "distinct applied user-receipt source, original preserved, not fabricated Evidence",
+    "scoped SQLite records, receipts, indexes, owner registration and atomic legacy migration",
+    "explicit selection in packet/frame/model currentness/recovery, stale use rejected",
+    "CLI/Web and core.memory.get/search personal paths",
+    "prior obligations preserved, new selection review handled separately"
+  ],
+  "local": {
+    "environment": {
+      "node": "v24.20.0",
+      "platform": "darwin",
+      "arch": "arm64"
+    },
+    "build": {
+      "exitCode": 0,
+      "log": "evidence/C03-personal-build3.log"
+    },
+    "core": {
+      "exitCode": 0,
+      "log": "evidence/C03-personal-core3.log"
+    },
+    "architecture": {
+      "exitCode": 0,
+      "inspected": 143,
+      "failures": 0,
+      "log": "evidence/C03-personal-architecture1.log"
+    },
+    "targeted": {
+      "tests": 52,
+      "pass": 52,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "nativeLinux": {
+    "status": "passed",
+    "startedAt": "2026-09-06T23:59:48.969Z",
+    "finishedAt": "2026-09-07T00:11:56.350Z",
+    "sessionId": 29539,
+    "environment": {
+      "platform": "linux",
+      "arch": "x64",
+      "node": "v24.20.0",
+      "kernel": "6.12.30+",
+      "osRelease": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\nOS_VERSION=1.17.0.0095\nOS_IS_BETA=False\n",
+      "cpus": 6,
+      "totalMemoryBytes": 16530345984,
+      "testConcurrency": 2,
+      "umask": "0022",
+      "temporaryDirectory": "/home/shaneee/secumon-linux-test.pCJ0bd/tmp"
+    },
+    "tests": {
+      "tests": 2888,
+      "pass": 2888,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "targeted": {
+      "tests": 52,
+      "pass": 52,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "steps": [
+      {
+        "name": "build",
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "startedAt": "2026-09-06T23:59:48.985Z",
+        "status": "passed",
+        "log": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence-personal-c03/build.log",
+        "exitCode": 0,
+        "signal": null,
+        "finishedAt": "2026-09-07T00:00:03.604Z"
+      },
+      {
+        "name": "personal-targeted",
+        "command": [
+          "/home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node",
+          "--test",
+          "--test-concurrency=2",
+          "--test-reporter=tap",
+          "dist/tests/personal-knowledge-service.test.js",
+          "dist/tests/personal-memory-context.test.js",
+          "dist/tests/personal-memory-presentation.test.js",
+          "dist/tests/sqlite-personal-knowledge.test.js",
+          "dist/tests/sqlite-knowledge-migration.test.js"
+        ],
+        "startedAt": "2026-09-07T00:00:03.918Z",
+        "status": "passed",
+        "log": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence-personal-c03/personal-targeted.log",
+        "exitCode": 0,
+        "signal": null,
+        "finishedAt": "2026-09-07T00:00:21.412Z"
+      },
+      {
+        "name": "typecheck-core",
+        "command": [
+          "npm",
+          "run",
+          "typecheck:core"
+        ],
+        "startedAt": "2026-09-07T00:00:21.412Z",
+        "status": "passed",
+        "log": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence-personal-c03/typecheck-core.log",
+        "exitCode": 0,
+        "signal": null,
+        "finishedAt": "2026-09-07T00:00:27.847Z"
+      },
+      {
+        "name": "architecture",
+        "command": [
+          "npm",
+          "run",
+          "check:architecture"
+        ],
+        "startedAt": "2026-09-07T00:00:27.853Z",
+        "status": "passed",
+        "log": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence-personal-c03/architecture.log",
+        "exitCode": 0,
+        "signal": null,
+        "finishedAt": "2026-09-07T00:00:28.628Z"
+      },
+      {
+        "name": "architecture-cli-fixtures",
+        "command": [
+          "/home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node",
+          "/home/shaneee/secumon-linux-test.pCJ0bd/architecture-cli-check.mjs"
+        ],
+        "startedAt": "2026-09-07T00:00:28.633Z",
+        "status": "passed",
+        "log": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence-personal-c03/architecture-cli-fixtures.log",
+        "exitCode": 0,
+        "signal": null,
+        "finishedAt": "2026-09-07T00:00:29.303Z"
+      },
+      {
+        "name": "all-tests",
+        "command": [
+          "/home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node",
+          "--test",
+          "--test-concurrency=2",
+          "--test-reporter=tap",
+          "dist/tests/agent-backend-binding.test.js",
+          "dist/tests/agent-clone-recovery.test.js",
+          "dist/tests/agent-clone.test.js",
+          "dist/tests/agent-database-owner.test.js",
+          "dist/tests/agent-profile-concurrency.test.js",
+          "dist/tests/agent-profile.test.js",
+          "dist/tests/agent-setup-mutations.test.js",
+          "dist/tests/agent-state-binding-recovery.test.js",
+          "dist/tests/agent-stores.test.js",
+          "dist/tests/artifact-io.test.js",
+          "dist/tests/artifacts.test.js",
+          "dist/tests/board-change-store.test.js",
+          "dist/tests/board-funding-runtime.test.js",
+          "dist/tests/board-request-runtime.test.js",
+          "dist/tests/board-runtime.test.js",
+          "dist/tests/board-wake-runtime.test.js",
+          "dist/tests/board-write-runtime.test.js",
+          "dist/tests/board.test.js",
+          "dist/tests/budget-delegation-crash.test.js",
+          "dist/tests/budget-delegation-runtime.test.js",
+          "dist/tests/budget-delegation.test.js",
+          "dist/tests/cli.test.js",
+          "dist/tests/computer-checkpoint-v2-contracts.test.js",
+          "dist/tests/computer-continuation-authority.test.js",
+          "dist/tests/computer-continuation-context.test.js",
+          "dist/tests/computer-continuation-contracts.test.js",
+          "dist/tests/computer-continuation-recovery.test.js",
+          "dist/tests/computer-continuation-runner.test.js",
+          "dist/tests/computer-continuation-unavailable.test.js",
+          "dist/tests/computer-continuations.test.js",
+          "dist/tests/computer-input-assurance.test.js",
+          "dist/tests/computer-operation-contracts.test.js",
+          "dist/tests/computer-operation-recovery.test.js",
+          "dist/tests/computer-reconciliation-authority.test.js",
+          "dist/tests/computer-reconciliation-context.test.js",
+          "dist/tests/computer-reconciliation-contracts.test.js",
+          "dist/tests/computer-reconciliation-edges.test.js",
+          "dist/tests/computer-reconciliation-outbox.test.js",
+          "dist/tests/computer-reconciliation-progress.test.js",
+          "dist/tests/computer-reconciliation-provenance.test.js",
+          "dist/tests/computer-reconciliation-recovery.test.js",
+          "dist/tests/computer-reconciliation-work-view.test.js",
+          "dist/tests/computer-reconciliation.test.js",
+          "dist/tests/computer-use-context.test.js",
+          "dist/tests/computer-use-contracts.test.js",
+          "dist/tests/computer-use-proof.test.js",
+          "dist/tests/computer-use-recovery.test.js",
+          "dist/tests/computer-use.test.js",
+          "dist/tests/context-compiler.test.js",
+          "dist/tests/context-copy.test.js",
+          "dist/tests/context-dispatch.test.js",
+          "dist/tests/context-guidance.test.js",
+          "dist/tests/context-lifecycle.test.js",
+          "dist/tests/context-reservation.test.js",
+          "dist/tests/context-selection.test.js",
+          "dist/tests/context-store.test.js",
+          "dist/tests/contracts.test.js",
+          "dist/tests/conversation-view.test.js",
+          "dist/tests/conversation.test.js",
+          "dist/tests/data-lifecycle.test.js",
+          "dist/tests/disclosure-boundaries.test.js",
+          "dist/tests/disclosure-comparison.test.js",
+          "dist/tests/disclosure-service.test.js",
+          "dist/tests/disclosure-workflow.test.js",
+          "dist/tests/doubles.test.js",
+          "dist/tests/effect-proof-retention-outbox.test.js",
+          "dist/tests/effect-proofs.test.js",
+          "dist/tests/effect-source-consumers.test.js",
+          "dist/tests/evaluation-build.test.js",
+          "dist/tests/evaluation-replay.test.js",
+          "dist/tests/evidence-discovery.test.js",
+          "dist/tests/evidence-lineage.test.js",
+          "dist/tests/execution-evaluation.test.js",
+          "dist/tests/execution-join.test.js",
+          "dist/tests/execution-mode-cli.test.js",
+          "dist/tests/execution-mode-runtime.test.js",
+          "dist/tests/execution-policy.test.js",
+          "dist/tests/execution.test.js",
+          "dist/tests/fixtures.test.js",
+          "dist/tests/goal-control-atomic.test.js",
+          "dist/tests/guidance-history-source.test.js",
+          "dist/tests/guidance-lifecycle.test.js",
+          "dist/tests/guidance-resource-lifecycle.test.js",
+          "dist/tests/guidance-source-current.test.js",
+          "dist/tests/host-file-mutations.test.js",
+          "dist/tests/host-metadata-files.test.js",
+          "dist/tests/host-metadata-sync.test.js",
+          "dist/tests/input-validation.test.js",
+          "dist/tests/instrumented-web-computer-driver.test.js",
+          "dist/tests/invocation-copy-access.test.js",
+          "dist/tests/invocation-registry-refresh.test.js",
+          "dist/tests/journal-directory-boundary.test.js",
+          "dist/tests/journal-directory-race.test.js",
+          "dist/tests/journal-fault.test.js",
+          "dist/tests/journal-owner.test.js",
+          "dist/tests/journal-sync-boundary.test.js",
+          "dist/tests/knowledge-effect-custody.test.js",
+          "dist/tests/knowledge-runtime.test.js",
+          "dist/tests/knowledge-tools.test.js",
+          "dist/tests/knowledge.test.js",
+          "dist/tests/local-evaluation.test.js",
+          "dist/tests/local-file-paths.test.js",
+          "dist/tests/local-memory-profile.test.js",
+          "dist/tests/local-workbench.test.js",
+          "dist/tests/mcp-read-collections-recovery.test.js",
+          "dist/tests/mcp-read-collections.test.js",
+          "dist/tests/mcp-read-coverage.test.js",
+          "dist/tests/mcp-read-settlement-recovery.test.js",
+          "dist/tests/mcp-read-tools.test.js",
+          "dist/tests/mcp-read-waits-recovery.test.js",
+          "dist/tests/mcp-read-waits.test.js",
+          "dist/tests/mcp-stdio-client.test.js",
+          "dist/tests/metadata-wrapper.test.js",
+          "dist/tests/model-boundaries.test.js",
+          "dist/tests/model-conversation.test.js",
+          "dist/tests/model-runtime.test.js",
+          "dist/tests/persistent-session-presentation.test.js",
+          "dist/tests/persistent-workflow.test.js",
+          "dist/tests/personal-knowledge-service.test.js",
+          "dist/tests/personal-memory-context.test.js",
+          "dist/tests/personal-memory-presentation.test.js",
+          "dist/tests/read-checkpoint-record.test.js",
+          "dist/tests/read-checkpoint-store.test.js",
+          "dist/tests/read-checkpoints.test.js",
+          "dist/tests/read-collection-context.test.js",
+          "dist/tests/read-collection-io.test.js",
+          "dist/tests/read-collection-validation.test.js",
+          "dist/tests/read-collections.test.js",
+          "dist/tests/read-coverage.test.js",
+          "dist/tests/read-deferral-proof.test.js",
+          "dist/tests/read-page-proof.test.js",
+          "dist/tests/read-wait-control.test.js",
+          "dist/tests/recovery.test.js",
+          "dist/tests/resource-io.test.js",
+          "dist/tests/resource-progress.test.js",
+          "dist/tests/resources.test.js",
+          "dist/tests/session-compact-flow.test.js",
+          "dist/tests/session-compact-presentation.test.js",
+          "dist/tests/session-compact-runtime.test.js",
+          "dist/tests/session-compact-source-boundaries.test.js",
+          "dist/tests/session-context-runtime.test.js",
+          "dist/tests/session-flow-boundaries.test.js",
+          "dist/tests/session-flow-kill.test.js",
+          "dist/tests/session-flow.test.js",
+          "dist/tests/sqlite-knowledge-migration.test.js",
+          "dist/tests/sqlite-personal-knowledge.test.js",
+          "dist/tests/sqlite-session-compacts.test.js",
+          "dist/tests/sqlite-sessions.test.js",
+          "dist/tests/state-conformance.test.js",
+          "dist/tests/state-profile.test.js",
+          "dist/tests/state-query.test.js",
+          "dist/tests/storage.test.js",
+          "dist/tests/structured-planner.test.js",
+          "dist/tests/synthetic-computer-driver.test.js",
+          "dist/tests/synthetic-computer-receipts.test.js",
+          "dist/tests/synthetic-computer-storage.test.js",
+          "dist/tests/tool-broker-refresh.test.js",
+          "dist/tests/tool-catalog-lifecycle.test.js",
+          "dist/tests/tool-efficiency-runtime.test.js",
+          "dist/tests/tool-result-reuse.test.js",
+          "dist/tests/tool-result-validation.test.js",
+          "dist/tests/web-integration.test.js",
+          "dist/tests/web-server.test.js",
+          "dist/tests/web-view-state.test.js",
+          "dist/tests/work-progress-runtime.test.js",
+          "dist/tests/work-progress.test.js",
+          "dist/tests/work-query-view.test.js",
+          "dist/tests/work-view-cli.test.js",
+          "dist/tests/work-view-format.test.js",
+          "dist/tests/work-view-service.test.js",
+          "dist/tests/workflow-crash.test.js",
+          "dist/tests/workflow.test.js",
+          "dist/tests/workspace-checkpoints.test.js",
+          "dist/tests/workspace-directory-lock.test.js",
+          "dist/tests/workspace-directory-sync.test.js",
+          "dist/tests/workspace-interruption.test.js",
+          "dist/tests/workspace-record-validation.test.js",
+          "dist/tests/workspace-stable-read.test.js"
+        ],
+        "startedAt": "2026-09-07T00:00:29.305Z",
+        "status": "passed",
+        "log": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence-personal-c03/all-tests.log",
+        "exitCode": 0,
+        "signal": null,
+        "finishedAt": "2026-09-07T00:11:55.904Z"
+      },
+      {
+        "name": "fixtures",
+        "command": [
+          "npm",
+          "run",
+          "fixtures"
+        ],
+        "startedAt": "2026-09-07T00:11:55.905Z",
+        "status": "passed",
+        "log": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence-personal-c03/fixtures.log",
+        "exitCode": 0,
+        "signal": null,
+        "finishedAt": "2026-09-07T00:11:56.185Z"
+      }
+    ],
+    "buildPin": {
+      "sourceDigest": "658c9bd59fc1c1be7c8e71969082ae811839cfb8554634d255cb2a098ab1b824",
+      "filesDigest": "c6a2ce1cbabe723eb92c0ee46e80a08bf88e2af16f1c426e2bab8c5e0a9f914d",
+      "fileCount": 1296
+    },
+    "personalMemoryAsset": {
+      "path": "dist/presentation/web/personal-memory.js",
+      "sha256": "344db6bab91ec8f385e04909bce93c2e936eedf958bfb72cc5385bf479786ace"
+    },
+    "collection": {
+      "collectedAt": "2026-09-07T00:13:14.265Z",
+      "status": "passed",
+      "finishedAt": "2026-09-07T00:11:56.350Z",
+      "sourceAndBuild": {
+        "sourceDigest": "658c9bd59fc1c1be7c8e71969082ae811839cfb8554634d255cb2a098ab1b824",
+        "filesDigest": "c6a2ce1cbabe723eb92c0ee46e80a08bf88e2af16f1c426e2bab8c5e0a9f914d",
+        "fileCount": 1296
+      },
+      "files": [
+        {
+          "file": "result.json",
+          "sha256": "1695b0a4168a1c1aa4f7e2ffdba0b2657ae6778abd3a515510c657f523495378"
+        },
+        {
+          "file": "build.log",
+          "sha256": "a373d72f6cb695305d7dfe79a7108e731c81fb15879b7388db1660c10aa7960a"
+        },
+        {
+          "file": "personal-targeted.log",
+          "sha256": "5c298d6405fb51fea34127a241920fe9681630cf8f2d670b3e9d208595947380"
+        },
+        {
+          "file": "typecheck-core.log",
+          "sha256": "ec119e53c17891001dfbfdfd9dc650e97c4c10d99cecd2b015e72130bb23b2c5"
+        },
+        {
+          "file": "architecture.log",
+          "sha256": "d1619bd47cdef6aa5f526564a5562b609002ea0064350f2b523df7fbe38403ec"
+        },
+        {
+          "file": "architecture-cli-fixtures.log",
+          "sha256": "e5e9f6d9b3c988df735ce358bf334e33772bbf2b5e740d96422f6296342b39d4"
+        },
+        {
+          "file": "all-tests.log",
+          "sha256": "cb781a583dd5cff273c0c698cfcec9b16034317fea21ff72c380704b0e9f9d11"
+        },
+        {
+          "file": "fixtures.log",
+          "sha256": "b8420d0099bfb96ea99b96e255e6ae9cc5a1405a4e7405706718369fc4d0be56"
+        }
+      ]
+    },
+    "cleanup": {
+      "verifiedAt": "2026-09-07T00:13:26.559Z",
+      "ownedProcesses": 0,
+      "ownedPids": [],
+      "processAudit": "node_npm_args_or_proc_executable_or_working_directory_within_dedicated_root_excluding_audit_self",
+      "rootMode": "700",
+      "defaultNode": "v18.20.4",
+      "tmp": [
+        "node-compile-cache"
+      ],
+      "filesystem": "ext4   rw,nosuid,nodev,noatime,nobarrier,quota,usrquota,grpquota,prjquota",
+      "sshClosed": true
+    }
+  },
+  "browser": {
+    "evidence": "evidence/C03-personal-browser-verification.json",
+    "sourceAndBuild": {
+      "sourceDigest": "658c9bd59fc1c1be7c8e71969082ae811839cfb8554634d255cb2a098ab1b824",
+      "filesDigest": "c6a2ce1cbabe723eb92c0ee46e80a08bf88e2af16f1c426e2bab8c5e0a9f914d",
+      "fileCount": 1296
+    },
+    "observed": [
+      "selected original user utterance, saved personal memory version 1",
+      "explicit recall showed version 1 in selected-work memory status",
+      "new user correction saved as original input and memory version 2",
+      "stale work view was unavailable; independent memory panel reselected version 2 and restored work view",
+      "forget removed memory from results; clear selection restored work view",
+      "reload and explicit work selection retained zero personal cards and no selection",
+      "main conversation kept its single acknowledgement; memory commands produced no extra chat bubbles",
+      "rendered memory manager remained readable"
+    ],
+    "limitations": [
+      "stale selected memory is shown as generic permission/unavailable error and empty work list; source is preserved and reselect restores access",
+      "after recovery the old connection/error label remains until reload; C06 surface-error state cleanup is required",
+      "reload does not restore work selection; C06 remains",
+      "long internal IDs remain visible; C06 refinement",
+      "real-model memory extraction/recall quality and Windows rendering were not tested"
+    ],
+    "cleanup": {
+      "tabClosed": true,
+      "serverClosed": true,
+      "temporaryProfileRemoved": true
+    }
+  },
+  "measurement": {
+    "evidence": "evidence/C03-personal-measurement1.json",
+    "status": "passed",
+    "sourceAndBuild": {
+      "sourceDigest": "658c9bd59fc1c1be7c8e71969082ae811839cfb8554634d255cb2a098ab1b824",
+      "filesDigest": "c6a2ce1cbabe723eb92c0ee46e80a08bf88e2af16f1c426e2bab8c5e0a9f914d",
+      "fileCount": 1296
+    },
+    "repeats": 1,
+    "realModelInvoked": false,
+    "physicalDiskIoMeasured": false,
+    "fixtureCleanup": "removed_and_absence_checked"
+  },
+  "priorAttempts": [
+    {
+      "phase": "core1",
+      "exitCode": 2,
+      "reason": "new optional schema type mismatch; fixed before later core pass"
+    },
+    {
+      "phase": "typecheck1",
+      "exitCode": 2,
+      "reason": "composition and optional actor types plus new test transact arity; fixed before build1"
+    },
+    {
+      "phase": "target1",
+      "tests": 49,
+      "pass": 46,
+      "fail": 3,
+      "reason": "two SQLite row prototype comparisons and one Web internal message identity expectation; test corrections only"
+    },
+    {
+      "phase": "target2",
+      "tests": 49,
+      "pass": 49,
+      "fail": 0,
+      "scope": "before independently discovered broad obligation waiver bug"
+    },
+    {
+      "phase": "review-baseline1",
+      "validVerification": false,
+      "reason": "name pattern matched zero tests; file-wrapper success not a test pass"
+    },
+    {
+      "phase": "review-baseline2",
+      "tests": 2,
+      "pass": 0,
+      "fail": 2,
+      "reason": "clear/recall waived pre-existing work-memory review; fixed using prior obligation IDs",
+      "regressionsAdded": 3
+    }
+  ],
+  "limitations": [
+    "No real model/API or internal service calls; model memory quality unverified",
+    "Native Windows, host execution isolation and operational deployment remain unverified",
+    "Markdown/document and registered PostgreSQL memory adapters remain follow-up",
+    "Original/backup physical deletion is not personal forgetting",
+    "Existing prior review requires existing explicit resolve path; no new human-approval requirement",
+    "Repeated deep source reads remain costly; one observation is not a throughput or token-savings claim",
+    "Web stale-selection generic error/empty-list rendering and stale notice after recovery remain C06 work"
+  ],
+  "next": {
+    "chapter": "C03",
+    "plan": "design/chapters/C03-document-memory-plan.md",
+    "postgresNotes": "design/chapters/C03-postgres-adapter-notes.md",
+    "costNotes": "design/chapters/C03-personal-memory-cost-notes.md"
+  },
+  "files": [
+    {
+      "file": "evidence/C03-personal-build3.log",
+      "sha256": "a373d72f6cb695305d7dfe79a7108e731c81fb15879b7388db1660c10aa7960a"
+    },
+    {
+      "file": "evidence/C03-personal-core3.log",
+      "sha256": "ec119e53c17891001dfbfdfd9dc650e97c4c10d99cecd2b015e72130bb23b2c5"
+    },
+    {
+      "file": "evidence/C03-personal-architecture1.log",
+      "sha256": "d1619bd47cdef6aa5f526564a5562b609002ea0064350f2b523df7fbe38403ec"
+    },
+    {
+      "file": "evidence/C03-personal-target3.log",
+      "sha256": "c22c6637b52f84d98b9133059e71be298d49d0dc30a2a63c74ee6eab49b3ed40"
+    },
+    {
+      "file": "evidence/C03-personal-review-baseline-build.log",
+      "sha256": "a373d72f6cb695305d7dfe79a7108e731c81fb15879b7388db1660c10aa7960a"
+    },
+    {
+      "file": "evidence/C03-personal-review-baseline2.log",
+      "sha256": "b73ab6f2edfb2b087b6b53d0bc19d18eadf57f002859db191f7e9f7f54c7be12"
+    },
+    {
+      "file": "evidence/C03-personal-build3-manifest.json",
+      "sha256": "f8a4066f0b5a8ff5ee846d52cec1b2d4fa758cc02890f84d43b79d958f4f65a1"
+    },
+    {
+      "file": "evidence/C03-personal-browser-verification.json",
+      "sha256": "4a9785c0c774c8573efcaf8b2c5ccfdbba0ecbb758c544415d980bb51b8d194a"
+    },
+    {
+      "file": "evidence/C03-personal-measurement1.json",
+      "sha256": "29d19ef2b344e77871952e615b20f8dca517e8a1546496ecffa1f5587adf4fa5"
+    },
+    {
+      "file": "evidence/C03-personal-linux-nas-20260907/final/result.json",
+      "sha256": "1695b0a4168a1c1aa4f7e2ffdba0b2657ae6778abd3a515510c657f523495378"
+    },
+    {
+      "file": "evidence/C03-personal-linux-nas-20260907/cleanup.json",
+      "sha256": "9870cf3f1680e1d006d5f01c183360c23ae2874a0d1cf5b1b88154f9924987a9"
+    },
+    {
+      "file": "evidence/C03-personal-linux-nas-20260907/final-collection.json",
+      "sha256": "737089e7c025989328f5d2487740b191188e5100a00968a65ee0f7b2a7c12f15"
+    }
+  ]
+}

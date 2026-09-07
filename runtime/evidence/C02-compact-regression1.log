@@ -1,0 +1,772 @@
+TAP version 13
+# Subtest: sqlite: initial model disclosure denial returns a durable blocked workflow and checkpoint
+ok 1 - sqlite: initial model disclosure denial returns a durable blocked workflow and checkpoint
+  ---
+  duration_ms: 44.397875
+  type: 'test'
+  ...
+# Subtest: sqlite: revoked reserved model is accounted as unused and resumes with one fresh call after reopen
+ok 2 - sqlite: revoked reserved model is accounted as unused and resumes with one fresh call after reopen
+  ---
+  duration_ms: 69.561917
+  type: 'test'
+  ...
+# Subtest: sqlite: disclosure changes inside dispatch preflight settle a known-unused reservation instead of escaping
+ok 3 - sqlite: disclosure changes inside dispatch preflight settle a known-unused reservation instead of escaping
+  ---
+  duration_ms: 14.657333
+  type: 'test'
+  ...
+# Subtest: sqlite: required result channel denial persists blocked state and can resume delivery from checkpoint
+ok 4 - sqlite: required result channel denial persists blocked state and can resume delivery from checkpoint
+  ---
+  duration_ms: 16.647458
+  type: 'test'
+  ...
+# Subtest: sqlite: completed analysis keeps its terminal state while unavailable channel yields an undelivered response
+ok 5 - sqlite: completed analysis keeps its terminal state while unavailable channel yields an undelivered response
+  ---
+  duration_ms: 15.306709
+  type: 'test'
+  ...
+# Subtest: sqlite: an unsuccessful resume under unchanged channel policy blocks again without becoming runnable
+ok 6 - sqlite: an unsuccessful resume under unchanged channel policy blocks again without becoming runnable
+  ---
+  duration_ms: 11.455875
+  type: 'test'
+  ...
+# Subtest: sqlite: simultaneous cancel and disclosure revocation preserve user control and unused accounting
+ok 7 - sqlite: simultaneous cancel and disclosure revocation preserve user control and unused accounting
+  ---
+  duration_ms: 11.917208
+  type: 'test'
+  ...
+# Subtest: sqlite: simultaneous pause and disclosure revocation preserve user control and unused accounting
+ok 8 - sqlite: simultaneous pause and disclosure revocation preserve user control and unused accounting
+  ---
+  duration_ms: 12.05675
+  type: 'test'
+  ...
+# Subtest: file-journal: initial model disclosure denial returns a durable blocked workflow and checkpoint
+ok 9 - file-journal: initial model disclosure denial returns a durable blocked workflow and checkpoint
+  ---
+  duration_ms: 138.45775
+  type: 'test'
+  ...
+# Subtest: file-journal: revoked reserved model is accounted as unused and resumes with one fresh call after reopen
+ok 10 - file-journal: revoked reserved model is accounted as unused and resumes with one fresh call after reopen
+  ---
+  duration_ms: 858.808667
+  type: 'test'
+  ...
+# Subtest: file-journal: disclosure changes inside dispatch preflight settle a known-unused reservation instead of escaping
+ok 11 - file-journal: disclosure changes inside dispatch preflight settle a known-unused reservation instead of escaping
+  ---
+  duration_ms: 202.087875
+  type: 'test'
+  ...
+# Subtest: file-journal: required result channel denial persists blocked state and can resume delivery from checkpoint
+ok 12 - file-journal: required result channel denial persists blocked state and can resume delivery from checkpoint
+  ---
+  duration_ms: 266.187708
+  type: 'test'
+  ...
+# Subtest: file-journal: completed analysis keeps its terminal state while unavailable channel yields an undelivered response
+ok 13 - file-journal: completed analysis keeps its terminal state while unavailable channel yields an undelivered response
+  ---
+  duration_ms: 263.83325
+  type: 'test'
+  ...
+# Subtest: file-journal: an unsuccessful resume under unchanged channel policy blocks again without becoming runnable
+ok 14 - file-journal: an unsuccessful resume under unchanged channel policy blocks again without becoming runnable
+  ---
+  duration_ms: 278.123958
+  type: 'test'
+  ...
+# Subtest: file-journal: simultaneous cancel and disclosure revocation preserve user control and unused accounting
+ok 15 - file-journal: simultaneous cancel and disclosure revocation preserve user control and unused accounting
+  ---
+  duration_ms: 188.811042
+  type: 'test'
+  ...
+# Subtest: file-journal: simultaneous pause and disclosure revocation preserve user control and unused accounting
+ok 16 - file-journal: simultaneous pause and disclosure revocation preserve user control and unused accounting
+  ---
+  duration_ms: 238.647792
+  type: 'test'
+  ...
+# Subtest: cancel during input artifact read prevents transport invocation and releases the known unused token reservation
+ok 17 - cancel during input artifact read prevents transport invocation and releases the known unused token reservation
+  ---
+  duration_ms: 27.310709
+  type: 'test'
+  ...
+# Subtest: goal during input artifact read prevents transport invocation and releases the known unused token reservation
+ok 18 - goal during input artifact read prevents transport invocation and releases the known unused token reservation
+  ---
+  duration_ms: 9.86425
+  type: 'test'
+  ...
+# Subtest: destination during input artifact read prevents transport invocation and releases the known unused token reservation
+ok 19 - destination during input artifact read prevents transport invocation and releases the known unused token reservation
+  ---
+  duration_ms: 6.952584
+  type: 'test'
+  ...
+# Subtest: labels during input artifact read prevents transport invocation and releases the known unused token reservation
+ok 20 - labels during input artifact read prevents transport invocation and releases the known unused token reservation
+  ---
+  duration_ms: 6.318625
+  type: 'test'
+  ...
+# Subtest: cancelling an active model sends its signal, yields promptly and settles late usage once without adopting the old plan
+ok 21 - cancelling an active model sends its signal, yields promptly and settles late usage once without adopting the old plan
+  ---
+  duration_ms: 7.473709
+  type: 'test'
+  ...
+# Subtest: input byte limit rejects before a durable reservation or transport call
+ok 22 - input byte limit rejects before a durable reservation or transport call
+  ---
+  duration_ms: 3.877166
+  type: 'test'
+  ...
+# Subtest: token budget rejects before a durable reservation or transport call
+ok 23 - token budget rejects before a durable reservation or transport call
+  ---
+  duration_ms: 4.597166
+  type: 'test'
+  ...
+# Subtest: model call budget rejects before a durable reservation or transport call
+ok 24 - model call budget rejects before a durable reservation or transport call
+  ---
+  duration_ms: 3.219458
+  type: 'test'
+  ...
+# Subtest: model context capacity and destination policy reject input without invoking the planner
+ok 25 - model context capacity and destination policy reject input without invoking the planner
+  ---
+  duration_ms: 6.575875
+  type: 'test'
+  ...
+# Subtest: concurrent reservations have one winner and duplicate execution performs one dispatch and one transport call
+ok 26 - concurrent reservations have one winner and duplicate execution performs one dispatch and one transport call
+  ---
+  duration_ms: 7.540667
+  type: 'test'
+  ...
+# Subtest: a replacement owner waits for a reserved lease, then releases it and creates a fresh intent without repeating a transport call
+ok 27 - a replacement owner waits for a reserved lease, then releases it and creates a fresh intent without repeating a transport call
+  ---
+  duration_ms: 8.247875
+  type: 'test'
+  ...
+# Subtest: a recovered running lease retains uncertain cost and accepts only late accounting, never its expired plan
+ok 28 - a recovered running lease retains uncertain cost and accepts only late accounting, never its expired plan
+  ---
+  duration_ms: 5.094042
+  type: 'test'
+  ...
+# Subtest: a reply without usage keeps its reservation and prevents a further model call after rejection
+ok 29 - a reply without usage keeps its reservation and prevents a further model call after rejection
+  ---
+  duration_ms: 5.211042
+  type: 'test'
+  ...
+# Subtest: verified facts remain visible while hypothesis review prevents response readiness and preparation
+ok 30 - verified facts remain visible while hypothesis review prevents response readiness and preparation
+  ---
+  duration_ms: 26.359542
+  type: 'test'
+  ...
+# Subtest: reserved, running and stored model replies cannot produce a result; accepted review resumes preparation
+ok 31 - reserved, running and stored model replies cannot produce a result; accepted review resumes preparation
+  ---
+  duration_ms: 27.887041
+  type: 'test'
+  ...
+# Subtest: pending model work suppresses question preparation while preserving existing obligation blockers
+ok 32 - pending model work suppresses question preparation while preserving existing obligation blockers
+  ---
+  duration_ms: 11.383792
+  type: 'test'
+  ...
+# Subtest: an already prepared result is withheld during review and can be prepared again after accepted model assessment
+ok 33 - an already prepared result is withheld during review and can be prepared again after accepted model assessment
+  ---
+  duration_ms: 14.356791
+  type: 'test'
+  ...
+# Subtest: documents-simple: one model plan executes to completion with usage and no extra hypothesis call
+ok 34 - documents-simple: one model plan executes to completion with usage and no extra hypothesis call
+  ---
+  duration_ms: 37.15825
+  type: 'test'
+  ...
+# Subtest: observations-simple: one model plan executes to completion with usage and no extra hypothesis call
+ok 35 - observations-simple: one model plan executes to completion with usage and no extra hypothesis call
+  ---
+  duration_ms: 11.592459
+  type: 'test'
+  ...
+# Subtest: late counterevidence revises the hypothesis and only the changed graph consumes a replan
+ok 36 - late counterevidence revises the hypothesis and only the changed graph consumes a replan
+  ---
+  duration_ms: 44.230417
+  type: 'test'
+  ...
+# Subtest: strict structured transport adapter feeds the same validator and execution loop without a provider SDK
+ok 37 - strict structured transport adapter feeds the same validator and execution loop without a provider SDK
+  ---
+  duration_ms: 8.859417
+  type: 'test'
+  ...
+# Subtest: invalid or truncated responses cannot replace an executable plan or fabricate zero usage
+ok 38 - invalid or truncated responses cannot replace an executable plan or fabricate zero usage
+  ---
+  duration_ms: 5.965375
+  type: 'test'
+  ...
+# Subtest: rejected model plans still charge exactly one call and preserve their raw response for an authorized read
+ok 39 - rejected model plans still charge exactly one call and preserve their raw response for an authorized read
+  ---
+  duration_ms: 5.209333
+  type: 'test'
+  ...
+# Subtest: bookkeeping changes do not stale a response but goal and evidence changes do
+ok 40 - bookkeeping changes do not stale a response but goal and evidence changes do
+  ---
+  duration_ms: 10.913375
+  type: 'test'
+  ...
+# Subtest: received model result resumes after SQLite and artifact reopen with no additional model call
+ok 41 - received model result resumes after SQLite and artifact reopen with no additional model call
+  ---
+  duration_ms: 156.97825
+  type: 'test'
+  ...
+# Subtest: a new scope archives the old hypothesis in prior events and permits a fresh plan
+ok 42 - a new scope archives the old hypothesis in prior events and permits a fresh plan
+  ---
+  duration_ms: 12.109334
+  type: 'test'
+  ...
+# Subtest: unsupported hypotheses and erased counterevidence are rejected without changing the current assessment
+ok 43 - unsupported hypotheses and erased counterevidence are rejected without changing the current assessment
+  ---
+  duration_ms: 8.292917
+  type: 'test'
+  ...
+# Subtest: validator feedback reaches the next model proposal and invalid plans never dispatch their tools
+ok 44 - validator feedback reaches the next model proposal and invalid plans never dispatch their tools
+  ---
+  duration_ms: 12.63775
+  type: 'test'
+  ...
+# Subtest: permission revocation during reply storage preserves usage but never downgrades the model body
+ok 45 - permission revocation during reply storage preserves usage but never downgrades the model body
+  ---
+  duration_ms: 5.00525
+  type: 'test'
+  ...
+# Subtest: sqlite: installed CLI continues X → process restart → Y with exact raw input and owned stores
+ok 46 - sqlite: installed CLI continues X → process restart → Y with exact raw input and owned stores
+  ---
+  duration_ms: 1367.916459
+  type: 'test'
+  ...
+# Subtest: file-journal: installed CLI continues X → process restart → Y with exact raw input and owned stores
+ok 47 - file-journal: installed CLI continues X → process restart → Y with exact raw input and owned stores
+  ---
+  duration_ms: 2232.554709
+  type: 'test'
+  ...
+# Subtest: installed CLI input is durable once, new sessions are explicit, and foreign agent sessions remain unavailable
+ok 48 - installed CLI input is durable once, new sessions are explicit, and foreign agent sessions remain unavailable
+  ---
+  duration_ms: 2401.85725
+  type: 'test'
+  ...
+# Subtest: sqlite: Web auth reconnect preserves one durable conversation and common atomic question intake
+ok 49 - sqlite: Web auth reconnect preserves one durable conversation and common atomic question intake
+  ---
+  duration_ms: 518.637083
+  type: 'test'
+  ...
+# Subtest: file-journal: Web auth reconnect preserves one durable conversation and common atomic question intake
+ok 50 - file-journal: Web auth reconnect preserves one durable conversation and common atomic question intake
+  ---
+  duration_ms: 1373.701833
+  type: 'test'
+  ...
+# Subtest: sqlite/documents-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+ok 51 - sqlite/documents-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+  ---
+  duration_ms: 345.101958
+  type: 'test'
+  ...
+# Subtest: sqlite/documents-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+ok 52 - sqlite/documents-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+  ---
+  duration_ms: 564.36175
+  type: 'test'
+  ...
+# Subtest: sqlite/observations-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+ok 53 - sqlite/observations-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+  ---
+  duration_ms: 200.0545
+  type: 'test'
+  ...
+# Subtest: sqlite/observations-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+ok 54 - sqlite/observations-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+  ---
+  duration_ms: 410.923875
+  type: 'test'
+  ...
+# Subtest: file-journal/documents-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+ok 55 - file-journal/documents-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+  ---
+  duration_ms: 803.123041
+  type: 'test'
+  ...
+# Subtest: file-journal/documents-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+ok 56 - file-journal/documents-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+  ---
+  duration_ms: 1866.584334
+  type: 'test'
+  ...
+# Subtest: file-journal/observations-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+ok 57 - file-journal/observations-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+  ---
+  duration_ms: 1140.046959
+  type: 'test'
+  ...
+# Subtest: file-journal/observations-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+ok 58 - file-journal/observations-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply
+  ---
+  duration_ms: 1999.776709
+  type: 'test'
+  ...
+# Subtest: session context: Y receives prior utterances with source IDs while its work state and protected input remain independent
+ok 59 - session context: Y receives prior utterances with source IDs while its work state and protected input remain independent
+  ---
+  duration_ms: 25.30525
+  type: 'test'
+  ...
+# Subtest: session context: omitted, rewritten and foreign session packets are rejected even with an unchanged work revision
+ok 60 - session context: omitted, rewritten and foreign session packets are rejected even with an unchanged work revision
+  ---
+  duration_ms: 7.373792
+  type: 'test'
+  ...
+# Subtest: session context: oversized protected history refuses the model input instead of silently discarding prior agreements
+ok 61 - session context: oversized protected history refuses the model input instead of silently discarding prior agreements
+  ---
+  duration_ms: 3.879458
+  type: 'test'
+  ...
+# Subtest: session frame store: stage rejects altered text and previous refuses foreign or stale session bases
+ok 62 - session frame store: stage rejects altered text and previous refuses foreign or stale session bases
+  ---
+  duration_ms: 9.31575
+  type: 'test'
+  ...
+# Subtest: session planning: semantic version 3 reaches the actual planner and a newer unrelated session tail does not invalidate its fixed input
+ok 63 - session planning: semantic version 3 reaches the actual planner and a newer unrelated session tail does not invalidate its fixed input
+  ---
+  duration_ms: 11.677666
+  type: 'test'
+  ...
+# Subtest: session planning: an applied input invalidates a reserved call without copying or invoking its obsolete packet
+ok 64 - session planning: an applied input invalidates a reserved call without copying or invoking its obsolete packet
+  ---
+  duration_ms: 5.413917
+  type: 'test'
+  ...
+# Subtest: session planning: input applied during a model call rejects the late plan but retains reported usage
+ok 65 - session planning: input applied during a model call rejects the late plan but retains reported usage
+  ---
+  duration_ms: 6.968709
+  type: 'test'
+  ...
+# Subtest: session planning: losing access to the referenced conversation after execution prevents plan adoption
+ok 66 - session planning: losing access to the referenced conversation after execution prevents plan adoption
+  ---
+  duration_ms: 5.994625
+  type: 'test'
+  ...
+# Subtest: session planning: legacy non-session calls retain semantic version 2 and need no session provider
+ok 67 - session planning: legacy non-session calls retain semantic version 2 and need no session provider
+  ---
+  duration_ms: 5.208791
+  type: 'test'
+  ...
+# Subtest: session recovery: reconstruction retains source conversation, reuses an equal packet and refuses unavailable session inputs
+ok 68 - session recovery: reconstruction retains source conversation, reuses an equal packet and refuses unavailable session inputs
+  ---
+  duration_ms: 5.275958
+  type: 'test'
+  ...
+# Subtest: sqlite: actual session input cancels an unsent model reservation and returns its allocation
+ok 69 - sqlite: actual session input cancels an unsent model reservation and returns its allocation
+  ---
+  duration_ms: 273.120333
+  type: 'test'
+  ...
+# Subtest: sqlite: real session input during a model call rejects the late proposal and preserves usage
+ok 70 - sqlite: real session input during a model call rejects the late proposal and preserves usage
+  ---
+  duration_ms: 307.937333
+  type: 'test'
+  ...
+# Subtest: sqlite: real session cancel during a model call rejects the late proposal and preserves usage
+ok 71 - sqlite: real session cancel during a model call rejects the late proposal and preserves usage
+  ---
+  duration_ms: 278.396834
+  type: 'test'
+  ...
+# Subtest: sqlite: durable raw input left pending prevents tool execution and outbox sends until the same input is recovered
+ok 72 - sqlite: durable raw input left pending prevents tool execution and outbox sends until the same input is recovered
+  ---
+  duration_ms: 186.949709
+  type: 'test'
+  ...
+# Subtest: file-journal: actual session input cancels an unsent model reservation and returns its allocation
+ok 73 - file-journal: actual session input cancels an unsent model reservation and returns its allocation
+  ---
+  duration_ms: 281.090333
+  type: 'test'
+  ...
+# Subtest: file-journal: real session input during a model call rejects the late proposal and preserves usage
+ok 74 - file-journal: real session input during a model call rejects the late proposal and preserves usage
+  ---
+  duration_ms: 441.267
+  type: 'test'
+  ...
+# Subtest: file-journal: real session cancel during a model call rejects the late proposal and preserves usage
+ok 75 - file-journal: real session cancel during a model call rejects the late proposal and preserves usage
+  ---
+  duration_ms: 437.909125
+  type: 'test'
+  ...
+# Subtest: file-journal: durable raw input left pending prevents tool execution and outbox sends until the same input is recovered
+ok 76 - file-journal: durable raw input left pending prevents tool execution and outbox sends until the same input is recovered
+  ---
+  duration_ms: 359.30175
+  type: 'test'
+  ...
+# Subtest: real session provider rejects a full pending page even when the blocked work appears only after that page
+ok 77 - real session provider rejects a full pending page even when the blocked work appears only after that page
+  ---
+  duration_ms: 545.916708
+  type: 'test'
+  ...
+# Subtest: real session history does not authorize a missing source artifact merely because a derived context remains readable
+ok 78 - real session history does not authorize a missing source artifact merely because a derived context remains readable
+  ---
+  duration_ms: 314.920708
+  type: 'test'
+  ...
+# Subtest: sqlite: real SIGKILL after inbox resumes the same input/work/delivery
+ok 79 - sqlite: real SIGKILL after inbox resumes the same input/work/delivery
+  ---
+  duration_ms: 405.037042
+  type: 'test'
+  ...
+# Subtest: sqlite: real SIGKILL after work resumes the same input/work/delivery
+ok 80 - sqlite: real SIGKILL after work resumes the same input/work/delivery
+  ---
+  duration_ms: 375.041958
+  type: 'test'
+  ...
+# Subtest: sqlite: real SIGKILL after delivery resumes the same input/work/delivery
+ok 81 - sqlite: real SIGKILL after delivery resumes the same input/work/delivery
+  ---
+  duration_ms: 373.291667
+  type: 'test'
+  ...
+# Subtest: file-journal: real SIGKILL after inbox resumes the same input/work/delivery
+ok 82 - file-journal: real SIGKILL after inbox resumes the same input/work/delivery
+  ---
+  duration_ms: 710.056625
+  type: 'test'
+  ...
+# Subtest: file-journal: real SIGKILL after work resumes the same input/work/delivery
+ok 83 - file-journal: real SIGKILL after work resumes the same input/work/delivery
+  ---
+  duration_ms: 394.356958
+  type: 'test'
+  ...
+# Subtest: file-journal: real SIGKILL after delivery resumes the same input/work/delivery
+ok 84 - file-journal: real SIGKILL after delivery resumes the same input/work/delivery
+  ---
+  duration_ms: 486.608375
+  type: 'test'
+  ...
+# Subtest: sqlite: completed X and restarted Y share raw conversation but not work/evidence/budget
+ok 85 - sqlite: completed X and restarted Y share raw conversation but not work/evidence/budget
+  ---
+  duration_ms: 411.785625
+  type: 'test'
+  ...
+# Subtest: file-journal: completed X and restarted Y share raw conversation but not work/evidence/budget
+ok 86 - file-journal: completed X and restarted Y share raw conversation but not work/evidence/budget
+  ---
+  duration_ms: 1044.262792
+  type: 'test'
+  ...
+# Subtest: same message retransmission recovers stable work; conflicting raw text is rejected before extra work
+ok 87 - same message retransmission recovers stable work; conflicting raw text is rejected before extra work
+  ---
+  duration_ms: 162.402042
+  type: 'test'
+  ...
+# Subtest: input/work linkage recovers after a failure following the durable work commit
+ok 88 - input/work linkage recovers after a failure following the durable work commit
+  ---
+  duration_ms: 132.420291
+  type: 'test'
+  ...
+# Subtest: agents/users/new sessions cannot access or inject another session even with a known session ID
+ok 89 - agents/users/new sessions cannot access or inject another session even with a known session ID
+  ---
+  duration_ms: 250.271833
+  type: 'test'
+  ...
+# Subtest: new applied text invalidates old context and requires review; a rejected command does not block the next input
+ok 90 - new applied text invalidates old context and requires review; a rejected command does not block the next input
+  ---
+  duration_ms: 169.383417
+  type: 'test'
+  ...
+# Subtest: Y can prepare before X without trapping X or regressing the active session head
+ok 91 - Y can prepare before X without trapping X or regressing the active session head
+  ---
+  duration_ms: 118.326416
+  type: 'test'
+  ...
+# Subtest: context capacity is explicit and preserves the received original for later compact
+ok 92 - context capacity is explicit and preserves the received original for later compact
+  ---
+  duration_ms: 105.181917
+  type: 'test'
+  ...
+# Subtest: session aliases persist by owner and route; explicit identifiers only resume their exact scope
+ok 93 - session aliases persist by owner and route; explicit identifiers only resume their exact scope
+  ---
+  duration_ms: 11.640666
+  type: 'test'
+  ...
+# Subtest: intake receipt is durable and idempotent; late settlement never replaces a newer active work
+ok 94 - intake receipt is durable and idempotent; late settlement never replaces a newer active work
+  ---
+  duration_ms: 23.443417
+  type: 'test'
+  ...
+# Subtest: head CAS retains tail and historic prefixes, assigning each candidate one permanent revision
+ok 95 - head CAS retains tail and historic prefixes, assigning each candidate one permanent revision
+  ---
+  duration_ms: 24.846625
+  type: 'test'
+  ...
+# Subtest: local response reference and canonical message commit atomically, with no response-body copy
+ok 96 - local response reference and canonical message commit atomically, with no response-body copy
+  ---
+  duration_ms: 47.377208
+  type: 'test'
+  ...
+# Subtest: a failed user-reference transaction leaves neither receipt nor consumed sequence
+ok 97 - a failed user-reference transaction leaves neither receipt nor consumed sequence
+  ---
+  duration_ms: 18.722334
+  type: 'test'
+  ...
+# Subtest: history applies label and destination policy before paging and binds cursors to a fixed scope/policy/prefix
+ok 98 - history applies label and destination policy before paging and binds cursors to a fixed scope/policy/prefix
+  ---
+  duration_ms: 43.784625
+  type: 'test'
+  ...
+# Subtest: delivery scope mismatch cannot append a message, and a missing session reference cannot claim delivered
+ok 99 - delivery scope mismatch cannot append a message, and a missing session reference cannot claim delivered
+  ---
+  duration_ms: 20.877416
+  type: 'test'
+  ...
+# Subtest: enabling sessions never adopts legacy local message bodies into a new session
+ok 100 - enabling sessions never adopts legacy local message bodies into a new session
+  ---
+  duration_ms: 18.523667
+  type: 'test'
+  ...
+# Subtest: agent-store composition exposes owner-bound sessions separately from each agents long-term memory
+ok 101 - agent-store composition exposes owner-bound sessions separately from each agents long-term memory
+  ---
+  duration_ms: 448.426417
+  type: 'test'
+  ...
+# Subtest: sqlite/documents-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send
+ok 102 - sqlite/documents-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 528.658667
+  type: 'test'
+  ...
+# Subtest: sqlite/documents-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send
+ok 103 - sqlite/documents-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send
+  ---
+  duration_ms: 538.281584
+  type: 'test'
+  ...
+# Subtest: sqlite/documents-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send
+ok 104 - sqlite/documents-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 421.006833
+  type: 'test'
+  ...
+# Subtest: sqlite/documents-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send
+ok 105 - sqlite/documents-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 405.3375
+  type: 'test'
+  ...
+# Subtest: sqlite/observations-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send
+ok 106 - sqlite/observations-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 411.4095
+  type: 'test'
+  ...
+# Subtest: sqlite/observations-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send
+ok 107 - sqlite/observations-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send
+  ---
+  duration_ms: 435.507666
+  type: 'test'
+  ...
+# Subtest: sqlite/observations-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send
+ok 108 - sqlite/observations-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 407.885084
+  type: 'test'
+  ...
+# Subtest: sqlite/observations-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send
+ok 109 - sqlite/observations-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 409.584459
+  type: 'test'
+  ...
+# Subtest: sqlite: SIGKILL after a synthetic write effect but before response storage preserves unknown and never repeats the write or claims completion
+ok 110 - sqlite: SIGKILL after a synthetic write effect but before response storage preserves unknown and never repeats the write or claims completion
+  ---
+  duration_ms: 364.258459
+  type: 'test'
+  ...
+# Subtest: file-journal/documents-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send
+ok 111 - file-journal/documents-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 735.032208
+  type: 'test'
+  ...
+# Subtest: file-journal/documents-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send
+ok 112 - file-journal/documents-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send
+  ---
+  duration_ms: 811.9625
+  type: 'test'
+  ...
+# Subtest: file-journal/documents-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send
+ok 113 - file-journal/documents-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 688.241792
+  type: 'test'
+  ...
+# Subtest: file-journal/documents-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send
+ok 114 - file-journal/documents-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 715.690584
+  type: 'test'
+  ...
+# Subtest: file-journal/observations-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send
+ok 115 - file-journal/observations-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 725.795334
+  type: 'test'
+  ...
+# Subtest: file-journal/observations-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send
+ok 116 - file-journal/observations-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send
+  ---
+  duration_ms: 802.445083
+  type: 'test'
+  ...
+# Subtest: file-journal/observations-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send
+ok 117 - file-journal/observations-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 679.268208
+  type: 'test'
+  ...
+# Subtest: file-journal/observations-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send
+ok 118 - file-journal/observations-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send
+  ---
+  duration_ms: 672.641167
+  type: 'test'
+  ...
+# Subtest: file-journal: SIGKILL after a synthetic write effect but before response storage preserves unknown and never repeats the write or claims completion
+ok 119 - file-journal: SIGKILL after a synthetic write effect but before response storage preserves unknown and never repeats the write or claims completion
+  ---
+  duration_ms: 611.286708
+  type: 'test'
+  ...
+# Subtest: documents-simple: restarted workflow adopts a stored model response and reaches delivered completion without another planner call
+ok 120 - documents-simple: restarted workflow adopts a stored model response and reaches delivered completion without another planner call
+  ---
+  duration_ms: 57.283041
+  type: 'test'
+  ...
+# Subtest: observations-simple: restarted workflow adopts a stored model response and reaches delivered completion without another planner call
+ok 121 - observations-simple: restarted workflow adopts a stored model response and reaches delivered completion without another planner call
+  ---
+  duration_ms: 21.044291
+  type: 'test'
+  ...
+# Subtest: an unknown result delivery causes bounded waiting and only one receipt lookup on the next explicit run
+ok 122 - an unknown result delivery causes bounded waiting and only one receipt lookup on the next explicit run
+  ---
+  duration_ms: 17.082208
+  type: 'test'
+  ...
+# Subtest: a workflow without a planner returns a planning requirement and does not create an inferred plan
+ok 123 - a workflow without a planner returns a planning requirement and does not create an inferred plan
+  ---
+  duration_ms: 4.631209
+  type: 'test'
+  ...
+# Subtest: workflow entry requires the full persisted execution policy rather than a narrower read-only view
+ok 124 - workflow entry requires the full persisted execution policy rather than a narrower read-only view
+  ---
+  duration_ms: 3.598792
+  type: 'test'
+  ...
+# Subtest: user cancellation between workflow steps preserves terminal state and cancels an unsent model reservation
+ok 125 - user cancellation between workflow steps preserves terminal state and cancels an unsent model reservation
+  ---
+  duration_ms: 7.187
+  type: 'test'
+  ...
+# Subtest: scoped actors cannot enter execution even when their current limits equal the work policy
+ok 126 - scoped actors cannot enter execution even when their current limits equal the work policy
+  ---
+  duration_ms: 3.68375
+  type: 'test'
+  ...
+# Subtest: final checkpoint cannot report old completion when a goal change arrives during checkpoint storage
+ok 127 - final checkpoint cannot report old completion when a goal change arrives during checkpoint storage
+  ---
+  duration_ms: 13.583666
+  type: 'test'
+  ...
+1..127
+# tests 127
+# suites 0
+# pass 127
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24146.225667

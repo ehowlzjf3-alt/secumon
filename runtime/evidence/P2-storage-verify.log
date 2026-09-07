@@ -1,0 +1,299 @@
+
+> long-horizon-runtime@0.1.0 verify
+> npm test && npm run typecheck:core && npm run check:architecture && npm run fixtures
+
+
+> long-horizon-runtime@0.1.0 test
+> npm run build && node --test dist/tests/*.test.js
+
+
+> long-horizon-runtime@0.1.0 build
+> tsc -p tsconfig.json
+
+✔ content, metadata and permissions survive artifact store restart (68.886209ms)
+✔ same bytes under different tenant/labels never share an accessible reference (106.45975ms)
+✔ corrupt bytes, missing originals, path traversal and symlink substitution are rejected (65.418375ms)
+✔ artifact stored before failed state commit is reused after reopening, without dangling references (52.025208ms)
+✔ execution intent and unadopted result persist independently of evidence acceptance (102.886625ms)
+✔ CLI resumes across processes, keeps conversation/work identities and separates disconnect, pause and cancel (2725.751542ms)
+✔ CLI human output is reception plus result, with no internal events or ANSI: documents-simple (557.433791ms)
+✔ CLI human output is reception plus result, with no internal events or ANSI: observations-simple (509.478292ms)
+✔ CLI goal changes require an explicit revision and failures have no success JSON on stdout (606.123625ms)
+✔ CLI checkpoint is a derived reference and an old resume file does not reverse a paused work (1472.100708ms)
+✔ canonical state has explicit nulls, bounded revisions and no provider/SQL objects (2.39325ms)
+✔ goal validation cannot silently drop unknown authorization fields or empty completion rules (0.1265ms)
+✔ partial result is distinct from complete result and API errors are not evidence of absence (0.50225ms)
+✔ plan and context explicitly bind state and goal revisions (0.473375ms)
+✔ invalid provider content is not included in validation error text (0.110125ms)
+✔ a late counterexample prevents a previously delivered answer from being displayed as the current result (313.332042ms)
+✔ a public snapshot retries a goal change during artifact verification (434.50825ms)
+✔ conversation view keeps message selection and public status on the same revision (305.877ms)
+✔ cancelled work displays its status rather than its historical delivered result (346.141333ms)
+✔ request acceptance is atomic, duplicate input is stable and each conversation can bind several works (27.719375ms)
+✔ failed acceptance commit creates neither a work nor a reception acknowledgment (36.422292ms)
+✔ analysis, response preparation, delivery and completion are distinct; retransmission never collects evidence again (21.613875ms)
+✔ analysis-only completion does not pretend that its result was prepared or delivered (8.477542ms)
+✔ pending questions are grouped once and resolving a question cannot waive required result delivery (7.00475ms)
+✔ independent dispatchers claim once and receipt reconciliation after restart does not send again (58.778917ms)
+✔ ambiguous delivery with no idempotency stays unknown, including repeated and timed-out lookup (13.319292ms)
+✔ idempotent absent receipt permits only a bounded later retry and permanent failure stays visible (5.494125ms)
+✔ goal before delivery prevents an obsolete or unauthorized result from being sent (4.891792ms)
+✔ cancel before delivery prevents an obsolete or unauthorized result from being sent (6.709333ms)
+✔ labels before delivery prevents an obsolete or unauthorized result from being sent (6.238625ms)
+✔ destination before delivery prevents an obsolete or unauthorized result from being sent (4.579416ms)
+✔ pause preserves pending delivery and resume can complete it without another source call (5.880834ms)
+✔ late confirmed delivery is historical and cannot satisfy a revised goal (5.458625ms)
+✔ an uncertain old-goal delivery retains its uncertainty when superseded by a new goal (6.030208ms)
+✔ SIGKILL between channel commit and outbox settlement recovers from two reopened databases without another send (150.915ms)
+✔ a never-dispatched response can be prepared after permission restoration, and large questions retain their full artifact (13.236875ms)
+✔ inject all local ports without a database or channel SDK: documents-simple (8.869667ms)
+✔ inject all local ports without a database or channel SDK: observations-simple (1.551792ms)
+✔ scripted planner honors cancellation and cannot mutate caller state (0.475125ms)
+✔ fake sink exposes delivery uncertainty and deduplicates only matching content (1.123042ms)
+✔ documents-simple: validated plan executes to verified completion without additional planner calls (22.796458ms)
+✔ observations-simple: validated plan executes to verified completion without additional planner calls (7.518792ms)
+✔ invalid plans fail before budget or execution: stale, cyclic, missing deps, schema, effects, permission and IDs (5.629ms)
+✔ plan commands deduplicate after later state changes; task IDs cannot hide changed inputs (4.0935ms)
+✔ discarded unexecuted task ID still cannot acquire a different contract (4.09575ms)
+✔ scripted planner proposal enters the real validator and executor only when control requests a plan (8.448292ms)
+✔ dependencies execute in order; partial observations require another source, not false completion (11.450375ms)
+✔ empty queue is replan; wake conditions, tool budget, deadline and cancellation produce distinct controls (8.685417ms)
+✔ only authorized current-goal commands mutate state; duplicate cancellation is stable (3.906583ms)
+✔ competing executors cannot both reserve or replay dispatch (4.388334ms)
+✔ late tool result after cancel is recorded without adopting or reversing the command (5.360292ms)
+✔ late tool result after goal is recorded without adopting or reversing the command (5.066167ms)
+✔ expired dispatched read has bounded retry or explicit unknown effect (4.088167ms)
+✔ expired dispatched write has bounded retry or explicit unknown effect (3.730875ms)
+✔ invalid result identity, labels, references and output cannot become accepted evidence (27.694375ms)
+✔ stored received result resumes in reopened SQLite and artifact stores without invoking tool again (139.013416ms)
+✔ tool JSON schema validation compiles once, rejects unsupported schema and preserves inputs (6.852167ms)
+✔ successful dependency chain follows DAG order even when task array is reversed (4.915291ms)
+✔ pause before dispatch releases reservation; resume and repeated old pause do not cancel new execution (5.611125ms)
+✔ tool failures retry only within attempt budget and repeated empty replans exhaust their own budget (5.08775ms)
+✔ unconfirmed write is unknown and cannot satisfy the goal or be retried by a renamed task (4.163583ms)
+✔ lease timeout yields even for a tool that ignores cancellation; late result cannot finish the goal (26.258958ms)
+✔ permission revocation after reservation is rechecked before dispatch and durably blocks execution (5.992917ms)
+✔ memory: waiting execution wakes only for expired lease or received result (7.005334ms)
+✔ sqlite: waiting execution wakes only for expired lease or received result (118.562083ms)
+✔ baseline documents-complex (4.021125ms)
+✔ baseline documents-simple (0.219833ms)
+✔ baseline observations-complex (0.234541ms)
+✔ baseline observations-simple (0.725667ms)
+✔ both domains use the same schema and include simple/complex baselines (0.640917ms)
+✔ fixture oracle rejects missing references and duplicated evidence IDs (1.044875ms)
+✔ repetition and permutation cannot create independent sources (0.101209ms)
+✔ completed facts do not discharge an unrelated pending obligation (0.069ms)
+✔ file journal: exception at candidate_synced preserves the publication boundary and retry identity (212.099292ms)
+✔ file journal: actual SIGKILL at candidate_synced reopens a whole commit or no commit (302.21125ms)
+✔ file journal: exception at published preserves the publication boundary and retry identity (217.330292ms)
+✔ file journal: actual SIGKILL at published reopens a whole commit or no commit (265.252375ms)
+✔ file journal: exception at directory_synced preserves the publication boundary and retry identity (213.65275ms)
+✔ file journal: actual SIGKILL at directory_synced reopens a whole commit or no commit (261.350917ms)
+✔ file journal: a reader and duplicate retry observe a whole published record while its writer is pending (132.230917ms)
+✔ file journal: directory sync failure prevents reads and duplicate acknowledgements without rolling back publication (124.527333ms)
+✔ file journal: listing retries the first record when publication follows its initial ENOENT (136.73875ms)
+✔ file journal: checksum corruption blocks reads and subsequent commits without overwriting the damaged record (54.842ms)
+✔ file journal: an intact record checksum does not hide a broken previous-hash link (99.698458ms)
+✔ file journal: deleting a middle revision rejects the incomplete prefix (137.23125ms)
+✔ file journal: changing store identity is rejected by an open instance and by replay after reopening (68.994208ms)
+✔ file journal: a missing format header does not initialize a populated store as empty (38.859ms)
+✔ file journal: existing root, work and record symlinks are rejected without following their contents (159.013667ms)
+✔ file journal: group or other permissions on the root and records are rejected (126.983375ms)
+✔ file journal: an observed root or work directory replacement cannot reset the open repository (151.234125ms)
+✔ file journal: record size limits reject both publication and oversized persisted input (96.711458ms)
+✔ file journal: closed instances reject every repository operation while reopening retains data (139.379125ms)
+✔ file journal: revision zero is invalid layout and cannot be silently ignored (80.584125ms)
+✔ cancel during input artifact read prevents transport invocation and releases the known unused token reservation (23.793208ms)
+✔ goal during input artifact read prevents transport invocation and releases the known unused token reservation (7.923959ms)
+✔ destination during input artifact read prevents transport invocation and releases the known unused token reservation (6.0245ms)
+✔ labels during input artifact read prevents transport invocation and releases the known unused token reservation (4.957459ms)
+✔ cancelling an active model sends its signal, yields promptly and settles late usage once without adopting the old plan (5.335833ms)
+✔ input byte limit rejects before a durable reservation or transport call (3.56075ms)
+✔ token budget rejects before a durable reservation or transport call (3.308375ms)
+✔ model call budget rejects before a durable reservation or transport call (4.324792ms)
+✔ model context capacity and destination policy reject input without invoking the planner (8.697375ms)
+✔ concurrent reservations have one winner and duplicate execution performs one dispatch and one transport call (5.630208ms)
+✔ a replacement owner waits for a reserved lease, then releases it and creates a fresh intent without repeating a transport call (5.309084ms)
+✔ a recovered running lease retains uncertain cost and accepts only late accounting, never its expired plan (3.703833ms)
+✔ a reply without usage keeps its reservation and prevents a further model call after rejection (4.817541ms)
+✔ verified facts remain visible while hypothesis review prevents response readiness and preparation (27.054334ms)
+✔ reserved, running and stored model replies cannot produce a result; accepted review resumes preparation (24.816458ms)
+✔ pending model work suppresses question preparation while preserving existing obligation blockers (8.009417ms)
+✔ an already prepared result is withheld during review and can be prepared again after accepted model assessment (11.069125ms)
+✔ documents-simple: one model plan executes to completion with usage and no extra hypothesis call (30.828ms)
+✔ observations-simple: one model plan executes to completion with usage and no extra hypothesis call (9.96575ms)
+✔ late counterevidence revises the hypothesis and only the changed graph consumes a replan (20.471583ms)
+✔ strict structured transport adapter feeds the same validator and execution loop without a provider SDK (6.567125ms)
+✔ invalid or truncated responses cannot replace an executable plan or fabricate zero usage (4.685625ms)
+✔ rejected model plans still charge exactly one call and preserve their raw response for an authorized read (6.138916ms)
+✔ bookkeeping changes do not stale a response but goal and evidence changes do (10.664584ms)
+✔ received model result resumes after SQLite and artifact reopen with no additional model call (243.470416ms)
+✔ a new scope archives the old hypothesis in prior events and permits a fresh plan (6.397167ms)
+✔ unsupported hypotheses and erased counterevidence are rejected without changing the current assessment (5.996333ms)
+✔ validator feedback reaches the next model proposal and invalid plans never dispatch their tools (6.642ms)
+✔ permission revocation during reply storage preserves usage but never downgrades the model body (3.732833ms)
+✔ sqlite/documents-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply (580.391167ms)
+✔ sqlite/documents-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply (1017.615042ms)
+✔ sqlite/observations-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply (430.283791ms)
+✔ sqlite/observations-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply (774.620167ms)
+✔ file-journal/documents-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply (2136.868542ms)
+✔ file-journal/documents-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply (2514.507292ms)
+✔ file-journal/observations-simple: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply (708.385667ms)
+✔ file-journal/observations-complex: same model/tool/evidence/conversation workflow resumes on persistent state without a new model call for the stored reply (1217.907875ms)
+✔ state-based packet retains counterevidence, obligations and original references without raw history or a state mutation (33.714625ms)
+✔ old and forged packets cannot reverse a goal change, cancellation or budget (10.119333ms)
+✔ separate SQLite/artifact instances reconstruct packets and regenerate missing or corrupt derived blobs (249.69725ms)
+✔ missing original is reported by id and cannot be hidden by a valid prior packet (5.239125ms)
+✔ reconstruction rechecks a goal change committed while the packet is being saved (4.80425ms)
+✔ snapshot retries mixed state/event/outbox revisions and rejects broken event history (5.627458ms)
+✔ untrusted packet dimensions, tool revision changes and a foreign work packet never authorize reuse (8.783958ms)
+✔ resume requires the work owner and full runtime view; revoked history is never relabelled (5.086875ms)
+✔ packet size limit refuses the whole projection without dropping obligations or writing a partial packet (4.064416ms)
+✔ model context restores task attempts and budget but excludes model ledger and delivery bodies (5.415583ms)
+✔ model context cannot relabel a revoked attempt result reference under the current policy (5.884ms)
+✔ model context refuses assessment references whose evidence metadata is no longer permitted (3.116625ms)
+✔ catalog filters before ranking, bounds cards, separates providers and loads only an exact schema (25.083167ms)
+✔ registration snapshots reject namespace/duplicates and cannot be mutated through adapters or catalog results (5.94175ms)
+✔ documents-simple: discovery and selected guidance share the execution ledger without adding evidence or permissions (35.885208ms)
+✔ observations-simple: discovery and selected guidance share the execution ledger without adding evidence or permissions (12.538625ms)
+✔ simple direct lookup does not load optional guidance or run a hypothesis review (9.503333ms)
+✔ method selection follows contradiction, independence and response needs without model calls (6.451542ms)
+✔ guidance metadata/limits do not read bodies and wrong version, tenant or applicability are rejected (5.701709ms)
+✔ evidence readers distinguish protected/missing, superseded and retracted records; limits preserve provenance (5.866167ms)
+✔ call result lookup stays historical after retraction and does not restore it to current evidence (5.660833ms)
+✔ broker rejects calls without a committed dispatch or with another owner before reaching a tool (5.11425ms)
+✔ in-flight output is not downgraded to a less restricted artifact when labels are revoked (6.004458ms)
+✔ revocation after result storage settles without reading protected bytes or repeatedly getting stuck (6.502ms)
+✔ stored guidance and invocation results can be read after SQLite/artifact/source restart without source execution (243.825459ms)
+✔ guidance source rejects altered content, path escape and symlink replacement (58.607459ms)
+✔ model-facing evidence and call readers use the common budget without reexecuting a source or completing a changed goal (10.106334ms)
+✔ sqlite: one commit and reopen retain state, all ordered events, deliveries and historical receipts (89.413792ms)
+✔ sqlite: duplicate and idempotency conflict precede revision conflict and preserve the first receipt (70.698667ms)
+✔ sqlite: malformed commits leave all four collections unchanged, even on duplicate commands (79.025ms)
+✔ sqlite: caller mutations and mutable returned snapshots cannot rewrite persisted history (64.060167ms)
+✔ sqlite: work, tenant, principal, channel and conversation identifiers remain separate (10.71925ms)
+✔ sqlite: event cursors are exclusive and sequence numbers are local to each work (21.173791ms)
+✔ sqlite: runnable respects exact deadline, obligation, tool and model recovery boundaries after reopen (193.88575ms)
+✔ sqlite: two separate processes race on revision with exactly one atomic winning commit (147.903333ms)
+✔ sqlite: two separate processes race on same-command with exactly one atomic winning commit (105.345958ms)
+✔ sqlite: two separate processes race on different-digest with exactly one atomic winning commit (122.545208ms)
+✔ sqlite: acknowledged commit survives SIGKILL without close and reopening replays its receipt without duplicate records (225.907625ms)
+✔ file-journal: one commit and reopen retain state, all ordered events, deliveries and historical receipts (247.8885ms)
+✔ file-journal: duplicate and idempotency conflict precede revision conflict and preserve the first receipt (285.977583ms)
+✔ file-journal: malformed commits leave all four collections unchanged, even on duplicate commands (614.507875ms)
+✔ file-journal: caller mutations and mutable returned snapshots cannot rewrite persisted history (244.532375ms)
+✔ file-journal: work, tenant, principal, channel and conversation identifiers remain separate (591.546667ms)
+✔ file-journal: event cursors are exclusive and sequence numbers are local to each work (201.979375ms)
+✔ file-journal: runnable respects exact deadline, obligation, tool and model recovery boundaries after reopen (1022.197875ms)
+✔ file-journal: two separate processes race on revision with exactly one atomic winning commit (131.531334ms)
+✔ file-journal: two separate processes race on same-command with exactly one atomic winning commit (136.189125ms)
+✔ file-journal: two separate processes race on different-digest with exactly one atomic winning commit (196.180834ms)
+✔ file-journal: acknowledged commit survives SIGKILL without close and reopening replays its receipt without duplicate records (415.687709ms)
+✔ sqlite: profile closes the opened state repository when channel initialization fails (65.99875ms)
+✔ file-journal: profile closes the opened state repository when channel initialization fails (45.796709ms)
+✔ sqlite/documents-simple: CLI persists backend choice across processes and prevents an accidental switch (888.984042ms)
+✔ sqlite/observations-simple: CLI persists backend choice across processes and prevents an accidental switch (874.963083ms)
+✔ file-journal/documents-simple: CLI persists backend choice across processes and prevents an accidental switch (2587.05925ms)
+✔ file-journal/observations-simple: CLI persists backend choice across processes and prevents an accidental switch (1647.115959ms)
+✔ legacy SQLite profile acquires metadata without losing its work or accepting a backend switch (216.054208ms)
+✔ two processes choosing different backends create only one accepted profile (205.677833ms)
+✔ invalid or linked profile metadata is rejected without opening a new backend (1.196958ms)
+✔ one atomic commit stores state, events, outbox and idempotency receipt (63.902084ms)
+✔ injected failure between state and event writes rolls back every record (64.58925ms)
+✔ waiting state and wake obligation survive process termination after commit (193.668416ms)
+✔ two independent processes cannot commit from the same stale revision (199.152334ms)
+✔ structured planner accepts one strict JSON proposal and forwards identity, options and source-boundary instructions once (2.515125ms)
+✔ configuration and request snapshots cannot be rewritten by caller or transport mutation (0.705666ms)
+✔ input estimation includes the exact transport request and schema without invoking the transport or claiming measured usage (0.40325ms)
+✔ input estimation uses the same policy and size gates as transport requests (1.511166ms)
+✔ finish reasons remain distinct and never expose provider failure content or run hidden retries (0.527334ms)
+✔ invalid JSON, schema, response fields and missing proposal fail without repair calls (1.31475ms)
+✔ usage omission is unknown rather than zero; only independently valid safe integer fields survive invalid envelopes (1.008708ms)
+✔ provider and model identity mismatch cannot masquerade as the configured adapter (0.210083ms)
+✔ missing options, denied destinations and unauthorized tool schemas never reach the transport (0.398542ms)
+✔ request and response limits use UTF-8 bytes and preserve valid usage on oversized responses (0.271541ms)
+✔ transport exceptions become fixed errors with unknown usage and no implicit retry (0.16425ms)
+✔ pre-call cancellation has no transport effect; late cancellation preserves returned usage without accepting a proposal (0.274042ms)
+✔ abort-related transport rejection is cancellation with unmeasured usage (0.170875ms)
+✔ invalid configurations fail with a fixed message before transport registration (0.135292ms)
+✔ sqlite/documents-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send (830.114583ms)
+✔ sqlite/documents-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send (793.47525ms)
+✔ sqlite/documents-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send (796.702667ms)
+✔ sqlite/documents-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send (720.035208ms)
+✔ sqlite/observations-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send (651.667792ms)
+✔ sqlite/observations-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send (613.880583ms)
+✔ sqlite/observations-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send (688.589542ms)
+✔ sqlite/observations-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send (510.48875ms)
+✔ sqlite: SIGKILL after a synthetic write effect but before response storage preserves unknown and never repeats the write or claims completion (386.763958ms)
+✔ file-journal/documents-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send (918.905416ms)
+✔ file-journal/documents-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send (1119.997042ms)
+✔ file-journal/documents-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send (844.66925ms)
+✔ file-journal/documents-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send (639.495166ms)
+✔ file-journal/observations-simple: SIGKILL at before-execution resumes from reopened stores with 1 source call(s) and one result send (657.750958ms)
+✔ file-journal/observations-simple: SIGKILL at response-before-store resumes from reopened stores with 2 source call(s) and one result send (760.986375ms)
+✔ file-journal/observations-simple: SIGKILL at response-stored resumes from reopened stores with 1 source call(s) and one result send (630.651833ms)
+✔ file-journal/observations-simple: SIGKILL at receiver-committed resumes from reopened stores with 1 source call(s) and one result send (649.9105ms)
+✔ file-journal: SIGKILL after a synthetic write effect but before response storage preserves unknown and never repeats the write or claims completion (594.798083ms)
+✔ documents-simple: restarted workflow adopts a stored model response and reaches delivered completion without another planner call (44.388417ms)
+✔ observations-simple: restarted workflow adopts a stored model response and reaches delivered completion without another planner call (12.927583ms)
+✔ an unknown result delivery causes bounded waiting and only one receipt lookup on the next explicit run (11.468458ms)
+✔ a workflow without a planner returns a planning requirement and does not create an inferred plan (5.939667ms)
+✔ workflow entry requires the full persisted execution policy rather than a narrower read-only view (4.232708ms)
+✔ user cancellation between workflow steps preserves terminal state and cancels an unsent model reservation (6.308667ms)
+✔ scoped actors cannot enter execution even when their current limits equal the work policy (3.85225ms)
+✔ final checkpoint cannot report old completion when a goal change arrives during checkpoint storage (12.791209ms)
+ℹ tests 232
+ℹ suites 0
+ℹ pass 232
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13661.336291
+
+> long-horizon-runtime@0.1.0 typecheck:core
+> tsc -p tsconfig.core.json
+
+
+> long-horizon-runtime@0.1.0 check:architecture
+> node scripts/check-architecture.mjs
+
+{"inspected":34,"failures":[]}
+
+> long-horizon-runtime@0.1.0 fixtures
+> node dist/presentation/fixtures.js
+
+{
+  "createdAt": "2026-09-05T08:38:18.425Z",
+  "node": "v24.20.0",
+  "evaluation": "deterministic_contract_baseline",
+  "passed": true,
+  "scenarios": 4,
+  "checkpoints": 22,
+  "elapsedMs": 6.780957999999998,
+  "actualModelCalls": 0,
+  "actualToolCalls": 0,
+  "actualTokenUsage": null,
+  "results": [
+    {
+      "id": "documents-complex",
+      "checks": 9,
+      "passed": true
+    },
+    {
+      "id": "documents-simple",
+      "checks": 3,
+      "passed": true
+    },
+    {
+      "id": "observations-complex",
+      "checks": 7,
+      "passed": true
+    },
+    {
+      "id": "observations-simple",
+      "checks": 3,
+      "passed": true
+    }
+  ]
+}

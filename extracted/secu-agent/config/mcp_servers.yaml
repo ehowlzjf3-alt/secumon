@@ -1,0 +1,40 @@
+# secu-agent MCP client config (v3.52-A4).
+#
+# 사내 MCP server 에 연결 — 도구가 자동으로 registry 에 등록되어 agent 가 호출 가능.
+# ${VAR} 는 .env 에서 interpolation. 누락 항목은 빈 문자열로 치환되니 url 검증 잘 할 것.
+#
+# 새 server 추가 시:
+#  1. 여기에 entry
+#  2. 필요한 ENV (호스트/포트) 를 .env 에 추가
+#  3. web 재기동 (startup hook 이 연결)
+#
+# Server 가 죽어있어도 agent bootstrap 은 살림 — log 에 mcp_connect_failed 만 남음.
+
+servers:
+  # Splunk (SIEM) — SPL 쿼리. cdep 접속 로그 등 사내 SIEM index 조회.
+  # 사용 예: index=hq_escort_stats sourcetype=escort_web_log earliest=-7d@d cdep.samsungds.net
+  splunk:
+    url: http://${MCP_INTERNAL_HOST}:8002/sse
+    transport: sse
+    timeout: 120
+
+  # GTI (Google Threat Intelligence / VirusTotal) — 도메인/URL/해시/IP 평판 조회.
+  # package_sandbox 에서 발견한 network IOC 를 평판 교차검증. 키는 원격 MCP 서버가 보유.
+  gti:
+    url: http://${MCP_EXTERNAL_HOST}:8003/sse
+    transport: sse
+    timeout: 60
+
+  # secu-wiki (do.jeon curator) — 사내 IT보안 wiki 1,993문서. 정책/체크리스트/CIS 등.
+  # 도구: wiki_catalog(트리), wiki_document(본문). (secu-mcp/wiki_main.py)
+  wiki:
+    url: http://${MCP_INTERNAL_HOST}:8108/sse
+    transport: sse
+    timeout: 60
+
+  # soc-ticket (soarai) — SOC 티켓의 AI 판정 + 분석가 의견. 라벨/평가/검토용.
+  # 도구: ticket_get(alert_id), ticket_list(필터). (secu-mcp/ticket_main.py)
+  ticket:
+    url: http://${MCP_INTERNAL_HOST}:8109/sse
+    transport: sse
+    timeout: 60

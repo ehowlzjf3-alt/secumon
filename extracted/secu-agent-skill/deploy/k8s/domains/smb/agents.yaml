@@ -1,0 +1,239 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secu-agent-smb-collector
+  namespace: secu-agent
+  labels:
+    app.kubernetes.io/name: secu-agent-smb
+    app.kubernetes.io/component: collector
+    secu-agent.io/domain: smb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: secu-agent-smb
+      app.kubernetes.io/component: collector
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: secu-agent-smb
+        app.kubernetes.io/component: collector
+        secu-agent.io/domain: smb
+    spec:
+      serviceAccountName: secu-agent-domain
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: collector
+          image: secu-agent-skill:local
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command: ["python", "-m", "domains.smb.runners.collector"]
+          envFrom:
+            - configMapRef:
+                name: secu-agent-runtime
+            - secretRef:
+                name: secu-agent-runtime
+                optional: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          volumeMounts:
+            - name: evidence
+              mountPath: /var/lib/secu-agent/evidence
+      volumes:
+        - name: evidence
+          persistentVolumeClaim:
+            claimName: secu-agent-evidence
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secu-agent-smb-task
+  namespace: secu-agent
+  labels:
+    app.kubernetes.io/name: secu-agent-smb
+    app.kubernetes.io/component: task
+    secu-agent.io/domain: smb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: secu-agent-smb
+      app.kubernetes.io/component: task
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: secu-agent-smb
+        app.kubernetes.io/component: task
+        secu-agent.io/domain: smb
+    spec:
+      serviceAccountName: secu-agent-domain
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: task
+          image: secu-agent-skill:local
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command: ["python", "-m", "domains.smb.runners.task"]
+          envFrom:
+            - configMapRef:
+                name: secu-agent-runtime
+            - secretRef:
+                name: secu-agent-runtime
+                optional: true
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 3Gi
+          volumeMounts:
+            - name: evidence
+              mountPath: /var/lib/secu-agent/evidence
+      volumes:
+        - name: evidence
+          persistentVolumeClaim:
+            claimName: secu-agent-evidence
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secu-agent-smb-report-mail
+  namespace: secu-agent
+  labels:
+    app.kubernetes.io/name: secu-agent-smb
+    app.kubernetes.io/component: report-mail
+    secu-agent.io/domain: smb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: secu-agent-smb
+      app.kubernetes.io/component: report-mail
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: secu-agent-smb
+        app.kubernetes.io/component: report-mail
+        secu-agent.io/domain: smb
+    spec:
+      serviceAccountName: secu-agent-domain
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: report-mail
+          image: secu-agent-skill:local
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command: ["python", "-m", "domains.smb.runners.report_mail"]
+          envFrom:
+            - configMapRef:
+                name: secu-agent-runtime
+            - secretRef:
+                name: secu-agent-runtime
+                optional: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: evidence
+              mountPath: /var/lib/secu-agent/evidence
+      volumes:
+        - name: evidence
+          persistentVolumeClaim:
+            claimName: secu-agent-evidence
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secu-agent-smb-reply-verify
+  namespace: secu-agent
+  labels:
+    app.kubernetes.io/name: secu-agent-smb
+    app.kubernetes.io/component: reply-verify
+    secu-agent.io/domain: smb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: secu-agent-smb
+      app.kubernetes.io/component: reply-verify
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: secu-agent-smb
+        app.kubernetes.io/component: reply-verify
+        secu-agent.io/domain: smb
+    spec:
+      serviceAccountName: secu-agent-domain
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: reply-verify
+          image: secu-agent-skill:local
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command: ["python", "-m", "domains.smb.runners.reply_verify"]
+          envFrom:
+            - configMapRef:
+                name: secu-agent-runtime
+            - secretRef:
+                name: secu-agent-runtime
+                optional: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: evidence
+              mountPath: /var/lib/secu-agent/evidence
+      volumes:
+        - name: evidence
+          persistentVolumeClaim:
+            claimName: secu-agent-evidence

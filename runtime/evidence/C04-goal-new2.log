@@ -1,0 +1,139 @@
+✖ sqlite: chat goal retains work and mode, answers at the next revision and never executes an old replay (1222.507708ms)
+✖ file-journal: chat goal retains work and mode, answers at the next revision and never executes an old replay (3583.314208ms)
+✔ chat goal supersedes the old question and prints intake before the new answer; status exposes both revisions (1761.839959ms)
+✔ chat goal refuses invalid or missing revision and unsupported options before profile creation (841.921667ms)
+✔ chat goal preserves selected session and channel authority and rejects stale or conflicting commands (2377.539541ms)
+✖ chat goal replays an intake interrupted after receipt without model execution; explicit resume continues the new goal (1100.647625ms)
+✔ sqlite: explicit goal intake preserves work, original transcript and budget; replay uses the first command (229.225792ms)
+✔ sqlite: after_receive resumes the original goal command after reconnect (232.7765ms)
+✔ sqlite: after_commit resumes the original goal command after reconnect (248.32775ms)
+✔ file-journal: explicit goal intake preserves work, original transcript and budget; replay uses the first command (263.072583ms)
+✔ file-journal: after_receive resumes the original goal command after reconnect (261.61625ms)
+✔ file-journal: after_commit resumes the original goal command after reconnect (278.890708ms)
+✔ a newer applied input rejects the old editor basis durably without changing goal or transcript head (305.20275ms)
+✔ a control change inside the goal commit CAS is rechecked and cannot overwrite the newer mode (195.879708ms)
+✔ goal intake validates authority, selected session, original IDs, and server-owned fields before receipt publication (206.305208ms)
+✔ cancelled work stays terminal; rejected input remains auditable and cannot become another work (219.180167ms)
+✖ completed response can receive an explicit new goal while old answer, read artifacts and actual usage remain historical (1494.373375ms)
+✔ only an accepted old main-turn question is superseded; external response and evidence obligations survive (395.618209ms)
+✔ narrowed policy at dispatch is rejected instead of expanding the caller authority (205.099208ms)
+✔ goal replacement invalidates an old reserved model call and preserves actual accounting (365.489125ms)
+✔ goal replacement invalidates an old received model call and preserves actual accounting (229.405958ms)
+✔ native HTTP general intake acknowledges without inference; explicit execution, reconnect and same-session follow-up preserve the real answer (901.325792ms)
+✔ native HTTP reading request uses the real task executor once and projects its generated evidence-backed answer (551.411333ms)
+✔ native HTTP question, explicit original clarification and run resume the same work without pretending the question completed it (526.67325ms)
+✔ native HTTP another selected conversation cannot read or run a work from the original session (132.230834ms)
+✔ native HTTP general requests retain strict actor/policy/scenario rejection and the existing CSRF gate (195.924333ms)
+✔ native HTTP explicit goal replacement supersedes an old question, acknowledges without inference, then executes the new goal once (770.901041ms)
+✔ native HTTP general goal editor rejects stale inputs and authority injection while preserving received rejection originals (181.904458ms)
+✔ general goal draft pins the applied input, sends exact raw text and never accepts a changed edit basis (0.831833ms)
+✔ browser view: same-revision source invalidation replaces a result without sorting opaque cursors (0.129292ms)
+✔ browser view: unavailable invalidates pending details and unchanged cannot resurrect revoked content (0.075458ms)
+✔ browser view: an accepted conversation refresh invalidates an older in-flight detail response (0.069625ms)
+✔ browser view: work identity, level, revision and goal version cannot be mixed or reversed (0.077209ms)
+✔ browser view: repeated message identities update in place while new goal versions have distinct identities (0.086208ms)
+✔ browser view: snapshots clone data and invalidate other levels without mutating the previous view (0.062333ms)
+✔ browser view: state and cursors remain isolated across two selected works (0.051917ms)
+✔ browser view: history readers are not treated as pinned to the end of a scroll region (0.048541ms)
+✔ browser reads: serialization starts the next request only after the prior read completes (0.134375ms)
+✔ browser reads: unavailability discards already-queued old reads and a new selection has its own queue epoch (0.4805ms)
+✔ browser reads: a failed read does not permanently block later explicit reads (0.150959ms)
+✔ browser stream: unchanged events make no reads and a burst of changes has at most one follow-up read (0.092625ms)
+✔ browser stream: an invalidated stream cannot start its queued follow-up refresh (0.046292ms)
+✔ browser stream: delayed change notifications only read the current same-revision source state (0.08875ms)
+✔ browser acceptance: a lost response keeps the same receipt identity for an explicit retry (0.065916ms)
+✔ browser acceptance: the same receipt after a lost response produces one work in a receipt-based fake receiver (0.038542ms)
+✔ browser status: stored completion is distinct from a currently invalidated result (0.025584ms)
+✔ browser goal editing: changing only the description preserves the current fast mode over the original goal mode (0.091458ms)
+✔ browser goal editing: a pending requested mode is preserved and its control revision is pinned (0.035584ms)
+✔ browser goal editing: a control, goal or work change rejects submission without changing the input draft (0.088875ms)
+✔ browser goal editing: an explicit refreshed basis retains user edits and adopts the latest requested mode (0.048542ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 46
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10989.958458
+
+✖ failing tests:
+
+test at dist/tests/agent-goal-change-cli.test.js:36:5
+✖ sqlite: chat goal retains work and mode, answers at the next revision and never executes an old replay (1222.507708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'blocked'
+  - 'completed'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-goal-change-cli.test.js:53:20)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'blocked',
+    expected: 'completed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-goal-change-cli.test.js:36:5
+✖ file-journal: chat goal retains work and mode, answers at the next revision and never executes an old replay (3583.314208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'blocked'
+  - 'completed'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-goal-change-cli.test.js:53:20)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'blocked',
+    expected: 'completed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-goal-change-cli.test.js:195:1
+✖ chat goal replays an intake interrupted after receipt without model execution; explicit resume continues the new goal (1100.647625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'blocked'
+  - 'completed'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-goal-change-cli.test.js:226:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'blocked',
+    expected: 'completed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-goal-change.test.js:173:1
+✖ completed response can receive an explicit new goal while old answer, read artifacts and actual usage remain historical (1494.373375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'blocked'
+  - 'completed'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-goal-change.test.js:199:12)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'blocked',
+    expected: 'completed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

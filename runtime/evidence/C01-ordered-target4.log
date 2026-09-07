@@ -1,0 +1,490 @@
+TAP version 13
+# Subtest: file-journal agents separate identical work IDs, events and historical receipts across reopen
+ok 1 - file-journal agents separate identical work IDs, events and historical receipts across reopen
+  ---
+  duration_ms: 460.7285
+  type: 'test'
+  ...
+# Subtest: file-journal state keeps private memory and channel messages in separately owned SQLite databases
+ok 2 - file-journal state keeps private memory and channel messages in separately owned SQLite databases
+  ---
+  duration_ms: 504.707125
+  type: 'test'
+  ...
+# Subtest: a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+ok 3 - a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+  ---
+  duration_ms: 470.739916
+  type: 'test'
+  ...
+# Subtest: copying another agents complete journal is rejected before binding a new backend marker
+ok 4 - copying another agents complete journal is rejected before binding a new backend marker
+  ---
+  duration_ms: 305.755833
+  type: 'test'
+  ...
+# Subtest: file-journal selection does not bypass foreign memory or channel SQLite ownership
+ok 5 - file-journal selection does not bypass foreign memory or channel SQLite ownership
+  ---
+  duration_ms: 803.157375
+  type: 'test'
+  ...
+# Subtest: empty and populated legacy v1 journals are not automatically adopted by an agent
+ok 6 - empty and populated legacy v1 journals are not automatically adopted by an agent
+  ---
+  duration_ms: 408.603875
+  type: 'test'
+  ...
+# Subtest: changing config between SQLite and file-journal never creates a replacement state store
+ok 7 - changing config between SQLite and file-journal never creates a replacement state store
+  ---
+  duration_ms: 681.265167
+  type: 'test'
+  ...
+# Subtest: an owned legacy SQLite agent gains only its backend marker and preserves historical data
+ok 8 - an owned legacy SQLite agent gains only its backend marker and preserves historical data
+  ---
+  duration_ms: 347.127625
+  type: 'test'
+  ...
+# Subtest: an unowned legacy SQLite database is preserved without creating a backend marker
+ok 9 - an unowned legacy SQLite database is preserved without creating a backend marker
+  ---
+  duration_ms: 183.920166
+  type: 'test'
+  ...
+# Subtest: copying another agents backend marker is rejected before creating any state or private databases
+ok 10 - copying another agents backend marker is rejected before creating any state or private databases
+  ---
+  duration_ms: 292.326125
+  type: 'test'
+  ...
+# Subtest: malformed, unsupported or linked backend markers cannot initialize state stores
+ok 11 - malformed, unsupported or linked backend markers cannot initialize state stores
+  ---
+  duration_ms: 551.505375
+  type: 'test'
+  ...
+# Subtest: ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+ok 12 - ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+  ---
+  duration_ms: 301.715875
+  type: 'test'
+  ...
+# Subtest: concurrent CLI first storage opens retain one agent, backend selection and journal identity
+ok 13 - concurrent CLI first storage opens retain one agent, backend selection and journal identity
+  ---
+  duration_ms: 1023.4055
+  type: 'test'
+  ...
+# Subtest: clone creates a fresh identity while preserving reusable configuration and the original files
+ok 14 - clone creates a fresh identity while preserving reusable configuration and the original files
+  ---
+  duration_ms: 150.885792
+  type: 'test'
+  ...
+# Subtest: clone copies skill bytes, nested empty directories and executable bits without linking source files
+ok 15 - clone copies skill bytes, nested empty directories and executable bits without linking source files
+  ---
+  duration_ms: 190.15825
+  type: 'test'
+  ...
+# Subtest: clone starts with independent empty stores despite source work, memory, conversation and artifacts
+ok 16 - clone starts with independent empty stores despite source work, memory, conversation and artifacts
+  ---
+  duration_ms: 427.446791
+  type: 'test'
+  ...
+# Subtest: ordinary clone never overwrites an existing empty, populated or initialized destination
+ok 17 - ordinary clone never overwrites an existing empty, populated or initialized destination
+  ---
+  duration_ms: 148.121333
+  type: 'test'
+  ...
+# Subtest: clone rejects source overlap, nested agents and engine destinations without changing either tree
+ok 18 - clone rejects source overlap, nested agents and engine destinations without changing either tree
+  ---
+  duration_ms: 72.410625
+  type: 'test'
+  ...
+# Subtest: clone rejects missing or malformed sources and invalid options without creating a destination
+ok 19 - clone rejects missing or malformed sources and invalid options without creating a destination
+  ---
+  duration_ms: 79.658334
+  type: 'test'
+  ...
+# Subtest: clone rejects skill file and directory symlinks without modifying their outside targets
+ok 20 - clone rejects skill file and directory symlinks without modifying their outside targets
+  ---
+  duration_ms: 78.824042
+  type: 'test'
+  ...
+# Subtest: clone rejects hard-linked skill files and leaves both links unchanged
+ok 21 - clone rejects hard-linked skill files and leaves both links unchanged
+  ---
+  duration_ms: 80.204917
+  type: 'test'
+  ...
+# Subtest: clone rejects a POSIX FIFO skill instead of blocking on its contents
+ok 22 - clone rejects a POSIX FIFO skill instead of blocking on its contents
+  ---
+  duration_ms: 174.130625
+  type: 'test'
+  ...
+# Subtest: clone permits a four-MiB skill file and rejects a file exceeding that limit
+ok 23 - clone permits a four-MiB skill file and rejects a file exceeding that limit
+  ---
+  duration_ms: 168.35825
+  type: 'test'
+  ...
+# Subtest: clone enforces snapshot entry, total-byte and directory-depth limits
+ok 24 - clone enforces snapshot entry, total-byte and directory-depth limits
+  ---
+  duration_ms: 287.038792
+  type: 'test'
+  ...
+# Subtest: pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+ok 25 - pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+  ---
+  duration_ms: 324.429333
+  type: 'test'
+  ...
+# Subtest: pending clone preserves target file conflicts instead of overwriting or accepting them
+ok 26 - pending clone preserves target file conflicts instead of overwriting or accepting them
+  ---
+  duration_ms: 382.152791
+  type: 'test'
+  ...
+# Subtest: finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+ok 27 - finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+  ---
+  duration_ms: 199.88975
+  type: 'test'
+  ...
+# Subtest: CLI clone reports the new ready profile and supports explicit completed-clone resume
+ok 28 - CLI clone reports the new ready profile and supports explicit completed-clone resume
+  ---
+  duration_ms: 628.981584
+  type: 'test'
+  ...
+# Subtest: owner inspection preserves another connection write reservation against an external process
+ok 29 - owner inspection preserves another connection write reservation against an external process
+  ---
+  duration_ms: 291.256
+  type: 'test'
+  ...
+# Subtest: actual termination leaves a hot rollback journal that ownership inspection refuses without changing original bytes
+ok 30 - actual termination leaves a hot rollback journal that ownership inspection refuses without changing original bytes
+  ---
+  duration_ms: 75.674208
+  type: 'test'
+  ...
+# Subtest: owner inspection uses one snapshot when another process commits the first owner between schema reads
+ok 31 - owner inspection uses one snapshot when another process commits the first owner between schema reads
+  ---
+  duration_ms: 91.340875
+  type: 'test'
+  ...
+# Subtest: owner inspection accepts an owned database published after its first missing-main observation
+ok 32 - owner inspection accepts an owned database published after its first missing-main observation
+  ---
+  duration_ms: 163.101958
+  type: 'test'
+  ...
+# Subtest: a foreign owner published after a missing-main observation is rejected without adoption
+ok 33 - a foreign owner published after a missing-main observation is rejected without adoption
+  ---
+  duration_ms: 53.87525
+  type: 'test'
+  ...
+# Subtest: unowned application data published after a missing-main observation is preserved and rejected
+ok 34 - unowned application data published after a missing-main observation is preserved and rejected
+  ---
+  duration_ms: 44.886917
+  type: 'test'
+  ...
+# Subtest: an orphan sidecar without a main database is rejected without creating or changing files
+ok 35 - an orphan sidecar without a main database is rejected without creating or changing files
+  ---
+  duration_ms: 42.511375
+  type: 'test'
+  ...
+# Subtest: owner inspection rejects removal of its observed main file without recreating it
+ok 36 - owner inspection rejects removal of its observed main file without recreating it
+  ---
+  duration_ms: 50.807333
+  type: 'test'
+  ...
+# Subtest: a detached private rollback journal is rechecked as absent before accepting the unchanged owner
+ok 37 - a detached private rollback journal is rechecked as absent before accepting the unchanged owner
+  ---
+  duration_ms: 53.336708
+  type: 'test'
+  ...
+# Subtest: a detached journal replaced by an unsafe file is rejected without modifying either original
+ok 38 - a detached journal replaced by an unsafe file is rejected without modifying either original
+  ---
+  duration_ms: 51.322958
+  type: 'test'
+  ...
+# Subtest: persistent detached journal observations fail after bounded rechecks while preserving all originals
+ok 39 - persistent detached journal observations fail after bounded rechecks while preserving all originals
+  ---
+  duration_ms: 50.900958
+  type: 'test'
+  ...
+# Subtest: unregistered inspection creates neither registry parents nor an agent registration
+ok 40 - unregistered inspection creates neither registry parents nor an agent registration
+  ---
+  duration_ms: 74.088333
+  type: 'test'
+  ...
+# Subtest: claim and same-object reopen preserve original data and the immutable registration
+ok 41 - claim and same-object reopen preserve original data and the immutable registration
+  ---
+  duration_ms: 86.763458
+  type: 'test'
+  ...
+# Subtest: renaming the same directory permits a new claim while invalidating the old path claim
+ok 42 - renaming the same directory permits a new claim while invalidating the old path claim
+  ---
+  duration_ms: 97.942458
+  type: 'test'
+  ...
+# Subtest: a full folder copy can inspect the old head but cannot claim it or alter either source
+ok 43 - a full folder copy can inspect the old head but cannot claim it or alter either source
+  ---
+  duration_ms: 104.882416
+  type: 'test'
+  ...
+# Subtest: two processes claiming the same unregistered object share the one actual CAS winner
+ok 44 - two processes claiming the same unregistered object share the one actual CAS winner
+  ---
+  duration_ms: 211.95325
+  type: 'test'
+  ...
+# Subtest: two processes claiming copied objects admit only the actual no-replace winner
+ok 45 - two processes claiming copied objects admit only the actual no-replace winner
+  ---
+  duration_ms: 200.36075
+  type: 'test'
+  ...
+# Subtest: a stalled publication and a corrupted registration are preserved and rejected
+ok 46 - a stalled publication and a corrupted registration are preserved and rejected
+  ---
+  duration_ms: 1106.512416
+  type: 'test'
+  ...
+# Subtest: a missing sequence is rejected without repairing or adopting the remaining record
+ok 47 - a missing sequence is rejected without repairing or adopting the remaining record
+  ---
+  duration_ms: 109.098167
+  type: 'test'
+  ...
+# Subtest: replacing the held registration object with identical bytes fails its current check
+ok 48 - replacing the held registration object with identical bytes fails its current check
+  ---
+  duration_ms: 100.734375
+  type: 'test'
+  ...
+# Subtest: replacing the held identity file with identical bytes cannot retain its source binding
+ok 49 - replacing the held identity file with identical bytes cannot retain its source binding
+  ---
+  duration_ms: 100.720375
+  type: 'test'
+  ...
+# Subtest: the same agent ID with a different creation identity cannot reuse an existing registration
+ok 50 - the same agent ID with a different creation identity cannot reuse an existing registration
+  ---
+  duration_ms: 120.968791
+  type: 'test'
+  ...
+# Subtest: registry, agent and engine overlap is rejected in either direction before a write
+ok 51 - registry, agent and engine overlap is rejected in either direction before a write
+  ---
+  duration_ms: 78.901709
+  type: 'test'
+  ...
+# Subtest: the real clone operation receives a new ID and an independent first registration
+ok 52 - the real clone operation receives a new ID and an independent first registration
+  ---
+  duration_ms: 208.907834
+  type: 'test'
+  ...
+# Subtest: sqlite: a verified local restore needs explicit rebind before stores reopen with all original records
+ok 53 - sqlite: a verified local restore needs explicit rebind before stores reopen with all original records
+  ---
+  duration_ms: 556.12575
+  type: 'test'
+  ...
+# Subtest: file-journal: a verified local restore needs explicit rebind before stores reopen with all original records
+ok 54 - file-journal: a verified local restore needs explicit rebind before stores reopen with all original records
+  ---
+  duration_ms: 617.902333
+  type: 'test'
+  ...
+# Subtest: rebind rejects the wrong expected head, backup, operation, and missing offline confirmation without changing registration
+ok 55 - rebind rejects the wrong expected head, backup, operation, and missing offline confirmation without changing registration
+  ---
+  duration_ms: 515.811833
+  type: 'test'
+  ...
+# Subtest: a pending restore marker prevents rebind even when a matching completion marker exists
+ok 56 - a pending restore marker prevents rebind even when a matching completion marker exists
+  ---
+  duration_ms: 517.358
+  type: 'test'
+  ...
+# Subtest: an older restore without a completion marker is preserved and cannot manufacture rebind authority
+ok 57 - an older restore without a completion marker is preserved and cannot manufacture rebind authority
+  ---
+  duration_ms: 523.45675
+  type: 'test'
+  ...
+# Subtest: a real live runtime lease blocks restore rebind and is neither deleted nor taken over
+ok 58 - a real live runtime lease blocks restore rebind and is neither deleted nor taken over
+  ---
+  duration_ms: 511.695125
+  type: 'test'
+  ...
+# Subtest: same-operation rebind retry is idempotent and does not authorize another copy or the preserved old object
+ok 59 - same-operation rebind retry is idempotent and does not authorize another copy or the preserved old object
+  ---
+  duration_ms: 711.692084
+  type: 'test'
+  ...
+# Subtest: changed restored bytes are not accepted solely on the completion marker
+ok 60 - changed restored bytes are not accepted solely on the completion marker
+  ---
+  duration_ms: 471.332
+  type: 'test'
+  ...
+# Subtest: changed archive originals are rejected and retained instead of trusting only the saved digest field
+ok 61 - changed archive originals are rejected and retained instead of trusting only the saved digest field
+  ---
+  duration_ms: 493.15025
+  type: 'test'
+  ...
+# Subtest: agent setup preserves files, creates private identity/config and reopens without a model
+ok 62 - agent setup preserves files, creates private identity/config and reopens without a model
+  ---
+  duration_ms: 78.242625
+  type: 'test'
+  ...
+# Subtest: status and invalid initialization options do not create files
+ok 63 - status and invalid initialization options do not create files
+  ---
+  duration_ms: 0.702666
+  type: 'test'
+  ...
+# Subtest: separate directories get distinct IDs and moving a directory preserves its identity
+ok 64 - separate directories get distinct IDs and moving a directory preserves its identity
+  ---
+  duration_ms: 151.124916
+  type: 'test'
+  ...
+# Subtest: initialization can finish after a process stops between identity and config publication
+ok 65 - initialization can finish after a process stops between identity and config publication
+  ---
+  duration_ms: 102.293958
+  type: 'test'
+  ...
+# Subtest: missing identity uses explicit repair with the existing config; missing completed config is not reset
+ok 66 - missing identity uses explicit repair with the existing config; missing completed config is not reset
+  ---
+  duration_ms: 97.69075
+  type: 'test'
+  ...
+# Subtest: completed layout repairs missing directories only with explicit repair and preserves existing state
+ok 67 - completed layout repairs missing directories only with explicit repair and preserves existing state
+  ---
+  duration_ms: 86.042292
+  type: 'test'
+  ...
+# Subtest: unknown data without identity is not assigned a new ID
+ok 68 - unknown data without identity is not assigned a new ID
+  ---
+  duration_ms: 2.665542
+  type: 'test'
+  ...
+# Subtest: config identity mismatch, unsupported versions and malformed documents are preserved
+ok 69 - config identity mismatch, unsupported versions and malformed documents are preserved
+  ---
+  duration_ms: 70.358375
+  type: 'test'
+  ...
+# Subtest: metadata symlinks and external hard links cannot be used for setup
+ok 70 - metadata symlinks and external hard links cannot be used for setup
+  ---
+  duration_ms: 70.277875
+  type: 'test'
+  ...
+# Subtest: managed directory links and writable/public metadata are rejected without changing permissions
+ok 71 - managed directory links and writable/public metadata are rejected without changing permissions
+  ---
+  duration_ms: 77.803
+  type: 'test'
+  ...
+# Subtest: engine overlap and nested agent registration are rejected
+ok 72 - engine overlap and nested agent registration are rejected
+  ---
+  duration_ms: 71.499166
+  type: 'test'
+  ...
+# Subtest: CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+ok 73 - CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+  ---
+  duration_ms: 464.45475
+  type: 'test'
+  ...
+# Subtest: separate CLI processes initializing concurrently settle on exactly one identity
+ok 74 - separate CLI processes initializing concurrently settle on exactly one identity
+  ---
+  duration_ms: 482.4285
+  type: 'test'
+  ...
+# Subtest: two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+ok 75 - two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+  ---
+  duration_ms: 455.800375
+  type: 'test'
+  ...
+# Subtest: agent work files cannot traverse into engine or another agent and remain separate
+ok 76 - agent work files cannot traverse into engine or another agent and remain separate
+  ---
+  duration_ms: 415.547958
+  type: 'test'
+  ...
+# Subtest: copying another agents database is detected by its durable owner before runtime access
+ok 77 - copying another agents database is detected by its durable owner before runtime access
+  ---
+  duration_ms: 401.106
+  type: 'test'
+  ...
+# Subtest: unowned existing databases are not silently adopted
+ok 78 - unowned existing databases are not silently adopted
+  ---
+  duration_ms: 152.486833
+  type: 'test'
+  ...
+# Subtest: symlink database and sidecar destinations cannot overwrite another file
+ok 79 - symlink database and sidecar destinations cannot overwrite another file
+  ---
+  duration_ms: 168.420625
+  type: 'test'
+  ...
+# Subtest: changing config after SQLite initialization cannot replace it with an empty journal
+ok 80 - changing config after SQLite initialization cannot replace it with an empty journal
+  ---
+  duration_ms: 272.802083
+  type: 'test'
+  ...
+1..80
+# tests 80
+# suites 0
+# pass 80
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22349.840625

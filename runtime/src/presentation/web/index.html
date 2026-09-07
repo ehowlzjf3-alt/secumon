@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>작업실 · 로컬 학습환경</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script type="module" src="/assets/client.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">작업 본문으로 이동</a>
+  <header class="app-header">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>작업실</span><span class="brand-tag">LOCAL</span></div>
+    <p class="environment" id="model-environment">로컬 작업실 · 모델 연결 확인 중</p>
+    <span id="connection" class="connection" role="status" aria-live="polite">연결 확인 중</span>
+  </header>
+  <div id="session-notice" class="session-notice" hidden role="alert"></div>
+  <main class="app-layout">
+    <aside class="sidebar" aria-label="업무 목록과 새 업무">
+      <div class="sidebar-title"><h1>내 작업</h1><button id="refresh-list" class="icon-button" type="button" aria-label="업무 목록 새로고침">↻</button></div>
+      <details id="create-panel" class="create-panel" open>
+        <summary>새 업무 만들기 <span aria-hidden="true">+</span></summary>
+        <form id="create-form">
+          <div id="fixture-fields">
+          <label for="scenario">학습 예제</label><select id="scenario" name="scenario" required></select>
+          <p id="scenario-description" class="help-text"></p>
+          <label for="new-title">업무 제목 <span class="optional">선택</span></label><input id="new-title" name="title" type="text" maxlength="160" placeholder="예: 이번 주 문서 확인" autocomplete="off">
+          <p class="help-text">예제의 자료와 완료 조건은 고정입니다. 입력한 내용은 업무 제목으로 사용합니다.</p>
+          </div>
+          <div id="request-text-field" hidden><label for="request-text">요청 원문</label><textarea id="request-text" rows="3" maxlength="10000" placeholder="이 대화에 남길 실제 요청을 입력하세요."></textarea><p class="help-text">원문은 지속 대화에 저장합니다. 실행 계획은 선택한 합성 예제에 따릅니다.</p></div>
+          <label for="new-mode">진행 방식</label><select id="new-mode" name="mode"><option value="auto">자동 · 필요한 만큼</option><option value="fast">빠르게 · 작은 범위</option><option value="deep">깊게 · 충분히 검토</option></select>
+          <label class="check-label"><input id="start-after-accept" type="checkbox" checked> 접수 뒤 바로 실행</label>
+          <button id="create-submit" class="button primary wide" type="submit">접수하고 시작</button>
+          <p id="create-error" class="error-text" role="alert"></p>
+        </form>
+      </details>
+      <div class="list-heading"><h2>업무 목록</h2><span id="list-count" class="muted"></span></div>
+      <nav id="work-list" class="work-list" aria-label="저장된 업무"></nav>
+      <p id="list-empty" class="empty-note">저장된 업무를 불러오는 중입니다.</p>
+      <button id="more-works" class="button quiet wide" type="button" hidden>더 보기</button>
+      <details class="attach-panel"><summary>다른 대화의 업무 가져오기</summary><form id="attach-form"><label for="attach-id">업무 ID</label><input id="attach-id" required autocomplete="off" placeholder="CLI에서 접수한 업무 ID"><button class="button secondary wide" type="submit">이 작업실에 연결</button><p id="attach-error" class="error-text" role="alert"></p></form></details>
+      <p class="sidebar-footer">창을 닫아도 업무를 취소하지 않습니다.</p>
+    </aside>
+    <section id="workspace" class="workspace" tabindex="-1" aria-label="현재 업무">
+      <details id="persistent-conversation" class="persistent-conversation" hidden><summary>이 대화의 기록 <span id="persistent-session-id" class="muted"></span></summary><p class="help-text">완료된 업무의 입력과 응답도 이어서 봅니다. 기록 자체가 검증된 근거라는 의미는 아닙니다.</p><button id="refresh-history" class="button quiet" type="button">기록 새로고침</button><div id="history-list" class="history-list"></div><button id="more-history" class="button quiet" type="button" hidden>다음 기록</button><p id="history-error" class="error-text" role="alert"></p></details>
+      <details id="personal-memory" class="persistent-conversation" hidden>
+        <summary>개인 기억 <span class="muted">이 담당과 사용자의 장기 기억</span> <span id="memory-backend" class="muted"></span></summary>
+        <p class="help-text">대화는 자동으로 개인 기억에 복사되지 않습니다. 기억할 발언을 선택하거나 새 발언을 입력하세요. 검색 결과도 ‘이번 업무에 사용’을 눌러야 문맥에 연결됩니다. 다시 선택하면 이전 선택을 대체합니다.</p>
+        <form id="memory-search-form" class="memory-search"><label for="memory-query">기억 검색</label><input id="memory-query" maxlength="1000" placeholder="기억 이름 또는 내용"><button class="button secondary" type="submit">검색</button></form>
+        <p id="memory-index-status" class="help-text"></p><div id="memory-cards" class="memory-cards"></div>
+        <p id="memory-selected" class="help-text">업무를 선택하면 이번 업무에 연결된 기억을 확인합니다.</p>
+        <button id="memory-refresh" class="button quiet" type="button">기억 상태 새로고침</button><button id="memory-clear" class="button quiet" type="button">이번 업무 선택 해제</button>
+        <button id="memory-new" class="button secondary" type="button">새 발언을 입력하고 기억</button>
+        <form id="memory-form" class="answer-form" hidden>
+          <p id="memory-editing" class="help-text"></p><p id="memory-source" class="help-text"></p>
+          <label for="memory-title">기억 이름</label><input id="memory-title" maxlength="200" required>
+          <label for="memory-quote">기억할 정확한 발언</label><textarea id="memory-quote" rows="3" maxlength="10000" required></textarea>
+          <p class="help-text">이력에서 고른 발언은 그대로 저장합니다. 새 발언은 먼저 현재 업무의 대화에 저장합니다.</p>
+          <label for="memory-reason">정정 이유 <span class="optional">정정할 때 필수</span></label><input id="memory-reason" maxlength="1000">
+          <button id="memory-save" class="button primary" type="submit">기억 저장</button><button id="memory-dismiss" class="button quiet" type="button">편집 닫기</button>
+        </form>
+        <p id="memory-status" role="status" aria-live="polite"></p>
+        <section id="memory-document-tools" class="memory-document-tools" aria-label="문서 초안 관리" hidden>
+          <h3>문서 초안 관리</h3>
+          <p class="help-text">카드에서 초안을 만든 뒤 표시된 파일을 사용자 편집기로 수정하세요. 저장한 파일은 ‘현재 업무에 명시 적용’을 눌러야 사용자 입력과 기억 정정으로 반영됩니다. 정본 파일은 직접 편집하지 않습니다.</p>
+          <form id="memory-draft-apply-form" hidden>
+            <p id="memory-draft-title" class="help-text"></p>
+            <label for="memory-draft-path">편집할 파일 <span class="optional">서버가 만든 경로</span></label><input id="memory-draft-path" readonly>
+            <label for="memory-draft-id">초안 ID <span class="optional">같은 초안을 찾는 번호</span></label><input id="memory-draft-id" readonly>
+            <label for="memory-draft-apply-id">적용 ID <span class="optional">응답이 끊겨도 같은 요청을 확인하는 번호</span></label><input id="memory-draft-apply-id" readonly>
+            <label for="memory-draft-reason">정정 이유</label><input id="memory-draft-reason" maxlength="1000" required>
+            <button id="memory-draft-apply" class="button primary" type="submit">현재 업무에 명시 적용</button>
+            <p id="memory-draft-target" class="help-text"></p>
+          </form>
+          <form id="memory-draft-status-form" class="memory-search">
+            <label for="memory-draft-lookup">확인할 적용 ID</label><input id="memory-draft-lookup" maxlength="36" required placeholder="저장해 둔 적용 ID">
+            <button id="memory-draft-check" class="button secondary" type="submit">상태 확인</button>
+            <button id="memory-draft-resume" class="button quiet" type="button">같은 적용 재개</button>
+          </form>
+          <p class="help-text">결과가 끊기면 같은 적용 ID로 확인·재개합니다. 재개는 최초에 접수한 내용과 업무를 사용하며 새 파일 편집을 다시 가져오지 않습니다.</p>
+          <p id="memory-draft-status" role="status" aria-live="polite"></p>
+          <dl id="memory-draft-result" class="memory-draft-result" hidden></dl>
+        </section>
+        <p class="help-text">‘잊기’는 현재 개인 기억에서 제외합니다. 과거 대화 원문과 이미 저장된 기록·백업까지 삭제하는 기능은 아닙니다.</p>
+      </details>
+      <div id="empty-work" class="empty-work"><div class="empty-symbol" aria-hidden="true">↗</div><p class="eyebrow">한 번의 요청, 이어지는 작업</p><h2>작업을 시작해 볼까요?</h2><p>왼쪽에서 예제를 선택하세요.<br>접수와 답변은 대화에, 진행 상황은 상태에 남습니다.</p><div class="empty-steps"><span>01 접수</span><span>02 확인</span><span>03 결과</span></div></div>
+      <div id="selected-work" class="selected-work" hidden>
+        <header class="work-header"><div class="work-heading"><p id="work-ref" class="eyebrow"></p><h2 id="work-title"></h2><p id="reply-route" class="help-text"></p></div><button id="refresh-work" class="button quiet" type="button">새로고침</button></header>
+        <div class="status-strip"><span id="work-status" class="status-badge" role="status" aria-live="polite"></span><span id="work-mode"></span><span id="work-delivery" class="muted"></span><time id="updated-at" class="muted"></time></div>
+        <p id="work-notice" class="work-notice" role="status" aria-live="polite"></p>
+        <button id="review-memory" class="button secondary" type="button" hidden>개인 기억 상태 확인</button>
+        <section id="context-panel" class="context-panel" aria-label="대화 문맥 관리" hidden>
+          <p id="context-status" role="status" aria-live="polite">문맥 정리 상태를 확인합니다.</p>
+          <p id="context-reference" class="help-text"></p>
+          <button id="compact" class="button secondary" type="button">대화 문맥 정리</button>
+          <p id="compact-provider-note" class="help-text"></p>
+        </section>
+        <div class="work-columns">
+          <section class="conversation-panel" aria-label="업무 대화">
+            <div class="conversation-heading"><h3>대화</h3><span>접수 · 필요한 질문 · 결과</span></div>
+            <div id="conversation" class="conversation" tabindex="0" aria-label="대화 내용"><div id="message-list"></div><p id="conversation-empty" class="empty-note">현재 표시할 대화가 없습니다. 상태를 확인해 주세요.</p></div>
+            <button id="new-messages" class="new-messages button secondary" type="button" hidden>새 답변 보기 ↓</button>
+            <form id="answer-form" class="answer-form" hidden><label for="question-choice">답변할 질문</label><select id="question-choice"></select><label for="answer-text">확인 내용</label><textarea id="answer-text" rows="2" required maxlength="1000" placeholder="확인한 내용이나 결정 사항을 적어 주세요."></textarea><button id="answer-submit" class="button primary" type="submit">답변 저장</button><p class="help-text">답변을 저장한 뒤 ‘실행’으로 이어갈 수 있습니다.</p></form>
+            <form id="input-form" class="answer-form" hidden><label for="input-text">이 업무에 추가할 내용</label><textarea id="input-text" rows="2" maxlength="10000" required></textarea><button id="input-submit" class="button secondary" type="submit">입력 저장</button><p class="help-text">현재 업무의 다음 문맥에 반영합니다. 자동으로 실행하지 않습니다.</p></form>
+            <div class="work-actions" aria-label="업무 제어"><button id="run" class="button primary" type="button">실행</button><button id="pause" class="button secondary" type="button">일시 정지</button><button id="resume" class="button secondary" type="button">재개</button><button id="cancel" class="button quiet danger" type="button">취소</button><span class="action-divider"></span><button id="edit-mode" class="button quiet" type="button">방식 변경</button><button id="edit-goal" class="button quiet" type="button">목표 수정</button></div>
+          </section>
+          <aside class="details-panel" aria-label="업무 상세">
+            <details id="details-disclosure"><summary>작업 상세 <span>계획 · 근거</span></summary><div id="details-content" class="detail-content"><p class="muted">상세를 불러옵니다.</p></div></details>
+            <details id="diagnostics-disclosure"><summary>실행 진단 <span>명시 조회</span></summary><div id="diagnostics-content" class="detail-content"></div></details>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+  <dialog id="mode-dialog"><form id="mode-form" class="dialog-form"><div class="dialog-heading"><h2>진행 방식 변경</h2><button id="close-mode" class="icon-button" type="button" aria-label="방식 변경 닫기">×</button></div><p class="help-text">이미 진행한 작업과 사용량은 유지합니다.</p><label for="mode-choice">새 진행 방식</label><select id="mode-choice"><option value="auto">자동</option><option value="fast">빠르게</option><option value="deep">깊게</option></select><label for="mode-reason">변경 이유</label><textarea id="mode-reason" rows="3" required maxlength="1000"></textarea><p id="mode-error" class="error-text" role="alert"></p><button class="button primary wide" type="submit">변경 요청</button></form></dialog>
+  <dialog id="goal-dialog" class="goal-dialog"><form id="goal-form" class="dialog-form"><div class="dialog-heading"><h2 id="goal-heading">목표와 완료 조건</h2><button id="close-goal" class="icon-button" type="button" aria-label="목표 수정 닫기">×</button></div><p id="goal-description" class="help-text">목표를 바꾸면 이전 답변을 다시 확인합니다. 제공되는 합성 자료 자체는 바뀌지 않습니다.</p><p id="goal-preserved-mode" class="help-text" role="status" aria-live="polite"></p><label for="goal-title">목표 설명</label><textarea id="goal-title" rows="2" required maxlength="10000"></textarea><div id="goal-criteria"><div class="criteria-heading"><h3>완료 조건</h3><button id="add-criterion" class="button quiet" type="button">조건 추가</button></div><div id="criteria-list"></div></div><p id="goal-error" class="error-text" role="alert"></p><div class="dialog-actions"><button id="reload-goal" class="button secondary" type="button">입력 유지하고 최신 기준 읽기</button><button class="button primary" type="submit">목표 변경 요청</button></div></form></dialog>
+  <div id="announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

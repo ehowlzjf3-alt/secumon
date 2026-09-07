@@ -1,0 +1,506 @@
+{
+  "schemaVersion": 1,
+  "chapter": "C01",
+  "status": "posix_setup_mutation_lifecycle_verified_partial_chapter",
+  "scope": "profile_setup_clone_and_state_profile_scoped_creation_publication_and_resume",
+  "finishedAt": "2026-09-06T19:07:48.481Z",
+  "sourceAndBuild": {
+    "sourceDigest": "7224d97d9706d38fe4930d375ad74ccb1eb32ed3a8accfb6e3472ed4bb6fea6e",
+    "filesDigest": "dcb50d2ce1523f9200fc7e3b27c383b5780c13ab95a162a354df61b3b44bc7c7",
+    "fileCount": 1158
+  },
+  "cleanup": {
+    "verifiedAt": "2026-09-06T20:41:59.664Z",
+    "ownedProcesses": 0,
+    "ownedPids": [],
+    "processAudit": "node_npm_args_or_proc_executable_or_working_directory_within_dedicated_root_excluding_audit_self",
+    "rootMode": "700",
+    "defaultNode": "v18.20.4",
+    "tmp": [
+      "node-compile-cache"
+    ],
+    "filesystem": "ext4   rw,nosuid,nodev,noatime,nobarrier,quota,usrquota,grpquota,prjquota",
+    "sshClosed": true
+  },
+  "nativeLinux": {
+    "environment": {
+      "platform": "linux",
+      "arch": "x64",
+      "node": "v24.20.0",
+      "kernel": "6.12.30+",
+      "osRelease": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\nOS_VERSION=1.17.0.0095\nOS_IS_BETA=False\n",
+      "cpus": 6,
+      "totalMemoryBytes": 16530345984,
+      "testConcurrency": 2,
+      "umask": "0022",
+      "temporaryDirectory": "/home/shaneee/secumon-linux-test.pCJ0bd/tmp"
+    },
+    "tests": {
+      "tests": 2737,
+      "pass": 2737,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "targeted": {
+      "tests": 133,
+      "pass": 133,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "coreTypecheck": "passed",
+    "architecture": {
+      "inspected": 125,
+      "failures": []
+    },
+    "architectureCliCases": [
+      {
+        "name": "valid",
+        "exitCode": 0,
+        "inspected": 2,
+        "failures": []
+      },
+      {
+        "name": "domain-external-import",
+        "exitCode": 1,
+        "inspected": 2,
+        "failures": [
+          {
+            "file": "domain/model.ts",
+            "dependency": "node:fs"
+          }
+        ]
+      },
+      {
+        "name": "application-outer-import",
+        "exitCode": 1,
+        "inspected": 2,
+        "failures": [
+          {
+            "file": "application/work.ts",
+            "dependency": "../infrastructure/adapter.js"
+          }
+        ]
+      },
+      {
+        "name": "empty-core",
+        "exitCode": 1,
+        "inspected": 0,
+        "failures": [
+          {
+            "file": "src",
+            "dependency": "no_core_files_inspected"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "scenarios": 4,
+      "checks": 22,
+      "passed": true
+    }
+  },
+  "macos": {
+    "platform": "darwin",
+    "node": "v24.20.0",
+    "build": "passed",
+    "targeted": {
+      "tests": 133,
+      "pass": 133,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "fullSuiteOnThisSource": "not_run"
+  },
+  "newTests": {
+    "commonMutationLifecycle": 13,
+    "setupIntegrationIncludingProcessKills": 14,
+    "actualProcessKills": 3,
+    "total": 27
+  },
+  "priorAttempt": {
+    "targeted": "evidence/C01-setup-mutations-targeted1.log",
+    "buildPin": "evidence/C01-setup-mutations-build1-pin.json",
+    "pass": 130,
+    "fail": 3,
+    "reason": "sync error observer compared wrapper directly instead of verifying preserved original EIO cause; observer corrected, product source unchanged after build1"
+  },
+  "lint": "not_configured",
+  "externalModelCalls": false,
+  "internalServiceIntegration": false,
+  "productionDeployment": false,
+  "commands": [
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "setup-targeted",
+      "command": [
+        "/home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node",
+        "--test",
+        "--test-concurrency=2",
+        "--test-reporter=tap",
+        "dist/tests/host-file-mutations.test.js",
+        "dist/tests/agent-setup-mutations.test.js",
+        "dist/tests/agent-profile.test.js",
+        "dist/tests/agent-profile-concurrency.test.js",
+        "dist/tests/agent-clone.test.js",
+        "dist/tests/agent-clone-recovery.test.js",
+        "dist/tests/agent-stores.test.js",
+        "dist/tests/agent-backend-binding.test.js",
+        "dist/tests/metadata-wrapper.test.js",
+        "dist/tests/host-metadata-files.test.js",
+        "dist/tests/host-metadata-sync.test.js"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "typecheck-core",
+      "command": [
+        "npm",
+        "run",
+        "typecheck:core"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "architecture",
+      "command": [
+        "npm",
+        "run",
+        "check:architecture"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "architecture-cli-fixtures",
+      "command": [
+        "/home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node",
+        "/home/shaneee/secumon-linux-test.pCJ0bd/architecture-cli-check.mjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "all-tests",
+      "command": [
+        "/home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node",
+        "--test",
+        "--test-concurrency=2",
+        "--test-reporter=tap",
+        "dist/tests/agent-backend-binding.test.js",
+        "dist/tests/agent-clone-recovery.test.js",
+        "dist/tests/agent-clone.test.js",
+        "dist/tests/agent-database-owner.test.js",
+        "dist/tests/agent-profile-concurrency.test.js",
+        "dist/tests/agent-profile.test.js",
+        "dist/tests/agent-setup-mutations.test.js",
+        "dist/tests/agent-state-binding-recovery.test.js",
+        "dist/tests/agent-stores.test.js",
+        "dist/tests/artifact-io.test.js",
+        "dist/tests/artifacts.test.js",
+        "dist/tests/board-change-store.test.js",
+        "dist/tests/board-funding-runtime.test.js",
+        "dist/tests/board-request-runtime.test.js",
+        "dist/tests/board-runtime.test.js",
+        "dist/tests/board-wake-runtime.test.js",
+        "dist/tests/board-write-runtime.test.js",
+        "dist/tests/board.test.js",
+        "dist/tests/budget-delegation-crash.test.js",
+        "dist/tests/budget-delegation-runtime.test.js",
+        "dist/tests/budget-delegation.test.js",
+        "dist/tests/cli.test.js",
+        "dist/tests/computer-checkpoint-v2-contracts.test.js",
+        "dist/tests/computer-continuation-authority.test.js",
+        "dist/tests/computer-continuation-context.test.js",
+        "dist/tests/computer-continuation-contracts.test.js",
+        "dist/tests/computer-continuation-recovery.test.js",
+        "dist/tests/computer-continuation-runner.test.js",
+        "dist/tests/computer-continuation-unavailable.test.js",
+        "dist/tests/computer-continuations.test.js",
+        "dist/tests/computer-input-assurance.test.js",
+        "dist/tests/computer-operation-contracts.test.js",
+        "dist/tests/computer-operation-recovery.test.js",
+        "dist/tests/computer-reconciliation-authority.test.js",
+        "dist/tests/computer-reconciliation-context.test.js",
+        "dist/tests/computer-reconciliation-contracts.test.js",
+        "dist/tests/computer-reconciliation-edges.test.js",
+        "dist/tests/computer-reconciliation-outbox.test.js",
+        "dist/tests/computer-reconciliation-progress.test.js",
+        "dist/tests/computer-reconciliation-provenance.test.js",
+        "dist/tests/computer-reconciliation-recovery.test.js",
+        "dist/tests/computer-reconciliation-work-view.test.js",
+        "dist/tests/computer-reconciliation.test.js",
+        "dist/tests/computer-use-context.test.js",
+        "dist/tests/computer-use-contracts.test.js",
+        "dist/tests/computer-use-proof.test.js",
+        "dist/tests/computer-use-recovery.test.js",
+        "dist/tests/computer-use.test.js",
+        "dist/tests/context-compiler.test.js",
+        "dist/tests/context-copy.test.js",
+        "dist/tests/context-dispatch.test.js",
+        "dist/tests/context-guidance.test.js",
+        "dist/tests/context-lifecycle.test.js",
+        "dist/tests/context-reservation.test.js",
+        "dist/tests/context-selection.test.js",
+        "dist/tests/context-store.test.js",
+        "dist/tests/contracts.test.js",
+        "dist/tests/conversation-view.test.js",
+        "dist/tests/conversation.test.js",
+        "dist/tests/data-lifecycle.test.js",
+        "dist/tests/disclosure-boundaries.test.js",
+        "dist/tests/disclosure-comparison.test.js",
+        "dist/tests/disclosure-service.test.js",
+        "dist/tests/disclosure-workflow.test.js",
+        "dist/tests/doubles.test.js",
+        "dist/tests/effect-proof-retention-outbox.test.js",
+        "dist/tests/effect-proofs.test.js",
+        "dist/tests/effect-source-consumers.test.js",
+        "dist/tests/evaluation-build.test.js",
+        "dist/tests/evaluation-replay.test.js",
+        "dist/tests/evidence-discovery.test.js",
+        "dist/tests/evidence-lineage.test.js",
+        "dist/tests/execution-evaluation.test.js",
+        "dist/tests/execution-join.test.js",
+        "dist/tests/execution-mode-cli.test.js",
+        "dist/tests/execution-mode-runtime.test.js",
+        "dist/tests/execution-policy.test.js",
+        "dist/tests/execution.test.js",
+        "dist/tests/fixtures.test.js",
+        "dist/tests/goal-control-atomic.test.js",
+        "dist/tests/guidance-history-source.test.js",
+        "dist/tests/guidance-lifecycle.test.js",
+        "dist/tests/guidance-resource-lifecycle.test.js",
+        "dist/tests/guidance-source-current.test.js",
+        "dist/tests/host-file-mutations.test.js",
+        "dist/tests/host-metadata-files.test.js",
+        "dist/tests/host-metadata-sync.test.js",
+        "dist/tests/input-validation.test.js",
+        "dist/tests/instrumented-web-computer-driver.test.js",
+        "dist/tests/invocation-copy-access.test.js",
+        "dist/tests/invocation-registry-refresh.test.js",
+        "dist/tests/journal-directory-boundary.test.js",
+        "dist/tests/journal-directory-race.test.js",
+        "dist/tests/journal-fault.test.js",
+        "dist/tests/journal-owner.test.js",
+        "dist/tests/journal-sync-boundary.test.js",
+        "dist/tests/knowledge-effect-custody.test.js",
+        "dist/tests/knowledge-runtime.test.js",
+        "dist/tests/knowledge-tools.test.js",
+        "dist/tests/knowledge.test.js",
+        "dist/tests/local-evaluation.test.js",
+        "dist/tests/local-file-paths.test.js",
+        "dist/tests/local-memory-profile.test.js",
+        "dist/tests/local-workbench.test.js",
+        "dist/tests/mcp-read-collections-recovery.test.js",
+        "dist/tests/mcp-read-collections.test.js",
+        "dist/tests/mcp-read-coverage.test.js",
+        "dist/tests/mcp-read-settlement-recovery.test.js",
+        "dist/tests/mcp-read-tools.test.js",
+        "dist/tests/mcp-read-waits-recovery.test.js",
+        "dist/tests/mcp-read-waits.test.js",
+        "dist/tests/mcp-stdio-client.test.js",
+        "dist/tests/metadata-wrapper.test.js",
+        "dist/tests/model-boundaries.test.js",
+        "dist/tests/model-conversation.test.js",
+        "dist/tests/model-runtime.test.js",
+        "dist/tests/persistent-workflow.test.js",
+        "dist/tests/read-checkpoint-record.test.js",
+        "dist/tests/read-checkpoint-store.test.js",
+        "dist/tests/read-checkpoints.test.js",
+        "dist/tests/read-collection-context.test.js",
+        "dist/tests/read-collection-io.test.js",
+        "dist/tests/read-collection-validation.test.js",
+        "dist/tests/read-collections.test.js",
+        "dist/tests/read-coverage.test.js",
+        "dist/tests/read-deferral-proof.test.js",
+        "dist/tests/read-page-proof.test.js",
+        "dist/tests/read-wait-control.test.js",
+        "dist/tests/recovery.test.js",
+        "dist/tests/resource-io.test.js",
+        "dist/tests/resource-progress.test.js",
+        "dist/tests/resources.test.js",
+        "dist/tests/state-conformance.test.js",
+        "dist/tests/state-profile.test.js",
+        "dist/tests/state-query.test.js",
+        "dist/tests/storage.test.js",
+        "dist/tests/structured-planner.test.js",
+        "dist/tests/synthetic-computer-driver.test.js",
+        "dist/tests/synthetic-computer-receipts.test.js",
+        "dist/tests/synthetic-computer-storage.test.js",
+        "dist/tests/tool-broker-refresh.test.js",
+        "dist/tests/tool-catalog-lifecycle.test.js",
+        "dist/tests/tool-efficiency-runtime.test.js",
+        "dist/tests/tool-result-reuse.test.js",
+        "dist/tests/tool-result-validation.test.js",
+        "dist/tests/web-integration.test.js",
+        "dist/tests/web-server.test.js",
+        "dist/tests/web-view-state.test.js",
+        "dist/tests/work-progress-runtime.test.js",
+        "dist/tests/work-progress.test.js",
+        "dist/tests/work-query-view.test.js",
+        "dist/tests/work-view-cli.test.js",
+        "dist/tests/work-view-format.test.js",
+        "dist/tests/work-view-service.test.js",
+        "dist/tests/workflow-crash.test.js",
+        "dist/tests/workflow.test.js",
+        "dist/tests/workspace-checkpoints.test.js",
+        "dist/tests/workspace-directory-lock.test.js",
+        "dist/tests/workspace-directory-sync.test.js",
+        "dist/tests/workspace-interruption.test.js",
+        "dist/tests/workspace-record-validation.test.js",
+        "dist/tests/workspace-stable-read.test.js"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "fixtures",
+      "command": [
+        "npm",
+        "run",
+        "fixtures"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "verifiedAssets": [
+    {
+      "path": "evidence/internal-io/v024-original-metrics.json",
+      "sha256": "6c46bb940bb981a738ca72f7c7bfe99630d96bf75cc564a8565b7689cd216c54"
+    },
+    {
+      "path": "evidence/internal-io/v024-instrumented-metrics.json",
+      "sha256": "3e1c4c6f0c001ee9c4c8565149014a1ef7178432e6f6910cb142fe2194f367b1"
+    },
+    {
+      "path": "evidence/internal-io/v024-snapshot-manifest.json",
+      "sha256": "dc3a32a845192825e002d5f4863e206c947a2b1be8fb5f65ba739a36fabdb1d1"
+    },
+    {
+      "path": "evidence/internal-io/v024-instrumented-manifest.json",
+      "sha256": "5f09ea9071f3cbd056ae0bba25b7d66714f7f84034d1370b4b0b67495aef99a2"
+    },
+    {
+      "path": "evidence/internal-io/instrumented-file-artifacts.js",
+      "sha256": "0a92314eea2befcc8d7ce03bf04821afc5773536911a9ddee1e00baa6d0bb9d1"
+    },
+    {
+      "path": "guidance/catalog.json",
+      "sha256": "f1b628d9d062d9d9c3ac2eadb2e962fcf46fd0c9b6e0fb1ffee96d4084add1fa"
+    },
+    {
+      "path": "guidance/evidence-review.md",
+      "sha256": "e3c770b05cef3d9e96c5992d399d3c8eef0a238ab03cd8f9bd5c57bd47b81315"
+    }
+  ],
+  "logHashes": [
+    {
+      "file": "all-tests.log",
+      "sha256": "4cea4e35600488dacf2cbc43e3a52fc8661c05edb657a80714e5d0bb2cdddb2e"
+    },
+    {
+      "file": "architecture-cli-fixtures.log",
+      "sha256": "e5e9f6d9b3c988df735ce358bf334e33772bbf2b5e740d96422f6296342b39d4"
+    },
+    {
+      "file": "architecture.log",
+      "sha256": "30a48c837ce979ad41b5ec5acf5499814d6f34b1ff255d0d005d08671adf666f"
+    },
+    {
+      "file": "build.log",
+      "sha256": "a373d72f6cb695305d7dfe79a7108e731c81fb15879b7388db1660c10aa7960a"
+    },
+    {
+      "file": "fixtures.log",
+      "sha256": "3ef2a5c517e0b3c90f507e012f9a1da166e597852457f1e651d57462bb719018"
+    },
+    {
+      "file": "result.json",
+      "sha256": "ffd0a3cc74b29c730c697213a29fdbfafca84d2a345c58e0b8d63c6a11d646a2"
+    },
+    {
+      "file": "setup-targeted.log",
+      "sha256": "5dccfe8950d4fe24c175a7080af0b9911f775f2fc7ea25d1ad8397a91f78f43e"
+    },
+    {
+      "file": "typecheck-core.log",
+      "sha256": "ec119e53c17891001dfbfdfd9dc650e97c4c10d99cecd2b015e72130bb23b2c5"
+    }
+  ],
+  "localLogHashes": [
+    {
+      "file": "C01-setup-mutations-build1.log",
+      "sha256": "a373d72f6cb695305d7dfe79a7108e731c81fb15879b7388db1660c10aa7960a"
+    },
+    {
+      "file": "C01-setup-mutations-targeted1.log",
+      "sha256": "731a70c18b6157b895a7781b536c1e0c25a62a94892779ff2243b4932ad5acd2"
+    },
+    {
+      "file": "C01-setup-mutations-build2.log",
+      "sha256": "a373d72f6cb695305d7dfe79a7108e731c81fb15879b7388db1660c10aa7960a"
+    },
+    {
+      "file": "C01-setup-mutations-targeted2.log",
+      "sha256": "7f39daf15e32509df8465e73c6ea52b698e15af296b65e733383f4e838afe17f"
+    }
+  ],
+  "implementation": [
+    "explicit_host_owned_mutation_scope_and_directory_reference_lifetime",
+    "root_parent_and_ancestor_checks_before_mutation",
+    "canonical_engine_overlap_refusal",
+    "private_creation_without_adopting_existing_permissions",
+    "parent_sync_after_creation_and_existing_directory_reconciliation",
+    "no_overwrite_candidate_publication",
+    "candidate_identity_based_cleanup_and_independent_parent_sync",
+    "publication_creation_and_cleanup_uncertainty_with_all_original_causes",
+    "profile_initialize_clone_and_backend_pin_use_explicit_scopes",
+    "ready_reopen_reconciles_parent_and_metadata_namespace_barriers"
+  ],
+  "reuse": [
+    "profile_schemas_IDs_operation_marker_and_repair_rules",
+    "clone_manifest_source_checks_limits_and_fresh_identity",
+    "SQLite_and_file_journal_state_ports",
+    "common_metadata_reads_and_sync",
+    "workspace_read_lock_sync_and_checkpoint_contracts",
+    "journal_owner_receipts_and_recovery"
+  ],
+  "processInterruptionContract": {
+    "stages": [
+      "identity_candidate_file_synced",
+      "config_published",
+      "setup_receipt_published"
+    ],
+    "actualSignal": "SIGKILL",
+    "outcome": "reopen_existing_operation_and_identity_then_finish_setup_without_replacing_originals",
+    "automaticOrphanDeletion": false
+  },
+  "limitations": [
+    "posix_path_recheck_not_native_handle_relative_atomicity",
+    "same_OS_account_arbitrary_shell_not_sandboxed",
+    "post_publish_content_checks_and_directory_sync_add_IO",
+    "some_EIO_and_races_injected_in_isolated_workers",
+    "all_linux_filesystems_not_verified",
+    "power_loss_not_tested",
+    "native_windows_addon_not_dispatched_or_run_on_Windows"
+  ],
+  "remaining": [
+    "C02_through_C10",
+    "native_windows_setup_execution_and_store_connections",
+    "workspace_journal_artifact_mutation_connections_for_Windows",
+    "SQLite_owner_sidecar_lifetime_on_Windows",
+    "manual_copy_duplicate_identity_execution_ownership",
+    "engine_install_permissions_and_tool_write_boundary"
+  ],
+  "nextPlan": "design/chapters/C02-persistent-session-plan.md"
+}

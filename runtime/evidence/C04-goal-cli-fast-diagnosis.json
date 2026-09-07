@@ -1,0 +1,1532 @@
+{
+  "schemaVersion": 1,
+  "kind": "bounded_synthetic_cli_fast_budget_diagnosis",
+  "startedAt": "2026-09-07T08:16:19.159Z",
+  "node": "v24.20.0",
+  "platform": "darwin",
+  "buildRecord": "evidence/C04-goal-build3.json",
+  "buildRecordSha256": "8031bf2cf9641a3a9829f4f515638dacb1e0b66fa629b4edb17e779c75f6804f",
+  "buildPin": {
+    "sourceDigest": "1a35a8d446c611a3605573676b35e00ae237bf62a0cdfda22d6fa7c57d7e9925",
+    "filesDigest": "ddadbbe44638032e9dc4f9324b4d599e542eb469c98d0ae755af83b77fca9a02",
+    "fileCount": 1623
+  },
+  "artifactHashesBefore": {
+    "dist/build-manifest.json": "c9c5d251a607d50292d50fc4c070da6e17b7046ad6b9b766bce66dbee0f0003f",
+    "dist/presentation/agent-turn-cli.js": "cf0e646c35cb4fd4684f915e69df8b1bc0211b214d81c538037859522415d9fe",
+    "dist/domain/execution-policy.js": "90b4fb84eca04dd4cd695bae6af8f35126399d9cf6b3c150279d3bcf6d73d4b0",
+    "dist/application/planning-runtime.js": "97f08a20eccc55f401c03f17774a06c703a6d3b78143a28907505678ce65d2a6",
+    "dist/application/agent-turn-service.js": "59728fcb095ed03df8a515d549323f361ef8e6eb0f13ac8750fe81018d5e6f08"
+  },
+  "constraints": {
+    "realModelCalls": false,
+    "network": false,
+    "build": false,
+    "maxCliCalls": 13,
+    "perChildTimeoutMs": 30000
+  },
+  "cases": [
+    {
+      "name": "sqlite: fast read then goal rewrite then explicit auto goal",
+      "backend": "sqlite",
+      "steps": [
+        {
+          "label": "read_fast",
+          "args": [
+            "ask",
+            "--message-id",
+            "read",
+            "--text",
+            "[합성 주턴] fixture.read로 doc-current를 읽고 보존기간을 알려줘.",
+            "--mode",
+            "fast"
+          ],
+          "startedAt": "2026-09-07T08:16:19.236Z",
+          "finishedAt": "2026-09-07T08:16:19.846Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "completed",
+            "reason": "criteria_verified",
+            "goalRevision": 1,
+            "execution": {
+              "revision": 1,
+              "requestedMode": "fast",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "mode_fast",
+              "limits": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "tokens": 1000000,
+                "replans": 0,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 1,
+                "modelCalls": 0,
+                "tokens": 1000000,
+                "replans": 0
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772579409,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 2,
+                "unproductiveSteps": 1,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 1,
+              "modelCalls": 2,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "delivered",
+            "pendingQuestions": []
+          },
+          "run": {
+            "control": {
+              "kind": "complete",
+              "reason": "criteria_verified"
+            },
+            "steps": 10,
+            "reason": "criteria_verified",
+            "stateRevision": 21,
+            "goalRevision": 1,
+            "checkpoint": {
+              "id": "d8dfd49d6dc335c64648ef3c8effe5f9c6c19377f994386ffffa85cf75636e29",
+              "sha256": "ef3c3121bf48a105d6a8464990a372cdb0be9583dd08bb6e1e9c5f76a38a7512",
+              "byteLength": 16321,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-257bfb0db98807ccfcba388fc89d50202cbb13f19805df622f6f6601359db204",
+            "goalRevision": 1,
+            "mode": "fast",
+            "status": "completed",
+            "statusReason": "criteria_verified",
+            "deadlineAt": 1788772579409,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 1,
+                "modelCalls": 2,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-61490f82-d7db-4b80-8f17-35d256e38e3a",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-c1db4ad7-ba97-44ef-9816-d29091b76fbe",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        },
+        {
+          "label": "rewrite_goal_mode_omitted",
+          "args": [
+            "goal",
+            "--work",
+            "work-257bfb0db98807ccfcba388fc89d50202cbb13f19805df622f6f6601359db204",
+            "--session",
+            "9f9b16fb-3b13-4ed2-bc21-64b96736ae1a",
+            "--message-id",
+            "rewrite",
+            "--text",
+            "[합성 주턴] 이 문장을 교정해 줘: 오늘 회의는 세시에 시작됍니다.",
+            "--goal-revision",
+            "1",
+            "--control-revision",
+            "1"
+          ],
+          "startedAt": "2026-09-07T08:16:19.846Z",
+          "finishedAt": "2026-09-07T08:16:20.131Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "blocked",
+            "reason": "fast_model_budget_exhausted",
+            "goalRevision": 2,
+            "execution": {
+              "revision": 2,
+              "requestedMode": "fast",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "goal_changed",
+              "limits": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "tokens": 1000000,
+                "replans": 0,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 1,
+                "modelCalls": 0,
+                "tokens": 1000000,
+                "replans": 0
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772579409,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 2,
+                "unproductiveSteps": 1,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 1,
+              "modelCalls": 2,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "not_prepared",
+            "pendingQuestions": []
+          },
+          "created": true,
+          "run": {
+            "control": {
+              "kind": "blocked",
+              "reason": "fast_model_budget_exhausted"
+            },
+            "steps": 1,
+            "reason": "fast_model_budget_exhausted",
+            "stateRevision": 27,
+            "goalRevision": 2,
+            "checkpoint": {
+              "id": "047379e04df296cba2cd47409d8c7544176075aed4247f0a401440a913c02bf2",
+              "sha256": "b6dbb810fc9bfcc514dc3c9b2d831ba8a7574e1a66f8f51c805a5354d360d377",
+              "byteLength": 17067,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-257bfb0db98807ccfcba388fc89d50202cbb13f19805df622f6f6601359db204",
+            "goalRevision": 2,
+            "mode": "fast",
+            "status": "blocked",
+            "statusReason": "fast_model_budget_exhausted",
+            "deadlineAt": 1788772579409,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 1,
+                "modelCalls": 2,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-61490f82-d7db-4b80-8f17-35d256e38e3a",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-c1db4ad7-ba97-44ef-9816-d29091b76fbe",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        },
+        {
+          "label": "rewrite_goal_explicit_auto",
+          "args": [
+            "goal",
+            "--work",
+            "work-257bfb0db98807ccfcba388fc89d50202cbb13f19805df622f6f6601359db204",
+            "--session",
+            "9f9b16fb-3b13-4ed2-bc21-64b96736ae1a",
+            "--message-id",
+            "rewrite-auto",
+            "--text",
+            "[합성 주턴] 이 문장을 교정해 줘: 오늘 회의는 세시에 시작됍니다.",
+            "--goal-revision",
+            "2",
+            "--control-revision",
+            "2",
+            "--mode",
+            "auto"
+          ],
+          "startedAt": "2026-09-07T08:16:20.131Z",
+          "finishedAt": "2026-09-07T08:16:20.679Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "completed",
+            "reason": "criteria_verified",
+            "goalRevision": 3,
+            "execution": {
+              "revision": 3,
+              "requestedMode": "auto",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "goal_changed",
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 29,
+                "modelCalls": 13,
+                "tokens": 1000000,
+                "replans": 8
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772579409,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 3,
+                "unproductiveSteps": 1,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 1,
+              "modelCalls": 3,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "delivered",
+            "pendingQuestions": []
+          },
+          "created": true,
+          "run": {
+            "control": {
+              "kind": "complete",
+              "reason": "criteria_verified"
+            },
+            "steps": 4,
+            "reason": "criteria_verified",
+            "stateRevision": 37,
+            "goalRevision": 3,
+            "checkpoint": {
+              "id": "b749205b3a7df2f3a27a28e4418d04b9a9d22a9d8fad0e5d225764b5e963b846",
+              "sha256": "6e3f828470e3db35b0bd7c577b67b2f82fce06b1149d0887e7bec381cb8bc9af",
+              "byteLength": 22618,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-257bfb0db98807ccfcba388fc89d50202cbb13f19805df622f6f6601359db204",
+            "goalRevision": 3,
+            "mode": "auto",
+            "status": "completed",
+            "statusReason": "criteria_verified",
+            "deadlineAt": 1788772579409,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 1,
+                "modelCalls": 3,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-61490f82-d7db-4b80-8f17-35d256e38e3a",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-c1db4ad7-ba97-44ef-9816-d29091b76fbe",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-ce96828b-8aa3-469e-8961-dc8810700248",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        }
+      ],
+      "completed": true,
+      "temporaryRootRemoved": true
+    },
+    {
+      "name": "file-journal: fast read then goal rewrite then explicit auto goal",
+      "backend": "file-journal",
+      "steps": [
+        {
+          "label": "read_fast",
+          "args": [
+            "ask",
+            "--message-id",
+            "read",
+            "--text",
+            "[합성 주턴] fixture.read로 doc-current를 읽고 보존기간을 알려줘.",
+            "--mode",
+            "fast"
+          ],
+          "startedAt": "2026-09-07T08:16:20.744Z",
+          "finishedAt": "2026-09-07T08:16:21.832Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "completed",
+            "reason": "criteria_verified",
+            "goalRevision": 1,
+            "execution": {
+              "revision": 1,
+              "requestedMode": "fast",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "mode_fast",
+              "limits": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "tokens": 1000000,
+                "replans": 0,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 1,
+                "modelCalls": 0,
+                "tokens": 1000000,
+                "replans": 0
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772580920,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 2,
+                "unproductiveSteps": 1,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 1,
+              "modelCalls": 2,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "delivered",
+            "pendingQuestions": []
+          },
+          "run": {
+            "control": {
+              "kind": "complete",
+              "reason": "criteria_verified"
+            },
+            "steps": 10,
+            "reason": "criteria_verified",
+            "stateRevision": 21,
+            "goalRevision": 1,
+            "checkpoint": {
+              "id": "7359b6fcc14e1d2abbb6f1d2eec4a2fdfb170e6e7a97bdbe3c08ee0d70271e1c",
+              "sha256": "6a8fe6f0e02959de6748e38c9bfa2fefebcef7c4c3b86bea25ad4725b77d7b57",
+              "byteLength": 16321,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-262ad339f27b9daca5b69adaf674175dfee116092323ae2a476eec62c52e520e",
+            "goalRevision": 1,
+            "mode": "fast",
+            "status": "completed",
+            "statusReason": "criteria_verified",
+            "deadlineAt": 1788772580920,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 1,
+                "modelCalls": 2,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-cac2444d-2060-4493-8016-ba14629747aa",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-97b12d71-d632-4726-9984-f9ad4f5fb8ab",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        },
+        {
+          "label": "rewrite_goal_mode_omitted",
+          "args": [
+            "goal",
+            "--work",
+            "work-262ad339f27b9daca5b69adaf674175dfee116092323ae2a476eec62c52e520e",
+            "--session",
+            "35285402-bf24-44e9-9a6f-2b4a87a5cf0b",
+            "--message-id",
+            "rewrite",
+            "--text",
+            "[합성 주턴] 이 문장을 교정해 줘: 오늘 회의는 세시에 시작됍니다.",
+            "--goal-revision",
+            "1",
+            "--control-revision",
+            "1"
+          ],
+          "startedAt": "2026-09-07T08:16:21.832Z",
+          "finishedAt": "2026-09-07T08:16:22.301Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "blocked",
+            "reason": "fast_model_budget_exhausted",
+            "goalRevision": 2,
+            "execution": {
+              "revision": 2,
+              "requestedMode": "fast",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "goal_changed",
+              "limits": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "tokens": 1000000,
+                "replans": 0,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 1,
+                "modelCalls": 0,
+                "tokens": 1000000,
+                "replans": 0
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772580920,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 2,
+                "unproductiveSteps": 1,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 1,
+              "modelCalls": 2,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "not_prepared",
+            "pendingQuestions": []
+          },
+          "created": true,
+          "run": {
+            "control": {
+              "kind": "blocked",
+              "reason": "fast_model_budget_exhausted"
+            },
+            "steps": 1,
+            "reason": "fast_model_budget_exhausted",
+            "stateRevision": 27,
+            "goalRevision": 2,
+            "checkpoint": {
+              "id": "1004f4baa4631d1142da4b1c6f67b60591730109cfed69c7a54dc9a3be3b38d1",
+              "sha256": "4f3a4714c711d39ff2f36d888346f467150064842730b51178371a0541fde258",
+              "byteLength": 17067,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-262ad339f27b9daca5b69adaf674175dfee116092323ae2a476eec62c52e520e",
+            "goalRevision": 2,
+            "mode": "fast",
+            "status": "blocked",
+            "statusReason": "fast_model_budget_exhausted",
+            "deadlineAt": 1788772580920,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 1,
+                "modelCalls": 2,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-cac2444d-2060-4493-8016-ba14629747aa",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-97b12d71-d632-4726-9984-f9ad4f5fb8ab",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        },
+        {
+          "label": "rewrite_goal_explicit_auto",
+          "args": [
+            "goal",
+            "--work",
+            "work-262ad339f27b9daca5b69adaf674175dfee116092323ae2a476eec62c52e520e",
+            "--session",
+            "35285402-bf24-44e9-9a6f-2b4a87a5cf0b",
+            "--message-id",
+            "rewrite-auto",
+            "--text",
+            "[합성 주턴] 이 문장을 교정해 줘: 오늘 회의는 세시에 시작됍니다.",
+            "--goal-revision",
+            "2",
+            "--control-revision",
+            "2",
+            "--mode",
+            "auto"
+          ],
+          "startedAt": "2026-09-07T08:16:22.301Z",
+          "finishedAt": "2026-09-07T08:16:23.639Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "completed",
+            "reason": "criteria_verified",
+            "goalRevision": 3,
+            "execution": {
+              "revision": 3,
+              "requestedMode": "auto",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "goal_changed",
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 29,
+                "modelCalls": 13,
+                "tokens": 1000000,
+                "replans": 8
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772580920,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 3,
+                "unproductiveSteps": 1,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 1,
+              "modelCalls": 3,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "delivered",
+            "pendingQuestions": []
+          },
+          "created": true,
+          "run": {
+            "control": {
+              "kind": "complete",
+              "reason": "criteria_verified"
+            },
+            "steps": 4,
+            "reason": "criteria_verified",
+            "stateRevision": 37,
+            "goalRevision": 3,
+            "checkpoint": {
+              "id": "f656ae9d4d899a1389d2d944e8918fd8affbbaff8281bd2fa7d6c9bbfa93cc85",
+              "sha256": "7f30c21ed5fca9182ee6212dc2650a46e0f231be4853d88d7414872e5cd2fda9",
+              "byteLength": 22618,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-262ad339f27b9daca5b69adaf674175dfee116092323ae2a476eec62c52e520e",
+            "goalRevision": 3,
+            "mode": "auto",
+            "status": "completed",
+            "statusReason": "criteria_verified",
+            "deadlineAt": 1788772580920,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 1,
+                "modelCalls": 3,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-cac2444d-2060-4493-8016-ba14629747aa",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-97b12d71-d632-4726-9984-f9ad4f5fb8ab",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-7b51a696-78ef-4646-9004-4fcd72b88435",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        }
+      ],
+      "completed": true,
+      "temporaryRootRemoved": true
+    },
+    {
+      "name": "fast rewrite then one-call goal with omitted mode",
+      "backend": "sqlite",
+      "steps": [
+        {
+          "label": "rewrite_fast",
+          "args": [
+            "ask",
+            "--message-id",
+            "rewrite",
+            "--text",
+            "[합성 주턴] 이 문장을 교정해 줘: 오늘 회의는 세시에 시작됍니다.",
+            "--mode",
+            "fast"
+          ],
+          "startedAt": "2026-09-07T08:16:23.708Z",
+          "finishedAt": "2026-09-07T08:16:24.153Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "completed",
+            "reason": "criteria_verified",
+            "goalRevision": 1,
+            "execution": {
+              "revision": 1,
+              "requestedMode": "fast",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "mode_fast",
+              "limits": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "tokens": 1000000,
+                "replans": 0,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 2,
+                "modelCalls": 1,
+                "tokens": 1000000,
+                "replans": 0
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772583884,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 1,
+                "unproductiveSteps": 0,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "delivered",
+            "pendingQuestions": []
+          },
+          "run": {
+            "control": {
+              "kind": "complete",
+              "reason": "criteria_verified"
+            },
+            "steps": 4,
+            "reason": "criteria_verified",
+            "stateRevision": 12,
+            "goalRevision": 1,
+            "checkpoint": {
+              "id": "873fff4efea6e140d6eeedf23a7768ca2799c31106dd050b8f263dbb8f51a9d1",
+              "sha256": "45d4ccb1a3b3909fbfada26c9c159abcc783b1caa007492d0ae7b512368f23ef",
+              "byteLength": 10454,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-b763dd21bbdf049764d39d6fab96e7cbed8b26f2353c17e6cf9867bbffd88e43",
+            "goalRevision": 1,
+            "mode": "fast",
+            "status": "completed",
+            "statusReason": "criteria_verified",
+            "deadlineAt": 1788772583884,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 0,
+                "modelCalls": 1,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-ed5859bf-ccd1-4a19-b547-44ead030cc3d",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        },
+        {
+          "label": "clarification_goal_mode_omitted",
+          "args": [
+            "goal",
+            "--work",
+            "work-b763dd21bbdf049764d39d6fab96e7cbed8b26f2353c17e6cf9867bbffd88e43",
+            "--session",
+            "bcda81fb-18b1-4302-9550-35b7026974e0",
+            "--message-id",
+            "clarification",
+            "--text",
+            "[합성 주턴] 자료 없이 직접 설명해 줘: 원문과 요약의 차이.",
+            "--goal-revision",
+            "1",
+            "--control-revision",
+            "1"
+          ],
+          "startedAt": "2026-09-07T08:16:24.153Z",
+          "finishedAt": "2026-09-07T08:16:24.641Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "completed",
+            "reason": "criteria_verified",
+            "goalRevision": 2,
+            "execution": {
+              "revision": 2,
+              "requestedMode": "fast",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "goal_changed",
+              "limits": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "tokens": 1000000,
+                "replans": 0,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 2,
+                "modelCalls": 0,
+                "tokens": 1000000,
+                "replans": 0
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772583884,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 2,
+                "unproductiveSteps": 0,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 0,
+              "modelCalls": 2,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "delivered",
+            "pendingQuestions": []
+          },
+          "created": true,
+          "run": {
+            "control": {
+              "kind": "complete",
+              "reason": "criteria_verified"
+            },
+            "steps": 4,
+            "reason": "criteria_verified",
+            "stateRevision": 22,
+            "goalRevision": 2,
+            "checkpoint": {
+              "id": "4627bdae5887ad26029e2c297acf82abefa29486462e4c6ccd14a2c0ae01a673",
+              "sha256": "2f66581c7f646a54a64bc619c0d8f9f0af5cd49f232c1d31f43b830b3cec4e7e",
+              "byteLength": 15909,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-b763dd21bbdf049764d39d6fab96e7cbed8b26f2353c17e6cf9867bbffd88e43",
+            "goalRevision": 2,
+            "mode": "fast",
+            "status": "completed",
+            "statusReason": "criteria_verified",
+            "deadlineAt": 1788772583884,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 0,
+                "modelCalls": 2,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-ed5859bf-ccd1-4a19-b547-44ead030cc3d",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-fd54058c-bf94-41a8-a39b-491cf0dd5b95",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        }
+      ],
+      "completed": true,
+      "temporaryRootRemoved": true
+    },
+    {
+      "name": "fast rewrite then interrupted read intake replay and resume",
+      "backend": "sqlite",
+      "steps": [
+        {
+          "label": "rewrite_fast",
+          "args": [
+            "ask",
+            "--message-id",
+            "first",
+            "--text",
+            "[합성 주턴] 이 문장을 교정해 줘: 오늘 회의는 세시에 시작됍니다.",
+            "--mode",
+            "fast"
+          ],
+          "startedAt": "2026-09-07T08:16:24.706Z",
+          "finishedAt": "2026-09-07T08:16:25.147Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "completed",
+            "reason": "criteria_verified",
+            "goalRevision": 1,
+            "execution": {
+              "revision": 1,
+              "requestedMode": "fast",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "mode_fast",
+              "limits": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "tokens": 1000000,
+                "replans": 0,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 2,
+                "modelCalls": 1,
+                "tokens": 1000000,
+                "replans": 0
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772584881,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 1,
+                "unproductiveSteps": 0,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "delivered",
+            "pendingQuestions": []
+          },
+          "run": {
+            "control": {
+              "kind": "complete",
+              "reason": "criteria_verified"
+            },
+            "steps": 4,
+            "reason": "criteria_verified",
+            "stateRevision": 12,
+            "goalRevision": 1,
+            "checkpoint": {
+              "id": "d5a6e36a034bdfe12fc1945b1634bdc77fcefa712f2fc01cf316b79dfaef7695",
+              "sha256": "10586e64710f40e769427ed3f1d84d392d515eda949ffd0aae9191186e6c09be",
+              "byteLength": 10446,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-c19ecdc7ef1f9978ce3f532e5a04848b4e8601d9f202ba57cdd84086c61de0c8",
+            "goalRevision": 1,
+            "mode": "fast",
+            "status": "completed",
+            "statusReason": "criteria_verified",
+            "deadlineAt": 1788772584881,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 0,
+                "modelCalls": 1,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-caf7ca66-267f-4528-9e8d-0367cdf22c13",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        },
+        {
+          "label": "same_goal_replay",
+          "args": [
+            "goal",
+            "--work",
+            "work-c19ecdc7ef1f9978ce3f532e5a04848b4e8601d9f202ba57cdd84086c61de0c8",
+            "--session",
+            "5607ed8d-2069-4d48-839b-9e2f56617be2",
+            "--message-id",
+            "interrupted",
+            "--text",
+            "[합성 주턴] fixture.read로 doc-current를 읽고 보존기간을 알려줘.",
+            "--goal-revision",
+            "1",
+            "--control-revision",
+            "1"
+          ],
+          "startedAt": "2026-09-07T08:16:25.197Z",
+          "finishedAt": "2026-09-07T08:16:25.415Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "ready",
+            "reason": "goal_changed",
+            "goalRevision": 2,
+            "execution": {
+              "revision": 2,
+              "requestedMode": "fast",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "goal_changed",
+              "limits": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "tokens": 1000000,
+                "replans": 0,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 2,
+                "modelCalls": 1,
+                "tokens": 1000000,
+                "replans": 0
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772584881,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 1,
+                "unproductiveSteps": 0,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 0,
+              "modelCalls": 1,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "not_prepared",
+            "pendingQuestions": []
+          },
+          "created": false,
+          "work": {
+            "id": "work-c19ecdc7ef1f9978ce3f532e5a04848b4e8601d9f202ba57cdd84086c61de0c8",
+            "goalRevision": 2,
+            "mode": "fast",
+            "status": "ready",
+            "statusReason": "goal_changed",
+            "deadlineAt": 1788772584881,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 0,
+                "modelCalls": 1,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-caf7ca66-267f-4528-9e8d-0367cdf22c13",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        },
+        {
+          "label": "explicit_resume",
+          "args": [
+            "resume",
+            "--work",
+            "work-c19ecdc7ef1f9978ce3f532e5a04848b4e8601d9f202ba57cdd84086c61de0c8",
+            "--session",
+            "5607ed8d-2069-4d48-839b-9e2f56617be2",
+            "--goal-revision",
+            "2"
+          ],
+          "startedAt": "2026-09-07T08:16:25.415Z",
+          "finishedAt": "2026-09-07T08:16:25.878Z",
+          "exitCode": 0,
+          "snapshot": {
+            "status": "blocked",
+            "reason": "fast_model_budget_exhausted",
+            "goalRevision": 2,
+            "execution": {
+              "revision": 2,
+              "requestedMode": "fast",
+              "strategy": "direct",
+              "pending": null,
+              "lastReason": "goal_changed",
+              "limits": {
+                "toolCalls": 2,
+                "modelCalls": 2,
+                "tokens": 1000000,
+                "replans": 0,
+                "wallTimeMs": 3600000
+              },
+              "remaining": {
+                "toolCalls": 1,
+                "modelCalls": 0,
+                "tokens": 1000000,
+                "replans": 0
+              },
+              "reserved": {
+                "toolCalls": 0,
+                "modelCalls": 0,
+                "tokens": 0
+              },
+              "deadlineAt": 1788772584881,
+              "retryWakeAt": null,
+              "activeModels": 0,
+              "progress": {
+                "consecutiveUnproductive": 0,
+                "productiveSteps": 3,
+                "unproductiveSteps": 0,
+                "saturated": false
+              },
+              "unmetCriteria": []
+            },
+            "usage": {
+              "toolCalls": 1,
+              "modelCalls": 2,
+              "tokens": 0,
+              "replans": 0,
+              "unmeasuredModelCalls": 0
+            },
+            "resultDelivery": "not_prepared",
+            "pendingQuestions": []
+          },
+          "run": {
+            "control": {
+              "kind": "blocked",
+              "reason": "fast_model_budget_exhausted"
+            },
+            "steps": 7,
+            "reason": "fast_model_budget_exhausted",
+            "stateRevision": 27,
+            "goalRevision": 2,
+            "checkpoint": {
+              "id": "31ce60c370b09a0035673c957e153d9e554138cc03df69e812a8e442b67d7f65",
+              "sha256": "1b05f2beebb2886e056f3e636d7a0a347e5f573b2a2e803adf1a60d7540229e8",
+              "byteLength": 18135,
+              "mediaType": "application/json",
+              "tenantId": "local",
+              "labels": [
+                "public",
+                "synthetic"
+              ]
+            },
+            "resumeDisposition": "created"
+          },
+          "work": {
+            "id": "work-c19ecdc7ef1f9978ce3f532e5a04848b4e8601d9f202ba57cdd84086c61de0c8",
+            "goalRevision": 2,
+            "mode": "fast",
+            "status": "blocked",
+            "statusReason": "fast_model_budget_exhausted",
+            "deadlineAt": 1788772584881,
+            "budget": {
+              "limits": {
+                "toolCalls": 30,
+                "modelCalls": 16,
+                "tokens": 1000000,
+                "replans": 8,
+                "wallTimeMs": 3600000
+              },
+              "used": {
+                "toolCalls": 1,
+                "modelCalls": 2,
+                "tokens": 0,
+                "replans": 0,
+                "unmeasuredModelCalls": 0
+              },
+              "reservedToolCalls": 0,
+              "reservedModelCalls": 0,
+              "reservedTokens": 0
+            },
+            "modelCalls": [
+              {
+                "id": "model-caf7ca66-267f-4528-9e8d-0367cdf22c13",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              },
+              {
+                "id": "model-65a1f04a-57a3-4602-91b5-10e0059f86b5",
+                "purpose": "agent_turn",
+                "status": "accepted",
+                "outcome": "ok"
+              }
+            ]
+          }
+        }
+      ],
+      "interruption": {
+        "phase": "after durable receive before command application",
+        "injectedErrorObserved": true,
+        "goalRevision": 1,
+        "receiptStatus": "pending"
+      },
+      "completed": true,
+      "temporaryRootRemoved": true
+    }
+  ],
+  "cliCalls": 11,
+  "artifactHashesAfter": {
+    "dist/build-manifest.json": "c9c5d251a607d50292d50fc4c070da6e17b7046ad6b9b766bce66dbee0f0003f",
+    "dist/presentation/agent-turn-cli.js": "cf0e646c35cb4fd4684f915e69df8b1bc0211b214d81c538037859522415d9fe",
+    "dist/domain/execution-policy.js": "90b4fb84eca04dd4cd695bae6af8f35126399d9cf6b3c150279d3bcf6d73d4b0",
+    "dist/application/planning-runtime.js": "97f08a20eccc55f401c03f17774a06c703a6d3b78143a28907505678ce65d2a6",
+    "dist/application/agent-turn-service.js": "59728fcb095ed03df8a515d549323f361ef8e6eb0f13ac8750fe81018d5e6f08"
+  },
+  "artifactsUnchanged": true,
+  "finishedAt": "2026-09-07T08:16:25.881Z",
+  "status": "observed",
+  "interpretation": [
+    "Fast mode caps total model calls for the entire work at two; goal changes retain used resources, base limits and deadline.",
+    "Two-call read consumes the fast cap; the next goal is accepted but no additional call can run while fast remains selected.",
+    "One-call rewrite plus one-call clarification fits fast with omitted mode.",
+    "Interrupted read recovery preserves usage; its final answer requires a third work call and is correctly blocked in fast mode.",
+    "Explicit auto goal changes the strategy ceiling; it does not reset prior usage or enlarge the original work budget."
+  ],
+  "observationChecks": {
+    "allOriginalLimitsAndDeadlinesPreserved": true,
+    "allTemporaryRootsRemoved": true,
+    "readFastGoalBothBackends": {
+      "modelCalls": [
+        2,
+        2,
+        3
+      ],
+      "blockedSnapshotReason": "fast_model_budget_exhausted",
+      "blockedRunReason": "fast_model_budget_exhausted"
+    },
+    "fastRewriteClarification": {
+      "modelCalls": [
+        1,
+        2
+      ],
+      "finalStatus": "completed"
+    },
+    "interruptedFastRead": {
+      "modelCalls": [
+        1,
+        1,
+        2
+      ],
+      "replayedIntakeExecutesNoModel": true,
+      "finalStatus": "blocked",
+      "reason": "fast_model_budget_exhausted"
+    }
+  },
+  "verificationLimits": "Four synthetic diagnostic fixtures and eleven bounded CLI invocations against existing macOS build3 only. This is not a full test run, a Linux run, or proof that newly edited tests pass. No product policy was changed."
+}

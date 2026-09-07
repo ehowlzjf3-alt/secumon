@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-06T14:17:18.843Z",
+  "status": "passed",
+  "scope": "architecture_checker_path_simulation",
+  "nativeWindowsExecution": false,
+  "host": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.20.0",
+    "typescript": "6.0.3"
+  },
+  "pathApi": "node:path.win32",
+  "productChecker": {
+    "path": "scripts/check-architecture.mjs",
+    "sha256": "df8d040a25c565acdf8c48231ba479b4b507e66ba4131b39ea8ecfb9adc887fd"
+  },
+  "evidenceScript": {
+    "path": "evidence/C01-architecture-path-simulation.mjs",
+    "sha256": "805e0e1d05159e5dc76cae2c0981957eab64821a6ab09b876e5c1682977d5309"
+  },
+  "legacyReconstruction": "Current checker with both split(sep) expressions changed to split('/') and the empty-scan guard removed in memory; not a preserved historical source snapshot.",
+  "limitations": [
+    "Actual filesystem calls execute on the recorded host through a Windows-to-host path mapping.",
+    "Does not validate native Windows filesystem permissions, reparse points, durability, process behavior, or installed CLI behavior.",
+    "The forbidden import and empty source tree exist only in memory; product files are not modified.",
+    "No NAS connection or model/API call is performed."
+  ],
+  "cases": [
+    {
+      "id": "legacy_reconstructed_in_memory",
+      "checkerVariantSha256": "c37a7154238427f2c8cfb780f23fe7781f0a5b3b95d7142f730492ea59ebcd5d",
+      "forbiddenImportInjectedInMemory": false,
+      "filesystemView": "actual_repository_read_through_windows_path_mapping",
+      "inspected": 0,
+      "failures": [],
+      "exitCode": 0,
+      "sourceFilesRead": 0,
+      "sourceFilesReadDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "current_source",
+      "checkerVariantSha256": "df8d040a25c565acdf8c48231ba479b4b507e66ba4131b39ea8ecfb9adc887fd",
+      "forbiddenImportInjectedInMemory": false,
+      "filesystemView": "actual_repository_read_through_windows_path_mapping",
+      "inspected": 125,
+      "failures": [],
+      "exitCode": 0,
+      "sourceFilesRead": 125,
+      "sourceFilesReadDigest": "5b8edddf3ff2e8cd07ecfce3d9e17ef40375e2a6df3f35f6d015995c836246e2"
+    },
+    {
+      "id": "current_source_with_forbidden_import",
+      "checkerVariantSha256": "df8d040a25c565acdf8c48231ba479b4b507e66ba4131b39ea8ecfb9adc887fd",
+      "forbiddenImportInjectedInMemory": true,
+      "filesystemView": "actual_repository_read_through_windows_path_mapping",
+      "inspected": 125,
+      "failures": [
+        {
+          "file": "domain\\model.ts",
+          "dependency": "node:fs"
+        }
+      ],
+      "exitCode": 1,
+      "sourceFilesRead": 125,
+      "sourceFilesReadDigest": "5b8edddf3ff2e8cd07ecfce3d9e17ef40375e2a6df3f35f6d015995c836246e2"
+    },
+    {
+      "id": "current_source_with_empty_tree",
+      "checkerVariantSha256": "df8d040a25c565acdf8c48231ba479b4b507e66ba4131b39ea8ecfb9adc887fd",
+      "forbiddenImportInjectedInMemory": false,
+      "filesystemView": "empty_tree_in_memory",
+      "inspected": 0,
+      "failures": [
+        {
+          "file": "src",
+          "dependency": "no_core_files_inspected"
+        }
+      ],
+      "exitCode": 1,
+      "sourceFilesRead": 0,
+      "sourceFilesReadDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  ],
+  "checks": {
+    "legacyIncorrectlyPassesWithoutInspection": true,
+    "currentInspectsCoreAndPasses": true,
+    "currentRejectsForbiddenImport": true,
+    "currentRejectsEmptyInspection": true,
+    "negativeControlUsesSameSourceFiles": true
+  }
+}

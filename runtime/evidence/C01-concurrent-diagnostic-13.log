@@ -1,0 +1,57 @@
+TAP version 13
+# Subtest: separate CLI processes initializing concurrently settle on exactly one identity
+not ok 1 - separate CLI processes initializing concurrently settle on exactly one identity
+  ---
+  duration_ms: 510.461459
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-profile.test.js:215:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    concurrent_initialization_failed
+    Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-mnTCRV/agent --json
+    AgentProfileError: agent_storage_path_unsafe
+        at checkFile (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-database-owner.js:30:19)
+        at file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-database-owner.js:46:65
+        at Array.map (<anonymous>)
+        at agentDatabaseExists (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-database-owner.js:46:51)
+        at bindAgentDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-database-owner.js:129:5)
+        at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:108:13)
+        at runAgentCli (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-cli.js:102:30)
+        at file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js:6:11 {
+      code: 'agent_storage_path_unsafe',
+      [cause]: {
+        file: 'memory.sqlite-journal',
+        regular: true,
+        symbolicLink: false,
+        links: 0,
+        mode: 384,
+        owned: true
+      }
+    }
+    agent_storage_path_unsafe
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'AggregateError'
+  stack: |-
+    checkFile (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-database-owner.js:30:19)
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-database-owner.js:46:65
+    Array.map (<anonymous>)
+    agentDatabaseExists (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-database-owner.js:46:51)
+    bindAgentDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-database-owner.js:129:5)
+    openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:108:13)
+    runAgentCli (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-cli.js:102:30)
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js:6:11 {
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-profile.test.js:221:19)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 572.4665

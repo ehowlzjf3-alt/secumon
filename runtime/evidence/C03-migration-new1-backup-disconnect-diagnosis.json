@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "kind": "single-bounded-backup-worker-disconnect-diagnosis",
+  "recordedAt": "2026-09-07T03:32:00.948Z",
+  "node": "v24.20.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "originalLog": "runtime/evidence/C03-migration-new1.log",
+  "distWorker": "runtime/dist/infrastructure/personal-memory-backup-worker.js",
+  "distWorkerSha256": "067664f6a65f601fe2330af16095e54f520584b5c30d15a08ca8b28a4a7a443f",
+  "sourceWorkerSha256": "d02a696c7b602620318cc5e33b59f489740b1b1eaab65bb67de8753b257aaccf",
+  "sourceHelperSha256": "a712024217bcf1b6f0cf1e26b19265e5b7e75969c978972f7fb99d152a37c285",
+  "fixture": "Current compiled dedicated worker receives no input; supervisor explicitly disconnects its IPC. No source/candidate DB is opened.",
+  "readyMeaning": "ready-pipe emits probe-ready from a data URL preload before worker module evaluation; this is process readiness, not backup readiness.",
+  "observationWindowMsAfterExit": 100,
+  "hardKillDeadlineMs": 2000,
+  "emergencyObserveMs": 1000,
+  "observations": [
+    {
+      "kind": "immediate-ignore",
+      "pid": 14131,
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "absent": true,
+      "events": [
+        {
+          "event": "spawn",
+          "ms": 1
+        },
+        {
+          "event": "disconnect",
+          "ms": 1
+        },
+        {
+          "event": "exit",
+          "ms": 47,
+          "code": 1,
+          "signal": null
+        }
+      ]
+    },
+    {
+      "kind": "spawn-ignore",
+      "pid": 14132,
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "absent": true,
+      "events": [
+        {
+          "event": "spawn",
+          "ms": 1
+        },
+        {
+          "event": "disconnect",
+          "ms": 1
+        },
+        {
+          "event": "exit",
+          "ms": 54,
+          "code": 1,
+          "signal": null
+        }
+      ]
+    },
+    {
+      "kind": "ready-pipe",
+      "pid": 14135,
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "absent": true,
+      "events": [
+        {
+          "event": "spawn",
+          "ms": 1
+        },
+        {
+          "event": "stdout",
+          "ms": 29,
+          "text": "probe-ready"
+        },
+        {
+          "event": "disconnect",
+          "ms": 29
+        },
+        {
+          "event": "exit",
+          "ms": 59,
+          "code": 1,
+          "signal": null
+        }
+      ]
+    },
+    {
+      "kind": "immediate-pipe",
+      "pid": 14136,
+      "exit": {
+        "code": 1,
+        "signal": null
+      },
+      "absent": true,
+      "events": [
+        {
+          "event": "spawn",
+          "ms": 1
+        },
+        {
+          "event": "disconnect",
+          "ms": 1
+        },
+        {
+          "event": "exit",
+          "ms": 57,
+          "code": 1,
+          "signal": null
+        }
+      ]
+    }
+  ],
+  "conclusion": "All four workers emitted exit(code=1), were reaped and returned ESRCH to kill(pid,0); none emitted close during the observed 100ms after exit. The test waited for close instead of actual process exit.",
+  "cleanup": {
+    "ownedPids": [
+      14131,
+      14132,
+      14135,
+      14136
+    ],
+    "allConfirmedAbsent": true,
+    "killRequired": false
+  },
+  "change": "Only the idle disconnect regression waits for exit and asserts ESRCH. Product helper/worker are unchanged. In-flight native backup SIGKILL already passed in new1 and was not rerun by this diagnosis.",
+  "verification": "Four one-shot observations only; not a full suite or a claim that close can never arrive on any host/version."
+}

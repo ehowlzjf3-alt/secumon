@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DevWeb E2E Pipeline</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;--band:#ffffff;--panel:#ffffff;--panel2:#f9fbfd;
+      --line:#d7dde6;--text:#1f2937;--soft:#344054;--muted:#667085;
+      --blue:#2563eb;--teal:#0f766e;--amber:#b45309;--red:#b42318;--green:#15803d;
+      font-family:Inter,"Malgun Gothic",Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-size:14px}
+    header{height:58px;display:flex;align-items:center;gap:16px;padding:0 18px;background:var(--band);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+    h1{margin:0;font-size:17px;font-weight:780;white-space:nowrap}
+    nav{display:flex;gap:8px;flex-wrap:wrap}
+    button,.act{min-height:31px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);padding:6px 10px;cursor:pointer;font:inherit}
+    nav button.active,.act.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:760}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    main{max-width:1580px;margin:0 auto;padding:18px}.sp{flex:1}.muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:16px}
+    .card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+    .card small{display:block;color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase}
+    .card strong{display:block;margin-top:5px;font-size:26px;line-height:1.1}
+    .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:16px}
+    .stage{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px;display:grid;grid-template-rows:42px 58px 104px 104px;gap:9px;min-width:0;min-height:340px}
+    .stage.active{border-color:#86efac;box-shadow:0 0 0 2px #dcfce7}.stage.waiting{border-color:#f3c6c2}.stage.idle{border-color:#d7dde6}
+    .stage-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start}
+    .stage-title{font-weight:850;font-size:13px;line-height:1.25;overflow-wrap:anywhere}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .stat{background:var(--panel2);border:1px solid #edf1f6;border-radius:7px;padding:6px 4px;text-align:center;min-width:0}
+    .stat b{display:block;font-size:18px;line-height:1.05;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+    .targets{background:var(--panel2);border:1px solid var(--line);border-radius:7px;overflow:auto;padding:7px;display:grid;align-content:start;gap:5px;min-height:0}
+    .target{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--soft);font-size:12px;display:flex;align-items:center;gap:6px;min-width:0}
+    .target-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+    .target.live{color:var(--green)}.target.empty{font-family:inherit;color:var(--muted)}
+    .metrics{border-top:1px dashed #e3e8ef;padding-top:7px;display:grid;align-content:start;gap:4px;overflow:hidden}
+    .metric{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;color:var(--soft);font-size:12px;min-height:18px}
+    .metric span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.metric b{white-space:nowrap}
+    .pill{display:inline-flex;align-items:center;min-height:21px;border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:11px;color:var(--muted);white-space:nowrap}
+    .pill.live{border-color:#86efac;background:#f0fdf4;color:var(--green)}.pill.warn{border-color:#fed7aa;background:#fff7ed;color:var(--amber)}.pill.bad{border-color:#fecaca;background:#fef2f2;color:var(--red)}.pill.info{border-color:#99f6e4;background:#f0fdfa;color:var(--teal)}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:16px 0 10px}
+    .section-head h2{margin:0;font-size:16px}.meta-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+    .toolbar{display:grid;grid-template-columns:minmax(240px,1fr) minmax(150px,.42fr) minmax(150px,.42fr);gap:8px;align-items:end;margin:8px 0 12px}
+    .toolbar label{display:grid;gap:4px;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase}
+    .toolbar input,.toolbar select{width:100%;min-height:34px;border:1px solid var(--line);border-radius:7px;background:var(--panel2);color:var(--text);padding:6px 8px}
+    table{width:100%;border-collapse:collapse}th,td{text-align:left;border-bottom:1px solid var(--line);padding:8px;font-size:13px;vertical-align:top}th{color:var(--muted);font-weight:800}
+    tr.clickable{cursor:pointer}tr.clickable:hover td{background:#f8fbff}code{color:#0f4f7a;word-break:break-all}
+    .layout{display:grid;grid-template-columns:minmax(420px,.95fr) minmax(0,1.15fr);gap:12px;align-items:start}.detail{position:sticky;top:76px}
+    .detail h2{font-size:16px;margin:0 0 6px;overflow-wrap:anywhere}.kv{display:grid;grid-template-columns:120px minmax(0,1fr);gap:7px;margin:10px 0;color:var(--soft)}
+    .kv b{color:var(--muted);font-size:12px}.pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;max-height:280px;overflow:auto}
+    iframe{width:100%;height:min(520px,62vh);min-height:320px;border:1px solid var(--line);border-radius:8px;background:white;margin:10px 0}
+    @media(max-width:1150px){.layout{grid-template-columns:1fr}.detail{position:static}.toolbar{grid-template-columns:1fr 1fr}}
+    @media(max-width:760px){header{height:auto;min-height:58px;align-items:flex-start;flex-wrap:wrap;padding:12px}header h1{white-space:normal}.sp,#clock{display:none}main{padding:14px}.grid{grid-template-columns:1fr 1fr}.toolbar{grid-template-columns:1fr}.stage{grid-template-rows:auto 58px 104px 104px}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DevWeb E2E Pipeline</h1>
+    <nav>
+      <button data-tab="dash" class="active">Pipeline</button>
+      <button data-tab="targets">Targets</button>
+      <button data-tab="reports">Reports</button>
+    </nav>
+    <span class="sp"></span>
+    <span id="clock" class="muted"></span>
+  </header>
+  <main id="view"></main>
+<script>
+const $=s=>document.querySelector(s);
+function api(path,params={}){const u=new URL(path,location.origin);for(const[k,v]of Object.entries(params)){if(v!==undefined&&v!==null&&v!=='')u.searchParams.set(k,v)}return u}
+async function getJSON(path,params){const r=await fetch(api(path,params));if(!r.ok)throw new Error(r.status);return r.json()}
+async function postJSON(path,body={}){const r=await fetch(api(path),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw new Error(r.status);return r.json()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmt(n){return (Number(n)||0).toLocaleString('ko-KR')}
+function age(ts){if(!ts)return '-';const sec=Math.max(0,Math.floor(Date.now()/1000-Number(ts)));if(sec<60)return sec+'s';if(sec<3600)return Math.floor(sec/60)+'m';if(sec<86400)return Math.floor(sec/3600)+'h';return Math.floor(sec/86400)+'d'}
+let activeTab='dash';
+let targetState={q:'',status:'',cycleKey:''};
+let reportState={q:'',status:'',cycleKey:'',threadId:null};
+let currentReports=[];
+let filterTimer=null;
+const TARGET_STATUSES=['pending','in_progress','tasked','skipped','error'];
+const REPORT_STATUSES=['draft','reported','report_ready','awaiting_reply','reply_received','reverifying','re_requested','partially_remediated','remediated','exception_review','owner_update_needed','owner_reassignment_review','reassigned','escalated','closed'];
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{activeTab=b.dataset.tab;document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===activeTab));render()});
+function option(value,label,current){return `<option value="${esc(value)}" ${current===value?'selected':''}>${esc(label)}</option>`}
+function statusLabel(s){return ({
+  pending:'대기',in_progress:'처리중',tasked:'점검 완료',skipped:'스킵',error:'오류',
+  draft:'초안',reported:'리포트 대기',report_ready:'발송 대기(초안 완료)',
+  awaiting_reply:'답장 대기',reply_received:'답장 수신',
+  reverifying:'재검증 중',re_requested:'재조치 요청',partially_remediated:'부분 조치',
+  remediated:'조치 완료',exception_review:'업무 예외 검토',owner_update_needed:'담당자 확인',
+  owner_reassignment_review:'담당자 변경 검토',reassigned:'담당자 이관',escalated:'에스컬레이션',
+  closed:'종료'
+})[s]||s||'-'}
+function statusPill(s){const cls=({pending:'warn',in_progress:'info',tasked:'live',skipped:'',error:'bad',draft:'',reported:'warn',report_ready:'info',awaiting_reply:'info',reply_received:'warn',reverifying:'info',re_requested:'bad',partially_remediated:'warn',remediated:'live',exception_review:'warn',owner_update_needed:'warn',owner_reassignment_review:'warn',reassigned:'warn',escalated:'bad',closed:''})[s]||'';return `<span class="pill ${cls}">${esc(statusLabel(s))}</span>`}
+function severityLabel(s){return ({critical:'매우 높음',high:'높음',medium:'중간',low:'낮음',informational:'정보'})[s]||s||'-'}
+function tagPills(items){return (items||[]).map(x=>`<span class="pill info">${esc(x.label||x.key)}</span>`).join('')}
+function metric(label,value,unit=''){return `<div class="metric"><span>${esc(label)}</span><b>${fmt(value)}${esc(unit)}</b></div>`}
+function controlFor(owner,d){
+  const f=(d.control_flags||{})[owner]||{};
+  const enabled=f.enabled!==0&&f.enabled!==false;
+  return `<span class="meta-row"><button class="act ${enabled?'':'primary'}" onclick="toggle('${esc(owner)}',${enabled?0:1})">${enabled?'ON':'OFF'}</button><button class="act" onclick="runNow('${esc(owner)}')">Run</button></span>`;
+}
+function stageTargets(s){
+  const active=(s.active||[]).map(x=>[x,'live']);
+  const next=(s.next||[]).map(x=>[x,'']);
+  const rows=[...active,...next].slice(0,8).map(([t,cls])=>`<div class="target ${cls}" title="${esc(t)}"><span class="target-label">${esc(t)}</span></div>`).join('');
+  return rows||'<div class="target empty">대상 없음</div>';
+}
+function stageCard(s,d){
+  const metrics=(s.metrics||[]).slice(0,6).map(m=>metric(m.label,m.value,m.unit||'')).join('');
+  const doneValue=typeof s.done==='boolean'?(((s.metrics||[]).find(m=>m.label==='targets')?.value||0)-((s.metrics||[]).find(m=>m.label==='pending')?.value||0)):s.done;
+  return `<section class="stage ${esc(s.status||'')}">
+    <div class="stage-head"><div><div class="stage-title">${esc(s.label)}</div><div class="muted">${esc(s.owner||'')}</div></div>${controlFor(s.owner,d)}</div>
+    <div class="stats"><div class="stat"><b>${fmt(s.queue)}</b><span>대기</span></div><div class="stat"><b>${fmt((s.active||[]).length)}</b><span>진행중</span></div><div class="stat"><b>${fmt(doneValue)}</b><span>누적</span></div></div>
+    <div class="targets">${stageTargets(s)}</div><div class="metrics">${metrics}</div>
+  </section>`;
+}
+// 하트비트 신선도. alive 는 API 의 600초 기준이라 그것만 쓰면 6시간 cron 이 항상 빨갛다.
+// detail 은 **그 시각의 마지막 결과가 박혀 있는 값**이므로 나이를 같이 봐야 오독하지 않는다
+// (2026-08-16 실측: 하트비트 31개 중 26개가 24h 이상 낡았고 최고 45일이었다).
+function hbTier(h){
+  const sec=Math.max(0,Math.floor(Date.now()/1000-Number(h.last_beat||0)));
+  if(!h.last_beat)return {cls:'meta',label:'기록없음'};
+  if(h.alive)return {cls:'live',label:'LIVE'};
+  if(sec<86400)return {cls:'warn',label:'대기'};
+  if(sec<604800)return {cls:'bad',label:'하루+'};
+  return {cls:'bad',label:'★일주일+'};
+}
+function heartbeatRows(d){
+  return Object.entries(d.heartbeats||{})
+    .sort((a,b)=>Number(b[1].last_beat||0)-Number(a[1].last_beat||0))
+    .map(([k,h])=>{
+      const t=hbTier(h);
+      return `<tr><td><code>${esc(k)}</code></td><td><span class="pill ${t.cls}">${t.label}</span></td>`
+        +`<td>${esc(h.phase||'-')}</td><td>${age(h.last_beat)}</td><td class="muted">${esc(h.detail||'')}</td></tr>`;
+    }).join('');
+}
+function runRows(d){
+  const rows=[];
+  for(const [component,items] of Object.entries(d.recent_runs||{})){
+    for(const r of items||[])rows.push(`<tr><td><code>${esc(component)}</code></td><td>${statusPill(r.status==='ok'?'tasked':'error')}</td><td>${age(r.finished_at||r.started_at)}</td><td>${esc(r.detail||'')}</td></tr>`);
+  }
+  return rows.join('');
+}
+async function renderDash(){
+  const v=$('#view');v.innerHTML='<p class="muted">Loading...</p>';
+  try{
+    const d=await getJSON('/api/pipeline/overview',{live:1});
+    const by={};(d.stages||[]).forEach(s=>by[s.key]=s);
+    v.innerHTML=`<div class="grid">
+      <div class="card"><small>Cycle</small><strong>${esc(d.cycle_key||'-')}</strong></div>
+      <div class="card"><small>Targets</small><strong>${fmt((d.target_status_counts||{}).total)}</strong></div>
+      <div class="card"><small>Findings</small><strong>${fmt(((by.task||{}).metrics||[]).find(m=>m.label==='findings')?.value)}</strong></div>
+      <div class="card"><small>Reports</small><strong>${fmt((d.report_thread_status_counts||{}).total)}</strong></div>
+    </div><div class="flow">${(d.stages||[]).map(s=>stageCard(s,d)).join('')}</div>
+    <div class="layout"><section class="panel"><div class="section-head"><h2>Heartbeats</h2></div><table><thead><tr><th>Agent</th><th>상태</th><th>Phase</th><th>Age</th><th>Detail</th></tr></thead><tbody>${heartbeatRows(d)||'<tr><td colspan="5" class="muted">데이터 없음</td></tr>'}</tbody></table></section>
+    <section class="panel"><div class="section-head"><h2>Recent Runs</h2></div><table><thead><tr><th>Agent</th><th>결과</th><th>완료</th><th>Detail</th></tr></thead><tbody>${runRows(d)||'<tr><td colspan="4" class="muted">데이터 없음</td></tr>'}</tbody></table></section></div>`;
+  }catch(e){v.innerHTML='<p class="muted">Load failed: '+esc(e)+'</p>'}
+}
+async function toggle(component,enabled){await postJSON('/api/control/'+component,{enabled:!!enabled});renderDash()}
+async function runNow(component){await postJSON('/api/control/'+component+'/run-now',{});renderDash()}
+function scheduleFilter(){if(filterTimer)clearTimeout(filterTimer);filterTimer=setTimeout(()=>{filterTimer=null;activeTab==='targets'?renderTargets():renderReports()},220)}
+function targetFilter(items){
+  const q=targetState.q.toLowerCase();
+  return (items||[]).filter(t=>(!q||[t.domain,t.url,t.source,t.day_bucket].map(x=>String(x||'').toLowerCase()).join(' ').includes(q)));
+}
+function targetRows(items){
+  return (items||[]).map(t=>`<tr><td><code>${esc(t.domain)}</code><div class="muted">${esc(t.url)}</div></td><td>${statusPill(t.status)}</td><td>${fmt(t.event_count)}</td><td>${fmt(t.priority_score)}</td><td>${esc(t.day_bucket||'-')}</td><td>${age(t.last_seen_at)}</td></tr>`).join('');
+}
+async function renderTargets(){
+  const v=$('#view');v.innerHTML='<p class="muted">Loading...</p>';
+  try{
+    const d=await getJSON('/api/dev-web/targets',{limit:500,status:targetState.status,cycle_key:targetState.cycleKey});
+    if(!targetState.cycleKey)targetState.cycleKey=d.cycle_key||'';
+    const items=targetFilter(d.items||[]);
+    const counts=Object.entries(d.summary||{}).filter(([k,n])=>k!=='total'&&n).map(([s,n])=>`<span class="pill">${esc(statusLabel(s))} ${fmt(n)}</span>`).join('');
+    v.innerHTML=`<div class="section-head"><div><h2>Targets</h2></div><div class="meta-row">${counts}</div></div>
+      <div class="toolbar"><label>검색<input value="${esc(targetState.q)}" placeholder="domain, url, source" oninput="targetState.q=this.value;scheduleFilter()"></label>
+      <label>주차<input value="${esc(targetState.cycleKey||'')}" onchange="targetState.cycleKey=this.value;renderTargets()"></label>
+      <label>상태<select onchange="targetState.status=this.value;renderTargets()">${option('','대기 기본',targetState.status)}${TARGET_STATUSES.map(s=>option(s,statusLabel(s),targetState.status)).join('')}</select></label></div>
+      <section class="panel"><table><thead><tr><th>Target</th><th>상태</th><th>Events</th><th>Priority</th><th>Bucket</th><th>Last Seen</th></tr></thead><tbody>${targetRows(items)||'<tr><td colspan="6" class="muted">대상이 없습니다.</td></tr>'}</tbody></table></section>`;
+  }catch(e){v.innerHTML='<p class="muted">Load failed: '+esc(e)+'</p>'}
+}
+function parseReportJson(t){try{const raw=t.report_json;if(!raw)return {};return typeof raw==='string'?JSON.parse(raw):raw}catch(_){return {}}}
+function reportFilter(items){
+  const q=reportState.q.toLowerCase();
+  return (items||[]).filter(t=>{
+    if(reportState.status&&t.status!==reportState.status)return false;
+    if(!q)return true;
+    return [t.domain,t.url,t.subject_tag,t.recipient,t.status,t.severity].map(x=>String(x||'').toLowerCase()).join(' ').includes(q);
+  });
+}
+function reportRows(items){
+  return (items||[]).map(t=>`<tr class="clickable" onclick="detail(${esc(t.id)},currentReports)"><td><code>${esc(t.domain)}</code><div class="muted">${esc(t.url)}</div>${tagPills(t.finding_tags)}</td><td>${statusPill(t.status)}</td><td>${esc(severityLabel(t.severity))}</td><td>${esc(t.recipient||'-')}</td><td>${age(t.updated_at)}</td></tr>`).join('');
+}
+async function renderReports(){
+  const v=$('#view');v.innerHTML='<p class="muted">Loading...</p>';
+  try{
+    const d=await getJSON('/api/dev-web/reports',{limit:500,status:reportState.status,cycle_key:reportState.cycleKey});
+    if(!reportState.cycleKey)reportState.cycleKey=d.cycle_key||'';
+    const items=reportFilter(d.items||[]);
+    currentReports=items;
+    if(!reportState.threadId&&items[0])reportState.threadId=items[0].id;
+    const counts=Object.entries(d.summary||{}).filter(([k,n])=>k!=='total'&&n).map(([s,n])=>`<span class="pill">${esc(statusLabel(s))} ${fmt(n)}</span>`).join('');
+    const cycleOptions=(d.cycles||[]).map(c=>option(c,c,reportState.cycleKey)).join('');
+    v.innerHTML=`<div class="section-head"><div><h2>Reports</h2></div><div class="meta-row">${counts}</div></div>
+      <div class="toolbar"><label>검색<input value="${esc(reportState.q)}" placeholder="domain, url, subject, recipient" oninput="reportState.q=this.value;scheduleFilter()"></label>
+      <label>주차<select onchange="reportState.cycleKey=this.value;reportState.threadId=null;renderReports()">${cycleOptions}${option('all','전체',reportState.cycleKey)}</select></label>
+      <label>상태<select onchange="reportState.status=this.value;reportState.threadId=null;renderReports()">${option('','전체 상태',reportState.status)}${REPORT_STATUSES.map(s=>option(s,statusLabel(s),reportState.status)).join('')}</select></label></div>
+      <div class="layout"><section class="panel"><table><thead><tr><th>Report</th><th>상태</th><th>심각도</th><th>수신자</th><th>Updated</th></tr></thead><tbody>${reportRows(items)||'<tr><td colspan="5" class="muted">리포트가 없습니다.</td></tr>'}</tbody></table></section>
+      <aside id="detail" class="panel detail"><p class="muted">Select a report.</p></aside></div>`;
+    if(reportState.threadId)detail(reportState.threadId,items);
+  }catch(e){v.innerHTML='<p class="muted">Load failed: '+esc(e)+'</p>'}
+}
+function detail(id,items){
+  reportState.threadId=Number(id);
+  const box=$('#detail');if(!box)return;
+  const row=(items||[]).find(x=>Number(x.id)===Number(id));
+  if(!row){box.innerHTML='<p class="muted">리포트를 찾을 수 없습니다.</p>';return}
+  const report=parseReportJson(row);
+  const html=report.html||report.report_html||row.report_html||'';
+  box.innerHTML=`<h2>${esc(row.domain)}</h2><div class="meta-row">${statusPill(row.status)}<span class="pill">${esc(severityLabel(row.severity))}</span>${tagPills(row.finding_tags)}</div>
+    <div class="kv"><b>URL</b><code>${esc(row.url)}</code><b>Subject</b><span>${esc(row.subject_tag||'-')}</span><b>Recipient</b><span>${esc(row.recipient||'-')}</span><b>Reason</b><span>${esc(row.last_reason||'-')}</span><b>Cycle</b><span>${esc(row.last_cycle_key||row.cycle_key||'-')}</span></div>
+    ${html?`<iframe sandbox="" srcdoc="${esc(html)}"></iframe>`:`<div class="pre">${esc(JSON.stringify(report,null,2)||'{}')}</div>`}`;
+}
+function render(){if(activeTab==='dash')renderDash();else if(activeTab==='targets')renderTargets();else renderReports()}
+setInterval(()=>{$('#clock').textContent=new Date().toLocaleString('ko-KR')},1000);
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+name: confluence_task_scan_report_todo
+description: |
+  Confluence tasking should use the high-level page/attachment scan and create
+  validation/deep-dive todos after report state is updated.
+task_type: operator
+user_input: "SEC space confluence에서 credential 문서 찾고 리포트랑 후속 todo까지 잡아줘"
+tool_stubs:
+  - name: confluence_task_scan
+    description: high-level Confluence scan
+    success_message: |
+      finding_count: 1
+      findings:
+        - task_type: confluence
+          asset: confluence:123/attachment/vpn.env
+          severity: high
+          report_updated: true
+  - name: todo
+    description: plan follow-up work
+    success_message: "todo updated"
+  - name: confluence_fetch_page
+    description: low-level page fetch
+    success_message: "page"
+script:
+  - reasoning: "Confluence 도메인은 high-level scan으로 page와 text attachment를 함께 본다."
+    tool_calls:
+      - name: confluence_task_scan
+        input:
+          space_keys: ["SEC"]
+  - reasoning: "finding은 report state에 반영됐으므로 owner/active 여부/deep dive todo를 만든다."
+    tool_calls:
+      - name: todo
+        input:
+          action: write
+          todos:
+            - id: "1"
+              content: "Validate Confluence credential reference and page owner"
+              status: pending
+            - id: "2"
+              content: "Deep-dive linked pages and attachments for repeated exposure"
+              status: pending
+  - text: "confluence_task_scan finding은 domain report에 반영됐고 검증/deep dive todo를 추가했습니다."
+expectations:
+  tools_called: ["confluence_task_scan", "todo"]
+  tools_not_called: ["confluence_fetch_page"]
+  final_text_contains: ["domain report", "todo"]
+  min_turns: 3

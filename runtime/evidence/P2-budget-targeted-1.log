@@ -1,0 +1,82 @@
+✔ budget runtime sqlite: child execution settles once across duplicate creation, reconciliation and reopen without copying evidence (58.198916ms)
+✖ budget runtime sqlite: parent remaining calls execute while escrow prevents parent and sibling over-allocation (10.136375ms)
+✔ budget runtime sqlite: concurrent sibling grants cannot oversubscribe one parent's remaining budget (7.361ms)
+✔ budget runtime sqlite: a child's last logical tool call is consumed by an actual dispatch and cannot be minted by a new task ID (32.477666ms)
+✔ budget runtime sqlite: actual model dispatch and reported tokens remain charged when its plan is rejected (65.368583ms)
+✔ budget runtime sqlite: a child token cap below the estimated reservation prevents durable model allocation and transport (23.800041ms)
+✔ budget runtime sqlite: revoking an unsent tool reservation fences the child and returns only unused escrow (10.271083ms)
+✔ budget runtime sqlite: revoking an unsent model reservation fences the child and returns only unused escrow (44.532875ms)
+✔ budget runtime sqlite: revoke retains an active model's unknown usage, then late accounting settles once without adopting its plan (66.319625ms)
+✔ budget runtime sqlite: unknown write effects keep the grant outstanding after revoke and restart (32.305917ms)
+✔ budget runtime sqlite: reported model overage is charged to the parent without clamping and prevents further funding (62.975083ms)
+✔ budget runtime sqlite: reducing limits preserves committed charges and child deadlines while blocking new grants (31.338708ms)
+✔ budget runtime sqlite: pending genesis cannot execute before funding (28.064375ms)
+✔ budget runtime sqlite: pending genesis cannot execute before funding and parent cancellation wins activation (7.703875ms)
+✔ budget runtime sqlite: child funding rejects broader authority, altered duplicate commands and work ID reattachment (6.298167ms)
+✔ budget runtime file-journal: child execution settles once across duplicate creation, reconciliation and reopen without copying evidence (232.612084ms)
+✖ budget runtime file-journal: parent remaining calls execute while escrow prevents parent and sibling over-allocation (75.479417ms)
+✔ budget runtime file-journal: concurrent sibling grants cannot oversubscribe one parent's remaining budget (86.04075ms)
+✔ budget runtime file-journal: a child's last logical tool call is consumed by an actual dispatch and cannot be minted by a new task ID (191.730875ms)
+✔ budget runtime file-journal: actual model dispatch and reported tokens remain charged when its plan is rejected (169.61175ms)
+✔ budget runtime file-journal: a child token cap below the estimated reservation prevents durable model allocation and transport (86.537791ms)
+✔ budget runtime file-journal: revoking an unsent tool reservation fences the child and returns only unused escrow (145.275375ms)
+✔ budget runtime file-journal: revoking an unsent model reservation fences the child and returns only unused escrow (160.605834ms)
+✔ budget runtime file-journal: revoke retains an active model's unknown usage, then late accounting settles once without adopting its plan (283.736459ms)
+✔ budget runtime file-journal: unknown write effects keep the grant outstanding after revoke and restart (221.720334ms)
+✔ budget runtime file-journal: reported model overage is charged to the parent without clamping and prevents further funding (214.597625ms)
+✔ budget runtime file-journal: reducing limits preserves committed charges and child deadlines while blocking new grants (187.290208ms)
+✔ budget runtime file-journal: pending genesis cannot execute before funding (156.312292ms)
+✔ budget runtime file-journal: pending genesis cannot execute before funding and parent cancellation wins activation (55.036375ms)
+✔ budget runtime file-journal: child funding rejects broader authority, altered duplicate commands and work ID reattachment (68.587667ms)
+✔ budget exposure: own usage and reservations add each dimension without charging elapsed time or unknown counts as tokens (0.911ms)
+✔ budget exposure: active and draining escrow count once even when the same child usage has already been observed (0.256125ms)
+✔ budget exposure: usage above allocation and outstanding reservations remain visible in independent dimensions (0.064833ms)
+✔ budget exposure: settling replaces escrow with accounted plus reserved amounts and repeated reads cannot refund twice (0.085333ms)
+✔ budget exposure: unknown and partially reported model usage keeps reserved tokens even on a settled summary (1.189417ms)
+✔ budget exposure: a lower parent limit preserves actual costs and reports each excess without negative remaining values (0.272291ms)
+✔ budget exposure: separate grants sum but duplicate IDs and duplicate child funding records are rejected (0.614208ms)
+✔ budget exposure: zero-funded grants remain explicit and cannot hide a later reported expense (0.064292ms)
+✔ budget exposure: max-safe totals are exact and overflow in local, grant, aggregate or combined arithmetic fails closed (0.274834ms)
+✔ budget exposure: fractional, negative, nonfinite, unsafe and missing values never become zero (0.431375ms)
+✔ budget exposure: grant schema keeps authority identity strict and requires a state revision for observed or settled accounting (0.435625ms)
+✔ budget exposure: parent links preserve pending, active and draining as different stored phases without conferring allocation authority (0.344ms)
+✔ budget exposure: empty and absent grant lists are equivalent while malformed and over-cap lists are rejected (32.352167ms)
+✔ budget exposure: projections and strict schema copies share no mutable vectors with the ledger (0.133375ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 42
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2932.058291
+
+✖ failing tests:
+
+test at dist/tests/budget-delegation-runtime.test.js:169:5
+✖ budget runtime sqlite: parent remaining calls execute while escrow prevents parent and sibling over-allocation (10.136375ms)
+  Error: stale_plan
+      at validatePlan (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/plan-validator.js:15:15)
+      at file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:101:27
+      at transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:18:28)
+      at async ExecutionRuntime.submitPlan (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:92:17)
+      at async Object.plan (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/budget-delegation-runtime.test.js:108:9)
+      at async file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/budget-delegation-runtime.test.js:172:13
+      at async use (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/budget-delegation-runtime.test.js:129:9)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/budget-delegation-runtime.test.js:170:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+
+test at dist/tests/budget-delegation-runtime.test.js:169:5
+✖ budget runtime file-journal: parent remaining calls execute while escrow prevents parent and sibling over-allocation (75.479417ms)
+  Error: stale_plan
+      at validatePlan (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/plan-validator.js:15:15)
+      at file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:101:27
+      at transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:18:28)
+      at async ExecutionRuntime.submitPlan (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:92:17)
+      at async Object.plan (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/budget-delegation-runtime.test.js:108:9)
+      at async file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/budget-delegation-runtime.test.js:172:13
+      at async use (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/budget-delegation-runtime.test.js:129:9)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/budget-delegation-runtime.test.js:170:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7)

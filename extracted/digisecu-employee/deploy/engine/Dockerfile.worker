@@ -1,0 +1,58 @@
+# 엔진(secu-agent)+도메인스킬(secu-agent-skill) 워커 이미지 — M3.4 실 타깃 claim 검증용.
+# 둘 다 무수정. build context = scratchpad에 engine/·skill/ read-only 복사(각 repo의 .venv 제외).
+# 도메인 능력은 두 env로 부착(secu-agent v3.85+): SA_PLUGINS=register_* 실행(미설정=rc2/generic degrade),
+# SA_SKILLS_DIRS=스킬 TaskPlan(smb_task/smb_report_mail/smb_reply_verify) 로드(미설정=도메인 능력 0).
+# non-root uid10001, readOnlyRootFS 지향.
+FROM python:3.12-slim
+
+# 사내 프록시 MITM CA 먼저(모든 네트워크 op 전).
+COPY corp-ca.crt /etc/ssl/certs/ca-certificates.crt
+ARG HTTP_PROXY=""
+ARG HTTPS_PROXY=""
+ARG NO_PROXY=""
+ENV HTTP_PROXY=$HTTP_PROXY HTTPS_PROXY=$HTTPS_PROXY NO_PROXY=$NO_PROXY \
+    http_proxy=$HTTP_PROXY https_proxy=$HTTPS_PROXY no_proxy=$NO_PROXY \
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
+    PIP_CERT=/etc/ssl/certs/ca-certificates.crt \
+    CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
+    NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt \
+    UV_SYSTEM_CERTS=true \
+    PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright \
+    UV_LINK_MODE=copy \
+    UV_PROJECT_ENVIRONMENT=/app/.venv \
+    PYTHONUNBUFFERED=1
+
+RUN pip install --no-cache-dir uv
+
+# github 도메인 스캔은 git CLI 로 repo clone → python:slim 에 없어 설치(빌드시 프록시/CA 경유).
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+# 엔진 의존성 레이어.
+COPY engine/pyproject.toml engine/uv.lock /app/
+COPY engine/src /app/src
+RUN uv sync --frozen --no-dev
+# psycopg(엔진 pyproject 미포함, state.py 무조건 import).
+RUN uv pip install --python /app/.venv/bin/python "psycopg[binary,pool]==3.3.4"
+COPY engine/config /app/config
+
+# 도메인 스킬 설치(SMB extra=impacket+beautifulsoup4). SA_PLUGINS는 소스 bootstrap.py 경로를 가리킨다.
+COPY skill /skill
+RUN uv pip install --python /app/.venv/bin/python "/skill[smb]"
+
+# playwright chromium 프리베이크.
+RUN uv run playwright install --with-deps chromium
+
+RUN useradd -u 10001 -m -s /usr/sbin/nologin engine \
+ && mkdir -p /results \
+ && chown -R 10001:10001 /results /app /opt/ms-playwright /skill
+
+USER 10001
+# SA_SKILLS_DIRS: SMB 워커 기본값(=설치된 [smb] extra 도메인). 다도메인 워커는 파드 env로 override
+# (pathsep/콤마 리스트, 예: /skill/domains/smb/skills:/skill/domains/dev_web/skills — 없는 경로는 warn+skip).
+ENV SA_RESULTS_DIR=/results \
+    HOME=/home/engine \
+    SA_PLUGINS=/skill/plugin/bootstrap.py \
+    SA_SKILLS_DIRS=/skill/domains/smb/skills
+ENTRYPOINT ["/app/.venv/bin/secu-agent"]

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "kind": "C03-D3-guide-updater-static-link-diagnosis",
+  "recordedAt": "2026-09-07T04:07:18.468Z",
+  "initialExecution": {
+    "observedBy": "root",
+    "exitCode": 1,
+    "stage": "prewrite_static_link_check",
+    "guideWritten": false,
+    "error": "ENOENT on an executable JavaScript href template mistaken for a static local file path",
+    "fullStderrCapturedHere": false
+  },
+  "before": {
+    "updaterPath": "runtime/evidence/C03-migration-update-guide.mjs",
+    "updaterSha256": "988101d5da6fe48d591fad0776089ee0b58793b56a30120797533365ead00611",
+    "guidePath": "design/secumon-review.html",
+    "guideSha256": "91430d53400dfb73822fec23c110cbce91a637ded13e67b31edae8ef51344c05",
+    "d3MarkerPresent": false,
+    "proofPath": "runtime/evidence/C03-migration-verification.json",
+    "proofSha256": "be2c2687e8dff55efe55949eb9bcc9f4d06f1604d556031fb838e240bf6ae17a"
+  },
+  "staticDiagnosis": {
+    "falseHrefValues": [
+      "../'+esc(p)+'"
+    ],
+    "cause": "The href regex scanned complete HTML including executable script bodies containing generated link templates.",
+    "intendedCorrection": "Exclude script bodies before static markup href checks. Keep parsed module file/doc checks and all actual local static href checks."
+  },
+  "preservedRootEdit": "실제 모델/API 시험은 중단 상태이며 사내 서비스 연동은 미검증이다.",
+  "productSourceChanged": false,
+  "testsExecuted": false,
+  "browserExecuted": false,
+  "sshExecuted": false
+}

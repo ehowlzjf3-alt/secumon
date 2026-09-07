@@ -1,0 +1,1251 @@
+TAP version 13
+# Subtest: file-journal agents separate identical work IDs, events and historical receipts across reopen
+ok 1 - file-journal agents separate identical work IDs, events and historical receipts across reopen
+  ---
+  duration_ms: 432.3825
+  type: 'test'
+  ...
+# Subtest: file-journal state keeps private memory and channel messages in separately owned SQLite databases
+ok 2 - file-journal state keeps private memory and channel messages in separately owned SQLite databases
+  ---
+  duration_ms: 459.310625
+  type: 'test'
+  ...
+# Subtest: a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+ok 3 - a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+  ---
+  duration_ms: 480.703541
+  type: 'test'
+  ...
+# Subtest: copying another agents complete journal is rejected before binding a new backend marker
+not ok 4 - copying another agents complete journal is rejected before binding a new backend marker
+  ---
+  duration_ms: 326.976958
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:236:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          kind: 'directory',
+          mode: 448,
+          path: ''
+    ...
+        {
+    +     kind: 'directory',
+    +     mode: 448,
+    +     path: '.secumon/runtime-leases'
+    +   },
+    +   {
+          kind: 'file',
+          mode: 384,
+          path: '.secumon/setup-operation.json',
+          sha256: '4886a9e7f33609f49ebce9f6ba1e9dba6527d5435d1b8f131d8779c25e000251'
+        },
+    ...
+          mode: 384,
+    +     path: '.secumon/storage-selection.json',
+    +     sha256: '1785ead8946625c0e0940236d6e11f51cd7db24610ed63ef37442d19d5374b64'
+    +   },
+    +   {
+    +     kind: 'file',
+    +     mode: 384,
+          path: 'config.json',
+          sha256: '781281d791e9f1cf375eafd1035dd924f947967beecd9e10c1780168722b6de8'
+        },
+        {
+          kind: 'directory',
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'e46674388c322a95bfc85e95bc692a7aec2515c9a16af2f959f9afc47ac7b2ee'
+    4:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '4886a9e7f33609f49ebce9f6ba1e9dba6527d5435d1b8f131d8779c25e000251'
+    5:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: '9f8fe050a0c954268b5bca148ac1163b60d13fdbdba5258485137b9ddcd2f88b'
+    6:
+      path: '.secumon/state-journal'
+      kind: 'directory'
+      mode: 448
+    7:
+      path: '.secumon/state-journal/ccda6b6cd6fcd44730217d1f9e09a8badcc41fbb142db1b8bc5f243345460a4a'
+      kind: 'directory'
+      mode: 448
+    8:
+      path: '.secumon/state-journal/ccda6b6cd6fcd44730217d1f9e09a8badcc41fbb142db1b8bc5f243345460a4a/0000000000000001.json'
+      kind: 'file'
+      mode: 384
+      sha256: '764500f58b15fea0db246d1c46fed4d99fd07b9ddeede3e054a0970925fb8fb7'
+    9:
+      path: '.secumon/state-journal/format.json'
+      kind: 'file'
+      mode: 384
+      sha256: '68e43a3b03ce3215f23a5a6513f70b40f4a64327a608c629bdda8037b55bf526'
+    10:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: '781281d791e9f1cf375eafd1035dd924f947967beecd9e10c1780168722b6de8'
+    11:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    12:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    13:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  actual:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'e46674388c322a95bfc85e95bc692a7aec2515c9a16af2f959f9afc47ac7b2ee'
+    4:
+      path: '.secumon/runtime-leases'
+      kind: 'directory'
+      mode: 448
+    5:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '4886a9e7f33609f49ebce9f6ba1e9dba6527d5435d1b8f131d8779c25e000251'
+    6:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: '9f8fe050a0c954268b5bca148ac1163b60d13fdbdba5258485137b9ddcd2f88b'
+    7:
+      path: '.secumon/state-journal'
+      kind: 'directory'
+      mode: 448
+    8:
+      path: '.secumon/state-journal/ccda6b6cd6fcd44730217d1f9e09a8badcc41fbb142db1b8bc5f243345460a4a'
+      kind: 'directory'
+      mode: 448
+    9:
+      path: '.secumon/state-journal/ccda6b6cd6fcd44730217d1f9e09a8badcc41fbb142db1b8bc5f243345460a4a/0000000000000001.json'
+      kind: 'file'
+      mode: 384
+      sha256: '764500f58b15fea0db246d1c46fed4d99fd07b9ddeede3e054a0970925fb8fb7'
+    10:
+      path: '.secumon/state-journal/format.json'
+      kind: 'file'
+      mode: 384
+      sha256: '68e43a3b03ce3215f23a5a6513f70b40f4a64327a608c629bdda8037b55bf526'
+    11:
+      path: '.secumon/storage-selection.json'
+      kind: 'file'
+      mode: 384
+      sha256: '1785ead8946625c0e0940236d6e11f51cd7db24610ed63ef37442d19d5374b64'
+    12:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: '781281d791e9f1cf375eafd1035dd924f947967beecd9e10c1780168722b6de8'
+    13:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    14:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    15:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:255:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: file-journal selection does not bypass foreign memory or channel SQLite ownership
+ok 5 - file-journal selection does not bypass foreign memory or channel SQLite ownership
+  ---
+  duration_ms: 811.836584
+  type: 'test'
+  ...
+# Subtest: empty and populated legacy v1 journals are not automatically adopted by an agent
+not ok 6 - empty and populated legacy v1 journals are not automatically adopted by an agent
+  ---
+  duration_ms: 221.216
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:290:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          kind: 'directory',
+          mode: 448,
+          path: ''
+    ...
+        {
+    +     kind: 'directory',
+    +     mode: 448,
+    +     path: '.secumon/runtime-leases'
+    +   },
+    +   {
+          kind: 'file',
+          mode: 384,
+          path: '.secumon/setup-operation.json',
+          sha256: '82c12a2a6737edf912cf2bb76395f0b58fed1aa3133100dfe5f6c2553880adb0'
+        },
+    ...
+          mode: 384,
+    +     path: '.secumon/storage-selection.json',
+    +     sha256: '4e8deadb1cb1d9c1edfa34fa86f1c17f7ac252a93deafbeeccdaa9f1e1195f1d'
+    +   },
+    +   {
+    +     kind: 'file',
+    +     mode: 384,
+          path: 'config.json',
+          sha256: 'fb7d37a878e3f868a78ae2d4335f117f4783b1c51cfa340a732bfbc05337bd5d'
+        },
+        {
+          kind: 'directory',
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'f98908362be91a4c3f2d947272102946aee45428ccf49ab08b3b8d3998bfee74'
+    4:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '82c12a2a6737edf912cf2bb76395f0b58fed1aa3133100dfe5f6c2553880adb0'
+    5:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'c3d8665cdf1c232c71d9fdbf8f8f07249b8e909ef5b565014d4d6791b550859a'
+    6:
+      path: '.secumon/state-journal'
+      kind: 'directory'
+      mode: 448
+    7:
+      path: '.secumon/state-journal/format.json'
+      kind: 'file'
+      mode: 384
+      sha256: '1e5dd726029ef8475108c8f055206bcb3b6733a622482d3e99bf792f34216050'
+    8:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'fb7d37a878e3f868a78ae2d4335f117f4783b1c51cfa340a732bfbc05337bd5d'
+    9:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    10:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    11:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  actual:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'f98908362be91a4c3f2d947272102946aee45428ccf49ab08b3b8d3998bfee74'
+    4:
+      path: '.secumon/runtime-leases'
+      kind: 'directory'
+      mode: 448
+    5:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '82c12a2a6737edf912cf2bb76395f0b58fed1aa3133100dfe5f6c2553880adb0'
+    6:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'c3d8665cdf1c232c71d9fdbf8f8f07249b8e909ef5b565014d4d6791b550859a'
+    7:
+      path: '.secumon/state-journal'
+      kind: 'directory'
+      mode: 448
+    8:
+      path: '.secumon/state-journal/format.json'
+      kind: 'file'
+      mode: 384
+      sha256: '1e5dd726029ef8475108c8f055206bcb3b6733a622482d3e99bf792f34216050'
+    9:
+      path: '.secumon/storage-selection.json'
+      kind: 'file'
+      mode: 384
+      sha256: '4e8deadb1cb1d9c1edfa34fa86f1c17f7ac252a93deafbeeccdaa9f1e1195f1d'
+    10:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'fb7d37a878e3f868a78ae2d4335f117f4783b1c51cfa340a732bfbc05337bd5d'
+    11:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    12:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    13:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:307:20)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: changing config between SQLite and file-journal never creates a replacement state store
+ok 7 - changing config between SQLite and file-journal never creates a replacement state store
+  ---
+  duration_ms: 737.436917
+  type: 'test'
+  ...
+# Subtest: an owned legacy SQLite agent gains only its backend marker and preserves historical data
+ok 8 - an owned legacy SQLite agent gains only its backend marker and preserves historical data
+  ---
+  duration_ms: 345.438542
+  type: 'test'
+  ...
+# Subtest: an unowned legacy SQLite database is preserved without creating a backend marker
+not ok 9 - an unowned legacy SQLite database is preserved without creating a backend marker
+  ---
+  duration_ms: 215.566709
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:377:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          kind: 'directory',
+          mode: 448,
+          path: ''
+    ...
+        {
+    +     kind: 'directory',
+    +     mode: 448,
+    +     path: '.secumon/runtime-leases'
+    +   },
+    +   {
+          kind: 'file',
+          mode: 384,
+          path: '.secumon/runtime.sqlite',
+          sha256: '2483f50288720a6b6c2d1e6216dab8c0c2eaa248dabfc23c9527f0ad3243324d'
+        },
+    ...
+          mode: 384,
+    +     path: '.secumon/storage-selection.json',
+    +     sha256: '4e0c05d8563f867a8da3c66741f1ee2baf60ff0154fc45eeb2cb320613cdb8d2'
+    +   },
+    +   {
+    +     kind: 'file',
+    +     mode: 384,
+          path: 'config.json',
+          sha256: '30e4a58b7b4f6890bace515c894d6f128a246bbbba5f1cbb0ebd707cf938c934'
+        },
+        {
+          kind: 'directory',
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: '215953078045aad95fa9dce2cd3ec2ea9cb6f011e92b05f7d6429b7c83841509'
+    4:
+      path: '.secumon/runtime.sqlite'
+      kind: 'file'
+      mode: 384
+      sha256: '2483f50288720a6b6c2d1e6216dab8c0c2eaa248dabfc23c9527f0ad3243324d'
+    5:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '3f136d74d964152e2d3fb6db02706834c61864128037ecc60adb06366f48382a'
+    6:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: '6d8ae8e22e215695e32320cee9fb3298c4011d93a43326827a5b0da7e509b73d'
+    7:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: '30e4a58b7b4f6890bace515c894d6f128a246bbbba5f1cbb0ebd707cf938c934'
+    8:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    9:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    10:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  actual:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: '215953078045aad95fa9dce2cd3ec2ea9cb6f011e92b05f7d6429b7c83841509'
+    4:
+      path: '.secumon/runtime-leases'
+      kind: 'directory'
+      mode: 448
+    5:
+      path: '.secumon/runtime.sqlite'
+      kind: 'file'
+      mode: 384
+      sha256: '2483f50288720a6b6c2d1e6216dab8c0c2eaa248dabfc23c9527f0ad3243324d'
+    6:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '3f136d74d964152e2d3fb6db02706834c61864128037ecc60adb06366f48382a'
+    7:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: '6d8ae8e22e215695e32320cee9fb3298c4011d93a43326827a5b0da7e509b73d'
+    8:
+      path: '.secumon/storage-selection.json'
+      kind: 'file'
+      mode: 384
+      sha256: '4e0c05d8563f867a8da3c66741f1ee2baf60ff0154fc45eeb2cb320613cdb8d2'
+    9:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: '30e4a58b7b4f6890bace515c894d6f128a246bbbba5f1cbb0ebd707cf938c934'
+    10:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    11:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    12:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:392:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: copying another agents backend marker is rejected before creating any state or private databases
+not ok 10 - copying another agents backend marker is rejected before creating any state or private databases
+  ---
+  duration_ms: 335.2275
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:406:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          kind: 'directory',
+          mode: 448,
+          path: ''
+    ...
+        {
+    +     kind: 'directory',
+    +     mode: 448,
+    +     path: '.secumon/runtime-leases'
+    +   },
+    +   {
+          kind: 'file',
+          mode: 384,
+          path: '.secumon/setup-operation.json',
+          sha256: '74b7bd4c34db989e313659cc2eff6b0d01f6320df8f42b27b492a7effe118e72'
+        },
+    ...
+          mode: 384,
+    +     path: '.secumon/storage-selection.json',
+    +     sha256: 'e6ae367325c16e23af69b8e91ed2daa599ba9e87ea25b838ce46a3585fb0840d'
+    +   },
+    +   {
+    +     kind: 'file',
+    +     mode: 384,
+          path: 'config.json',
+          sha256: '30e48928861d7f9a52d3555e5b097c034b33a199b083764a5401d2e309a41b66'
+        },
+        {
+          kind: 'directory',
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: '8a1afb5f7145e7d416dc85ee06a1d160b967111d679069649bccfb5fd2b25df7'
+    4:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '74b7bd4c34db989e313659cc2eff6b0d01f6320df8f42b27b492a7effe118e72'
+    5:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'b563aff2cf90afd6b9305ee8f094b7b03f39cbb38c6a7a9c1074c80f45c69035'
+    6:
+      path: '.secumon/state-profile.json'
+      kind: 'file'
+      mode: 384
+      sha256: '6f0cc0b20d082eff7ac7190cae2574507292ffb427348dded893f0d31e04cfef'
+    7:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: '30e48928861d7f9a52d3555e5b097c034b33a199b083764a5401d2e309a41b66'
+    8:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    9:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    10:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  actual:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: '8a1afb5f7145e7d416dc85ee06a1d160b967111d679069649bccfb5fd2b25df7'
+    4:
+      path: '.secumon/runtime-leases'
+      kind: 'directory'
+      mode: 448
+    5:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '74b7bd4c34db989e313659cc2eff6b0d01f6320df8f42b27b492a7effe118e72'
+    6:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'b563aff2cf90afd6b9305ee8f094b7b03f39cbb38c6a7a9c1074c80f45c69035'
+    7:
+      path: '.secumon/state-profile.json'
+      kind: 'file'
+      mode: 384
+      sha256: '6f0cc0b20d082eff7ac7190cae2574507292ffb427348dded893f0d31e04cfef'
+    8:
+      path: '.secumon/storage-selection.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'e6ae367325c16e23af69b8e91ed2daa599ba9e87ea25b838ce46a3585fb0840d'
+    9:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: '30e48928861d7f9a52d3555e5b097c034b33a199b083764a5401d2e309a41b66'
+    10:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    11:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    12:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:417:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: malformed, unsupported or linked backend markers cannot initialize state stores
+not ok 11 - malformed, unsupported or linked backend markers cannot initialize state stores
+  ---
+  duration_ms: 220.894666
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:423:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          kind: 'directory',
+          mode: 448,
+          path: ''
+    ...
+        {
+    +     kind: 'directory',
+    +     mode: 448,
+    +     path: '.secumon/runtime-leases'
+    +   },
+    +   {
+          kind: 'file',
+          mode: 384,
+          path: '.secumon/setup-operation.json',
+          sha256: '0c8767c8e12d44e6c09eeba18f9ff89581dabdc8dc8cc2cddfe9bde9fda76a1e'
+        },
+    ...
+          mode: 384,
+    +     path: '.secumon/storage-selection.json',
+    +     sha256: '8dfacdf841db35d41c1e41d88a434b230fbae1c5882941d3505c7797b31bdd22'
+    +   },
+    +   {
+    +     kind: 'file',
+    +     mode: 384,
+          path: 'config.json',
+          sha256: '177b0245a4e37933d2e280bbe13a75b0a1e4e9b0cd4b222b034943a7037c5e06'
+        },
+        {
+          kind: 'directory',
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'cb0ec6a8f4b48b212dc1cf900175765125e96ba2accae5824cc71e3a17ec7b95'
+    4:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '0c8767c8e12d44e6c09eeba18f9ff89581dabdc8dc8cc2cddfe9bde9fda76a1e'
+    5:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: '7c453c2f85679539982ddf6698e660724d8e2f5fe77bbe12bcc39f5789d09393'
+    6:
+      path: '.secumon/state-profile.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73'
+    7:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: '177b0245a4e37933d2e280bbe13a75b0a1e4e9b0cd4b222b034943a7037c5e06'
+    8:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    9:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    10:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  actual:
+    0:
+      path: ''
+      kind: 'directory'
+      mode: 448
+    1:
+      path: '.secumon'
+      kind: 'directory'
+      mode: 448
+    2:
+      path: '.secumon/artifacts'
+      kind: 'directory'
+      mode: 448
+    3:
+      path: '.secumon/identity.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'cb0ec6a8f4b48b212dc1cf900175765125e96ba2accae5824cc71e3a17ec7b95'
+    4:
+      path: '.secumon/runtime-leases'
+      kind: 'directory'
+      mode: 448
+    5:
+      path: '.secumon/setup-operation.json'
+      kind: 'file'
+      mode: 384
+      sha256: '0c8767c8e12d44e6c09eeba18f9ff89581dabdc8dc8cc2cddfe9bde9fda76a1e'
+    6:
+      path: '.secumon/setup.json'
+      kind: 'file'
+      mode: 384
+      sha256: '7c453c2f85679539982ddf6698e660724d8e2f5fe77bbe12bcc39f5789d09393'
+    7:
+      path: '.secumon/state-profile.json'
+      kind: 'file'
+      mode: 384
+      sha256: 'be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73'
+    8:
+      path: '.secumon/storage-selection.json'
+      kind: 'file'
+      mode: 384
+      sha256: '8dfacdf841db35d41c1e41d88a434b230fbae1c5882941d3505c7797b31bdd22'
+    9:
+      path: 'config.json'
+      kind: 'file'
+      mode: 384
+      sha256: '177b0245a4e37933d2e280bbe13a75b0a1e4e9b0cd4b222b034943a7037c5e06'
+    10:
+      path: 'memory'
+      kind: 'directory'
+      mode: 448
+    11:
+      path: 'skills'
+      kind: 'directory'
+      mode: 448
+    12:
+      path: 'workspace'
+      kind: 'directory'
+      mode: 448
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:441:20)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+ok 12 - ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+  ---
+  duration_ms: 322.505042
+  type: 'test'
+  ...
+# Subtest: concurrent CLI first storage opens retain one agent, backend selection and journal identity
+ok 13 - concurrent CLI first storage opens retain one agent, backend selection and journal identity
+  ---
+  duration_ms: 959.686458
+  type: 'test'
+  ...
+# Subtest: clone creates a fresh identity while preserving reusable configuration and the original files
+ok 14 - clone creates a fresh identity while preserving reusable configuration and the original files
+  ---
+  duration_ms: 159.575875
+  type: 'test'
+  ...
+# Subtest: clone copies skill bytes, nested empty directories and executable bits without linking source files
+ok 15 - clone copies skill bytes, nested empty directories and executable bits without linking source files
+  ---
+  duration_ms: 194.484958
+  type: 'test'
+  ...
+# Subtest: clone starts with independent empty stores despite source work, memory, conversation and artifacts
+ok 16 - clone starts with independent empty stores despite source work, memory, conversation and artifacts
+  ---
+  duration_ms: 435.151
+  type: 'test'
+  ...
+# Subtest: ordinary clone never overwrites an existing empty, populated or initialized destination
+ok 17 - ordinary clone never overwrites an existing empty, populated or initialized destination
+  ---
+  duration_ms: 159.053167
+  type: 'test'
+  ...
+# Subtest: clone rejects source overlap, nested agents and engine destinations without changing either tree
+ok 18 - clone rejects source overlap, nested agents and engine destinations without changing either tree
+  ---
+  duration_ms: 80.233666
+  type: 'test'
+  ...
+# Subtest: clone rejects missing or malformed sources and invalid options without creating a destination
+ok 19 - clone rejects missing or malformed sources and invalid options without creating a destination
+  ---
+  duration_ms: 79.928375
+  type: 'test'
+  ...
+# Subtest: clone rejects skill file and directory symlinks without modifying their outside targets
+ok 20 - clone rejects skill file and directory symlinks without modifying their outside targets
+  ---
+  duration_ms: 81.880458
+  type: 'test'
+  ...
+# Subtest: clone rejects hard-linked skill files and leaves both links unchanged
+ok 21 - clone rejects hard-linked skill files and leaves both links unchanged
+  ---
+  duration_ms: 80.937916
+  type: 'test'
+  ...
+# Subtest: clone rejects a POSIX FIFO skill instead of blocking on its contents
+ok 22 - clone rejects a POSIX FIFO skill instead of blocking on its contents
+  ---
+  duration_ms: 169.057292
+  type: 'test'
+  ...
+# Subtest: clone permits a four-MiB skill file and rejects a file exceeding that limit
+ok 23 - clone permits a four-MiB skill file and rejects a file exceeding that limit
+  ---
+  duration_ms: 171.504625
+  type: 'test'
+  ...
+# Subtest: clone enforces snapshot entry, total-byte and directory-depth limits
+ok 24 - clone enforces snapshot entry, total-byte and directory-depth limits
+  ---
+  duration_ms: 290.496833
+  type: 'test'
+  ...
+# Subtest: pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+ok 25 - pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+  ---
+  duration_ms: 332.807125
+  type: 'test'
+  ...
+# Subtest: pending clone preserves target file conflicts instead of overwriting or accepting them
+ok 26 - pending clone preserves target file conflicts instead of overwriting or accepting them
+  ---
+  duration_ms: 375.249292
+  type: 'test'
+  ...
+# Subtest: finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+ok 27 - finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+  ---
+  duration_ms: 186.743584
+  type: 'test'
+  ...
+# Subtest: CLI clone reports the new ready profile and supports explicit completed-clone resume
+ok 28 - CLI clone reports the new ready profile and supports explicit completed-clone resume
+  ---
+  duration_ms: 626.194542
+  type: 'test'
+  ...
+# Subtest: unregistered inspection creates neither registry parents nor an agent registration
+ok 29 - unregistered inspection creates neither registry parents nor an agent registration
+  ---
+  duration_ms: 77.584708
+  type: 'test'
+  ...
+# Subtest: claim and same-object reopen preserve original data and the immutable registration
+ok 30 - claim and same-object reopen preserve original data and the immutable registration
+  ---
+  duration_ms: 91.112083
+  type: 'test'
+  ...
+# Subtest: renaming the same directory permits a new claim while invalidating the old path claim
+ok 31 - renaming the same directory permits a new claim while invalidating the old path claim
+  ---
+  duration_ms: 104.076166
+  type: 'test'
+  ...
+# Subtest: a full folder copy can inspect the old head but cannot claim it or alter either source
+ok 32 - a full folder copy can inspect the old head but cannot claim it or alter either source
+  ---
+  duration_ms: 102.732209
+  type: 'test'
+  ...
+# Subtest: two processes claiming the same unregistered object share the one actual CAS winner
+ok 33 - two processes claiming the same unregistered object share the one actual CAS winner
+  ---
+  duration_ms: 211.50275
+  type: 'test'
+  ...
+# Subtest: two processes claiming copied objects admit only the actual no-replace winner
+ok 34 - two processes claiming copied objects admit only the actual no-replace winner
+  ---
+  duration_ms: 192.844541
+  type: 'test'
+  ...
+# Subtest: a corrupted registration is preserved and rejects inspection, claim and the held claim
+ok 35 - a corrupted registration is preserved and rejects inspection, claim and the held claim
+  ---
+  duration_ms: 85.05225
+  type: 'test'
+  ...
+# Subtest: a missing sequence is rejected without repairing or adopting the remaining record
+ok 36 - a missing sequence is rejected without repairing or adopting the remaining record
+  ---
+  duration_ms: 90.844959
+  type: 'test'
+  ...
+# Subtest: replacing the held registration object with identical bytes fails its current check
+ok 37 - replacing the held registration object with identical bytes fails its current check
+  ---
+  duration_ms: 91.7755
+  type: 'test'
+  ...
+# Subtest: replacing the held identity file with identical bytes cannot retain its source binding
+ok 38 - replacing the held identity file with identical bytes cannot retain its source binding
+  ---
+  duration_ms: 98.05475
+  type: 'test'
+  ...
+# Subtest: the same agent ID with a different creation identity cannot reuse an existing registration
+ok 39 - the same agent ID with a different creation identity cannot reuse an existing registration
+  ---
+  duration_ms: 108.453709
+  type: 'test'
+  ...
+# Subtest: registry, agent and engine overlap is rejected in either direction before a write
+ok 40 - registry, agent and engine overlap is rejected in either direction before a write
+  ---
+  duration_ms: 74.044917
+  type: 'test'
+  ...
+# Subtest: the real clone operation receives a new ID and an independent first registration
+ok 41 - the real clone operation receives a new ID and an independent first registration
+  ---
+  duration_ms: 194.426958
+  type: 'test'
+  ...
+# Subtest: sqlite: a verified local restore needs explicit rebind before stores reopen with all original records
+ok 42 - sqlite: a verified local restore needs explicit rebind before stores reopen with all original records
+  ---
+  duration_ms: 560.521458
+  type: 'test'
+  ...
+# Subtest: file-journal: a verified local restore needs explicit rebind before stores reopen with all original records
+ok 43 - file-journal: a verified local restore needs explicit rebind before stores reopen with all original records
+  ---
+  duration_ms: 630.42975
+  type: 'test'
+  ...
+# Subtest: rebind rejects the wrong expected head, backup, operation, and missing offline confirmation without changing registration
+ok 44 - rebind rejects the wrong expected head, backup, operation, and missing offline confirmation without changing registration
+  ---
+  duration_ms: 515.220208
+  type: 'test'
+  ...
+# Subtest: a pending restore marker prevents rebind even when a matching completion marker exists
+ok 45 - a pending restore marker prevents rebind even when a matching completion marker exists
+  ---
+  duration_ms: 480.249625
+  type: 'test'
+  ...
+# Subtest: an older restore without a completion marker is preserved and cannot manufacture rebind authority
+ok 46 - an older restore without a completion marker is preserved and cannot manufacture rebind authority
+  ---
+  duration_ms: 477.082583
+  type: 'test'
+  ...
+# Subtest: a real live runtime lease blocks restore rebind and is neither deleted nor taken over
+ok 47 - a real live runtime lease blocks restore rebind and is neither deleted nor taken over
+  ---
+  duration_ms: 514.701459
+  type: 'test'
+  ...
+# Subtest: same-operation rebind retry is idempotent and does not authorize another copy or the preserved old object
+ok 48 - same-operation rebind retry is idempotent and does not authorize another copy or the preserved old object
+  ---
+  duration_ms: 688.889125
+  type: 'test'
+  ...
+# Subtest: changed restored bytes are not accepted solely on the completion marker
+ok 49 - changed restored bytes are not accepted solely on the completion marker
+  ---
+  duration_ms: 469.116375
+  type: 'test'
+  ...
+# Subtest: changed archive originals are rejected and retained instead of trusting only the saved digest field
+ok 50 - changed archive originals are rejected and retained instead of trusting only the saved digest field
+  ---
+  duration_ms: 495.236667
+  type: 'test'
+  ...
+# Subtest: agent setup preserves files, creates private identity/config and reopens without a model
+ok 51 - agent setup preserves files, creates private identity/config and reopens without a model
+  ---
+  duration_ms: 74.143084
+  type: 'test'
+  ...
+# Subtest: status and invalid initialization options do not create files
+ok 52 - status and invalid initialization options do not create files
+  ---
+  duration_ms: 0.8465
+  type: 'test'
+  ...
+# Subtest: separate directories get distinct IDs and moving a directory preserves its identity
+ok 53 - separate directories get distinct IDs and moving a directory preserves its identity
+  ---
+  duration_ms: 139.843708
+  type: 'test'
+  ...
+# Subtest: initialization can finish after a process stops between identity and config publication
+ok 54 - initialization can finish after a process stops between identity and config publication
+  ---
+  duration_ms: 107.945375
+  type: 'test'
+  ...
+# Subtest: missing identity uses explicit repair with the existing config; missing completed config is not reset
+ok 55 - missing identity uses explicit repair with the existing config; missing completed config is not reset
+  ---
+  duration_ms: 96.597792
+  type: 'test'
+  ...
+# Subtest: completed layout repairs missing directories only with explicit repair and preserves existing state
+ok 56 - completed layout repairs missing directories only with explicit repair and preserves existing state
+  ---
+  duration_ms: 88.521667
+  type: 'test'
+  ...
+# Subtest: unknown data without identity is not assigned a new ID
+ok 57 - unknown data without identity is not assigned a new ID
+  ---
+  duration_ms: 2.764584
+  type: 'test'
+  ...
+# Subtest: config identity mismatch, unsupported versions and malformed documents are preserved
+ok 58 - config identity mismatch, unsupported versions and malformed documents are preserved
+  ---
+  duration_ms: 71.098167
+  type: 'test'
+  ...
+# Subtest: metadata symlinks and external hard links cannot be used for setup
+ok 59 - metadata symlinks and external hard links cannot be used for setup
+  ---
+  duration_ms: 72.7625
+  type: 'test'
+  ...
+# Subtest: managed directory links and writable/public metadata are rejected without changing permissions
+ok 60 - managed directory links and writable/public metadata are rejected without changing permissions
+  ---
+  duration_ms: 75.369959
+  type: 'test'
+  ...
+# Subtest: engine overlap and nested agent registration are rejected
+ok 61 - engine overlap and nested agent registration are rejected
+  ---
+  duration_ms: 84.254959
+  type: 'test'
+  ...
+# Subtest: CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+ok 62 - CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+  ---
+  duration_ms: 467.073792
+  type: 'test'
+  ...
+# Subtest: separate CLI processes initializing concurrently settle on exactly one identity
+not ok 63 - separate CLI processes initializing concurrently settle on exactly one identity
+  ---
+  duration_ms: 482.901459
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-profile.test.js:215:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    concurrent_initialization_failed
+    Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-H6ayEh/agent --json
+    agent_host_identity_publication_incomplete
+    
+    Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-H6ayEh/agent --json
+    agent_host_identity_publication_incomplete
+    
+    Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-H6ayEh/agent --json
+    agent_host_identity_publication_incomplete
+    
+    Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-H6ayEh/agent --json
+    agent_host_identity_publication_incomplete
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'AggregateError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-profile.test.js:221:19)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+ok 64 - two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+  ---
+  duration_ms: 409.874083
+  type: 'test'
+  ...
+# Subtest: agent work files cannot traverse into engine or another agent and remain separate
+ok 65 - agent work files cannot traverse into engine or another agent and remain separate
+  ---
+  duration_ms: 409.44525
+  type: 'test'
+  ...
+# Subtest: copying another agents database is detected by its durable owner before runtime access
+ok 66 - copying another agents database is detected by its durable owner before runtime access
+  ---
+  duration_ms: 406.680916
+  type: 'test'
+  ...
+# Subtest: unowned existing databases are not silently adopted
+ok 67 - unowned existing databases are not silently adopted
+  ---
+  duration_ms: 199.407166
+  type: 'test'
+  ...
+# Subtest: symlink database and sidecar destinations cannot overwrite another file
+ok 68 - symlink database and sidecar destinations cannot overwrite another file
+  ---
+  duration_ms: 228.497542
+  type: 'test'
+  ...
+# Subtest: changing config after SQLite initialization cannot replace it with an empty journal
+ok 69 - changing config after SQLite initialization cannot replace it with an empty journal
+  ---
+  duration_ms: 281.105708
+  type: 'test'
+  ...
+1..69
+# tests 69
+# suites 0
+# pass 63
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19802.783375

@@ -1,0 +1,47 @@
+name: github_task_scan_report_todo
+description: |
+  GitHub tasking should start with the high-level scan tool, treat report state
+  as updated by the tool, and continue with validation/deep-dive todos.
+task_type: operator
+user_input: "platform org github에서 secret finding 있으면 리포트 반영하고 후속 todo까지 잡아줘"
+tool_stubs:
+  - name: github_task_scan
+    description: high-level GitHub scan
+    success_message: |
+      finding_count: 1
+      findings:
+        - task_type: github
+          asset: github:platform/api/.env
+          severity: high
+          report_updated: true
+  - name: todo
+    description: plan follow-up work
+    success_message: "todo updated"
+  - name: gh_fetch_blob
+    description: low-level blob fetch
+    success_message: "blob"
+script:
+  - reasoning: "GitHub 도메인은 high-level scan으로 시작한다."
+    tool_calls:
+      - name: github_task_scan
+        input:
+          org: "platform"
+          repo_limit: 20
+  - reasoning: "finding은 이미 report state에 반영됐으므로 검증/deep dive todo를 추가한다."
+    tool_calls:
+      - name: todo
+        input:
+          action: write
+          todos:
+            - id: "1"
+              content: "Validate whether github:platform/api/.env token is live or example-only"
+              status: pending
+            - id: "2"
+              content: "Deep-dive sibling repos and credential rotation scope"
+              status: pending
+  - text: "github_task_scan finding은 domain report에 반영됐고 검증/deep dive todo를 추가했습니다."
+expectations:
+  tools_called: ["github_task_scan", "todo"]
+  tools_not_called: ["gh_fetch_blob"]
+  final_text_contains: ["domain report", "todo"]
+  min_turns: 3

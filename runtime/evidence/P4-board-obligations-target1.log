@@ -1,0 +1,368 @@
+✖ sqlite/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion (154.375417ms)
+✖ sqlite/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion (97.50025ms)
+✖ sqlite: lost offer response restores one obligation from the applied receipt without inventing a result (98.331083ms)
+✖ sqlite: a missing projection is restored and generic wait or resolve cannot forge coordination (95.065667ms)
+✖ sqlite: requester can cancel a waiting request and cancellation is waived rather than satisfied (93.507292ms)
+✖ sqlite: decline does not create an obligation for a recipient who never accepted (90.965ms)
+✖ sqlite: expiry is actionable review and retains the original pending obligation (91.654792ms)
+✖ sqlite: confirmed answer retraction invalidates the previous completion projection (92.285167ms)
+✖ sqlite: loss of an applied request receipt cannot silently discharge the response (88.459958ms)
+✖ file-journal/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion (241.97175ms)
+✖ file-journal/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion (240.297542ms)
+✖ file-journal: lost offer response restores one obligation from the applied receipt without inventing a result (295.182416ms)
+✖ file-journal: a missing projection is restored and generic wait or resolve cannot forge coordination (258.783084ms)
+✖ file-journal: requester can cancel a waiting request and cancellation is waived rather than satisfied (236.923709ms)
+✖ file-journal: decline does not create an obligation for a recipient who never accepted (232.131375ms)
+✖ file-journal: expiry is actionable review and retains the original pending obligation (235.94025ms)
+✖ file-journal: confirmed answer retraction invalidates the previous completion projection (233.753417ms)
+✖ file-journal: loss of an applied request receipt cannot silently discharge the response (228.933458ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 0
+ℹ fail 18
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3202.907541
+
+✖ failing tests:
+
+test at dist/tests/board-request-runtime.test.js:92:9
+✖ sqlite/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion (154.375417ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:93:68)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:92:9
+✖ sqlite/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion (97.50025ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:93:68)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:124:5
+✖ sqlite: lost offer response restores one obligation from the applied receipt without inventing a result (98.331083ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:126:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:147:5
+✖ sqlite: a missing projection is restored and generic wait or resolve cannot forge coordination (95.065667ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:148:56)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:161:5
+✖ sqlite: requester can cancel a waiting request and cancellation is waived rather than satisfied (93.507292ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:163:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:169:5
+✖ sqlite: decline does not create an obligation for a recipient who never accepted (90.965ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:171:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:176:5
+✖ sqlite: expiry is actionable review and retains the original pending obligation (91.654792ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:178:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:187:5
+✖ sqlite: confirmed answer retraction invalidates the previous completion projection (92.285167ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:189:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:201:5
+✖ sqlite: loss of an applied request receipt cannot silently discharge the response (88.459958ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:202:56)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:92:9
+✖ file-journal/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion (241.97175ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:93:68)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:92:9
+✖ file-journal/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion (240.297542ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:93:68)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:124:5
+✖ file-journal: lost offer response restores one obligation from the applied receipt without inventing a result (295.182416ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:126:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:147:5
+✖ file-journal: a missing projection is restored and generic wait or resolve cannot forge coordination (258.783084ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:148:56)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:161:5
+✖ file-journal: requester can cancel a waiting request and cancellation is waived rather than satisfied (236.923709ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:163:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:169:5
+✖ file-journal: decline does not create an obligation for a recipient who never accepted (232.131375ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:171:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:176:5
+✖ file-journal: expiry is actionable review and retains the original pending obligation (235.94025ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:178:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:187:5
+✖ file-journal: confirmed answer retraction invalidates the previous completion projection (233.753417ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:189:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/board-request-runtime.test.js:201:5
+✖ file-journal: loss of an applied request receipt cannot silently discharge the response (228.933458ms)
+  AssertionError [ERR_ASSERTION]: {"attempt":{"id":"attempt-5","taskId":"task-1","planRevision":1,"goalRevision":1,"toolId":"core.board.publish","toolVersion":"1","inputDigest":"b6137bc2cd3f3b97f9cc464ac169a952a4a999a453be081a6a147c6cd0fb1609","scope":"fixture","contractDigest":"05d1e2782c3927a6dfb8418eaa3a2d6be62a5e194bfebe9f1128e02e260d1b0c","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-5:result","resultArtifact":{"id":"4403288cec83648784d61d9a3e66577c94c975dcb3ba9b2ec50cd33bbc43fde9","sha256":"96d16799cbf6fbee9ffa28fa3a67b7b1879ddeb989ca2ef54b219c7a9142f172","byteLength":237,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:a6202d3e8269c9665b8806a2d76664c222299374d6c3e38cff5c7fbded6a2d96","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"7d1f7fbdbbd09ba7f72463a7af367923b3bf6cc53eb8c859aaa0ba779a8d338e","sha256":"cedca6d5cf30d40edf205b389273f7464cc70826e64bba269bf4efbc6a4c2604","byteLength":461,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-5:result","attemptId":"attempt-5","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown"}}
+  
+  false !== true
+  
+      at execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:73:16)
+      at async Object.offer (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:80:33)
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:202:56)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,9 @@
+
+> long-horizon-runtime@0.1.0 build
+> tsc -p tsconfig.json && node scripts/record-build.mjs
+
+src/presentation/agent-knox.ts(61,34): error TS2554: Expected 4 arguments, but got 3.
+src/presentation/local-workbench.ts(34,3): error TS2322: Type '{ scenarios: never[]; general: { sessions: SessionService; turns: AgentTurnService; services: RuntimeServices; agentId: string; actor: WorkActor; ... 40 more ...; workView: WorkViewService; }; ... 45 more ...; workView: WorkViewService; }' is not assignable to type 'LocalWorkbenchProfile'.
+  Type '{ scenarios: never[]; general: { sessions: SessionService; turns: AgentTurnService; services: RuntimeServices; agentId: string; actor: WorkActor; ... 40 more ...; workView: WorkViewService; }; ... 45 more ...; workView: WorkViewService; }' is not assignable to type 'Omit<{ stateBackend: StateBackend; close: () => Promise<void>; personalKnowledge: (caller: WorkActor) => Promise<KnowledgeService>; ... 34 more ...; workView: WorkViewService; }, "compactProvider">'.
+    The types of 'services.sink' are incompatible between these types.
+      Type 'MessageSink' is missing the following properties from type 'LocalChannel': #db, #digester, #sessions, recordConfirmedDelivery, and 2 more.

@@ -1,0 +1,30 @@
+# Knox 메신저 브릿지 설정 예시 (v3.73)
+#
+# Knox = 에이전트를 조작하는 control 채널(웹 채팅과 동격). 점검 대상 아님.
+# 복사해서 config/knox_rooms.yaml 로 쓰거나 SA_KNOX_ROOMS_PATH 로 경로 지정.
+# 실행: secu-agent knox-bridge   (Knox 데몬이 127.0.0.1:8771 에 떠 있어야 함)
+#
+# 인가 게이트는 하나뿐: "누가 에이전트를 조작할 수 있나" = 발신자 singleID allowlist.
+#   - allowed_singleids 에 없는 발신자/봇 자신은 무응답(silent).
+#   - 방별 rooms: 설정이 있으면 그 방은 거기 규칙이 우선(전역보다 엄격).
+#
+# 관련 env:
+#   KM_DAEMON               Knox 데몬 base url (기본 http://127.0.0.1:8771)
+#   KNOX_OWN_SINGLEID       봇 자신의 singleID — 자기 메시지 skip 용
+#   SA_KNOX_APPROVAL_TIMEOUT  in-chat 승인 타임아웃 초(기본 300, 초과 시 거부)
+#   SA_KNOX_VERBOSE=1       tool 시작도 방에 표시
+
+# --- 형태 1: 전역 allowlist (방 무관, 가장 단순) ---
+allowed_singleids:
+  - "shaneee.baek"
+default_agent_type: "agent"          # operator 기본. smb|github|jenkins|confluence|web 로 변경 가능
+default_approval_mode: "ask"     # ask|auto|deny  (위험/쓰기 작업 승인 방식)
+# default_charter_ref: "CHG-..." # (선택) 감사 태그 — 점검 인가번호를 남기고 싶을 때만
+
+# --- 형태 2: 방별 세부 설정(더 엄격) — 위 allowed_singleids 대신/병행 ---
+# rooms:
+#   "205186313073722368":         # 데몬 메시지의 chatroomId
+#     agent_type: "smb"
+#     allowed_singleids: ["shaneee.baek"]
+#     approval_mode: "ask"
+#     # charter_ref: "CHG-..."     # (선택) 감사 태그

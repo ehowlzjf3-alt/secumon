@@ -1,0 +1,29 @@
+[project]
+name = "digisecu-gateway"
+version = "0.0.0"
+description = "M4 state_domain read 게이트웨이 — threat_hunter의 유일 sanctioned read 어댑터(read-only). 엔진/스킬 무수정, connect() 격리."
+requires-python = ">=3.12"
+# 런타임 deps는 의도적으로 최소 — 엔진/스킬을 런타임에 import하지 않는다(connect() 부트스트랩 격리).
+# 스킬/엔진 import는 test-only(DDL-0·스키마 계약 테스트)에서만, PYTHONPATH로 attach.
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.32",
+  "psycopg[binary]>=3.2",
+  "psycopg-pool>=3.2",
+  "pydantic>=2.9",
+]
+
+[project.optional-dependencies]
+# CI 검증용. secu_agent/스킬은 여기서도 설치하지 않고 PYTHONPATH로 attach(무수정).
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[project.scripts]
+digisecu-gateway = "digisecu_gateway.app:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["digisecu_gateway*"]

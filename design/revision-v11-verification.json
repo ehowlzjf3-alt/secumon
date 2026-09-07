@@ -1,0 +1,48 @@
+{
+  "revision": "v0.11",
+  "checked_at": "2026-09-05T02:04:44.246739+00:00",
+  "status": "PASS",
+  "scope": "Storage and recovery design, including explicit user requirement for database-independent core; no product implementation",
+  "source_hashes": {
+    "status": "PASS",
+    "checked_files": 1973,
+    "errors": []
+  },
+  "documents": {
+    "status": "PASS",
+    "markdown_files": 20,
+    "json_files": 14,
+    "local_links_checked": 154,
+    "link_errors": [],
+    "unclosed_fences": [],
+    "json_errors": [],
+    "mermaid_rendering": "NOT RUN; fence balance only; existing language diagram label updated to storage port/adapter"
+  },
+  "storage_independence_review": {
+    "status": "REVIEWED",
+    "wording_errors": [],
+    "detail": "Core-owned business storage ports; adapters wired at deployment boundary; SQL/DDL/ORM and database-specific behavior outside core; atomic consistency boundary retained; mandatory semantics versus optional capabilities; DB-free core and two persistent implementation contract tests proposed, not executed."
+  },
+  "source_inspection": {
+    "kind": "STATIC ONLY",
+    "paths": [
+      "extracted/secu-agent/src/secu_agent/persistence/port.py",
+      "extracted/secu-agent/src/secu_agent/persistence/postgres_adapter.py",
+      "extracted/secu-agent/src/secu_agent/persistence/__init__.py",
+      "extracted/secu-agent/tests/conftest.py"
+    ],
+    "observations": "Existing StatePort exposes SQL connection and DDL registration plus domain-specific finding methods. PostgresStateAdapter/default export and test PostgreSQL setup inspected. No imports or test execution."
+  },
+  "coverage_review": {
+    "status": "REVIEWED",
+    "detail": "Logical state/ledger/evidence/memory/artifact/index/cache/workspace roles; write ownership; state/event atomic commit; external workflow engine ownership; blob/database partial failure; read freshness and scope; durable waits/leases and unknown effects; lineage, deletion, restore and schema/version migration."
+  },
+  "existing_v06_visualization": {
+    "modified": false,
+    "sha256": "bd33bbe188fda19f495d899d20967af16b3be5555b69aee247d10832bc92558e"
+  },
+  "runtime_validation": {
+    "status": "NOT RUN",
+    "detail": "Database/storage provisioning or connection, SQL/product tests, core dependency/build tests, persistent adapter substitution, concurrency and fault injection, actual restore/RPO/RTO, permissions/deletion propagation and external effect reconciliation were not run."
+  }
+}

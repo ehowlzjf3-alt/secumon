@@ -1,0 +1,104 @@
+✔ sqlite: MCP collection documents preserves individual raw pages and verifies offline (398.964833ms)
+✔ sqlite: MCP collection documents resumes only partial items with original success unchanged (613.405416ms)
+✔ sqlite: MCP collection observations preserves individual raw pages and verifies offline (473.094333ms)
+✔ sqlite: MCP collection observations resumes only partial items with original success unchanged (770.854417ms)
+✔ sqlite: MCP empty page is preserved and losing its original rejects the result (640.232708ms)
+✔ sqlite: MCP collection rejects snapshot-change after keeping its first page (427.915709ms)
+✔ sqlite: MCP collection rejects cursor-loop after keeping its first page (421.593959ms)
+✔ sqlite: MCP error does not become EOF or automatic retry (364.198917ms)
+✔ sqlite: MCP rate-limit does not become EOF or automatic retry (307.28425ms)
+✔ sqlite: MCP accepted raw response substitution blocks parent resume before sending (230.654125ms)
+✔ sqlite: MCP changed query cannot reuse a partial parent (236.25275ms)
+✔ sqlite: MCP authority change before-send prevents page acceptance (127.328709ms)
+✔ sqlite: MCP authority change after-reply prevents page acceptance (129.452417ms)
+✔ file-journal: MCP collection documents preserves individual raw pages and verifies offline (426.841417ms)
+✔ file-journal: MCP collection documents resumes only partial items with original success unchanged (887.39375ms)
+✔ file-journal: MCP collection observations preserves individual raw pages and verifies offline (622.4655ms)
+✔ file-journal: MCP collection observations resumes only partial items with original success unchanged (1174.429958ms)
+✔ file-journal: MCP empty page is preserved and losing its original rejects the result (852.19425ms)
+✔ file-journal: MCP collection rejects snapshot-change after keeping its first page (552.606834ms)
+✔ file-journal: MCP collection rejects cursor-loop after keeping its first page (551.180667ms)
+✔ file-journal: MCP error does not become EOF or automatic retry (573.443583ms)
+✔ file-journal: MCP rate-limit does not become EOF or automatic retry (565.710084ms)
+✔ file-journal: MCP accepted raw response substitution blocks parent resume before sending (406.284167ms)
+✔ file-journal: MCP changed query cannot reuse a partial parent (451.169334ms)
+✔ file-journal: MCP authority change before-send prevents page acceptance (239.573166ms)
+✔ file-journal: MCP authority change after-reply prevents page acceptance (247.436708ms)
+✔ read page proof: marker makes callback removal an atomic rejected provider refresh (15.657625ms)
+✔ read page proof: source callback is captured and receives detached original task, request and page (13.375291ms)
+✔ read page proof: same-version replacement during async validation invalidates its result (3.784541ms)
+✔ read page proof: legacy serialization is unchanged and a marked source cannot omit its original (8.374834ms)
+✔ read page proof sqlite: explicit resume verifies individual responses and keeps the earlier successful original (511.963792ms)
+✔ read page proof sqlite: a zero-item page retains its raw ref and raw loss blocks pending adoption (168.117958ms)
+✖ read page proof sqlite: missing parent original prevents any resumed source request (185.612375ms)
+✔ read page proof sqlite: authority after a source wait prevents input when work is paused (79.958417ms)
+✔ read page proof sqlite: first-read originals stay in the final fence and loss after a callback is rejected (156.114167ms)
+✔ read page proof file-journal: explicit resume verifies individual responses and keeps the earlier successful original (1183.274542ms)
+✔ read page proof file-journal: a zero-item page retains its raw ref and raw loss blocks pending adoption (477.593125ms)
+✖ read page proof file-journal: missing parent original prevents any resumed source request (560.581375ms)
+✔ read page proof file-journal: authority after a source wait prevents input when work is paused (378.045458ms)
+✔ read page proof file-journal: first-read originals stay in the final fence and loss after a callback is rejected (512.562084ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 38
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12812.249583
+
+✖ failing tests:
+
+test at dist/tests/read-page-proof.test.js:223:5
+✖ read page proof sqlite: missing parent original prevents any resumed source request (185.612375ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /read_checkpoint_unavailable/. Input:
+  
+  'Error: synthetic_original_missing'
+  
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/read-page-proof.test.js:229:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: synthetic_original_missing
+        at Object.get (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/read-page-proof.test.js:113:19)
+        at ReadCheckpointReader.entry (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoint-store.js:109:44)
+        at ReadCheckpointReader.original (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoint-store.js:127:70)
+        at ReadCheckpointReader.remembered (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoint-store.js:78:24)
+        at async ReadCheckpointReader.load (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoint-store.js:171:28)
+        at async ReadCheckpoints.verify (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoints.js:102:32)
+        at async ReadCheckpoints.read (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoints.js:222:17)
+        at async ReadCollections.execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-collections.js:197:40)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25),
+    expected: /read_checkpoint_unavailable/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at dist/tests/read-page-proof.test.js:223:5
+✖ read page proof file-journal: missing parent original prevents any resumed source request (560.581375ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /read_checkpoint_unavailable/. Input:
+  
+  'Error: synthetic_original_missing'
+  
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/read-page-proof.test.js:229:9)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: synthetic_original_missing
+        at Object.get (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/read-page-proof.test.js:113:19)
+        at ReadCheckpointReader.entry (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoint-store.js:109:44)
+        at ReadCheckpointReader.original (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoint-store.js:127:70)
+        at ReadCheckpointReader.remembered (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoint-store.js:78:24)
+        at async ReadCheckpointReader.load (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoint-store.js:171:28)
+        at async ReadCheckpoints.verify (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoints.js:102:32)
+        at async ReadCheckpoints.read (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-checkpoints.js:222:17)
+        at async ReadCollections.execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/read-collections.js:197:40)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25),
+    expected: /read_checkpoint_unavailable/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

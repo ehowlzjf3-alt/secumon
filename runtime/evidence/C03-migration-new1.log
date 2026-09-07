@@ -1,0 +1,367 @@
+{"event":"starting","suite":"new","files":5,"sourceAndBuild":{"sourceDigest":"1655f676209f5c6df34b323daee5ae908d963e4d1c7da594a9a26ec21b477990","filesDigest":"8d6fbbc2fea3c8a27309151fedbd371b0c893cf5f66b508b61d1705ca0aaca44","fileCount":1437}}
+TAP version 13
+# Subtest: v2 seed preserves latest records, every original receipt and audit, logical head, and ordinary CAS after reopen
+ok 1 - v2 seed preserves latest records, every original receipt and audit, logical head, and ordinary CAS after reopen
+  ---
+  duration_ms: 448.436875
+  type: 'test'
+  ...
+# Subtest: import receipt is exact and idempotent while changed identity/source and an existing v1 store are refused
+ok 2 - import receipt is exact and idempotent while changed identity/source and an existing v1 store are refused
+  ---
+  duration_ms: 144.880542
+  type: 'test'
+  ...
+# Subtest: seeded namespaces remain isolated and a newly introduced scope starts with an ordinary v2 event
+ok 3 - seeded namespaces remain isolated and a newly introduced scope starts with an ordinary v2 event
+  ---
+  duration_ms: 254.306042
+  type: 'test'
+  ...
+# Subtest: preview rejects unsupported receipts, discontinuous audit, head mismatch and oversize seed before target creation
+ok 4 - preview rejects unsupported receipts, discontinuous audit, head mismatch and oversize seed before target creation
+  ---
+  duration_ms: 12.698166
+  type: 'test'
+  ...
+# Subtest: missing seed tail or a complete namespace is refused even when corresponding witnesses were also removed
+ok 5 - missing seed tail or a complete namespace is refused even when corresponding witnesses were also removed
+  ---
+  duration_ms: 209.202667
+  type: 'test'
+  ...
+# Subtest: seed checksum corruption and external hard links remain unsafe; foreign bytes are not overwritten on resume
+ok 6 - seed checksum corruption and external hard links remain unsafe; foreign bytes are not overwritten on resume
+  ---
+  duration_ms: 348.643708
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL after seed publication resumes exact import and preserves canonical bytes
+ok 7 - actual SIGKILL after seed publication resumes exact import and preserves canonical bytes
+  ---
+  duration_ms: 195.678958
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL after format publication resumes exact import and preserves canonical bytes
+ok 8 - actual SIGKILL after format publication resumes exact import and preserves canonical bytes
+  ---
+  duration_ms: 173.147167
+  type: 'test'
+  ...
+# Subtest: post-seed fsync EIO keeps the original cause and published status, then exact resume restores witnesses
+not ok 9 - post-seed fsync EIO keeps the original cause and published status, then exact resume restores witnesses
+  ---
+  duration_ms: 87.608208
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/document-knowledge-import.test.js:221:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    worker_exit_1: node:internal/modules/run_main:107
+        triggerUncaughtException(
+        ^
+    
+    AssertionError [ERR_ASSERTION]: Expected "actual" to be reference-equal to "expected":
+    + actual - expected
+    
+    + [FileBoundaryFault [Error]: metadata_sync_io] {
+    +   [cause]: [Error: import_seed_sync_fixture] {
+    +     code: 'EIO'
+    +   },
+    +   code: 'io',
+    +   operation: 'sync'
+    - [Error: import_seed_sync_fixture] {
+    -   code: 'EIO'
+      }
+    
+        at file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/document-knowledge-import-worker.js:45:16
+        at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async node:internal/modules/esm/loader:647:26
+        at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+      generatedMessage: true,
+      code: 'ERR_ASSERTION',
+      actual: [FileBoundaryFault [Error]: metadata_sync_io] {
+        code: 'io',
+        operation: 'sync',
+        [cause]: [Error: import_seed_sync_fixture] { code: 'EIO' }
+      },
+      expected: [Error: import_seed_sync_fixture] { code: 'EIO' },
+      operator: 'strictEqual',
+      diff: 'simple'
+    }
+    
+    Node.js v24.20.0
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/document-knowledge-import-worker.js:45:16
+    ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async node:internal/modules/esm/loader:647:26
+    async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/document-knowledge-import.test.js:229:141
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/document-knowledge-import.test.js:229:27)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: an empty ready namespace imports its original zero head and leaves room for its first ordinary memory
+ok 10 - an empty ready namespace imports its original zero head and leaves room for its first ordinary memory
+  ---
+  duration_ms: 116.854625
+  type: 'test'
+  ...
+# Subtest: dedicated backup worker preserves the pinned personal receipts and work data, publishes completion last and reuses the same identity
+ok 11 - dedicated backup worker preserves the pinned personal receipts and work data, publishes completion last and reuses the same identity
+  ---
+  duration_ms: 393.092334
+  type: 'test'
+  ...
+# Subtest: same operation rejects a changed fixed work fingerprint before publication and preserves its incomplete candidate
+ok 12 - same operation rejects a changed fixed work fingerprint before publication and preserves its incomplete candidate
+  ---
+  duration_ms: 107.768459
+  type: 'test'
+  ...
+# Subtest: link succeeds then reports EIO: original and cleanup errors survive and same operation repairs the exact two-link candidate
+ok 13 - link succeeds then reports EIO: original and cleanup errors survive and same operation repairs the exact two-link candidate
+  ---
+  duration_ms: 303.106709
+  type: 'test'
+  ...
+# Subtest: post-link directory sync failure retains sync operation and original EIO, then resume repairs the barrier without another snapshot
+ok 14 - post-link directory sync failure retains sync operation and original EIO, then resume repairs the barrier without another snapshot
+  ---
+  duration_ms: 283.612042
+  type: 'test'
+  ...
+# Subtest: completed receipt rejects a byte-identical replacement inode and does not overwrite or adopt it
+ok 15 - completed receipt rejects a byte-identical replacement inode and does not overwrite or adopt it
+  ---
+  duration_ms: 296.647375
+  type: 'test'
+  ...
+# Subtest: completed backup can resume after the source migration fence advances schema, without taking a new source snapshot
+ok 16 - completed backup can resume after the source migration fence advances schema, without taking a new source snapshot
+  ---
+  duration_ms: 348.762958
+  type: 'test'
+  ...
+# Subtest: dedicated backup worker exits when its supervising IPC connection disappears and cannot publish a canonical file
+not ok 17 - dedicated backup worker exits when its supervising IPC connection disappears and cannot publish a canonical file
+  ---
+  duration_ms: 60001.379542
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-backup.test.js:193:1'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 60000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: actual supervisor SIGKILL during native backup preserves the source and incomplete candidate, and the orphan worker exits before resume
+ok 18 - actual supervisor SIGKILL during native backup preserves the source and incomplete candidate, and the orphan worker exits before resume
+  ---
+  duration_ms: 391.174416
+  type: 'test'
+  ...
+# Subtest: backup scope cannot overlap its source parent and bounded failed attempts cannot silently allocate a fifth candidate
+ok 19 - backup scope cannot overlap its source parent and bounded failed attempts cannot silently allocate a fifth candidate
+  ---
+  duration_ms: 98.37825
+  type: 'test'
+  ...
+# Subtest: activation publication fsync failure preserves its cause and resume synchronizes the same visible activation before selecting documents
+ok 20 - activation publication fsync failure preserves its cause and resume synchronizes the same visible activation before selecting documents
+  ---
+  duration_ms: 531.591542
+  type: 'test'
+  ...
+# Subtest: migration preserves compacted session, profile bytes and receipts; ordinary memory edits continue on documents
+not ok 21 - migration preserves compacted session, profile bytes and receipts; ordinary memory edits continue on documents
+  ---
+  duration_ms: 227.748958
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:51:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'failed' !== 'ready'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ready'
+  actual: 'failed'
+  operator: 'strictEqual'
+  stack: |-
+    fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:34:12)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:52:15)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: management CLI rejects unconfirmed or stale previews without creating an operation, then activates the fixed request
+not ok 22 - management CLI rejects unconfirmed or stale previews without creating an operation, then activates the fixed request
+  ---
+  duration_ms: 184.106041
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:131:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'failed' !== 'ready'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ready'
+  actual: 'failed'
+  operator: 'strictEqual'
+  stack: |-
+    fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:34:12)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:132:15)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: activation loss gates ordinary opening; same-operation resume restores routing and a damaged target never falls back
+not ok 23 - activation loss gates ordinary opening; same-operation resume restores routing and a damaged target never falls back
+  ---
+  duration_ms: 190.054042
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:152:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'failed' !== 'ready'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ready'
+  actual: 'failed'
+  operator: 'strictEqual'
+  stack: |-
+    fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:34:12)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:153:15)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: actual SIGKILL before-activation resumes the same agent and migration
+not ok 24 - actual SIGKILL before-activation resumes the same agent and migration
+  ---
+  duration_ms: 188.302542
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:177:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'failed' !== 'ready'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ready'
+  actual: 'failed'
+  operator: 'strictEqual'
+  stack: |-
+    fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:34:12)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:178:19)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: actual SIGKILL after-activation resumes the same agent and migration
+not ok 25 - actual SIGKILL after-activation resumes the same agent and migration
+  ---
+  duration_ms: 182.48975
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:177:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'failed' !== 'ready'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ready'
+  actual: 'failed'
+  operator: 'strictEqual'
+  stack: |-
+    fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:34:12)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/personal-memory-migration-flow.test.js:178:19)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: fixed source snapshot preserves active, retracted and deleted rows, all original receipts and raw audit strings across owners
+ok 26 - fixed source snapshot preserves active, retracted and deleted rows, all original receipts and raw audit strings across owners
+  ---
+  duration_ms: 25.10625
+  type: 'test'
+  ...
+# Subtest: scope union rejects orphan receipts, missing heads, stale index and malformed audits without changing the source
+ok 27 - scope union rejects orphan receipts, missing heads, stale index and malformed audits without changing the source
+  ---
+  duration_ms: 108.994917
+  type: 'test'
+  ...
+# Subtest: source cell byte cap rejects oversized SQL strings before any record is yielded
+ok 28 - source cell byte cap rejects oversized SQL strings before any record is yielded
+  ---
+  duration_ms: 22.558125
+  type: 'test'
+  ...
+# Subtest: normal fence discovery accepts missing, exclusive-created empty, owner-only and valid legacy1 but administrative snapshot never adopts them
+ok 29 - normal fence discovery accepts missing, exclusive-created empty, owner-only and valid legacy1 but administrative snapshot never adopts them
+  ---
+  duration_ms: 8.998083
+  type: 'test'
+  ...
+# Subtest: foreign and unowned existing sources cannot acquire a fence or owner
+ok 30 - foreign and unowned existing sources cannot acquire a fence or owner
+  ---
+  duration_ms: 11.172292
+  type: 'test'
+  ...
+# Subtest: fresh writer snapshot must still match both personal and work digests before the first fence
+ok 31 - fresh writer snapshot must still match both personal and work digests before the first fence
+  ---
+  duration_ms: 31.310959
+  type: 'test'
+  ...
+# Subtest: source retirement blocks every personal SQL write and old prepared handle while current work reads and commits continue
+ok 32 - source retirement blocks every personal SQL write and old prepared handle while current work reads and commits continue
+  ---
+  duration_ms: 15.046166
+  type: 'test'
+  ...
+# Subtest: failure during source fence installation rolls back triggers, version and marker together
+ok 33 - failure during source fence installation rolls back triggers, version and marker together
+  ---
+  duration_ms: 14.916791
+  type: 'test'
+  ...
+# Subtest: a missing persistent trigger is rejected rather than accepting an apparently retired source
+ok 34 - a missing persistent trigger is rejected rather than accepting an apparently retired source
+  ---
+  duration_ms: 12.96575
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL before-commit keeps all source rows and an atomic resumable fence
+ok 35 - actual SIGKILL before-commit keeps all source rows and an atomic resumable fence
+  ---
+  duration_ms: 66.449375
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL after-commit keeps all source rows and an atomic resumable fence
+ok 36 - actual SIGKILL after-commit keeps all source rows and an atomic resumable fence
+  ---
+  duration_ms: 62.92975
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 29
+# fail 6
+# cancelled 1
+# skipped 0
+# todo 0
+# duration_ms 62289.502417

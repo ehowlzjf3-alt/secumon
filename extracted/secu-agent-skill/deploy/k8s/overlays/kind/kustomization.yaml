@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: secu-agent
+resources:
+  - ../all
+  - postgres.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+secretGenerator:
+  - name: secu-agent-runtime
+    literals:
+      - SECU_AGENT_PG_DSN=postgresql://secu_agent:secu_agent@secu-agent-postgres.secu-agent.svc.cluster.local:5432/secu_agent
+      - GITHUB_TOKEN=not-set
+      - CONFLUENCE_TOKEN=not-set
+      - JENKINS_TOKEN=not-set
+      - SPLUNK_TOKEN=not-set
+      - SA_KNOX_MAIL_MCP_URL=http://knox-mail-mcp.invalid/sse
+      - SA_KNOX_MAIL_SENDER=dssoc@samsung.com
+      - POP3_HOST=pop3.invalid
+      - POP3_USER=dssoc@example.invalid
+      - POP3_PASSWORD=not-set

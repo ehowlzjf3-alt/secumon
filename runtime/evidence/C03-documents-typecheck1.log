@@ -1,0 +1,10 @@
+
+> long-horizon-runtime@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+src/infrastructure/agent-memory-profile.ts(46,16): error TS2345: Argument of type '{ backend: "sqlite"; schemaVersion: 1; agentId: string; } | { backend: "documents"; storeId: string; schemaVersion: 1; agentId: string; } | null' is not assignable to parameter of type '{ backend: "sqlite"; schemaVersion: 1; agentId: string; } | { backend: "documents"; storeId: string; schemaVersion: 1; agentId: string; }'.
+  Type 'null' is not assignable to type '{ backend: "sqlite"; schemaVersion: 1; agentId: string; } | { backend: "documents"; storeId: string; schemaVersion: 1; agentId: string; }'.
+src/tests/helpers/agent-state-binding-worker.ts(26,50): error TS2322: Type '{ storage: { state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; personalMemory: { backend: "documents"; storeId: string; }; } | { state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; }; ... 6 more ...; schemaVersion: 2; }' is not assignable to type '{ schemaVersion: 1; identity: { schemaVersion: 1; agentId: string; createdAt: number; }; name: string; purpose: string; storage: { state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; }; model: { ...; } | null; features: { ...; }; skills: { ...; }; } | { ...; }'.
+  Types of property 'storage' are incompatible.
+    Type '{ state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; personalMemory: { backend: "documents"; storeId: string; }; } | { state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; }' is not assignable to type '{ state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; personalMemory: { backend: "documents"; storeId: string; }; }'.
+      Property 'personalMemory' is missing in type '{ state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; }' but required in type '{ state: "sqlite" | "file-journal"; memory: "sqlite"; artifacts: "files"; personalMemory: { backend: "documents"; storeId: string; }; }'.

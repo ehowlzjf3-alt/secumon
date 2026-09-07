@@ -1,0 +1,210 @@
+{
+  "id": "documents-simple",
+  "family": "document_comparison",
+  "complexity": "simple",
+  "description": "합성 제품 안내에서 현행 보존기간을 찾는다. 답을 미리 고정하지 않는다.",
+  "synthetic": true,
+  "policy": {
+    "tenantId": "synthetic",
+    "principalId": "learner",
+    "allowedTools": [
+      "fixture.read"
+    ],
+    "allowedLabels": [
+      "synthetic",
+      "public"
+    ],
+    "allowedDestinations": [
+      "local"
+    ],
+    "allowWrites": false
+  },
+  "goal": {
+    "revision": 1,
+    "description": "현행 보존기간을 근거와 함께 알려줘",
+    "scope": "docs-simple",
+    "mode": "auto",
+    "criteria": [
+      {
+        "id": "retention",
+        "description": "근거로 retention.days 확인",
+        "key": "retention.days",
+        "operator": "present",
+        "equals": null,
+        "minIndependentSources": 1,
+        "requireCompleteCoverage": true
+      }
+    ]
+  },
+  "hypotheses": [],
+  "evidence": [
+    {
+      "id": "doc-current",
+      "tenantId": "synthetic",
+      "scope": "docs-simple",
+      "sourceId": "doc-current",
+      "lineageId": "doc-current",
+      "locator": "fixture://doc-current",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "retention.days": 30
+      },
+      "artifact": null
+    },
+    {
+      "id": "doc-partial",
+      "tenantId": "synthetic",
+      "scope": "docs-simple",
+      "sourceId": "doc-partial",
+      "lineageId": "doc-partial",
+      "locator": "fixture://doc-partial",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "partial",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "retention.days": 30
+      },
+      "artifact": null
+    }
+  ],
+  "checkpoints": [
+    {
+      "name": "처음에는 자료 없음",
+      "evidenceIds": [],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "continue",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-current"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "부분 추출만으로 완료 금지",
+      "evidenceIds": [
+        "doc-partial"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "continue",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-current"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "현행 문서 확보",
+      "evidenceIds": [
+        "doc-current"
+      ],
+      "obligations": [],
+      "expectedComplete": true,
+      "expectedReasons": [],
+      "expectedEvidenceIds": [
+        "doc-current"
+      ],
+      "goalOverride": null,
+      "expectedControl": "complete",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "doc-current"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    }
+  ]
+}

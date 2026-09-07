@@ -1,0 +1,1756 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SMB E2E 파이프라인</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#090c0d; --band:#111513; --panel:#151b19; --panel-2:#1c2421;
+      --line:#2f3b36; --line-2:#445049; --muted:#94a49e; --text:#edf5f1; --soft:#cbd7d2;
+      --accent:#36c2a0; --accent-2:#7bbef0; --warn:#d8a548; --bad:#e56b75; --ok:#7dd68a;
+      --shadow:0 12px 28px rgba(0,0,0,.22);
+      font-family:Inter,ui-sans-serif,system-ui,"Segoe UI","Malgun Gothic",sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-size:14px}
+    header{height:60px;background:var(--band);border-bottom:1px solid var(--line);padding:0 20px;
+      display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:5}
+    header h1{font-size:16px;margin:0;font-weight:700;white-space:nowrap}
+    header .sp{flex:1}
+    nav{display:flex;gap:8px;flex-wrap:wrap}
+    nav button{background:transparent;border:1px solid var(--line);color:var(--soft);
+      min-height:34px;padding:7px 14px;border-radius:8px;cursor:pointer}
+    nav button.active{background:var(--accent);border-color:var(--accent);color:#03110e;font-weight:700}
+    main{padding:20px;max-width:1840px;margin:0 auto}
+    h2{font-size:18px;margin:22px 0 12px}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:22px 0 12px}
+    .section-head h2{margin:0}
+    .section-head .muted{font-size:12px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);font-size:13px}
+    th{color:var(--muted);font-weight:600}
+    input,select{background:var(--panel-2);border:1px solid var(--line);color:var(--text);
+      padding:6px 8px;border-radius:6px}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:10px;align-items:center;margin:8px 0;flex-wrap:wrap}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;min-width:0}
+    .card h3{margin:0 0 8px;font-size:13px;color:var(--muted);font-weight:700}
+    .card .big{font-size:28px;font-weight:800;letter-spacing:0;line-height:1.15}
+    .pill{display:inline-flex;align-items:center;justify-content:center;min-height:20px;
+      padding:2px 8px;border-radius:999px;font-size:11px;border:1px solid var(--line);white-space:nowrap}
+    .pill.alive{color:var(--ok);border-color:rgba(125,214,138,.7)}
+    .pill.dead{color:var(--bad);border-color:rgba(229,107,117,.75)}
+    .pill.warn{color:var(--warn);border-color:rgba(217,164,65,.75)}
+    .sev-critical{color:var(--bad)} .sev-high{color:var(--warn)} .sev-medium{color:var(--accent-2)}
+    button.act{background:var(--panel-2);border:1px solid var(--line);color:var(--text);
+      min-height:32px;padding:6px 12px;border-radius:8px;cursor:pointer}
+    button.act:hover{border-color:var(--accent)}
+    .toggle{cursor:pointer}
+
+    .agent-workbench{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(0,1.6fr);gap:12px;margin-bottom:14px}
+    .operator-console,.worker-console{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+      box-shadow:var(--shadow);min-width:0;overflow:hidden}
+    .console-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border-bottom:1px solid var(--line)}
+    .console-title{font-weight:850;font-size:14px}
+    .console-sub{color:var(--muted);font-size:11px;font-family:ui-monospace,monospace}
+    .console-feed{display:flex;flex-direction:column;gap:8px;padding:12px;max-height:318px;overflow:auto}
+    .console-line{display:grid;grid-template-columns:78px minmax(0,1fr);gap:9px;align-items:start}
+    .role-badge{display:inline-flex;align-items:center;justify-content:center;min-height:24px;border:1px solid var(--line);
+      border-radius:999px;color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:800}
+    .console-text{background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:8px 10px;
+      color:var(--soft);line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+    .worker-console{display:grid;grid-template-columns:320px minmax(0,1fr)}
+    .worker-list{border-right:1px solid var(--line);min-width:0;display:flex;flex-direction:column}
+    .worker-list .fanout-list{padding:10px;max-height:362px;overflow:auto}
+    .worker-transcript{min-width:0;display:grid;grid-template-rows:auto 1fr}
+    .chat-empty{padding:20px;color:var(--muted);line-height:1.5}
+    .agent-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+    .agent-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;min-width:0;
+      display:grid;grid-template-rows:auto auto 1fr;box-shadow:var(--shadow)}
+    .agent-head{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;padding:12px 12px 8px;
+      border-bottom:1px solid var(--line)}
+    .agent-title{font-weight:800;font-size:14px;min-width:0}
+    .agent-state{display:flex;gap:6px;align-items:center;justify-content:flex-end}
+    .agent-main{padding:9px 12px;color:var(--soft);border-bottom:1px solid var(--line);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:anywhere;
+      font-family:ui-monospace,monospace;font-size:12px}
+    .fanout-list{display:flex;flex-direction:column;gap:6px;padding:10px 12px;min-height:132px}
+    .fanout-item{width:100%;display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:8px;align-items:center;
+      background:var(--panel-2);border:1px solid transparent;border-radius:7px;color:var(--text);
+      padding:8px 9px;text-align:left;cursor:pointer}
+    .fanout-item:hover,.fanout-item.active{border-color:var(--accent)}
+    .fanout-dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+    .fanout-dot.active{background:var(--ok);box-shadow:0 0 8px rgba(125,214,138,.9)}
+    .fanout-dot.queued,.fanout-dot.reported,.fanout-dot.reply_received,.fanout-dot.partially_remediated,
+    .fanout-dot.exception_review,.fanout-dot.owner_update_needed,.fanout-dot.owner_reassignment_review,
+    .fanout-dot.reassigned{background:var(--warn)}
+    .fanout-dot.finding,.fanout-dot.re_requested,.fanout-dot.escalated{background:var(--bad)}
+    .fanout-name{display:block;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .fanout-sub{display:block;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+    .fanout-age{font-size:11px;color:var(--muted);white-space:nowrap}
+    .chat-panel{display:none;background:var(--panel);border:1px solid var(--line);border-radius:8px;margin:0 0 18px;
+      box-shadow:var(--shadow)}
+    .chat-panel.open{display:block}
+    .chat-panel.embedded{display:grid;margin:0;border:0;border-radius:0;box-shadow:none;background:transparent;min-height:100%;
+      grid-template-rows:auto 1fr}
+    .chat-head{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+    .chat-head b{font-size:14px}
+    .chat-head button{margin-left:auto}
+    .chat-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+    .chat-meta .pill{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .chat-meta .pill.path{max-width:360px;font-family:ui-monospace,monospace}
+    .chat-body{padding:12px;display:flex;flex-direction:column;gap:8px;max-height:360px;overflow:auto}
+    .chat-panel.embedded .chat-body{max-height:318px}
+    .session-context{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:2px}
+    .session-context div{background:rgba(28,36,33,.72);border:1px solid var(--line);border-radius:7px;padding:8px;min-width:0}
+    .session-context small{display:block;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;margin-bottom:3px}
+    .session-context strong{display:block;color:var(--text);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .session-context strong.path{font-family:ui-monospace,monospace}
+    .msg{display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px;align-items:start}
+    .msg-role{color:var(--muted);font-size:11px;text-transform:uppercase;padding-top:7px}
+    .msg-text{background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:9px 10px;
+      white-space:pre-wrap;line-height:1.45;overflow-wrap:anywhere}
+
+    .pipeline-board{position:relative;width:min(100%,1440px);margin:12px auto 0}
+    .pipe-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;align-items:stretch}
+    .flow-card{--flow-main-h:168px;--flow-metric-h:96px;position:relative;width:100%;min-width:0;min-height:350px;
+      background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px;
+      display:grid;grid-template-rows:38px var(--flow-main-h) var(--flow-metric-h);row-gap:10px;box-shadow:var(--shadow)}
+    .flow-card.live{border-color:rgba(125,214,138,.9);box-shadow:0 0 0 1px rgba(125,214,138,.45) inset,var(--shadow)}
+    .flow-card.down{border-color:rgba(229,107,117,.7)}
+    .flow-head{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;min-height:34px}
+    .flow-title{display:flex;gap:6px;align-items:flex-start;font-weight:800;font-size:12px;line-height:1.28;min-width:0}
+    .flow-title-text{overflow-wrap:anywhere}
+    .proc-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex:0 0 8px;background:var(--bad)}
+    .proc-dot.live{background:var(--ok);box-shadow:0 0 8px rgba(125,214,138,.9)}
+    .power-toggle{min-width:48px;height:26px;border-radius:999px;border:1px solid var(--line);
+      background:var(--panel-2);color:var(--muted);font-size:11px;font-weight:800;cursor:pointer}
+    .power-toggle.on{color:#062015;background:var(--ok);border-color:var(--ok)}
+    .power-toggle.off{color:var(--bad);border-color:rgba(229,107,117,.8)}
+    .flow-main{display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px;height:var(--flow-main-h);min-height:var(--flow-main-h)}
+    .stat-stack{display:grid;grid-template-rows:repeat(3,1fr);gap:6px;height:100%;min-height:0}
+    .stat-box{background:var(--panel-2);border:1px solid transparent;border-radius:7px;padding:6px 4px;text-align:center;
+      display:flex;flex-direction:column;justify-content:center;min-width:0}
+    .stat-box .n{font-size:17px;font-weight:900;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .stat-box .l{font-size:10px;color:var(--muted);margin-top:2px}
+    .stat-box.queue .n{color:var(--warn)} .stat-box.proc .n{color:var(--accent-2)} .stat-box.done .n{color:var(--ok)}
+    .target-list{justify-self:stretch;width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:7px;height:100%;min-height:0;
+      display:grid;grid-template-rows:26px 1fr;overflow:hidden}
+    .target-head{display:flex;align-items:center;padding:0 8px;border-bottom:1px solid var(--line);color:var(--muted);
+      font-size:10px;font-weight:800}
+    .target-body{padding:5px 7px;overflow:auto}
+    .target-row{display:grid;grid-template-columns:10px minmax(0,1fr);gap:6px;align-items:center;
+      min-height:24px;font-family:ui-monospace,monospace;font-size:12.5px;color:var(--soft)}
+    .target-row.live{color:var(--ok)}
+    .target-row.inspectable{cursor:zoom-in;border-radius:5px;padding-right:4px}
+    .target-row.inspectable:hover{background:rgba(47,183,164,.12)}
+    .target-row span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .target-mark{width:6px;height:6px;border-radius:50%;background:var(--muted)}
+    .target-row.live .target-mark{background:var(--ok);box-shadow:0 0 6px rgba(125,214,138,.9)}
+    .target-empty{font-size:11px;color:var(--muted);padding:5px 0}
+    .metric-grid{align-self:stretch;align-content:start;display:grid;grid-template-columns:1fr;gap:3px;
+      height:var(--flow-metric-h);border-top:1px dashed var(--line);padding-top:9px;overflow:hidden}
+    .metric-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;color:var(--soft);font-size:12px;min-height:18px}
+    .metric-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .metric-row b{color:var(--text);white-space:nowrap}
+    .flow-card.arrow-r::after,.flow-card.arrow-l::after,.flow-card.arrow-d::after{content:"";position:absolute;background:var(--accent)}
+    .flow-card.arrow-r::after{right:-24px;top:50%;width:18px;height:2px}
+    .flow-card.arrow-r::before{content:"";position:absolute;right:-25px;top:calc(50% - 5px);width:10px;height:10px;
+      border-top:2px solid var(--accent);border-right:2px solid var(--accent);transform:rotate(45deg)}
+    .flow-card.arrow-l::after{left:-24px;top:50%;width:18px;height:2px}
+    .flow-card.arrow-l::before{content:"";position:absolute;left:-25px;top:calc(50% - 5px);width:10px;height:10px;
+      border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(45deg)}
+    .flow-card.arrow-d::after{left:50%;bottom:-24px;width:2px;height:18px}
+    .flow-card.arrow-d::before{content:"";position:absolute;left:calc(50% - 5px);bottom:-25px;width:10px;height:10px;
+      border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(45deg)}
+    .finding-toolbar{display:grid;grid-template-columns:minmax(220px,1.4fr) repeat(3,minmax(130px,.7fr)) auto;
+      gap:8px;align-items:end;margin:10px 0 12px}
+    .finding-toolbar label{display:grid;gap:4px;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase}
+    .finding-toolbar input,.finding-toolbar select{width:100%;min-height:34px}
+    .finding-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 0}
+    .pager{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .pager button:disabled{opacity:.45;cursor:not-allowed}
+    .report-table{table-layout:fixed}
+    .report-table .asset-cell code{color:#d9edf7;word-break:break-all}
+    .report-table .risk-cell{color:#d8e2e7;overflow-wrap:anywhere}
+    .report-table tr.finding-row:hover{background:rgba(47,183,164,.08)}
+    .report-table tr.selected{background:rgba(54,194,160,.12)}
+    .report-layout{display:grid;grid-template-columns:minmax(300px,.48fr) minmax(0,1.9fr);gap:10px;align-items:stretch;
+      height:var(--report-layout-h,calc(100vh - 250px));min-height:420px;max-height:calc(100vh - 96px);overflow:hidden}
+    .report-list-card,.report-detail-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+      min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+    .report-list-card{display:flex;flex-direction:column;padding:8px}
+    .report-detail-card{position:static;padding:10px;overflow-y:auto;overflow-x:hidden}
+    .report-detail-card *{min-width:0}
+    .report-detail-card code{white-space:normal;word-break:break-word;overflow-wrap:anywhere}
+    .report-detail-card .smb-pill{max-width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.25}
+    .report-detail-card .summary-access-grid span{white-space:normal}
+    .report-detail-card .smb-report,.report-detail-card .smb-share-report,.report-detail-card .smb-pane,.report-detail-card .smb-finding-card{max-width:100%;overflow-wrap:anywhere}
+    .report-thread-list{display:grid;gap:6px}
+    .report-thread-row{width:100%;border:1px solid var(--line);background:#10171b;color:var(--text);border-radius:8px;
+      padding:8px;text-align:left;cursor:pointer;display:grid;gap:5px;min-width:0}
+    .report-thread-row:hover,.report-thread-row.selected{border-color:#2fb7a4;background:#12251f}
+    .report-thread-main{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;min-width:0}
+    .report-thread-title{display:grid;gap:2px;min-width:0}
+    .report-thread-title code{font-size:12px;color:#d9edf7;overflow-wrap:anywhere}
+    .report-thread-meta{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+    .report-thread-sub{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+    .report-mail-overview{border:1px solid var(--line);background:#0f1519;border-radius:8px;padding:10px;display:grid;gap:8px}
+    .report-mail-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .report-mail-grid>div{border:1px solid var(--line);border-radius:8px;padding:8px;background:#121a1f;min-width:0}
+    .report-mail-grid small{display:block;color:var(--muted);font-size:10.5px}
+    .report-mail-grid strong{display:block;color:var(--text);font-size:12.5px;overflow-wrap:anywhere}
+    .report-mail-preview{display:grid;gap:8px}
+    .report-mail-preview .event-html{width:100%;height:min(520px,62vh);min-height:320px;border:1px solid var(--line);border-radius:6px;background:#fff}
+    .tag-row{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+    .smb-pill{display:inline-flex;align-items:center;min-height:20px;padding:1px 7px;border-radius:999px;
+      border:1px solid #34414a;font-size:10.5px;color:#c8d7df;background:#141b20;white-space:nowrap}
+    .smb-pill.access{border-color:#315c68;color:#bfe7ef;background:#102026}
+    .smb-pill.exposure{border-color:#755c35;color:#f0d18f;background:#241d12}
+    .smb-pill.signal{border-color:#5f5630;color:#e2ca78;background:#201d12}
+    .smb-pill.error{border-color:#74434b;color:#f0adb4;background:#24161a}
+    .smb-pill.review{border-color:#6b4f67;color:#debfe0;background:#211823}
+    .smb-pill.meta{color:#9aa8b1;background:#11171b}
+    .smb-pill.evidence-true{border-color:#287e63;color:#a7f0cc;background:#10231b}
+    .smb-pill.evidence-false{border-color:#74434b;color:#f0adb4;background:#24161a}
+    .smb-pill.evidence-unverified{border-color:#5d6570;color:#cfd7df;background:#171d23}
+    .severity-high,.severity-critical{color:#ff9aa4}
+    .severity-medium{color:#f1cf79}.severity-low{color:#9ed8ff}.severity-informational{color:#9fc8b8}
+    .detail-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    .detail-head .report-back{background:var(--panel-2);border:1px solid var(--line);color:var(--text);
+      min-height:32px;padding:6px 12px;border-radius:8px;cursor:pointer}
+    .detail-hero{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:12px;
+      display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;box-shadow:var(--shadow)}
+    .detail-title{display:grid;gap:5px;min-width:0}
+    .detail-title strong{font-size:18px;overflow-wrap:anywhere}
+    .detail-actions{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+    .smb-report{display:grid;gap:12px}
+    .smb-report-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .smb-report-summary>div{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:10px;min-width:0}
+    .smb-report-summary small{display:block;color:var(--muted);font-size:10.5px}
+    .smb-report-summary strong{display:block;margin-top:2px;font-size:15px;color:var(--text)}
+    .smb-report-summary .summary-note{margin-top:4px;color:var(--muted);font-size:11px;line-height:1.35}
+    .summary-access-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:7px}
+    .summary-access-grid span{border:1px solid #34414a;border-radius:6px;background:#121a1f;padding:5px 4px;text-align:center;
+      font-size:11px;color:#c8d7df;white-space:nowrap}
+    .summary-access-grid b{display:block;color:#f0d18f;font-size:13px;margin-top:1px}
+    .smb-share-report{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:12px;display:grid;gap:10px}
+    .smb-share-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .smb-share-head h3{margin:0;font-size:15px}.smb-share-head code{color:#d9edf7;word-break:break-all}
+    .smb-share-layout{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.18fr);gap:8px;align-items:stretch}
+    .smb-pane{border:1px solid var(--line);border-radius:8px;background:#0f1519;min-height:240px;max-height:520px;overflow-y:auto;overflow-x:hidden;padding:8px}
+    .smb-pane h3,.smb-report-card h3{margin:0 0 8px;font-size:13px;color:#d5e2e8}
+    .smb-report-card{border:1px solid var(--line);border-radius:8px;background:#0f1519;padding:10px;display:grid;gap:8px}
+    .smb-info-row{border-top:1px solid rgba(255,255,255,.08);padding-top:7px;display:grid;gap:4px}
+    .smb-info-row:first-child{border-top:0;padding-top:0}.smb-info-row code{color:#e8d28f;overflow-wrap:anywhere}
+    .smb-info-title{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.smb-info-title strong{font-size:12px;color:#e4edf2}
+    .smb-info-text{font-size:12px;color:#c8d7df;line-height:1.45}
+    .smb-action-list{margin:0;padding-left:18px;display:grid;gap:5px}
+    .smb-action-list li{color:#d3e0e6;font-size:12px;line-height:1.45}
+    .smb-risk-flags{display:flex;flex-wrap:wrap;gap:4px}
+    .smb-hit-list{display:grid;gap:3px;margin-top:4px;color:#c8d7df}
+    .smb-hit-list div{border-left:2px solid #5f5630;padding-left:6px}.smb-hit-list code{color:#e4cf8f}
+    .smb-empty{color:var(--muted);font-size:11.5px;padding:4px 0}
+    .smb-finding-list{display:grid;gap:8px}
+    .smb-finding-card{border:1px solid #33414a;border-left:3px solid #c59b3a;background:#11171b;
+      border-radius:7px;padding:9px;display:grid;gap:6px}
+    .smb-finding-card code{color:#e8d28f;overflow-wrap:anywhere}
+    .smb-file-head{display:grid;gap:2px}.smb-file-meta{color:#8797a0;font-size:10.5px}
+    .smb-tree-panel{background:transparent;padding:0}
+    .smb-tree{display:grid;gap:3px;font-size:12px}
+    .smb-tree details{margin-left:0}.smb-tree summary{list-style:none;cursor:pointer}
+    .smb-tree summary::-webkit-details-marker{display:none}
+    .smb-tree-row{display:flex;align-items:flex-start;gap:8px;padding:4px 6px;border-radius:5px}
+    .smb-tree-row:hover{background:rgba(255,255,255,.035)}
+    .smb-tree-main{min-width:0;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+    .smb-tree-main code{color:#d9edf7;overflow-wrap:anywhere}
+    .smb-branch{color:#78909c;font-weight:700;min-width:14px}
+    .smb-node-badges{display:inline-flex;flex-wrap:wrap;gap:4px}
+    .smb-tree-hit{margin:0 0 4px 34px}
+    .smb-dir-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;border-bottom:1px solid rgba(255,255,255,.06);
+      padding:5px 0;font-size:12px}.smb-dir-row code{color:#d9edf7;word-break:break-all}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:30;display:none;
+      align-items:center;justify-content:center;padding:22px}
+    .modal-backdrop.open{display:flex}
+    .agent-chat-modal{width:min(980px,100%);max-height:calc(100vh - 44px);background:var(--panel);
+      border:1px solid var(--line);border-radius:8px;box-shadow:0 24px 70px rgba(0,0,0,.45);
+      display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+    .agent-chat-modal .chat-body{max-height:none;min-height:300px;overflow:auto}
+    .investigation-modal{width:min(920px,100%);max-height:calc(100vh - 44px);background:var(--panel);
+      border:1px solid var(--line);border-radius:8px;box-shadow:0 24px 70px rgba(0,0,0,.45);
+      display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+    .investigation-head{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--line)}
+    .investigation-head b{font-size:14px}
+    .investigation-head .meta{color:var(--muted);font-size:12px;font-family:ui-monospace,monospace}
+    .investigation-head .chat-meta{min-width:0}
+    .investigation-head .chat-meta .pill.path{max-width:260px}
+    .investigation-head button{margin-left:auto}
+    .investigation-body{padding:14px;display:flex;flex-direction:column;gap:9px;overflow:auto;min-height:280px}
+    .mail-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,.7fr);gap:12px;align-items:start}
+    .mail-thread-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+    .mail-thread-table tr:hover{background:rgba(54,194,160,.08)}
+    .thread-timeline{display:grid;gap:10px;margin-top:10px}
+    .thread-event{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px}
+    .thread-event .event-body{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;gap:6px}
+    .thread-event .event-subject{font-weight:800;overflow-wrap:anywhere}
+    .thread-event .event-text{color:var(--soft);line-height:1.45;overflow-wrap:anywhere}
+    .thread-event .event-html{width:100%;height:min(640px,70vh);min-height:420px;border:1px solid var(--line);border-radius:6px;background:#fff}
+    .thread-side{position:sticky;top:76px}
+
+    @media (max-width:1100px){
+      .agent-grid{grid-template-columns:1fr}
+      .agent-workbench{grid-template-columns:1fr}
+      .worker-console{grid-template-columns:1fr}
+      .worker-list{border-right:0;border-bottom:1px solid var(--line)}
+      .pipe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .finding-toolbar{grid-template-columns:1fr 1fr}
+      .smb-report-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .report-mail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .smb-share-layout{grid-template-columns:1fr}
+      .report-layout{grid-template-columns:1fr}
+      .report-layout{height:auto;max-height:none;min-height:0;overflow:visible}
+      .report-list-card,.report-detail-card{max-height:none;overflow:visible}
+      .report-detail-card{position:static}
+      .mail-layout{grid-template-columns:1fr}
+      .flow-card::before,.flow-card::after{display:none}
+    }
+    @media (max-width:680px){
+      header{height:auto;min-height:60px;align-items:flex-start;padding:12px 14px;flex-wrap:wrap}
+      header h1{white-space:normal}
+      header .sp,#clock{display:none}
+      main{padding:14px}
+      .grid{grid-template-columns:1fr 1fr}
+      .agent-head{grid-template-columns:1fr;gap:8px}
+      .section-head{align-items:flex-start;flex-direction:column}
+      .agent-state{justify-content:flex-start}
+      .agent-main{white-space:normal;line-height:1.45}
+      .fanout-item{grid-template-columns:8px minmax(0,1fr) 34px}
+      .session-context{grid-template-columns:1fr}
+      .pipe-grid{grid-template-columns:1fr;gap:12px}
+      .flow-card{width:100%;min-height:auto}
+      .flow-main{grid-template-columns:86px minmax(0,1fr)}
+      .finding-toolbar{grid-template-columns:1fr}
+      .smb-report-summary{grid-template-columns:1fr 1fr}
+      .report-mail-grid{grid-template-columns:1fr}
+      .msg{grid-template-columns:1fr}
+      .console-line,.thread-event{grid-template-columns:1fr}
+      .msg-role{padding-top:0}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SMB E2E 파이프라인</h1>
+    <nav>
+      <button data-tab="dash" class="active">대시보드</button>
+      <button data-tab="findings">Findings</button>
+      <button data-tab="report">Report</button>
+      <button data-tab="mail">메일 스레드</button>
+      <button data-tab="admin">관리</button>
+    </nav>
+    <span class="sp"></span>
+    <span id="clock" class="muted"></span>
+  </header>
+  <main id="view"></main>
+  <div id="agent-chat-modal" class="modal-backdrop" onclick="backdropCloseAgentSession(event)"></div>
+  <div id="investigation-modal" class="modal-backdrop" onclick="backdropCloseInvestigation(event)"></div>
+
+<script>
+function api(path, params={}){ const u=new URL(path, location.origin);
+  for(const[k,v]of Object.entries(params)) u.searchParams.set(k,v); return u; }
+async function getJSON(path, params){ const r=await fetch(api(path,params)); if(!r.ok) throw new Error(r.status); return r.json(); }
+async function postJSON(path, body={}){ const r=await fetch(api(path),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); if(!r.ok) throw new Error(r.status); return r.json(); }
+function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function looksHtml(s){ return /<\/?[a-z][\s\S]*>/i.test(String(s||'')); }
+function mailSrcdoc(raw){
+  let html=String(raw||'');
+  html=html.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  html=html.replace(/`([^`]+)`/g,'<code style="background:#f4f6f8;border:1px solid #d9e0e5;border-radius:4px;padding:1px 4px">$1</code>');
+  const css=`<style>body{margin:16px;font-family:'Malgun Gothic',Arial,sans-serif;color:#222;line-height:1.6}table{max-width:100%;border-collapse:collapse}td,th{vertical-align:top}td:first-child{white-space:nowrap;min-width:86px}code{white-space:nowrap}</style>`;
+  if(/<html[\s>]/i.test(html)){
+    return /<\/head>/i.test(html) ? html.replace(/<\/head>/i, css+'</head>') : html.replace(/<body[^>]*>/i, m=>m+css);
+  }
+  return `<!doctype html><html><head>${css}</head><body>${html}</body></html>`;
+}
+function renderMailBody(m){
+  const html=String(m?.body_html||'');
+  const body=String(m?.body_excerpt||'');
+  if(html||((m?.direction||'')==='out'&&looksHtml(body))){
+    return `<iframe class="event-html" loading="lazy" sandbox="" srcdoc="${esc(mailSrcdoc(html||body))}"></iframe>`;
+  }
+  return `<div class="event-text">${body?esc(body):'본문 없음'}</div>`;
+}
+const $=s=>document.querySelector(s);
+const UI_STATE_KEY='smb-e2e-ui-state-v2';
+const VALID_TABS=new Set(['dash','findings','report','mail','admin']);
+function readUiState(){
+  try{
+    const raw=localStorage.getItem(UI_STATE_KEY);
+    const parsed=raw?JSON.parse(raw):{};
+    return parsed&&typeof parsed==='object'?parsed:{};
+  }catch(e){ return {}; }
+}
+const persistedUiState=readUiState();
+function clampNumber(v,min=0){
+  const n=Number(v);
+  return Number.isFinite(n)?Math.max(min,n):min;
+}
+function setNavActive(){
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===activeTab));
+}
+function saveUiState(){
+  try{
+    localStorage.setItem(UI_STATE_KEY,JSON.stringify({
+      activeTab,
+      findingState:typeof findingState!=='undefined'?findingState:null,
+      reportState:typeof reportState!=='undefined'?reportState:null,
+      mailState:typeof mailState!=='undefined'?mailState:null,
+      selectedAgent,
+      reportScroll:typeof reportScroll!=='undefined'?reportScroll:null,
+    }));
+  }catch(e){}
+}
+function captureReportScroll(){
+  if(activeTab!=='report') return;
+  const list=document.querySelector('.report-list-card');
+  const detail=document.querySelector('.report-detail-card');
+  if(list) reportScroll.list=list.scrollTop;
+  if(detail) reportScroll.detail=detail.scrollTop;
+  saveUiState();
+}
+window.addEventListener('beforeunload',()=>{ captureReportScroll(); saveUiState(); });
+let activeTab=VALID_TABS.has(persistedUiState.activeTab)?persistedUiState.activeTab:'dash';
+let selectedAgent=persistedUiState.selectedAgent||null;
+
+function setActiveTab(tab){
+  captureReportScroll();
+  activeTab=tab;
+  setNavActive();
+  saveUiState();
+  render();
+}
+
+function setHTMLIfChanged(el, html){
+  if(el&&el.innerHTML!==html) el.innerHTML=html;
+}
+
+function ensureDashboardShell(){
+  const v=$('#view');
+  if(!v) return false;
+  if($('#dash-summary')&&$('#pipeline-grid')&&$('#agent-console-shell')) return true;
+  v.innerHTML=`<div id="dash-status" class="muted"></div>
+    <div id="dash-summary"><p class="muted">불러오는 중...</p></div>
+    <div class="section-head"><div><h2>파이프라인 흐름</h2><div class="muted">collector부터 reverify까지 현재 처리 흐름입니다.</div></div></div>
+    <div class="pipeline-board"><div id="pipeline-grid" class="pipe-grid"></div></div>
+    <div class="section-head"><div><h2>Heartbeats</h2><div class="muted">Detail 은 그 시각의 마지막 결과다 — Age 를 같이 볼 것.</div></div></div>
+    <div class="pipeline-board"><div id="heartbeat-panel"></div></div>
+    <div class="section-head"><div><h2>Operator / Worker Console</h2><div class="muted">대단위 병렬작업에서는 operator와 worker transcript를 분리해 확인합니다.</div></div></div>
+    <div id="agent-console-shell"></div>`;
+  return true;
+}
+
+// 하트비트 신선도. detail 은 **마지막 실행 결과가 그대로 박혀 있는 값**이라, 나이를 같이
+// 보여주지 않으면 한 달 전 숫자를 오늘 결과로 읽게 된다(2026-08-16 실측: 하트비트 31개 중
+// 26개가 24h 이상 낡았는데 화면엔 구분이 없었다). alive 는 API 의 600초 기준이라
+// 그것만 쓰면 6시간 cron 이 항상 빨갛게 보이므로 24h/7d 구간을 따로 둔다.
+function hbTier(h){
+  const sec=Math.max(0,Math.floor(Date.now()/1000-Number(h.last_beat||0)));
+  if(!h.last_beat)return {cls:'meta',label:'기록없음'};
+  if(h.alive)return {cls:'alive',label:'LIVE'};
+  if(sec<86400)return {cls:'warn',label:'대기'};
+  if(sec<604800)return {cls:'dead',label:'하루+'};
+  return {cls:'dead',label:'★일주일+'};
+}
+function heartbeatTable(d){
+  const rows=Object.entries(d.heartbeats||{})
+    .sort((a,b)=>Number(b[1].last_beat||0)-Number(a[1].last_beat||0))
+    .map(([k,h])=>{
+      const t=hbTier(h);
+      return `<tr><td><code>${esc(k)}</code></td><td><span class="pill ${t.cls}">${t.label}</span></td>`
+        +`<td>${esc(h.phase||'-')}</td><td>${age(h.last_beat)}</td><td class="muted">${esc(h.detail||'')}</td></tr>`;
+    }).join('');
+  return `<table style="width:100%"><thead><tr><th>Agent</th><th>신선도</th><th>Phase</th><th>Age</th><th>Detail</th></tr></thead>`
+    +`<tbody>${rows||'<tr><td colspan="5" class="muted">데이터 없음</td></tr>'}</tbody></table>`;
+}
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setActiveTab(b.dataset.tab));
+
+function fmt(n){ const x=Number(n)||0; return x>=10000?x.toLocaleString('ko-KR'):x; }
+function age(ts){
+  if(!ts) return '';
+  const sec=Math.max(0,Math.floor(Date.now()/1000-Number(ts)));
+  if(sec<60) return sec+'s';
+  if(sec<3600) return Math.floor(sec/60)+'m';
+  if(sec<86400) return Math.floor(sec/3600)+'h';
+  return Math.floor(sec/86400)+'d';
+}
+function statusPill(alive, enabled){
+  if(enabled===false) return '<span class="pill dead">OFF</span>';
+  return `<span class="pill ${alive?'alive':'dead'}">${alive?'LIVE':'STALE'}</span>`;
+}
+function isIpLike(x){ return /^\d{1,3}(\.\d{1,3}){3}$/.test(String(x||'')); }
+function workerStageLabel(component){
+  return ({task:'점검',mail:'리포팅·메일',reverify:'답장·재검증'})[component]||component||'-';
+}
+function workerStatusLabel(status){
+  const value=String(status||'');
+  return ({
+    active:'진행 중',queued:'대기',finding:'finding 확인',done:'완료',
+    running:'실행 중',completed:'완료',failed:'실패',
+    pending:'대기',walked:'워킹 완료',listing_reviewed:'목록 검토 완료',
+    in_progress:'진행 중',triaged_completed:'점검 완료',triaged_errored:'점검 오류',
+    ignored:'큐 제외',closed:'완결',
+    draft:'레포트 초안',reported:'레포트 정리 완료',
+    awaiting_reply:'메일 발송 후 회신 대기',reply_received:'회신 수신',
+    reverifying:'재검증 중',re_requested:'재조치 요청',
+    partially_remediated:'부분 조치 확인',
+    exception_review:'업무 예외 검토',owner_update_needed:'담당자 확인 필요',
+    owner_reassignment_review:'담당자 변경 검토',reassigned:'담당자 이관',
+    remediated:'조치 완료',escalated:'에스컬레이션',
+  })[value]||value;
+}
+function sessionTargetDisplay(d){
+  if(!d) return '';
+  if(d.target&&d.target.display) return d.target.display;
+  if(d.share&&d.share.host&&d.share.share) return '\\\\'+d.share.host+'\\'+d.share.share;
+  if(d.thread&&d.thread.host) return d.thread.host;
+  return d.title||'';
+}
+function renderAgentTranscriptMeta(d, fallbackSource=''){
+  const chips=[];
+  const t=d&&d.transcript?d.transcript:{};
+  const add=(value,cls='')=>{
+    const s=String(value??'').trim();
+    if(s) chips.push(`<span class="pill ${cls}">${esc(s)}</span>`);
+  };
+  add(sessionTargetDisplay(d),'path');
+  add((d&&d.status_label)||workerStatusLabel(d&&d.status));
+  add((d&&d.source)||fallbackSource);
+  if(t.status) add('실행 '+workerStatusLabel(t.status));
+  if(t.entry_count!==undefined&&t.entry_count!==null) add(fmt(t.entry_count)+' events');
+  add(t.subagent_type);
+  add(t.evidence_dir,'path');
+  return `<span class="chat-meta">${chips.join('')}</span>`;
+}
+function messageText(m){ return (m&&m.content&&m.content.text)||m.text||''; }
+function displayMessageText(m){
+  const raw=String(messageText(m)||'');
+  const target=raw.match(/^target=(\\\\.+?)\s+status=([a-z_]+)$/);
+  if(target) return `대상: ${target[1]}\n상태: ${workerStatusLabel(target[2])}`;
+  const status=raw.match(/^status=([a-z_]+)\s+severity=([^\s]+)\s+hits=([0-9]+)(?:\n([\s\S]*))?$/);
+  if(status){
+    const tail=status[4]?`\n${status[4]}`:'';
+    return `상태: ${workerStatusLabel(status[1])}\n위험도: ${status[2]}\n확인된 hit: ${status[3]}건${tail}`;
+  }
+  return raw;
+}
+function renderAgentSessionContext(d){
+  const rows=[];
+  const add=(label,value,cls='')=>{
+    const s=String(value??'').trim();
+    if(s) rows.push(`<div><small>${esc(label)}</small><strong class="${cls}">${esc(s)}</strong></div>`);
+  };
+  add('단계',(d&&d.stage)||workerStageLabel(d&&d.component));
+  add('대상',sessionTargetDisplay(d),'path');
+  add('상태',(d&&d.status_label)||workerStatusLabel((d&&d.status)||((d&&d.transcript)?d.transcript.status:'')));
+  return rows.length?`<div class="session-context">${rows.join('')}</div>`:'';
+}
+function renderMessages(messages, empty='메시지 없음'){
+  const rows=(messages||[]).map(m=>`<div class="msg"><div class="msg-role">${esc(m.role||m.direction||'-')}</div><div class="msg-text">${esc(displayMessageText(m))}</div></div>`).join('');
+  return rows||`<div class="muted">${esc(empty)}</div>`;
+}
+function chatPlaceholder(){
+  return '<div class="chat-head"><b>Worker Chat</b><span class="pill">worker 선택</span></div><div class="chat-empty">왼쪽 worker를 선택하면 대상별 채팅형 transcript가 여기에 표시됩니다.</div>';
+}
+
+function pipelineTargetLabel(x){
+  if(x&&typeof x==='object') return x.label||x.display||x.target||'';
+  return String(x??'');
+}
+function pipelineTargetAttr(x,name){
+  return x&&typeof x==='object' ? String(x[name]||'') : '';
+}
+function targetList(s){
+  const t=s.targets||{}; const active=t.active||[]; const next=t.next||[];
+  const live=active.length>0; const items=(live?active:next).slice(0,40);
+  const rows=items.map(x=>{
+    const label=pipelineTargetLabel(x);
+    const component=pipelineTargetAttr(x,'component');
+    const ref=pipelineTargetAttr(x,'session_ref');
+    const inspect=Boolean(component&&ref);
+    return `<div class="target-row ${live?'live':''} ${inspect?'inspectable':''}" data-target="${esc(label)}" data-stage="${esc(s.key||'')}" data-component="${esc(component)}" data-ref="${esc(ref)}" onclick="openPipelineTargetFromRow(this)" title="${inspect?'클릭: agent 대화창 열기':''}">
+      <span class="target-mark"></span><span>${esc(label)}</span></div>`;
+  }).join('');
+  return `<div class="target-list">
+    <div class="target-head">${live?'진행중 '+active.length:'대기 대상'}</div>
+    <div class="target-body">${rows||'<div class="target-empty">대상 없음</div>'}</div>
+  </div>`;
+}
+
+function powerButton(s){
+  if(!s.control_key) return '';
+  const on=s.node_enabled!==false;
+  return `<button class="power-toggle ${on?'on':'off'}" onclick="toggleCron('${s.control_key}',${on?0:1})">${on?'ON':'OFF'}</button>`;
+}
+
+function stepCard(s, cls=''){
+  const metrics=(s.metrics||[]).slice(0,6).map(m=>`<div class="metric-row"><span>${esc(m.label)}</span><b>${fmt(m.value)}${esc(m.unit||'')}</b></div>`).join('');
+  const needsRunner=s.proc&&s.node_enabled!==false&&(s.status==='active'||Number(s.queue||0)>0||Number(s.processing||0)>0);
+  const down=needsRunner&&!s.proc_alive;
+  const procDot=s.proc?`<span class="proc-dot ${s.proc_alive?'live':''}"></span>`:'<span class="proc-dot live"></span>';
+  return `<div class="flow-card ${s.status==='active'?'live':''} ${down?'down':''} ${cls}">
+    <div class="flow-head">
+      <div class="flow-title">${procDot}<span class="flow-title-text">${esc(s.icon||'')} ${esc(s.label)}</span></div>
+      ${powerButton(s)}
+    </div>
+    <div class="flow-main">
+      <div class="stat-stack">
+        <div class="stat-box queue"><div class="n">${fmt(s.queue)}</div><div class="l">대기</div></div>
+        <div class="stat-box proc"><div class="n">${fmt(s.processing)}</div><div class="l">처리중</div></div>
+        <div class="stat-box done"><div class="n">${fmt(s.done)}</div><div class="l">누적</div></div>
+      </div>
+      ${targetList(s)}
+    </div>
+    <div class="metric-grid">${metrics}</div>
+  </div>`;
+}
+
+function renderAgents(d){
+  const agents=d.agents||[];
+  const cards=agents.map(a=>{
+    const items=renderWorkerButtons([a]);
+    return `<section class="agent-card">
+      <div class="agent-head">
+        <div class="agent-title">${esc(a.label)}</div>
+        <div class="agent-state">${statusPill(a.alive,a.enabled)}<span class="pill ${a.queue?'warn':''}">${fmt(a.queue)}</span></div>
+      </div>
+      <div class="agent-main">${esc(a.main_line||'-')}</div>
+      <div class="fanout-list">${items||'<div class="muted">fan-out 없음</div>'}</div>
+    </section>`;
+  }).join('');
+  return renderAgentConsole(d)+`<div class="agent-grid">${cards}</div>`;
+}
+function renderWorkerButtons(agents){
+  return (agents||[]).flatMap(a=>(a.sessions||[]).map(it=>{
+    const active=selectedAgent&&selectedAgent.component===a.component&&selectedAgent.id===it.id;
+    const title=(it.target&&it.target.display)||it.title||it.id;
+    const status=it.status_label||workerStatusLabel(it.status);
+    const rawSubtitle=String(it.subtitle||'');
+    const subtitle=[a.stage||a.label];
+    if(status&&!rawSubtitle.includes(status)) subtitle.push(status);
+    if(rawSubtitle) subtitle.push(rawSubtitle);
+    return `<button class="fanout-item ${active?'active':''}" data-session="${esc(a.component+':'+it.id)}" onclick="openAgentSession('${a.component}','${it.id}')">
+      <span class="fanout-dot ${esc(it.status||'')}"></span>
+      <span><span class="fanout-name">${esc(title)}</span><span class="fanout-sub">${esc(subtitle.join(' · '))}</span></span>
+      <span class="fanout-age">${age(it.updated_at)}</span>
+    </button>`;
+  })).join('');
+}
+function renderAgentConsole(d){
+  const operator=d.operator||{};
+  const operatorMessages=(operator.messages&&operator.messages.length?operator.messages:[
+    {role:'operator',text:'agent overview loaded. worker를 선택해 target transcript를 확인하세요.'},
+    ...((d.agents||[]).slice(0,3).map(a=>({role:a.component||'agent',text:a.main_line||a.label||''}))),
+  ]);
+  const operatorRows=operatorMessages.map(m=>`<div class="console-line"><span class="role-badge">${esc(m.role||'op')}</span><div class="console-text">${esc(messageText(m))}</div></div>`).join('');
+  const workers=renderWorkerButtons(d.agents||[]);
+  return `<div class="agent-workbench">
+    <section class="operator-console">
+      <div class="console-head"><div><div class="console-title">${esc(operator.title||'Operator')}</div><div class="console-sub">${esc(operator.status||'orchestration')}</div></div><span class="pill alive">LIVE</span></div>
+      <div class="console-feed">${operatorRows}</div>
+    </section>
+    <section class="worker-console">
+      <div class="worker-list">
+        <div class="console-head"><div><div class="console-title">Workers</div><div class="console-sub">share / IP / mail thread</div></div><span class="pill warn">${fmt((d.agents||[]).reduce((n,a)=>n+(a.sessions||[]).length,0))}</span></div>
+        <div class="fanout-list">${workers||'<div class="muted">worker 없음</div>'}</div>
+      </div>
+      <div class="worker-transcript"><div id="agent-chat" class="chat-panel embedded open">${chatPlaceholder()}</div></div>
+    </section>
+  </div>`;
+}
+
+async function openAgentSession(component,id){
+  selectedAgent={component,id};
+  document.querySelectorAll('.fanout-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.fanout-item').forEach(b=>{ if(b.dataset.session===component+':'+id) b.classList.add('active'); });
+  const box=$('#agent-chat'); if(!box) return;
+  box.classList.add('open');
+  box.innerHTML='<div class="chat-head"><b>Worker Chat</b><button class="act" onclick="closeAgentSession()">닫기</button></div><div class="chat-body"><div class="muted">불러오는 중...</div></div>';
+  try{
+    const d=await getJSON('/api/agents/sessions/'+encodeURIComponent(component)+'/'+encodeURIComponent(id));
+    box.innerHTML=`<div class="chat-head"><b>${esc(d.title||sessionTargetDisplay(d)||'Worker Chat')}</b>${renderAgentTranscriptMeta(d)}<button class="act" onclick="closeAgentSession()">닫기</button></div><div class="chat-body">${renderAgentSessionContext(d)}${renderMessages(d.messages)}</div>`;
+  }catch(e){
+    box.innerHTML='<div class="chat-head"><b>Worker Chat</b><button class="act" onclick="closeAgentSession()">닫기</button></div><div class="chat-body"><div class="muted">로드 실패: '+esc(e)+'</div></div>';
+  }
+}
+function closeAgentSession(){
+  selectedAgent=null;
+  document.querySelectorAll('.fanout-item').forEach(b=>b.classList.remove('active'));
+  const box=$('#agent-chat');
+  if(box){ box.classList.add('open'); box.innerHTML=chatPlaceholder(); }
+}
+
+async function openAgentSessionModal(component,id){
+  const box=$('#agent-chat-modal'); if(!box) return;
+  box.classList.add('open');
+  box.innerHTML='<section class="agent-chat-modal" role="dialog" aria-modal="true"><div class="chat-head"><b>Agent Chat</b><button class="act" onclick="closeAgentSessionModal()">닫기</button></div><div class="chat-body"><div class="muted">불러오는 중...</div></div></section>';
+  try{
+    const d=await getJSON('/api/agents/sessions/'+encodeURIComponent(component)+'/'+encodeURIComponent(id));
+    box.innerHTML=`<section class="agent-chat-modal" role="dialog" aria-modal="true"><div class="chat-head"><b>${esc(d.title||sessionTargetDisplay(d)||'Agent Chat')}</b>${renderAgentTranscriptMeta(d)}<button class="act" onclick="closeAgentSessionModal()">닫기</button></div><div class="chat-body">${renderAgentSessionContext(d)}${renderMessages(d.messages)}</div></section>`;
+  }catch(e){
+    box.innerHTML='<section class="agent-chat-modal" role="dialog" aria-modal="true"><div class="chat-head"><b>Agent Chat</b><button class="act" onclick="closeAgentSessionModal()">닫기</button></div><div class="chat-body"><div class="muted">로드 실패: '+esc(e)+'</div></div></section>';
+  }
+}
+function closeAgentSessionModal(){
+  const modal=$('#agent-chat-modal');
+  if(modal){ modal.classList.remove('open'); modal.innerHTML=''; }
+}
+function backdropCloseAgentSession(ev){ if(ev.target&&ev.target.id==='agent-chat-modal') closeAgentSessionModal(); }
+function openPipelineTargetFromRow(row){
+  const component=row&&row.dataset?row.dataset.component:'';
+  const ref=row&&row.dataset?row.dataset.ref:'';
+  if(component&&ref) openAgentSessionModal(component,ref);
+}
+
+document.addEventListener('dblclick', ev=>{
+  const row=ev.target.closest&&ev.target.closest('.target-row.inspectable');
+  if(!row) return;
+  if(row.dataset&&row.dataset.component) return;
+  const ip=row.dataset.target;
+  if(ip&&isIpLike(ip)) openInvestigationPopup(ip);
+});
+
+function closeInvestigation(){
+  const box=$('#investigation-modal');
+  if(box){ box.classList.remove('open'); box.innerHTML=''; }
+}
+function backdropCloseInvestigation(ev){ if(ev.target&&ev.target.id==='investigation-modal') closeInvestigation(); }
+async function openInvestigationPopup(ip){
+  const box=$('#investigation-modal'); if(!box) return;
+  box.classList.add('open');
+  box.innerHTML=`<section class="investigation-modal" role="dialog" aria-modal="true">
+    <div class="investigation-head"><b>조사현황</b><span class="meta">${esc(ip)}</span><button class="act" onclick="closeInvestigation()">닫기</button></div>
+    <div class="investigation-body"><div class="muted">불러오는 중...</div></div>
+  </section>`;
+  try{
+    const d=await getJSON('/api/agents/sessions/task/'+encodeURIComponent('host-'+ip));
+    box.innerHTML=`<section class="investigation-modal" role="dialog" aria-modal="true">
+      <div class="investigation-head"><b>조사현황</b><span class="meta">${esc(d.title||ip)}</span>${renderAgentTranscriptMeta(d,'host-session')}<button class="act" onclick="closeInvestigation()">닫기</button></div>
+      <div class="investigation-body">${renderMessages(d.messages,'조사 기록 없음')}</div>
+    </section>`;
+  }catch(e){
+    box.innerHTML=`<section class="investigation-modal" role="dialog" aria-modal="true">
+      <div class="investigation-head"><b>조사현황</b><span class="meta">${esc(ip)}</span><button class="act" onclick="closeInvestigation()">닫기</button></div>
+      <div class="investigation-body"><div class="muted">로드 실패: ${esc(e)}</div></div>
+    </section>`;
+  }
+}
+
+async function renderDash(){
+  ensureDashboardShell();
+  const summaryBox=$('#dash-summary');
+  const statusBox=$('#dash-status');
+  const pipelineGrid=$('#pipeline-grid');
+  const agentShell=$('#agent-console-shell');
+  let d, agents;
+  try{
+    [d, agents]=await Promise.all([getJSON('/api/pipeline/overview',{live:1}), getJSON('/api/agents/overview')]);
+  }catch(e){
+    setHTMLIfChanged(statusBox,'로드 실패: '+esc(e));
+    if(summaryBox&&!summaryBox.textContent.trim()) setHTMLIfChanged(summaryBox,'<p class="muted">로드 실패: '+esc(e)+'</p>');
+    return;
+  }
+  setHTMLIfChanged(statusBox,'');
+  const byKey={}; (d.stages||[]).forEach(s=>byKey[s.key]=s);
+  const summary=`<div class="grid">
+    <div class="card"><h3>스윕 완료 / 대상</h3><div class="big">${fmt((byKey.sweep||{}).done)} <span class="muted" style="font-size:14px">/ ${fmt(((byKey.sweep||{}).metrics||[])[0]?.value)}</span></div></div>
+    <div class="card"><h3>워킹 파일</h3><div class="big">${fmt((byKey.walking||{}).done)}</div></div>
+    <div class="card"><h3>점검 Finding</h3><div class="big">${fmt(d.findings_total)}</div></div>
+    <div class="card"><h3>조치요청 진행</h3><div class="big">${fmt((byKey.report||{}).done)}</div></div>
+    <div class="card"><h3>조치 완결</h3><div class="big">${fmt((byKey.done||{}).done)}</div></div>
+  </div>`;
+  const top=['sweep','walking','owner','task'];
+  const bottom=['done','reverify','reply','report'];
+  const topClasses=['arrow-r','arrow-r','arrow-r','arrow-d'];
+  const bottomClasses=['','arrow-l','arrow-l','arrow-l'];
+  const cards=[
+    ...top.map((k,i)=>stepCard(byKey[k]||{},topClasses[i])),
+    ...bottom.map((k,i)=>stepCard(byKey[k]||{},bottomClasses[i])),
+  ].join('');
+  const chatBox=$('#agent-chat');
+  const selectedChat=selectedAgent&&chatBox?chatBox.innerHTML:'';
+  setHTMLIfChanged(summaryBox,summary);
+  setHTMLIfChanged(pipelineGrid,cards);
+  setHTMLIfChanged($('#heartbeat-panel'),heartbeatTable(d));
+  setHTMLIfChanged(agentShell,renderAgents(agents));
+  if(selectedChat){
+    const nextChat=$('#agent-chat');
+    if(nextChat){ nextChat.classList.add('open'); nextChat.innerHTML=selectedChat; }
+  }
+}
+
+async function toggleCron(component, enabled){
+  try{ await postJSON('/api/cron/set',{component,enabled:!!enabled}); }
+  catch(e){ alert('실패: '+e); }
+  render();
+}
+
+const FINDING_PAGE_SIZE=50;
+const DEFAULT_HOST_STATUS='triaged_completed';
+const REPORT_READY_ONLY=true;
+let findingState={
+  page:clampNumber(persistedUiState.findingState?.page,0),
+  q:String(persistedUiState.findingState?.q||''),
+  status:String(persistedUiState.findingState?.status||DEFAULT_HOST_STATUS),
+  exposure:String(persistedUiState.findingState?.exposure||'open'),
+  severity:String(persistedUiState.findingState?.severity||''),
+};
+let reportState={
+  page:clampNumber(persistedUiState.reportState?.page,0),
+  q:String(persistedUiState.reportState?.q||''),
+  status:String(persistedUiState.reportState?.status||''),
+  severity:String(persistedUiState.reportState?.severity||''),
+  host:String(persistedUiState.reportState?.host||''),
+  threadId:persistedUiState.reportState?.threadId?Number(persistedUiState.reportState.threadId):null,
+  findingsOnly:persistedUiState.reportState?.findingsOnly!==false,
+  cycleKey:String(persistedUiState.reportState?.cycleKey||''),
+};
+let mailState={
+  threadId:persistedUiState.mailState?.threadId?Number(persistedUiState.mailState.threadId):null,
+  cycleKey:String(persistedUiState.mailState?.cycleKey||''),
+};
+let reportScroll={
+  list:clampNumber(persistedUiState.reportScroll?.list,0),
+  detail:clampNumber(persistedUiState.reportScroll?.detail,0),
+};
+let reportFilterApplyTimer=null;
+const REPORT_STATUSES=['reported','awaiting_reply','reply_received','reverifying','re_requested','partially_remediated','exception_review','owner_update_needed','owner_reassignment_review','reassigned','remediated','escalated','closed'];
+const HITL_REVIEW_STATUSES=new Set(['exception_review','owner_update_needed','owner_reassignment_review']);
+
+function option(value,label,current){ return `<option value="${esc(value)}" ${current===value?'selected':''}>${esc(label)}</option>`; }
+function severityLabel(v){
+  return ({critical:'매우 높음',high:'높음',medium:'중간',low:'낮음',informational:'정보'})[v]||v||'-';
+}
+function smbStatusLabel(v){
+  return ({
+    pending:'대기',walked:'워킹 완료',listing_reviewed:'목록 검토',in_progress:'진행 중',
+    triaged_completed:'점검 완료',triaged_errored:'점검 오류',ignored:'큐 제외',closed:'완결',
+    confirmed:'확인됨',false_positive:'오탐',denied:'읽기 거부',error:'오류',not_found:'없음'
+  })[v]||v||'-';
+}
+function reportStatusLabel(v){
+  return ({
+    reported:'발송 전',awaiting_reply:'답장 대기',reply_received:'답장 수신',
+    reverifying:'재검증 중',re_requested:'재요청',
+    partially_remediated:'부분 조치',
+    exception_review:'업무 예외 검토',
+    owner_update_needed:'담당자 확인',
+    owner_reassignment_review:'담당자 변경 검토',
+    reassigned:'담당자 이관',
+    remediated:'조치 완료',
+    escalated:'에스컬레이션',closed:'종료'
+  })[v]||v||'-';
+}
+function reportStatusPill(v){
+  const cls=({reported:'warn',awaiting_reply:'alive',reply_received:'warn',partially_remediated:'warn',exception_review:'warn',owner_update_needed:'warn',owner_reassignment_review:'warn',reassigned:'warn',remediated:'alive',closed:'meta'})[v]||'';
+  return `<span class="pill ${cls}">${esc(reportStatusLabel(v))}</span>`;
+}
+function reportTicketLabel(t){
+  const ticket=t?.ticket_no||((t?.id!==undefined&&t?.id!==null)?`SMB${String(t.id).padStart(5,'0')}`:'SMB-----');
+  return `(${ticket})${t?.host||''}`;
+}
+function smbFlagLabel(flag){
+  return ({
+    print_share:'프린터 공유',null_readable:'NULL 읽기',guest_readable:'GUEST 읽기',auth_readable:'AUTH 읽기',
+    auth_broad_readable:'AUTH 광범위 접근',share_writable:'공유 쓰기',file_writable:'파일 쓰기',
+    confirmed_hits:'확정 근거',content_hits:'본문 근거',submitted_finding:'제출 파인딩',
+    credential_hit:'계정정보',secret_hit:'시크릿',pii_hit:'개인정보',business_confidential_hit:'경영자료',
+    semiconductor_process_hit:'공정자료',administrative_share:'행정 공유',directory_issue:'폴더 이슈',
+    file_issue:'파일 이슈',exception_approved:'조치 예외',review_critical:'검토 매우 높음',review_high:'검토 높음',review_medium:'검토 중간',
+    fetch_error:'파일 오류',fetch_denied:'파일 거부',fetch_not_found:'파일 없음'
+  })[flag]||flag;
+}
+function smbFlagTone(flag){
+  const raw=String(flag||'');
+  if(raw.includes('critical')||raw.includes('high')||raw.includes('review')) return 'review';
+  if(raw.includes('error')||raw.includes('denied')||raw.includes('not_found')) return 'error';
+  if(raw.includes('writable')||raw.includes('readable')||raw.includes('print')) return 'exposure';
+  if(raw.includes('hit')||raw.includes('finding')) return 'signal';
+  return 'meta';
+}
+function renderSmbFlags(flags){
+  const hidden=new Set(['null_readable','guest_readable','auth_readable','share_writable','file_writable','directory_writable']);
+  const list=(flags||[]).filter(f=>f&&!hidden.has(f));
+  return list.length?`<span class="smb-risk-flags">${list.map(f=>`<span class="smb-pill ${smbFlagTone(f)}">${esc(smbFlagLabel(f))}</span>`).join('')}</span>`:'';
+}
+function rowSeverity(s){
+  if(s.severity) return s.severity;
+  const c=s.counts||{}, m=s.modes||{}, rw=s.rw||{};
+  if(c.lifecycle_findings||c.confirmed_hits||rw.write||(rw.read&&(m.null||m.guest))) return 'high';
+  if(rw.read&&m.auth) return 'medium';
+  if(s.excluded_reason==='print') return 'low';
+  return 'informational';
+}
+function rowSummary(s){
+  const c=s.counts||{}, m=s.modes||{}, rw=s.rw||{};
+  if(s.summary) return s.summary;
+  if(c.lifecycle_findings) return `제출된 SMB finding ${fmt(c.lifecycle_findings)}건`;
+  if(c.confirmed_hits) return `확정 본문 근거 ${fmt(c.confirmed_hits)}건`;
+  if(c.file_with_hits) return `본문 후보 근거 ${fmt(c.file_with_hits)}개 파일`;
+  if(s.excluded_reason==='print') return '프린터 공유로 점검 큐에서는 제외됐지만 SMB 읽기 노출은 목록에 유지';
+  if(rw.write) return '공유 쓰기 권한이 열려 있음';
+  if(rw.read&&(m.null||m.guest)) return 'NULL/GUEST 읽기 가능한 공유';
+  if(rw.read&&m.auth) return 'AUTH 읽기 가능한 공유';
+  return rw.read?'공유 읽기 가능':'열린 SMB 공유';
+}
+function accessPillsForRow(s){
+  const m=s.modes||{}, rw=s.rw||{}, out=[];
+  if(rw.read&&m.null) out.push('<span class="smb-pill exposure">NULL 읽기</span>');
+  if(rw.read&&m.guest) out.push('<span class="smb-pill exposure">GUEST 읽기</span>');
+  if(rw.read&&m.auth) out.push('<span class="smb-pill access">AUTH 읽기</span>');
+  if(rw.write) out.push('<span class="smb-pill exposure">쓰기</span>');
+  if(rw.read&&!out.length) out.push('<span class="smb-pill access">읽기</span>');
+  return out.join('')||'<span class="smb-pill meta">권한 미확인</span>';
+}
+function hostSeverity(h){
+  const shares=h.shares||[];
+  const rank={critical:5,high:4,medium:3,low:2,informational:1};
+  let best='informational', bestRank=1;
+  shares.forEach(s=>{ const sev=rowSeverity(s); if((rank[sev]||0)>bestRank){ best=sev; bestRank=rank[sev]||0; } });
+  return best;
+}
+function hostSummary(h){
+  const c=h.counts||{};
+  if(c.lifecycle_share_total) return `제출된 SMB finding이 있는 share ${fmt(c.lifecycle_share_total)}개`;
+  if(c.confirmed_hits) return `확정 본문 근거 ${fmt(c.confirmed_hits)}건`;
+  if(c.public_share_total) return `NULL/GUEST 공개 노출 share ${fmt(c.public_share_total)}개`;
+  if(c.print_share_total) return `print$ 포함 프린터 공유 ${fmt(c.print_share_total)}개`;
+  if(c.auth_share_total) return `AUTH 읽기 가능 share ${fmt(c.auth_share_total)}개`;
+  return `열린 SMB share ${fmt(c.open_share_total||c.share_total||0)}개`;
+}
+function hostAccessPills(h){
+  const c=h.counts||{}, out=[];
+  if(c.public_share_total) out.push(`<span class="smb-pill exposure">NULL/GUEST ${fmt(c.public_share_total)}</span>`);
+  if(c.auth_share_total) out.push(`<span class="smb-pill access">AUTH ${fmt(c.auth_share_total)}</span>`);
+  if(c.writable_share_total) out.push(`<span class="smb-pill exposure">쓰기 ${fmt(c.writable_share_total)}</span>`);
+  if(c.print_share_total) out.push(`<span class="smb-pill exposure">print ${fmt(c.print_share_total)}</span>`);
+  if(c.lifecycle_share_total) out.push(`<span class="smb-pill signal">제출 ${fmt(c.lifecycle_share_total)}</span>`);
+  return out.join('')||'<span class="smb-pill meta">권한 미확인</span>';
+}
+function renderHostShares(h){
+  const rows=(h.shares||[]).slice(0,8).map(s=>{
+    const sev=rowSeverity(s);
+    return `<div class="smb-info-row">
+      <div class="smb-info-title"><strong class="severity-${esc(sev)}">\\\\${esc(s.host)}\\${esc(s.share)}</strong><span class="pill">${esc(smbStatusLabel(s.status))}</span>${s.excluded_reason?`<span class="smb-pill meta">${esc(s.excluded_reason)}</span>`:''}</div>
+      <div class="tag-row">${accessPillsForRow(s)}${renderSmbFlags(s.risk_flags)}</div>
+      <div class="smb-info-text">${esc(rowSummary(s))} · files ${fmt((s.counts||{}).file_total)} · hits ${fmt((s.counts||{}).confirmed_hits||(s.counts||{}).file_with_hits)}</div>
+    </div>`;
+  }).join('');
+  const more=(h.shares||[]).length>8?`<div class="muted">+${fmt((h.shares||[]).length-8)}개 share 더 있음</div>`:'';
+  return rows+more;
+}
+function hostListParams(state){
+  const p={limit:FINDING_PAGE_SIZE,offset:state.page*FINDING_PAGE_SIZE};
+  if(state.q) p.q=state.q;
+  if(state.status) p.status=state.status;
+  if(state.severity) p.severity=state.severity;
+  if(state.exposure==='open') p.open_only=true;
+  else if(state.exposure) p.exposure=state.exposure;
+  return p;
+}
+function findingParams(){ return hostListParams(findingState); }
+function renderHostFilters(state,prefix,applyCall){
+  return `<div class="finding-toolbar">
+    <label>검색<input id="${prefix}q" value="${esc(state.q)}" placeholder="IP, share, subnet, 요약" onkeydown="if(event.key==='Enter') ${applyCall}"></label>
+    <label>노출<select id="${prefix}ex">
+      ${option('open','열린 공유 전체',state.exposure)}${option('all','전체(닫힘 포함)',state.exposure)}
+      ${option('public','NULL/GUEST',state.exposure)}${option('null','NULL',state.exposure)}
+      ${option('guest','GUEST',state.exposure)}${option('auth','AUTH',state.exposure)}
+      ${option('writable','쓰기 가능',state.exposure)}${option('print','print$',state.exposure)}
+      ${option('submitted','제출 finding',state.exposure)}${option('hits','본문 근거',state.exposure)}
+    </select></label>
+    <label>상태<select id="${prefix}st">
+      ${option('','전체 상태',state.status)}${option('walked','워킹 완료',state.status)}
+      ${option('in_progress','진행 중',state.status)}${option('triaged_completed','점검 완료',state.status)}
+      ${option('triaged_errored','점검 오류',state.status)}${option('ignored','큐 제외',state.status)}
+      ${option('closed','완결',state.status)}
+    </select></label>
+    <label>심각도<select id="${prefix}sev">
+      ${option('','전체 심각도',state.severity)}${option('critical','매우 높음',state.severity)}
+      ${option('high','높음',state.severity)}${option('medium','중간',state.severity)}
+      ${option('low','낮음',state.severity)}${option('informational','정보',state.severity)}
+      ${option('none','미판정',state.severity)}
+    </select></label>
+    <button class="act" onclick="${applyCall}">적용</button>
+  </div>`;
+}
+function renderFindingFilters(){ return renderHostFilters(findingState,'f','applyFindingsFilters()'); }
+function cycleOptions(cycles,current,selected){
+  const list=(cycles&&cycles.length)?cycles:[current].filter(Boolean);
+  const cur=selected||current||'';
+  return list.map(c=>option(c,c,cur)).join('');
+}
+function renderReportFilters(cycles=[],currentCycle=''){
+  return `<div class="finding-toolbar">
+    <label>검색<input id="rq" value="${esc(reportState.q)}" placeholder="Ticket, IP, 담당자, 수신자, 제목" oninput="scheduleReportFilterApply()" onkeydown="if(event.key==='Enter'){event.preventDefault();applyReportFilters()}"></label>
+    <label>주차<select id="rcycle" onchange="applyReportFilters()">
+      ${cycleOptions(cycles,currentCycle,reportState.cycleKey)}
+    </select></label>
+    <label>상태<select id="rst" onchange="applyReportFilters()">
+      ${option('','전체 상태',reportState.status)}
+      ${REPORT_STATUSES.map(s=>option(s,reportStatusLabel(s),reportState.status)).join('')}
+    </select></label>
+    <label>심각도<select id="rsev" onchange="applyReportFilters()">
+      ${option('','전체 심각도',reportState.severity)}${option('critical','매우 높음',reportState.severity)}
+      ${option('high','높음',reportState.severity)}${option('medium','중간',reportState.severity)}
+      ${option('low','낮음',reportState.severity)}${option('informational','정보',reportState.severity)}
+    </select></label>
+    <label>보기<select id="rview" onchange="applyReportFilters()">
+      ${option('findings','진성 항목',reportState.findingsOnly?'findings':'all')}
+      ${option('all','전체 항목',reportState.findingsOnly?'findings':'all')}
+    </select></label>
+  </div>`;
+}
+function readHostFilters(state,prefix){
+  state.q=($('#'+prefix+'q')?.value||'').trim();
+  state.exposure=$('#'+prefix+'ex')?.value||'open';
+  state.status=$('#'+prefix+'st')?.value||'';
+  state.severity=$('#'+prefix+'sev')?.value||'';
+  state.page=0;
+}
+function applyFindingsFilters(){
+  readHostFilters(findingState,'f');
+  saveUiState();
+  renderFindings();
+}
+function changeFindingPage(delta){ findingState.page=Math.max(0,findingState.page+delta); saveUiState(); renderFindings(); }
+function scheduleReportFilterApply(){
+  if(reportFilterApplyTimer) clearTimeout(reportFilterApplyTimer);
+  reportFilterApplyTimer=setTimeout(()=>{ reportFilterApplyTimer=null; applyReportFilters(); },250);
+}
+function applyReportFilters(){
+  if(reportFilterApplyTimer){ clearTimeout(reportFilterApplyTimer); reportFilterApplyTimer=null; }
+  captureReportScroll();
+  reportState.q=($('#rq')?.value||'').trim();
+  reportState.status=$('#rst')?.value||'';
+  reportState.severity=$('#rsev')?.value||'';
+  reportState.findingsOnly=($('#rview')?.value||'findings')!=='all';
+  reportState.cycleKey=$('#rcycle')?.value||'';
+  reportState.host='';
+  reportState.threadId=null;
+  reportState.page=0;
+  reportScroll.detail=0;
+  saveUiState();
+  renderReport();
+}
+function changeReportPage(delta){ captureReportScroll(); reportState.page=Math.max(0,reportState.page+delta); saveUiState(); renderReport(); }
+function syncReportLayoutHeight(){
+  const layout=document.querySelector('.report-layout');
+  if(!layout) return;
+  if(window.matchMedia('(max-width:1100px)').matches){
+    layout.style.removeProperty('--report-layout-h');
+    return;
+  }
+  const top=layout.getBoundingClientRect().top;
+  const h=Math.max(420,Math.floor(window.innerHeight-top-20));
+  layout.style.setProperty('--report-layout-h',h+'px');
+}
+window.addEventListener('resize',()=>{ if(activeTab==='report') syncReportLayoutHeight(); });
+function attachReportScrollHandlers(){
+  const list=document.querySelector('.report-list-card');
+  const detail=document.querySelector('.report-detail-card');
+  if(list&&!list.dataset.scrollBound){
+    list.dataset.scrollBound='1';
+    list.addEventListener('scroll',()=>{ reportScroll.list=list.scrollTop; saveUiState(); },{passive:true});
+  }
+  if(detail&&!detail.dataset.scrollBound){
+    detail.dataset.scrollBound='1';
+    detail.addEventListener('scroll',()=>{ reportScroll.detail=detail.scrollTop; saveUiState(); },{passive:true});
+  }
+}
+function restoreReportScroll(part='both'){
+  requestAnimationFrame(()=>{
+    if(part==='both'||part==='list'){
+      const list=document.querySelector('.report-list-card');
+      if(list) list.scrollTop=reportScroll.list||0;
+    }
+    if(part==='both'||part==='detail'){
+      const detail=document.querySelector('.report-detail-card');
+      if(detail) detail.scrollTop=reportScroll.detail||0;
+    }
+  });
+}
+function markSelectedReportThread(){
+  document.querySelectorAll('.report-thread-row').forEach(row=>{
+    row.classList.toggle('selected',Number(row.dataset.reportThreadId)===Number(reportState.threadId));
+  });
+}
+
+async function renderFindings(){
+  const v=$('#view'); v.innerHTML='<p class="muted">불러오는 중...</p>';
+  let d, p;
+  try{ [d,p]=await Promise.all([getJSON('/api/smb/hosts',findingParams()), getJSON('/api/pipeline/overview')]); }
+  catch(e){ v.innerHTML='<p class="muted">로드 실패: '+esc(e)+'</p>'; return; }
+  const items=d.items||[];
+  const total=Number(d.total||0), pageCount=Math.max(1,Math.ceil(total/FINDING_PAGE_SIZE));
+  const rows=items.map(h=>{
+    const sev=hostSeverity(h), c=h.counts||{};
+    return `<tr class="finding-row">
+      <td class="nowrap severity-${esc(sev)}"><strong>${esc(severityLabel(sev))}</strong></td>
+      <td class="asset-cell"><code>${esc(h.host)}</code><div class="muted">${esc(h.subnet||'')}</div></td>
+      <td><div class="tag-row">${hostAccessPills(h)}</div></td>
+      <td>${fmt(c.share_total)} shares<br><span class="muted">files ${fmt(c.file_total)} · hits ${fmt(c.confirmed_hits||c.file_with_hits)} · submitted ${fmt(c.lifecycle_share_total)}</span></td>
+      <td><span class="pill">IP 그룹</span></td>
+      <td class="risk-cell">${esc(hostSummary(h))}<div style="margin-top:6px">${renderHostShares(h)}</div></td>
+      <td class="muted">${esc(age(h.last_seen))}</td>
+    </tr>`;
+  }).join('');
+  v.innerHTML=`<div class="section-head"><div><h2>SMB Findings</h2><div class="muted">IP 단위로 공유 노출, 민감도, 조치 필요성을 빠르게 훑습니다.</div></div></div>
+    ${renderFindingFilters()}
+    <div class="finding-summary">
+      <div class="tag-row"><span class="pill">열린 공유/노출 기준</span><span class="pill">lifecycle ${fmt(p.findings_total||0)}</span><span class="pill">total ${fmt(total)}</span></div>
+      <div class="pager"><button class="act" ${findingState.page<=0?'disabled':''} onclick="changeFindingPage(-1)">이전</button>
+      <span class="muted">${fmt(findingState.page+1)} / ${fmt(pageCount)} · 50개 단위</span>
+      <button class="act" ${findingState.page+1>=pageCount?'disabled':''} onclick="changeFindingPage(1)">다음</button></div>
+    </div>
+    <table class="report-table finding-table"><colgroup><col style="width:86px"><col style="width:170px"><col style="width:230px"><col style="width:130px"><col style="width:100px"><col><col style="width:74px"></colgroup>
+      <tr><th>위험</th><th>IP</th><th>접근/태그</th><th>근거</th><th>상태</th><th>Share 목록</th><th>최근</th></tr>
+      ${rows||'<tr><td class=muted colspan=7>조건에 맞는 SMB IP가 없습니다.</td></tr>'}</table>`;
+}
+
+function reportFindingCount(t){
+  if(Number(t?.finding_count||0)>0) return Number(t.finding_count);
+  try{ const ids=JSON.parse(t?.finding_ids||'[]'); return Array.isArray(ids)&&ids.length?ids.length:1; }
+  catch(e){ return 1; }
+}
+function reportRecipient(t){
+  if(t?.has_outbound_mail) return t.mail_to||'-';
+  if(t?.status==='reported') return '발송 전';
+  return t?.recipient||'-';
+}
+function reportSentLabel(t){
+  if(t?.sent_at) return age(t.sent_at);
+  if(t?.status==='reported') return '메일 미발송';
+  return '-';
+}
+function filterReportThreads(items){
+  const q=String(reportState.q||'').toLowerCase();
+  return (items||[]).filter(t=>{
+    if(reportState.status&&t.status!==reportState.status) return false;
+    if(reportState.severity&&t.severity!==reportState.severity) return false;
+    if(!q) return true;
+    const tagText=(t.finding_tags||[]).map(x=>`${x.key||''} ${x.label||''}`).join(' ');
+    const text=[t.ticket_no,t.display_title,reportTicketLabel(t),t.host,t.recipient,t.mail_to,t.subject_tag,t.sent_subject,t.status,tagText].map(x=>String(x||'').toLowerCase()).join(' ');
+    return text.includes(q);
+  });
+}
+function sortReportThreads(items){
+  return (items||[]).slice().sort((a,b)=>Number(b?.id||0)-Number(a?.id||0));
+}
+function renderReportFindingTags(t){
+  const seen=new Set();
+  const tags=(t?.finding_tags||[]).filter(x=>{
+    const key=String(x?.key||x?.label||'').trim();
+    if(!key||seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return tags.map(x=>`<span class="smb-pill signal">${esc(x.label||x.key)}</span>`).join('');
+}
+function renderReportThreadRows(items){
+  return (items||[]).map(t=>{
+    const selected=Number(reportState.threadId)===Number(t.id);
+    const findingTags=renderReportFindingTags(t);
+    return `<button class="report-thread-row ${selected?'selected':''}" data-report-thread-id="${esc(t.id)}" onclick="openReportThread(${esc(t.id)},'${esc(t.host)}')">
+      <span class="report-thread-main"><span class="report-thread-title">
+        <code>${esc(reportTicketLabel(t))}</code><span class="report-thread-sub">${esc(t.subject_tag||'')}</span>
+      </span>${reportStatusPill(t.status)}</span>
+      <span class="report-thread-meta">
+        <span class="pill severity-${esc(t.severity||'')}">${esc(severityLabel(t.severity))}</span>
+        <span class="pill">finding ${fmt(reportFindingCount(t))}</span>
+        ${findingTags}
+        <span class="pill">${t.has_outbound_mail?'발송됨':'발송 전'}</span>
+      </span>
+      <span class="report-thread-sub">수신 ${esc(reportRecipient(t))} · ${esc(reportSentLabel(t))}</span>
+    </button>`;
+  }).join('');
+}
+
+async function renderReport(){
+  const v=$('#view'); v.innerHTML='<p class="muted">불러오는 중...</p>';
+  let d, p;
+  const params={scope:'report',limit:1000};
+  if(reportState.cycleKey) params.cycle_key=reportState.cycleKey;
+  try{ [d,p]=await Promise.all([getJSON('/api/mail-threads',params), getJSON('/api/pipeline/overview')]); }
+  catch(e){ v.innerHTML='<p class="muted">로드 실패: '+esc(e)+'</p>'; return; }
+  reportState.cycleKey=d.cycle_key||d.current_cycle_key||reportState.cycleKey||'';
+  const all=sortReportThreads(filterReportThreads(d.items||[]));
+  if(!reportState.threadId||!all.some(t=>Number(t.id)===Number(reportState.threadId))){
+    const first=all.find(t=>t.host===reportState.host)||(all[0]||{});
+    reportState.threadId=first.id||null;
+    reportState.host=first.host||'';
+  }
+  const total=all.length, pageCount=Math.max(1,Math.ceil(total/FINDING_PAGE_SIZE));
+  const pageItems=all.slice(reportState.page*FINDING_PAGE_SIZE,(reportState.page+1)*FINDING_PAGE_SIZE);
+  const rows=renderReportThreadRows(pageItems);
+  const sc=d.status_counts||{};
+  v.innerHTML=`<div class="section-head"><div><h2>SMB Report</h2><div class="muted">Report agent가 작성하는 IP별 레포트를 확인합니다.</div></div></div>
+    ${renderReportFilters(d.cycles||[],d.current_cycle_key||d.cycle_key||'')}
+    <div class="finding-summary">
+      <div class="tag-row"><span class="pill">주차 ${esc(d.cycle_key||'전체')}</span><span class="pill">발송 전/발송 이후 포함</span><span class="pill">ready ${fmt(sc.reported||0)}</span><span class="pill">sent ${fmt(sc.awaiting_reply||0)}</span><span class="pill">total ${fmt(total)}</span></div>
+      <div class="pager"><button class="act" ${reportState.page<=0?'disabled':''} onclick="changeReportPage(-1)">이전</button>
+      <span class="muted">${fmt(reportState.page+1)} / ${fmt(pageCount)} · 50개 단위</span>
+      <button class="act" ${reportState.page+1>=pageCount?'disabled':''} onclick="changeReportPage(1)">다음</button></div>
+    </div>
+    <div class="report-layout">
+      <section class="report-list-card">
+        <div class="report-thread-list">${rows||'<div class="smb-empty">조건에 맞는 리포트가 없습니다.</div>'}</div>
+      </section>
+      <section id="report-detail" class="report-detail-card"><div class="muted">IP를 선택하면 레포트가 표시됩니다.</div></section>
+    </div>`;
+  syncReportLayoutHeight();
+  attachReportScrollHandlers();
+  restoreReportScroll('list');
+  saveUiState();
+  if(reportState.threadId&&reportState.host) loadReportThreadDetail(reportState.threadId,reportState.host,reportState.findingsOnly,{preserveScroll:true});
+}
+
+function formatBytes(value){
+  if(value===null||value===undefined||value==='') return '크기 미확인';
+  let n=Number(value||0); if(!Number.isFinite(n)) return '크기 미확인';
+  if(n<=0) return '0 B';
+  const units=['B','KB','MB','GB','TB']; let u=0;
+  while(n>=1024&&u<units.length-1){ n/=1024; u++; }
+  return `${n.toFixed(u===0||n>=10?0:1)} ${units[u]}`;
+}
+function smbAccessPrincipals(share,right){
+  const p=share&&share.access&&share.access.principals;
+  return p&&Array.isArray(p[right])?p[right].filter(Boolean):[];
+}
+function smbAccessSubject(share,right){
+  const vals=smbAccessPrincipals(share,right);
+  if(right==='read'&&share?.access?.scope?.auth_broad_readable){
+    return vals.length?vals.join(', '):'AUTH';
+  }
+  return vals.length?vals.join(', '):'확인됨';
+}
+function smbAccessPill(label,enabled,share,right,tone='access'){
+  if(enabled!==true) return '';
+  const subject=smbAccessSubject(share,right);
+  const broad=right==='read'&&share?.access?.scope?.auth_broad_readable;
+  const cls=broad||/\b(NULL|GUEST)\b/.test(subject)||tone==='exposure'?'exposure':'access';
+  return `<span class="smb-pill ${cls}">${esc(label)}: ${esc(subject)}</span>`;
+}
+function smbShareBadges(share){
+  const a=share.access||{}, sa=a.share||{};
+  return `<div class="tag-row">${smbAccessPill('읽기',sa.read,share,'read')}${smbAccessPill('쓰기',sa.write,share,'write','exposure')}${renderSmbFlags(share.risk_flags)}</div>`;
+}
+function smbHitLabel(hit){
+  const cat={misconfig:'권한 설정',semiconductor_process:'공정자료',business_confidential:'경영자료',secret:'시크릿',credential:'계정정보',pii:'개인정보'}[hit.category]||hit.category||'-';
+  const kind={administrative_share_auth_readable:'행정 공유 AUTH 읽기',aws_access_key_id:'AWS Access Key',kr_rrn:'주민등록번호'}[hit.kind]||hit.kind||'-';
+  return `${cat} / ${kind}`;
+}
+function evidenceLabel(verdict){
+  return ({true_positive:'진성',false_positive:'가성',unverified:'미검증',clean:'정상'})[verdict]||'미검증';
+}
+function evidenceClass(verdict){
+  return ({true_positive:'evidence-true',false_positive:'evidence-false',unverified:'evidence-unverified',clean:'meta'})[verdict]||'evidence-unverified';
+}
+function evidencePill(verdict,label=null){
+  const v=verdict||'unverified';
+  return `<span class="smb-pill ${evidenceClass(v)}">${esc(label||evidenceLabel(v))}</span>`;
+}
+// 로그인 검증 증거 추출 — state_domain._login_proof_of 와 같은 규칙(중첩 login_probe/평면/legacy multi).
+// 한쪽 shape 만 알면 데이터 형태가 바뀔 때 배지가 조용히 사라진다.
+function loginProofOf(v,d){
+  const depth=d||0;
+  if(depth>4||!v||typeof v!=='object'||Array.isArray(v)) return null;
+  if(v.login_probe&&typeof v.login_probe==='object'&&!Array.isArray(v.login_probe)) return v.login_probe;
+  if(v.kind==='credential_login_probe'){
+    // 도구가 에이전트에 돌려주는 최상위 래퍼({kind,domain,probed,results:[...]})를 LLM 이 그대로
+    // 인용하면 래퍼에는 result 가 없어 배지가 통째로 사라진다 → results[] 안으로 한 단계(성공 우선).
+    if(v.result===undefined&&Array.isArray(v.results)){
+      let first=null;
+      for(const r of v.results.slice(0,32)){
+        if(!r||typeof r!=='object') continue;
+        if(r.result==='authenticated') return r;
+        if(first===null) first=r;
+      }
+      return first;
+    }
+    return v;
+  }
+  if(v.kind==='multi'&&Array.isArray(v.probes)){
+    for(const p of v.probes.slice(0,32)){const f=loginProofOf(p,depth+1); if(f) return f;}
+  }
+  return null;
+}
+const LOGIN_RESULT_LABEL={authenticated:'로그인 검증됨',auth_failed:'로그인 실패',account_locked:'계정 잠김',credential_expired:'비밀번호 만료',session_denied:'세션 거부'};
+const LOGIN_ENGINES={mssql:1,postgres:1};
+// authenticated 는 proves_validity 까지 true 여야 성공으로 읽는다(모순 값은 아무 주장도 하지 않음).
+function loginConfirmed(p){return !!p&&p.result==='authenticated'&&p.proves_validity===true;}
+// host 는 IPv4 또는 점 포함 FQDN 만. 콜론/포트가 섞인 문자열(`10.0.0.5:443`)을 그대로 쓰면
+// `10.0.0.5:443:1433` 같은 모호한 endpoint 가 되고, 전부-숫자 TLD(`012.1.1.1`)는 오독을 부른다.
+function loginEndpoint(p){
+  const h=typeof p.endpoint_host==='string'?p.endpoint_host.trim():'';
+  if(!h||h.length>253||/[^A-Za-z0-9.-]/.test(h)) return '';
+  const labels=h.split('.');
+  if(labels.length<2||labels.some(l=>!l||l.length>63||l.startsWith('-')||l.endsWith('-'))) return '';
+  const isIPv4=labels.length===4&&labels.every(l=>/^\d{1,3}$/.test(l)&&!(l.length>1&&l[0]==='0')&&+l<=255);
+  if(!isIPv4&&/^\d+$/.test(labels[labels.length-1])) return '';   // 깨진 IP 위장 표기
+  const port=(Number.isInteger(p.endpoint_port)&&p.endpoint_port>0&&p.endpoint_port<=65535)?p.endpoint_port:null;
+  return port?`${h}:${port}`:h;
+}
+// 고정 어휘 밖 result 는 표시하지 않는다 — DB 문자열이 그대로 배지 문구가 되면 '검증됨' 위조가 된다.
+// principal/bound_masked/auth_attempts/detail/policy 는 표시하지 않는다.
+function loginProbePill(hit){
+  const p=loginProofOf(hit&&hit.validation);
+  if(!p) return '';
+  if(p.engine!==undefined&&p.engine!==null
+     &&!Object.prototype.hasOwnProperty.call(LOGIN_ENGINES,p.engine)) return '';  // 미지 엔진=미지 경로
+  if(p.result==='authenticated'&&!loginConfirmed(p)) return '';                   // 모순
+  // hasOwnProperty 로 조회 — `constructor`/`toString`/`__proto__` 가 프로토타입 체인을 타고
+  // '고정 어휘 밖은 표시하지 않는다' 계약을 뚫어 유령 배지를 만드는 것을 막는다.
+  const label=Object.prototype.hasOwnProperty.call(LOGIN_RESULT_LABEL,p.result)?LOGIN_RESULT_LABEL[p.result]:null;
+  if(!label) return '';
+  const cls=loginConfirmed(p)?'evidence-true':'evidence-unverified';
+  const where=loginEndpoint(p);
+  const tip=p.single_attempt===true?'단발 시도 · 쿼리 없음 · 중앙 원장 기록':'크리덴셜 로그인 프로브 결과';
+  return ` <span class="smb-pill ${cls}" title="${esc(tip)}">${esc('프로브 '+label+(where?' '+where:''))}</span>`;
+}
+function renderSmbHits(hits){
+  const all=Array.isArray(hits)?hits.filter(h=>h&&typeof h==='object'):[];
+  if(!all.length) return '';
+  // 순위 계산 상한(DoS). 자르기를 순위보다 먼저 하면 뒤쪽의 검증 hit 이 또 사라지므로 넉넉히 잡고,
+  // '+N개 더 있음' 라벨은 잘린 수가 아니라 **전체 수** 기준으로 정직하게 쓴다.
+  const list=all.slice(0,2000);
+  // 상위 5건만 그리므로 **확인된 로그인** → 기타 프로브 결과 → 일반 순으로 배치한다.
+  // (단순히 'proof 있음' 으로만 정렬하면 auth_failed 5건이 진짜 성공을 밀어낸다.)
+  // rank 는 **미리 한 번만** 계산한다 — 비교자 안에서 loginProofOf 를 부르면 hit 당 트리 순회가
+  // ~9배 중복된다(5,000 hits 에서 45,915회 측정).
+  const ranked=list.map((h,i)=>{const p=loginProofOf(h&&h.validation); return {h,i,r:!p?2:(loginConfirmed(p)?0:1)};});
+  ranked.sort((a,b)=>a.r-b.r||a.i-b.i);
+  const ordered=ranked.map(x=>x.h);
+  return `<div class="smb-hit-list">${ordered.slice(0,5).map(h=>`<div><strong>${esc(smbHitLabel(h))}</strong> ${evidencePill(h.evidence_verdict,h.evidence_label)}${loginProbePill(h)} <span class="muted">${h.line_no?esc(h.line_no)+'행':'행 번호 없음'}</span><br><code>${esc(h.masked||'')}</code>${h.line_preview?` <span>${esc(h.line_preview)}</span>`:''}</div>`).join('')}${all.length>5?`<div class="muted">+${esc(all.length-5)}개 근거 더 있음</div>`:''}</div>`;
+}
+function smbFileBadges(file,share){
+  const a=file.access||{}, badges=[];
+  if(file.evidence_verdict&&file.evidence_verdict!=='clean') badges.push(evidencePill(file.evidence_verdict,file.evidence_label));
+  badges.push(smbAccessPill('읽기',a.read,share,'read'));
+  badges.push(smbAccessPill('쓰기',a.write,share,'write','exposure'));
+  if(['denied','error','not_found'].includes(String(file.fetch_status||''))) badges.push(`<span class="smb-pill error">${esc(smbStatusLabel(file.fetch_status))}</span>`);
+  badges.push(renderSmbFlags(file.risk_flags));
+  return badges.filter(Boolean).join('');
+}
+function renderSmbFiles(files,share,findingsOnly){
+  const rows=findingsOnly?(files||[]).filter(f=>(f.evidence_verdict||'')==='true_positive'||f.has_finding):(files||[]);
+  if(!rows.length) return `<div class="smb-empty">${findingsOnly?'진성 증거 파일':'파일'} 없음</div>`;
+  const limit=findingsOnly?12:40;
+  const shown=rows.slice(0,limit);
+  const more=rows.length>shown.length?`<div class="smb-empty">+${fmt(rows.length-shown.length)}개 파일 더 있음. 전체 원본은 DB/API 기준으로 보존됩니다.</div>`:'';
+  return `<div class="smb-finding-list">${shown.map(f=>`<div class="smb-finding-card">
+    <div class="smb-file-head"><code>${esc(f.path||'')}</code><span class="smb-file-meta">${esc(formatBytes(f.size))}</span></div>
+    <div class="tag-row">${smbFileBadges(f,share)}</div>
+    ${(f.lifecycle_findings||[]).map(x=>`<div class="smb-info-text">${esc(x.summary||'')}</div>`).join('')}
+    ${renderSmbHits(f.hits)}
+  </div>`).join('')}${more}</div>`;
+}
+function smbDirectoryBadges(dir,share){
+  const badges=[];
+  if(dir.listable||dir.readable) badges.push('<span class="smb-pill access">목록</span>');
+  if(dir.writable) badges.push('<span class="smb-pill exposure">쓰기</span>');
+  if(dir.error) badges.push(`<span class="smb-pill error">${esc(dir.error)}</span>`);
+  badges.push(renderSmbFlags(dir.risk_flags));
+  return badges.filter(Boolean).join('');
+}
+function makeTreeNode(name,type,path=''){ return {name,type,path,children:new Map(),directory:null,file:null}; }
+function ensureTreeDirectory(root,parts,fullPath){
+  let node=root, path='';
+  parts.forEach(part=>{
+    path=path?`${path}/${part}`:part;
+    if(!node.children.has(part)) node.children.set(part,makeTreeNode(part,'dir',path));
+    node=node.children.get(part);
+  });
+  if(fullPath!==undefined) node.path=fullPath;
+  return node;
+}
+function buildSmbTree(share){
+  const root=makeTreeNode(`//${share.host}/${share.share}`,'share','');
+  (share.directories||[]).forEach(dir=>{
+    const parts=String(dir.path||'').split('/').filter(Boolean);
+    const node=parts.length?ensureTreeDirectory(root,parts,dir.path):root;
+    node.directory=dir;
+  });
+  (share.files||[]).forEach(file=>{
+    const parts=String(file.path||'').split('/').filter(Boolean);
+    const name=parts.pop()||file.name||file.path||'file';
+    const parent=parts.length?ensureTreeDirectory(root,parts):root;
+    const fileNode=makeTreeNode(name,'file',file.path||name);
+    fileNode.file=file;
+    parent.children.set(`file:${file.path||name}`,fileNode);
+  });
+  markSmbTreeFindings(root);
+  return root;
+}
+function markSmbTreeFindings(node){
+  const own=node.type==='file'?Boolean(node.file&&node.file.has_finding):Boolean(node.directory&&node.directory.has_finding);
+  let child=false;
+  Array.from(node.children.values()).forEach(c=>{ if(markSmbTreeFindings(c)) child=true; });
+  node.hasFindingPath=own||child;
+  return node.hasFindingPath;
+}
+function sortTreeChildren(node){
+  return Array.from(node.children.values()).sort((a,b)=>{
+    if(a.type!==b.type) return a.type==='file'?1:-1;
+    return String(a.name).localeCompare(String(b.name));
+  });
+}
+function renderSmbTreeNode(node,share,depth=0,expandFindings=true){
+  const indent=Math.max(0,depth)*18;
+  const branch=depth>0?'ㄴ':'';
+  if(node.type==='file'){
+    const file=node.file||{}, badges=smbFileBadges(file,share);
+    return `<div class="smb-tree-row smb-tree-file" style="margin-left:${esc(indent)}px">
+      <span class="smb-tree-main"><span class="smb-branch">${esc(branch)}</span><span>문서</span><code>${esc(node.name)}</code>
+      <span class="smb-file-meta">${esc(formatBytes(file.size))}</span>${badges?`<span class="smb-node-badges">${badges}</span>`:''}</span>
+    </div><div class="smb-tree-hit" style="margin-left:${esc(indent+34)}px">${renderSmbHits(file.hits)}</div>`;
+  }
+  const children=sortTreeChildren(node).map(c=>renderSmbTreeNode(c,share,depth+1,expandFindings)).join('');
+  const dir=node.directory||{};
+  const open=node.type==='share'||(expandFindings&&node.hasFindingPath)?' open':'';
+  const label=node.type==='share'?'공유 폴더':'폴더';
+  const badges=node.type==='share'?smbShareBadges(share):(node.directory?smbDirectoryBadges(dir,share):'');
+  return `<details${open}><summary><span class="smb-tree-row" style="margin-left:${esc(indent)}px">
+    <span class="smb-tree-main"><span class="smb-branch">${esc(branch)}</span><span>${esc(label)}</span><code>${esc(node.name)}</code>
+    ${badges?`<span class="smb-node-badges">${badges}</span>`:''}</span></span></summary>${children}</details>`;
+}
+function renderSmbTree(share,findingsOnly){
+  const root=buildSmbTree(share);
+  const expandFindings=findingsOnly!==false;
+  return `<div class="smb-tree-panel"><div class="smb-tree">${renderSmbTreeNode(root,share,0,expandFindings)}</div></div>`;
+}
+function renderSubmittedFindings(share){
+  const rows=share.lifecycle_findings||[];
+  if(!rows.length) return '';
+  const shown=rows.slice(0,6);
+  const more=rows.length>shown.length?`<div class="smb-empty">+${fmt(rows.length-shown.length)}개 파인딩 더 있음</div>`:'';
+  return `<section class="smb-report-card"><h3>제출된 파인딩</h3>${shown.map(f=>`<div class="smb-info-row">
+    <div class="smb-info-title"><strong class="severity-${esc(f.severity||'')}">${esc(severityLabel(f.severity))}</strong>${evidencePill(f.evidence_verdict,f.evidence_label)}<span class="smb-pill review">${esc(smbStatusLabel(f.status))}</span></div>
+    <div class="smb-info-text">${esc(f.summary||'-')}</div><div class="smb-info-text"><code>${esc(f.asset||'')}</code></div>${renderSmbHits(f.hits)}
+  </div>`).join('')}${more}</section>`;
+}
+function renderSmbAiSummary(share){
+  const c=share.counts||{}, access=smbAccessSubject(share,'read'), write=smbAccessPrincipals(share,'write').join(', ');
+  const review=share.listing_review||{}, submitted=((share.lifecycle_findings||[])[0]||{}).summary;
+  const lines=[
+    review.summary||submitted||share.summary||`공유 ${share.share||'-'}에서 파일 ${fmt(c.files_total||0)}개, 근거 ${fmt(c.confirmed_hits||c.hits_total||0)}건이 확인됨.`,
+    `읽기 권한: ${access}. ${write?`쓰기 권한: ${write}.`:'공유 쓰기 권한은 확인되지 않음.'}`,
+    share.excluded_reason==='print'?'프린터 공유라도 SMB 읽기 노출은 목록/리포트 대상에 포함됩니다.':'점검 판정 전이라도 열려 있는 공유 자체를 조치 검토 대상으로 봅니다.'
+  ];
+  return `<section class="smb-report-card"><h3>내용</h3>${lines.map(x=>`<div class="smb-info-text">${esc(x)}</div>`).join('')}</section>`;
+}
+function shareHasRiskFlag(share,flag){ return (share.risk_flags||[]).includes(flag)||(share.files||[]).some(f=>(f.risk_flags||[]).includes(flag)); }
+function smbActionItems(share){
+  const c=share.counts||{}, actions=[];
+  if(smbAccessPrincipals(share,'read').some(v=>v==='NULL'||v==='GUEST')) actions.push('NULL/GUEST 읽기 권한을 제거하고 필요한 인증 계정 또는 AD 그룹으로 제한');
+  if(share?.access?.scope?.auth_broad_readable) actions.push('공유 목적에 맞는 계정 또는 그룹만 남기도록 AUTH 읽기 권한 확인');
+  if(share.excluded_reason==='print'||shareHasRiskFlag(share,'print_share')) actions.push('프린터 공유도 불필요한 파일 열람이 되지 않도록 print$ 권한과 스풀/드라이버 경로 접근 범위 확인');
+  if(share?.access?.share?.write||c.writable_files) actions.push('공유/파일 쓰기 권한을 업무 필요 계정으로 축소');
+  if(shareHasRiskFlag(share,'credential_hit')||shareHasRiskFlag(share,'secret_hit')) actions.push('노출 계정정보는 격리 후 폐기/재발급하고 접속처 접근 로그 확인');
+  if(shareHasRiskFlag(share,'pii_hit')||shareHasRiskFlag(share,'business_confidential_hit')||shareHasRiskFlag(share,'semiconductor_process_hit')) actions.push('민감정보 포함 파일 소유 부서 확인 후 필요 그룹 외 접근 제거');
+  if(!actions.length) actions.push('공유가 계속 필요하면 소유자와 목적을 확인하고 최소 권한 ACL로 제한');
+  return actions;
+}
+function renderSmbActions(share){
+  return `<section class="smb-report-card"><h3>조치 권장 사항</h3><ol class="smb-action-list">${smbActionItems(share).map(a=>`<li>${esc(a)}</li>`).join('')}</ol></section>`;
+}
+function isHitlReviewThread(threadDetail){
+  return HITL_REVIEW_STATUSES.has(String((threadDetail?.thread||{}).status||''));
+}
+function renderShareExceptionAction(share,threadDetail){
+  const ex=share?.exception;
+  if(ex){
+    return `<section class="smb-report-card"><h3>조치 예외</h3>
+      <div class="smb-info-text">${esc(ex.reason||'사유 미기록')}</div>
+      <div class="tag-row"><span class="pill">${esc(ex.approved_by||'operator')}</span><span class="pill">${esc(ex.approved_at?age(ex.approved_at):'')}</span></div></section>`;
+  }
+  if(!isHitlReviewThread(threadDetail)) return '';
+  const t=threadDetail.thread||{};
+  return `<section class="smb-report-card"><h3>HITL 처리</h3>
+    <div class="smb-info-text">담당자 확인 완료 후 이 share를 조치 예외로 기록합니다.</div>
+    <button class="act" onclick="approveShareException(${esc(share.id)},${esc(t.id||0)})">share 조치 예외</button></section>`;
+}
+async function approveShareException(shareId,threadId){
+  const reason=prompt('조치 예외 사유를 입력하세요.','담당자 확인 완료 - 예외 승인');
+  if(!reason) return;
+  try{
+    await postJSON('/api/smb/shares/'+encodeURIComponent(shareId)+'/exception',{
+      thread_id:Number(threadId)||null,
+      reason,
+      approved_by:'operator',
+    });
+    if(reportState.threadId&&reportState.host) await loadReportThreadDetail(reportState.threadId,reportState.host,reportState.findingsOnly);
+    else renderReport();
+  }catch(e){ alert('예외 처리 실패: '+e); }
+}
+function summaryCard(label,value,note=''){
+  return `<div><small>${esc(label)}</small><strong>${esc(value)}</strong>${note?`<div class="summary-note">${esc(note)}</div>`:''}</div>`;
+}
+function renderReportSummaryCards(s,findingsOnly){
+  const tpEvidence=(s.true_positive_evidence_total!==undefined?s.true_positive_evidence_total:s.confirmed_hit_total)||0;
+  const fpEvidence=s.false_positive_evidence_total||0;
+  const uvEvidence=s.unverified_evidence_total||0;
+  const fileShown=s.file_shown!==undefined?s.file_shown:(s.file_finding_total||0);
+  const hidden=s.hidden_clean_files||0;
+  const shareLabel=findingsOnly?'표시 공유':'전체 공유';
+  const fileLabel=findingsOnly?'진성 파일 표시':'파일 표시';
+  const shareNote=findingsOnly
+    ? `전체 공유 ${fmt(s.share_total||0)}개 · 리포트 대상만 표시`
+    : `전체 공유 ${fmt(s.share_total||0)}개 표시`;
+  const fileNote=findingsOnly
+    ? `전체 수집 ${fmt(s.file_total||0)}개 · 정상/비표시 ${fmt(hidden)}개`
+    : `전체 수집 ${fmt(s.file_total||0)}개`;
+  return `${summaryCard(shareLabel,`${fmt(s.share_shown||0)}개`,shareNote)}
+    ${summaryCard(fileLabel,`${fmt(fileShown)}개`,fileNote)}
+    ${summaryCard('진성 근거',`${fmt(tpEvidence)}건`,`가성 ${fmt(fpEvidence)}건 · 미검증 ${fmt(uvEvidence)}건`)}
+    <div><small>공유 권한 노출</small><strong>${fmt((s.null_exposure_total||0)+(s.guest_exposure_total||0)+(s.auth_broad_exposure_total||0)+(s.writable_share_total||0))}개 항목</strong>
+      <div class="summary-access-grid">
+        <span>NULL<b>${fmt(s.null_exposure_total||0)}</b></span>
+        <span>GUEST<b>${fmt(s.guest_exposure_total||0)}</b></span>
+        <span>AUTH<b>${fmt(s.auth_broad_exposure_total||0)}</b></span>
+        <span>쓰기<b>${fmt(s.writable_share_total||0)}</b></span>
+      </div>
+    </div>`;
+}
+function renderAssetOwner(owner){
+  const o=owner||{};
+  if(!o.known){
+    return `<section class="smb-report-card"><h3>IP 담당자</h3><div class="smb-info-text">담당자 미확인</div></section>`;
+  }
+  const name=o.user_name||o.user_id||'-';
+  const email=o.email||'-';
+  const dept=o.user_dept||'-';
+  return `<section class="smb-report-card"><h3>IP 담당자</h3>
+    <div class="smb-info-text"><strong>${esc(name)}</strong> / ${esc(dept)} / ${esc(email)}</div></section>`;
+}
+function lastOutboundMessage(messages){
+  const outs=(messages||[]).filter(m=>(m.direction||'')==='out');
+  return outs.length?outs[outs.length-1]:null;
+}
+function renderReportThreadOverview(threadDetail){
+  if(!threadDetail) return '';
+  const t=threadDetail.thread||{}, messages=threadDetail.messages||[], out=lastOutboundMessage(messages);
+  const cycle=t.last_cycle_key||t.first_cycle_key||'-';
+  return `<section class="report-mail-overview">
+    <div class="report-mail-grid">
+      <div><small>Ticket</small><strong>${esc(t.ticket_no||'-')}</strong></div>
+      <div><small>리포트 상태</small><strong>${reportStatusLabel(t.status)}</strong></div>
+      <div><small>수신</small><strong>${esc(out?.mail_to||'발송 전')}</strong></div>
+      <div><small>발송</small><strong>${out?.received_at?esc(age(out.received_at)):'메일 미발송'}</strong></div>
+    </div>
+    <div class="smb-info-text">${esc(t.subject_tag||'')} · 주차 ${esc(cycle)}</div>
+  </section>`;
+}
+function renderReportMailPreview(threadDetail){
+  if(!threadDetail) return '';
+  const out=lastOutboundMessage(threadDetail.messages||[]);
+  if(!out){
+    return `<section class="smb-report-card report-mail-preview"><h3>발송 메일</h3><div class="smb-info-text">아직 메일 발송 전입니다. Report agent가 정리한 뒤 발송 대기 중입니다.</div></section>`;
+  }
+  return `<section class="smb-report-card report-mail-preview"><h3>발송 메일</h3>
+    <div class="smb-info-row"><div class="smb-info-title"><strong>${esc(out.subject||'(제목 없음)')}</strong></div>
+    <div class="smb-info-text">To ${esc(out.mail_to||'-')} · ${esc(out.received_at?age(out.received_at):'-')}</div></div></section>`;
+}
+function renderReportEmpty(report,findingsOnly){
+  const s=report.summary||{};
+  if(findingsOnly&&(s.auth_broad_exposure_total||s.public_exposure_total||s.writable_share_total)){
+    return `<div class="smb-empty">현재 필터에서 표시할 제출 항목은 없지만 권한 노출 요약이 있습니다. 전체 항목 보기로 공유별 권한과 파일 목록을 확인하세요.</div>`;
+  }
+  return '<div class="smb-empty">현재 필터에서 표시할 SMB 항목 없음</div>';
+}
+function renderSmbReport(report,target,findingsOnly,hostMode=false,threadDetail=null){
+  const s=report.summary||{}, shares=report.shares||[];
+  const thread=threadDetail?.thread||null;
+  const title=hostMode&&thread?reportTicketLabel(thread):(hostMode?`IP ${target}`:target);
+  const toggleCall=hostMode
+    ? (threadDetail?`openReportThread(${esc((threadDetail.thread||{}).id)},'${esc(target)}',${!findingsOnly})`:`openSmbHost('${esc(target)}',${!findingsOnly})`)
+    : `openSmbFinding('${encodeURIComponent(target)}',${!findingsOnly})`;
+  return `<div class="detail-hero">
+    <div class="detail-title">
+      <span class="muted">${esc(hostMode?'IP 리포트':'Asset 리포트')}</span>
+      <strong>${esc(title)}</strong>
+      <div class="tag-row"><span class="pill">${findingsOnly?'진성 항목':'전체 항목'}</span><span class="pill warn">shares ${fmt(s.share_shown||0)}</span><span class="pill alive">진성 ${fmt((s.true_positive_evidence_total!==undefined?s.true_positive_evidence_total:s.confirmed_hit_total)||0)}</span></div>
+    </div>
+    <div class="detail-actions"><button class="report-back" onclick="renderReport()">목록으로</button>
+      <button class="act" onclick="${toggleCall}">${findingsOnly?'전체 항목 보기':'진성 항목만 보기'}</button></div>
+  </div>
+    <div class="smb-report"><div class="smb-report-summary">${renderReportSummaryCards(s,findingsOnly)}</div>${renderReportThreadOverview(threadDetail)}${renderAssetOwner(report.asset_owner)}${renderReportMailPreview(threadDetail)}${shares.length?shares.map(sh=>renderSmbShareReport(sh,findingsOnly,threadDetail)).join(''):renderReportEmpty(report,findingsOnly)}</div>`;
+}
+function renderSmbShareReport(share,findingsOnly,threadDetail=null){
+  return `<section class="smb-share-report">
+    <div class="smb-share-head"><h3><code>\\\\${esc(share.host)}\\${esc(share.share)}</code></h3><div class="tag-row"><span class="pill">${esc(smbStatusLabel(share.status))}</span>${share.excluded_reason?`<span class="smb-pill meta">${esc(share.excluded_reason)}</span>`:''}</div></div>
+    ${smbShareBadges(share)}
+    <div class="smb-share-layout"><section class="smb-pane"><h3>폴더 트리</h3>${renderSmbTree(share,findingsOnly)}</section>
+    <section class="smb-pane"><h3>${findingsOnly?'진성 증거 파일':'파일 목록'}</h3>${renderSmbFiles(share.files,share,findingsOnly)}</section></div>
+    ${renderSubmittedFindings(share)}${renderSmbAiSummary(share)}${renderShareExceptionAction(share,threadDetail)}${renderSmbActions(share)}
+  </section>`;
+}
+async function loadReportDetail(host,findingsOnly=true,opts={}){
+  const box=$('#report-detail'); if(!box) return;
+  box.innerHTML='<p class="muted">SMB IP 리포트 불러오는 중...</p>';
+  try{
+    const params={findings_only:String(!!findingsOnly),limit_per_share:1000};
+    if(reportState.cycleKey) params.cycle_key=reportState.cycleKey;
+    const report=await getJSON('/api/smb/reports/'+encodeURIComponent(host),params);
+    box.innerHTML=renderSmbReport(report,host,!!findingsOnly,true);
+    syncReportLayoutHeight();
+    attachReportScrollHandlers();
+    if(opts.preserveScroll) restoreReportScroll('detail');
+    else { reportScroll.detail=0; box.scrollTop=0; saveUiState(); }
+  }catch(e){
+    box.innerHTML=`<div class="detail-head"><button class="report-back" onclick="renderReport()">목록으로</button><strong>${esc(host)}</strong></div><p class="muted">리포트 로드 실패: ${esc(e)}</p>`;
+    syncReportLayoutHeight();
+  }
+}
+async function loadReportThreadDetail(threadId,host,findingsOnly=true,opts={}){
+  const box=$('#report-detail'); if(!box) return;
+  box.innerHTML='<p class="muted">IP 리포트 불러오는 중...</p>';
+  try{
+    const threadDetail=await getJSON('/api/mail-threads/'+encodeURIComponent(threadId));
+    const thread=threadDetail.thread||{};
+    const cycleKey=thread.last_cycle_key||thread.first_cycle_key||reportState.cycleKey||'';
+    const params={
+      findings_only:String(!!findingsOnly),
+      limit_per_share:findingsOnly?500:200,
+      thread_id:String(threadId),
+    };
+    if(cycleKey) params.cycle_key=cycleKey;
+    const report=await getJSON('/api/smb/reports/'+encodeURIComponent(host),params);
+    box.innerHTML=renderSmbReport(report,host,!!findingsOnly,true,threadDetail);
+    syncReportLayoutHeight();
+    attachReportScrollHandlers();
+    if(opts.preserveScroll) restoreReportScroll('detail');
+    else { reportScroll.detail=0; box.scrollTop=0; saveUiState(); }
+  }catch(e){
+    box.innerHTML=`<div class="detail-head"><button class="report-back" onclick="renderReport()">목록으로</button><strong>${esc(host)}</strong></div><p class="muted">리포트 로드 실패: ${esc(e)}</p>`;
+    syncReportLayoutHeight();
+  }
+}
+function openReportThread(threadId,host,findingsOnly=reportState.findingsOnly){
+  captureReportScroll();
+  const changed=Number(reportState.threadId)!==Number(threadId)||reportState.host!==host||reportState.findingsOnly!==!!findingsOnly;
+  reportState.threadId=Number(threadId);
+  reportState.host=host;
+  reportState.findingsOnly=!!findingsOnly;
+  if(changed) reportScroll.detail=0;
+  saveUiState();
+  if(activeTab==='report'){
+    markSelectedReportThread();
+    loadReportThreadDetail(reportState.threadId,reportState.host,reportState.findingsOnly,{preserveScroll:!changed});
+  }
+  else setActiveTab('report');
+}
+function openSmbHost(host,findingsOnly=true){
+  captureReportScroll();
+  reportState.host=host;
+  reportState.findingsOnly=!!findingsOnly;
+  reportState.threadId=null;
+  reportScroll.detail=0;
+  saveUiState();
+  if(activeTab==='report') renderReport();
+  else setActiveTab('report');
+}
+async function openSmbFinding(assetEncoded,findingsOnly=false){
+  captureReportScroll();
+  activeTab='findings';
+  setNavActive();
+  saveUiState();
+  const asset=decodeURIComponent(assetEncoded);
+  const v=$('#view'); v.innerHTML='<p class="muted">SMB 리포트 불러오는 중...</p>';
+  try{
+    const report=await getJSON('/api/smb/report-by-asset',{asset,findings_only:String(!!findingsOnly),limit_per_share:1000});
+    v.innerHTML=renderSmbReport(report,asset,!!findingsOnly,false);
+  }catch(e){
+    v.innerHTML=`<div class="detail-head"><button class="report-back" onclick="renderFindings()">목록으로</button><strong>${esc(asset)}</strong></div><p class="muted">리포트 로드 실패: ${esc(e)}</p>`;
+  }
+}
+
+async function renderMail(){
+  const v=$('#view'); v.innerHTML='<p class="muted">불러오는 중...</p>';
+  const params={};
+  if(mailState.cycleKey) params.cycle_key=mailState.cycleKey;
+  let d; try{ d=await getJSON('/api/mail-threads',params); }catch(e){ v.innerHTML='<p class="muted">로드 실패: '+esc(e)+'</p>'; return; }
+  mailState.cycleKey=d.cycle_key||d.current_cycle_key||mailState.cycleKey||'';
+  const sc=d.status_counts||{};
+  const scHtml=Object.entries(sc).map(([s,n])=>`<span class="pill">${esc(s)}: ${esc(n)}</span>`).join(' ');
+  const items=d.items||[];
+  if(mailState.threadId&&!items.some(t=>Number(t.id)===Number(mailState.threadId))) mailState.threadId=null;
+  const rows=items.map(t=>`<tr class="toggle" onclick="showThread(${t.id})">
+    <td>${esc(t.host)}</td><td class="sev-${esc(t.severity)}">${esc(t.severity||'-')}</td>
+    <td><span class="pill ${t.status==='reply_received'?'warn':''}">${esc(t.status)}</span></td><td>${esc(t.attempt_count||0)}회</td><td class="muted">${esc(t.subject_tag||'')}</td>
+    <td><button class="act open-thread-detail" onclick="event.stopPropagation();showThread(${t.id})">상세</button></td></tr>`).join('');
+  const cycleSelect=`<label>주차<select id="mcycle" onchange="applyMailCycle()">${cycleOptions(d.cycles||[],d.current_cycle_key||d.cycle_key||'',mailState.cycleKey)}</select></label>`;
+  v.innerHTML=`<div class="section-head"><div><h2>메일 스레드</h2><div class="muted">조치요청 발송, 담당자 답장, 재검증 상태를 한 화면에서 추적합니다.</div></div><div class="tag-row">${cycleSelect}<span class="pill">주차 ${esc(d.cycle_key||'전체')}</span>${scHtml}</div></div>
+    <div class="mail-layout">
+      <section class="mail-thread-card"><table class="mail-thread-table"><tr><th>host</th><th>심각도</th><th>상태</th><th>왕복</th><th>제목태그</th><th>상세</th></tr>${rows||'<tr><td class=muted colspan=6>없음</td></tr>'}</table></section>
+      <aside id="thread-detail" class="thread-side"><div class="mail-thread-card"><div class="muted">왼쪽 스레드를 선택하면 메일 timeline과 관련 worker transcript가 표시됩니다.</div></div></aside>
+    </div>`;
+  if(mailState.threadId) showThread(mailState.threadId);
+}
+function applyMailCycle(){
+  mailState.cycleKey=$('#mcycle')?.value||'';
+  mailState.threadId=null;
+  saveUiState();
+  renderMail();
+}
+async function showThread(id){
+  mailState.threadId=Number(id);
+  saveUiState();
+  const box=$('#thread-detail'); box.innerHTML='<div class="mail-thread-card"><p class="muted">로드 중...</p></div>';
+  try{ const d=await getJSON('/api/mail-threads/'+id);
+    const timeline=(d.messages||[]).map(m=>`<div class="thread-event">
+      <span class="role-badge">${esc(m.direction||'-')}</span>
+      <div class="event-body"><div class="event-subject">${esc(m.subject||'(제목 없음)')}</div>
+        <div class="tag-row"><span class="pill">${esc(m.agent_verdict||'-')}</span>${m.received_at?`<span class="pill">${esc(age(m.received_at))}</span>`:''}</div>
+        ${renderMailBody(m)}</div>
+    </div>`).join('');
+    const session=d.session||null;
+    box.innerHTML=`<div class="mail-thread-card"><div class="console-head"><div><div class="console-title">스레드 ${esc(id)} · ${esc(d.thread.host)}</div><div class="console-sub">${esc(d.thread.status||'-')} · attempt ${esc(d.thread.attempt_count||0)}</div></div><span class="pill ${d.thread.status==='reply_received'?'warn':'alive'}">${esc(d.thread.severity||'-')}</span></div>
+      <div class="thread-timeline">${timeline||'<div class="muted">메시지 없음</div>'}</div></div>
+      ${session?`<div class="mail-thread-card" style="margin-top:12px"><div class="chat-head"><b>관련 Worker</b>${renderAgentTranscriptMeta(session,'thread-session')}</div><div class="chat-body">${renderMessages(session.messages)}</div></div>`:''}`;
+  }catch(e){ box.innerHTML='<div class="mail-thread-card"><p class="muted">로드 실패: '+esc(e)+'</p></div>'; }
+}
+
+async function renderAdmin(){
+  const v=$('#view'); v.innerHTML='<p class="muted">불러오는 중...</p>';
+  let subs,creds;
+  try{ subs=await getJSON('/api/admin/subnets'); creds=await getJSON('/api/admin/credentials'); }
+  catch(e){ v.innerHTML='<p class="muted">관리 로드 실패: '+esc(e)+'</p>'; return; }
+  const subRows=(subs.items||[]).map(s=>`<tr><td>${esc(s.subnet)}</td><td>${esc(s.enabled?'ON':'OFF')}</td>
+    <td class="muted">${esc(s.charter_ref||'-')}</td><td><button class="act" onclick="delSubnet('${esc(s.subnet)}')">삭제</button></td></tr>`).join('');
+  const credRows=(creds.items||[]).map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.username)}</td>
+    <td class="muted">${esc(c.password_ref)}</td><td>${esc(c.enabled?'ON':'OFF')}</td></tr>`).join('');
+  v.innerHTML=`<h2>관리</h2>
+    <div class="card"><h3>대상 Subnet</h3>
+      <div class="row"><input id="ns" placeholder="10.20.0.0/24"><input id="nc" placeholder="charter_ref">
+      <button class="act" onclick="addSubnet()">추가</button></div>
+      <table><tr><th>subnet</th><th>상태</th><th>charter</th><th></th></tr>${subRows||'<tr><td class=muted colspan=4>없음</td></tr>'}</table></div>
+    <div class="card"><h3>Credential (password_ref=env: 강제, 평문 저장 금지)</h3>
+      <table><tr><th>name</th><th>username</th><th>password_ref</th><th>상태</th></tr>${credRows||'<tr><td class=muted colspan=4>없음</td></tr>'}</table></div>`;
+}
+async function addSubnet(){ const subnet=$('#ns').value.trim(), charter_ref=$('#nc').value.trim();
+  if(!subnet)return; try{ await fetch(api('/api/admin/subnets'),{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({subnet,charter_ref:charter_ref||null})}); }catch(e){ alert('실패: '+e);} render(); }
+async function delSubnet(s){ if(!confirm(s+' 삭제?'))return; try{ await fetch(api('/api/admin/subnets',{subnet:s}),{method:'DELETE'});}catch(e){alert(e);} render(); }
+
+function render(){ ({dash:renderDash,findings:renderFindings,report:renderReport,mail:renderMail,admin:renderAdmin}[activeTab]||renderDash)(); }
+setInterval(()=>{ const c=$('#clock'); if(c)c.textContent=new Date().toLocaleTimeString('ko-KR'); }, 1000);
+setNavActive();
+render();
+setInterval(()=>{ if(activeTab==='dash') renderDash(); }, 15000);
+</script>
+</body>
+</html>

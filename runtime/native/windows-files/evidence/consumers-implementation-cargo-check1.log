@@ -1,0 +1,29 @@
+    Checking secumon-windows-files v0.1.0 (/Users/seunghanee/Documents/secumon/runtime/native/windows-files)
+error[E0308]: mismatched types
+   --> src/windows.rs:295:34
+    |
+295 |             || header.AceFlags & !(OBJECT_INHERIT_ACE | CONTAINER_INHERIT_ACE | INHERITED_ACE) != 0
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `u8`, found `u32`
+
+error[E0277]: no implementation for `u8 & u32`
+   --> src/windows.rs:295:32
+    |
+295 |             || header.AceFlags & !(OBJECT_INHERIT_ACE | CONTAINER_INHERIT_ACE | INHERITED_ACE) != 0
+    |                                ^ no implementation for `u8 & u32`
+    |
+    = help: the trait `BitAnd<u32>` is not implemented for `u8`
+help: the following other types implement trait `BitAnd<Rhs>`
+   --> /rustc/01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf\library\core\src\ops\bit.rs:187:1
+    |
+    = note: `&u8` implements `BitAnd<u8>`
+    |
+    = note: `&u8` implements `BitAnd`
+    |
+    = note: `u8` implements `BitAnd<&u8>`
+    |
+    = note: `u8` implements `BitAnd`
+    = note: this error originates in the macro `bitand_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+Some errors have detailed explanations: E0277, E0308.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `secumon-windows-files` (lib) due to 2 previous errors

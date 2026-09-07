@@ -1,0 +1,48 @@
+name: plan_mode_heavy_review
+description: |
+  사용자가 "pending 다 review 해줘" → 47건. heavy batch 이므로 에이전트에이전트는
+  반드시 enter_plan_mode 부터 호출하여 plan 보여줘야 한다.
+  무확인 run_smb_review_pending(limit=47) 직행 anti-pattern 차단.
+task_type: operator
+user_input: "pending share 전부 review 돌려줘"
+tool_stubs:
+  - name: list_pending_shares
+    success_message: |
+      pending 47건 (severity 미정).
+  - name: enter_plan_mode
+    success_message: |
+      plan_mode_active=True
+      승인됨.
+  - name: run_smb_review_pending
+    success_message: "review 완료. severity high 3건."
+  - name: exit_plan_mode
+    success_message: "plan_mode_active=False"
+script:
+  - reasoning: "먼저 pending 수 확인"
+    tool_calls:
+      - name: list_pending_shares
+        input: {}
+  - reasoning: "47건 = heavy batch → plan_mode 필수"
+    tool_calls:
+      - name: enter_plan_mode
+        input:
+          rationale: "pending 47건 → top 20 우선 review + 나머지 schedule"
+          steps:
+            - "1. top 20 review"
+            - "2. severity high finding"
+            - "3. 남은 27건 schedule"
+          estimated_minutes: 25
+  - reasoning: "승인 받았으니 진행"
+    tool_calls:
+      - name: run_smb_review_pending
+        input: {limit: 20}
+  - tool_calls:
+      - name: exit_plan_mode
+        input:
+          summary: "20건 review 완료, severity high 3건"
+          executed_steps: ["1", "2"]
+  - text: "plan 완료. top 20 review 끝, severity high 3건 finding 등록. 남은 27건은 schedule 별도 제안 가능."
+expectations:
+  tools_called: ["list_pending_shares", "enter_plan_mode", "run_smb_review_pending", "exit_plan_mode"]
+  final_text_contains: ["plan 완료", "severity high"]
+  min_turns: 4

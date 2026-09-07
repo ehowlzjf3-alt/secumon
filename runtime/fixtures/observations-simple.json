@@ -1,0 +1,208 @@
+{
+  "id": "observations-simple",
+  "family": "observation_review",
+  "complexity": "simple",
+  "description": "합성 관측의 수집 범위를 확인한다. 조회 오류와 관측 부재를 구분한다.",
+  "synthetic": true,
+  "policy": {
+    "tenantId": "synthetic",
+    "principalId": "learner",
+    "allowedTools": [
+      "fixture.read"
+    ],
+    "allowedLabels": [
+      "synthetic",
+      "public"
+    ],
+    "allowedDestinations": [
+      "local"
+    ],
+    "allowWrites": false
+  },
+  "goal": {
+    "revision": 1,
+    "description": "지정 범위 관측의 수집 완료 여부를 확인해줘",
+    "scope": "obs-simple",
+    "mode": "auto",
+    "criteria": [
+      {
+        "id": "coverage",
+        "description": "근거로 collection.complete 확인",
+        "key": "collection.complete",
+        "operator": "equals",
+        "equals": true,
+        "minIndependentSources": 1,
+        "requireCompleteCoverage": true
+      }
+    ]
+  },
+  "hypotheses": [],
+  "evidence": [
+    {
+      "id": "collection-partial",
+      "tenantId": "synthetic",
+      "scope": "obs-simple",
+      "sourceId": "collection-partial",
+      "lineageId": "collection-partial",
+      "locator": "fixture://collection-partial",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "partial",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "collection.complete": true
+      },
+      "artifact": null
+    },
+    {
+      "id": "collection-complete",
+      "tenantId": "synthetic",
+      "scope": "obs-simple",
+      "sourceId": "collection-complete",
+      "lineageId": "collection-complete",
+      "locator": "fixture://collection-complete",
+      "observedAt": 1788566400000,
+      "recordedAt": 1788566400000,
+      "labels": [
+        "synthetic"
+      ],
+      "coverage": "complete",
+      "status": "accepted",
+      "supersedes": [],
+      "derivedFrom": [],
+      "facts": {
+        "collection.complete": true
+      },
+      "artifact": null
+    }
+  ],
+  "checkpoints": [
+    {
+      "name": "조회 오류로 자료가 없음",
+      "evidenceIds": [],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "blocked",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "조회 실패 뒤 호출 예산을 모두 사용했다",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "collection-complete"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 1,
+        "toolCallLimit": 1
+      }
+    },
+    {
+      "name": "페이지 일부만 수집",
+      "evidenceIds": [
+        "collection-partial"
+      ],
+      "obligations": [],
+      "expectedComplete": false,
+      "expectedReasons": [
+        "insufficient_independent_evidence"
+      ],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "continue",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "collection-complete"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    },
+    {
+      "name": "범위 수집 완료",
+      "evidenceIds": [
+        "collection-complete"
+      ],
+      "obligations": [],
+      "expectedComplete": true,
+      "expectedReasons": [],
+      "expectedEvidenceIds": [],
+      "goalOverride": null,
+      "expectedControl": "complete",
+      "execution": {
+        "at": 1788566400000,
+        "status": "ready",
+        "plan": {
+          "revision": 1,
+          "goalRevision": 1,
+          "reason": "checkpoint 직전의 유효 계획",
+          "tasks": [
+            {
+              "id": "next-source",
+              "description": "아직 실행할 원본 조회가 남아 있다",
+              "dependsOn": [],
+              "toolId": "fixture.read",
+              "toolVersion": "1",
+              "input": {
+                "evidenceIds": [
+                  "collection-complete"
+                ]
+              },
+              "effect": "read",
+              "maxAttempts": 2,
+              "satisfies": []
+            }
+          ]
+        },
+        "toolCallsUsed": 0,
+        "toolCallLimit": 5
+      }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "employees" ADD CONSTRAINT "employees_mail_send_mode_check" CHECK ("employees"."mail_send_mode" in ('dssoc_only','per_owner'));

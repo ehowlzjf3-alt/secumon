@@ -1,0 +1,887 @@
+✖ file-journal agents separate identical work IDs, events and historical receipts across reopen (241.728125ms)
+✖ file-journal state keeps private memory and channel messages in separately owned SQLite databases (224.576958ms)
+✖ a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores (246.4605ms)
+✖ copying another agents complete journal is rejected before binding a new backend marker (253.005625ms)
+✖ file-journal selection does not bypass foreign memory or channel SQLite ownership (228.367958ms)
+✖ empty and populated legacy v1 journals are not automatically adopted by an agent (201.03575ms)
+✖ changing config between SQLite and file-journal never creates a replacement state store (202.590916ms)
+✖ an owned legacy SQLite agent gains only its backend marker and preserves historical data (229.078917ms)
+✖ an unowned legacy SQLite database is preserved without creating a backend marker (226.74125ms)
+✖ copying another agents backend marker is rejected before creating any state or private databases (244.391667ms)
+✖ malformed, unsupported or linked backend markers cannot initialize state stores (214.304667ms)
+✖ ambiguous existing SQLite and journal stores are preserved without choosing a new backend (223.588958ms)
+✖ concurrent CLI first storage opens retain one agent, backend selection and journal identity (393.851167ms)
+✔ clone creates a fresh identity while preserving reusable configuration and the original files (154.540875ms)
+✔ clone copies skill bytes, nested empty directories and executable bits without linking source files (181.149333ms)
+✖ clone starts with independent empty stores despite source work, memory, conversation and artifacts (131.437542ms)
+✔ ordinary clone never overwrites an existing empty, populated or initialized destination (159.391541ms)
+✔ clone rejects source overlap, nested agents and engine destinations without changing either tree (79.219291ms)
+✔ clone rejects missing or malformed sources and invalid options without creating a destination (76.664584ms)
+✔ clone rejects skill file and directory symlinks without modifying their outside targets (80.414125ms)
+✔ clone rejects hard-linked skill files and leaves both links unchanged (77.693375ms)
+✔ clone rejects a POSIX FIFO skill instead of blocking on its contents (167.927791ms)
+✔ clone permits a four-MiB skill file and rejects a file exceeding that limit (177.72725ms)
+✔ clone enforces snapshot entry, total-byte and directory-depth limits (291.088375ms)
+✔ pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair (350.8005ms)
+✔ pending clone preserves target file conflicts instead of overwriting or accepting them (381.593542ms)
+✔ finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits (202.687167ms)
+✖ CLI clone reports the new ready profile and supports explicit completed-clone resume (311.074917ms)
+✔ unregistered inspection creates neither registry parents nor an agent registration (75.524125ms)
+✔ claim and same-object reopen preserve original data and the immutable registration (90.447459ms)
+✔ renaming the same directory permits a new claim while invalidating the old path claim (102.030958ms)
+✖ a full folder copy can inspect the old head but cannot claim it or alter either source (92.557709ms)
+✔ two processes claiming the same unregistered object share the one actual CAS winner (211.565333ms)
+✖ two processes claiming copied objects admit only the actual no-replace winner (141.086917ms)
+✔ a corrupted registration is preserved and rejects inspection, claim and the held claim (86.388209ms)
+✔ a missing sequence is rejected without repairing or adopting the remaining record (86.645042ms)
+✔ replacing the held registration object with identical bytes fails its current check (84.69875ms)
+✔ replacing the held identity file with identical bytes cannot retain its source binding (91.945458ms)
+✖ the same agent ID with a different creation identity cannot reuse an existing registration (95.378042ms)
+✔ registry, agent and engine overlap is rejected in either direction before a write (74.220417ms)
+✔ the real clone operation receives a new ID and an independent first registration (200.67875ms)
+✖ sqlite: a verified local restore needs explicit rebind before stores reopen with all original records (140.415541ms)
+✖ file-journal: a verified local restore needs explicit rebind before stores reopen with all original records (153.775083ms)
+✖ rebind rejects the wrong expected head, backup, operation, and missing offline confirmation without changing registration (141.102542ms)
+✖ a pending restore marker prevents rebind even when a matching completion marker exists (143.286792ms)
+✖ an older restore without a completion marker is preserved and cannot manufacture rebind authority (153.804583ms)
+✖ a real live runtime lease blocks restore rebind and is neither deleted nor taken over (165.18125ms)
+✖ same-operation rebind retry is idempotent and does not authorize another copy or the preserved old object (161.887625ms)
+✖ changed restored bytes are not accepted solely on the completion marker (177.027ms)
+✖ changed archive originals are rejected and retained instead of trusting only the saved digest field (172.138833ms)
+✔ agent setup preserves files, creates private identity/config and reopens without a model (80.028542ms)
+✔ status and invalid initialization options do not create files (0.744917ms)
+✔ separate directories get distinct IDs and moving a directory preserves its identity (147.008583ms)
+✔ initialization can finish after a process stops between identity and config publication (101.732584ms)
+✔ missing identity uses explicit repair with the existing config; missing completed config is not reset (96.381792ms)
+✔ completed layout repairs missing directories only with explicit repair and preserves existing state (87.94875ms)
+✔ unknown data without identity is not assigned a new ID (2.678875ms)
+✔ config identity mismatch, unsupported versions and malformed documents are preserved (64.2425ms)
+✔ metadata symlinks and external hard links cannot be used for setup (71.274584ms)
+✔ managed directory links and writable/public metadata are rejected without changing permissions (71.5195ms)
+✔ engine overlap and nested agent registration are rejected (72.291125ms)
+✖ CLI first call, status, version and invalid commands expose readiness without claiming runtime execution (290.208ms)
+✖ separate CLI processes initializing concurrently settle on exactly one identity (408.154541ms)
+✖ two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen (201.899333ms)
+✖ agent work files cannot traverse into engine or another agent and remain separate (206.512042ms)
+✖ copying another agents database is detected by its durable owner before runtime access (213.039417ms)
+✔ unowned existing databases are not silently adopted (210.024708ms)
+✔ symlink database and sidecar destinations cannot overwrite another file (236.663041ms)
+✖ changing config after SQLite initialization cannot replace it with an empty journal (224.718333ms)
+ℹ tests 69
+ℹ suites 0
+ℹ pass 36
+ℹ fail 33
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12068.756167
+
+✖ failing tests:
+
+test at dist/tests/agent-backend-binding.test.js:109:1
+✖ file-journal agents separate identical work IDs, events and historical receipts across reopen (241.728125ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteKnowledgeRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-knowledge.js:31:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:103:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:112:25)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:158:1
+✖ file-journal state keeps private memory and channel messages in separately owned SQLite databases (224.576958ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteKnowledgeRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-knowledge.js:31:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:103:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:161:25)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:192:1
+✖ a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores (246.4605ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteKnowledgeRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-knowledge.js:31:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:103:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:196:30)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:236:1
+✖ copying another agents complete journal is rejected before binding a new backend marker (253.005625ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteKnowledgeRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-knowledge.js:31:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:103:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:239:25)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:261:1
+✖ file-journal selection does not bypass foreign memory or channel SQLite ownership (228.367958ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteKnowledgeRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-knowledge.js:31:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:103:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:265:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:290:1
+✖ empty and populated legacy v1 journals are not automatically adopted by an agent (201.03575ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        kind: 'directory',
+        mode: 448,
+        path: ''
+  ...
+      {
+  +     kind: 'directory',
+  +     mode: 448,
+  +     path: '.secumon/runtime-leases'
+  +   },
+  +   {
+        kind: 'file',
+        mode: 384,
+        path: '.secumon/setup-operation.json',
+        sha256: '21c046d1b2a6d1a244d3a85355b460e887c01c5e1c3f98335baca26bb8994db6'
+      },
+  ...
+        mode: 384,
+  +     path: '.secumon/storage-selection.json',
+  +     sha256: '2318c90f810f126cf4566a5263af15a91699234e7ae4cf5dcde3b158625d3798'
+  +   },
+  +   {
+  +     kind: 'file',
+  +     mode: 384,
+        path: 'config.json',
+        sha256: 'a6c07a6ef3dc16001c6dd157c024c26b6bdf799d6e046afa860c4ecf4e0e0726'
+      },
+      {
+        kind: 'directory',
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:307:20)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '', kind: 'directory', mode: 448 }, { path: '.secumon', kind: 'directory', mode: 448 }, { path: '.secumon/artifacts', kind: 'directory', mode: 448 }, { path: '.secumon/identity.json', kind: 'file', mode: 384, sha256: 'b2f677dc708e78966a5f0def005df9f3a0fdba0ccdccbb60a012c119a91f1d11' }, { path: '.secumon/runtime-leases', kind: 'directory', mode: 448 }, { path: '.secumon/setup-operation.json', kind: 'file', mode: 384, sha256: '21c046d1b2a6d1a244d3a85355b460e887c01c5e1c3f98335baca26bb8994db6' }, { path: '.secumon/setup.json', kind: 'file', mode: 384, sha256: 'fb480ba61a344b5176ed27f4c1b76b9f0be2a44cd08584c16d634e6d7e81b6ba' }, { path: '.secumon/state-journal', kind: 'directory', mode: 448 }, { path: '.secumon/state-journal/format.json', kind: 'file', mode: 384, sha256: 'e0d7e6f88ebc81702ced019ba16c6067f217eb2156723f21c7cc096f4bd5cda5' }, { path: '.secumon/storage-selection.json', kind: 'file', mode: 384, sha256: '2318c90f810f126cf4566a5263af15a91699234e7ae4cf5dcde3b158625d3798' }, { path: 'config.json', kind: 'file', mode: 384, sha256: 'a6c07a6ef3dc16001c6dd157c024c26b6bdf799d6e046afa860c4ecf4e0e0726' }, { path: 'memory', kind: 'directory', mode: 448 }, { path: 'skills', kind: 'directory', mode: 448 }, { path: 'workspace', kind: 'directory', mode: 448 } ],
+    expected: [ { path: '', kind: 'directory', mode: 448 }, { path: '.secumon', kind: 'directory', mode: 448 }, { path: '.secumon/artifacts', kind: 'directory', mode: 448 }, { path: '.secumon/identity.json', kind: 'file', mode: 384, sha256: 'b2f677dc708e78966a5f0def005df9f3a0fdba0ccdccbb60a012c119a91f1d11' }, { path: '.secumon/setup-operation.json', kind: 'file', mode: 384, sha256: '21c046d1b2a6d1a244d3a85355b460e887c01c5e1c3f98335baca26bb8994db6' }, { path: '.secumon/setup.json', kind: 'file', mode: 384, sha256: 'fb480ba61a344b5176ed27f4c1b76b9f0be2a44cd08584c16d634e6d7e81b6ba' }, { path: '.secumon/state-journal', kind: 'directory', mode: 448 }, { path: '.secumon/state-journal/format.json', kind: 'file', mode: 384, sha256: 'e0d7e6f88ebc81702ced019ba16c6067f217eb2156723f21c7cc096f4bd5cda5' }, { path: 'config.json', kind: 'file', mode: 384, sha256: 'a6c07a6ef3dc16001c6dd157c024c26b6bdf799d6e046afa860c4ecf4e0e0726' }, { path: 'memory', kind: 'directory', mode: 448 }, { path: 'skills', kind: 'directory', mode: 448 }, { path: 'workspace', kind: 'directory', mode: 448 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:314:1
+✖ changing config between SQLite and file-journal never creates a replacement state store (202.590916ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:318:34)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:347:1
+✖ an owned legacy SQLite agent gains only its backend marker and preserves historical data (229.078917ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:350:30)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:377:1
+✖ an unowned legacy SQLite database is preserved without creating a backend marker (226.74125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        kind: 'directory',
+        mode: 448,
+        path: ''
+  ...
+      {
+  +     kind: 'directory',
+  +     mode: 448,
+  +     path: '.secumon/runtime-leases'
+  +   },
+  +   {
+        kind: 'file',
+        mode: 384,
+        path: '.secumon/runtime.sqlite',
+        sha256: '2483f50288720a6b6c2d1e6216dab8c0c2eaa248dabfc23c9527f0ad3243324d'
+      },
+  ...
+        mode: 384,
+  +     path: '.secumon/storage-selection.json',
+  +     sha256: 'db469a4061fe478cd58360785301936fd011b533481cebfdb69643ffb09605bc'
+  +   },
+  +   {
+  +     kind: 'file',
+  +     mode: 384,
+        path: 'config.json',
+        sha256: '1a86cb17fc32f657e3a61ae6034f833c3932b41432e63e6345bed08d5468ebd2'
+      },
+      {
+        kind: 'directory',
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:392:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '', kind: 'directory', mode: 448 }, { path: '.secumon', kind: 'directory', mode: 448 }, { path: '.secumon/artifacts', kind: 'directory', mode: 448 }, { path: '.secumon/identity.json', kind: 'file', mode: 384, sha256: '7fad24d0d65725e46bc5883d986118f5906ad344edc8e58ce720138546d15273' }, { path: '.secumon/runtime-leases', kind: 'directory', mode: 448 }, { path: '.secumon/runtime.sqlite', kind: 'file', mode: 384, sha256: '2483f50288720a6b6c2d1e6216dab8c0c2eaa248dabfc23c9527f0ad3243324d' }, { path: '.secumon/setup-operation.json', kind: 'file', mode: 384, sha256: 'b7c2d5b63ecaf26c7c5e12f291b06b989f0829b14700d5effb129529d1379586' }, { path: '.secumon/setup.json', kind: 'file', mode: 384, sha256: '5175d652da82821ec7557c24b505b463d260971ca9d5c7de926be93b6fcf7322' }, { path: '.secumon/storage-selection.json', kind: 'file', mode: 384, sha256: 'db469a4061fe478cd58360785301936fd011b533481cebfdb69643ffb09605bc' }, { path: 'config.json', kind: 'file', mode: 384, sha256: '1a86cb17fc32f657e3a61ae6034f833c3932b41432e63e6345bed08d5468ebd2' }, { path: 'memory', kind: 'directory', mode: 448 }, { path: 'skills', kind: 'directory', mode: 448 }, { path: 'workspace', kind: 'directory', mode: 448 } ],
+    expected: [ { path: '', kind: 'directory', mode: 448 }, { path: '.secumon', kind: 'directory', mode: 448 }, { path: '.secumon/artifacts', kind: 'directory', mode: 448 }, { path: '.secumon/identity.json', kind: 'file', mode: 384, sha256: '7fad24d0d65725e46bc5883d986118f5906ad344edc8e58ce720138546d15273' }, { path: '.secumon/runtime.sqlite', kind: 'file', mode: 384, sha256: '2483f50288720a6b6c2d1e6216dab8c0c2eaa248dabfc23c9527f0ad3243324d' }, { path: '.secumon/setup-operation.json', kind: 'file', mode: 384, sha256: 'b7c2d5b63ecaf26c7c5e12f291b06b989f0829b14700d5effb129529d1379586' }, { path: '.secumon/setup.json', kind: 'file', mode: 384, sha256: '5175d652da82821ec7557c24b505b463d260971ca9d5c7de926be93b6fcf7322' }, { path: 'config.json', kind: 'file', mode: 384, sha256: '1a86cb17fc32f657e3a61ae6034f833c3932b41432e63e6345bed08d5468ebd2' }, { path: 'memory', kind: 'directory', mode: 448 }, { path: 'skills', kind: 'directory', mode: 448 }, { path: 'workspace', kind: 'directory', mode: 448 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:406:1
+✖ copying another agents backend marker is rejected before creating any state or private databases (244.391667ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteKnowledgeRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-knowledge.js:31:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:103:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:409:25)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:423:1
+✖ malformed, unsupported or linked backend markers cannot initialize state stores (214.304667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        kind: 'directory',
+        mode: 448,
+        path: ''
+  ...
+      {
+  +     kind: 'directory',
+  +     mode: 448,
+  +     path: '.secumon/runtime-leases'
+  +   },
+  +   {
+        kind: 'file',
+        mode: 384,
+        path: '.secumon/setup-operation.json',
+        sha256: '6a8062571a451b4a930e6f1313fb8792e3302dec157b10528b128b2c3d293686'
+      },
+  ...
+        mode: 384,
+  +     path: '.secumon/storage-selection.json',
+  +     sha256: 'cf39c79045f5608e4b889f829ed5b72bda864c3a47515a7afa39fb3e57a11690'
+  +   },
+  +   {
+  +     kind: 'file',
+  +     mode: 384,
+        path: 'config.json',
+        sha256: '3a8fd93ab0a2db8ff3a53f4b419656c47e06673049c8ae22c5cde78ed8821a86'
+      },
+      {
+        kind: 'directory',
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:441:20)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { path: '', kind: 'directory', mode: 448 }, { path: '.secumon', kind: 'directory', mode: 448 }, { path: '.secumon/artifacts', kind: 'directory', mode: 448 }, { path: '.secumon/identity.json', kind: 'file', mode: 384, sha256: 'cf213e8b932aa2868dec0139efab9033bc898b693b1b4e388d9e98cbdcb8232b' }, { path: '.secumon/runtime-leases', kind: 'directory', mode: 448 }, { path: '.secumon/setup-operation.json', kind: 'file', mode: 384, sha256: '6a8062571a451b4a930e6f1313fb8792e3302dec157b10528b128b2c3d293686' }, { path: '.secumon/setup.json', kind: 'file', mode: 384, sha256: '90e3f5bacd45ce17e4a50b9ecb89d2ee33cdc8eb80038a527c93d170d90a4389' }, { path: '.secumon/state-profile.json', kind: 'file', mode: 384, sha256: 'be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73' }, { path: '.secumon/storage-selection.json', kind: 'file', mode: 384, sha256: 'cf39c79045f5608e4b889f829ed5b72bda864c3a47515a7afa39fb3e57a11690' }, { path: 'config.json', kind: 'file', mode: 384, sha256: '3a8fd93ab0a2db8ff3a53f4b419656c47e06673049c8ae22c5cde78ed8821a86' }, { path: 'memory', kind: 'directory', mode: 448 }, { path: 'skills', kind: 'directory', mode: 448 }, { path: 'workspace', kind: 'directory', mode: 448 } ],
+    expected: [ { path: '', kind: 'directory', mode: 448 }, { path: '.secumon', kind: 'directory', mode: 448 }, { path: '.secumon/artifacts', kind: 'directory', mode: 448 }, { path: '.secumon/identity.json', kind: 'file', mode: 384, sha256: 'cf213e8b932aa2868dec0139efab9033bc898b693b1b4e388d9e98cbdcb8232b' }, { path: '.secumon/setup-operation.json', kind: 'file', mode: 384, sha256: '6a8062571a451b4a930e6f1313fb8792e3302dec157b10528b128b2c3d293686' }, { path: '.secumon/setup.json', kind: 'file', mode: 384, sha256: '90e3f5bacd45ce17e4a50b9ecb89d2ee33cdc8eb80038a527c93d170d90a4389' }, { path: '.secumon/state-profile.json', kind: 'file', mode: 384, sha256: 'be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73' }, { path: 'config.json', kind: 'file', mode: 384, sha256: '3a8fd93ab0a2db8ff3a53f4b419656c47e06673049c8ae22c5cde78ed8821a86' }, { path: 'memory', kind: 'directory', mode: 448 }, { path: 'skills', kind: 'directory', mode: 448 }, { path: 'workspace', kind: 'directory', mode: 448 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:449:1
+✖ ambiguous existing SQLite and journal stores are preserved without choosing a new backend (223.588958ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:452:30)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-backend-binding.test.js:476:1
+✖ concurrent CLI first storage opens retain one agent, backend selection and journal identity (393.851167ms)
+  Error [AggregateError]: concurrent_agent_backend_initialization_failed:sqlite
+  {"index":0,"status":"rejected","error":"Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-backend-binding-A20wsK/a --json\nagent_setup_failed\n","stdout":"","stderr":"agent_setup_failed\n"}
+  {"index":1,"status":"rejected","error":"Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-backend-binding-A20wsK/a --json\nagent_setup_failed\n","stdout":"","stderr":"agent_setup_failed\n"}
+  {"index":2,"status":"rejected","error":"Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-backend-binding-A20wsK/a --json\nagent_setup_failed\n","stdout":"","stderr":"agent_setup_failed\n"}
+  {"index":3,"status":"rejected","error":"Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-backend-binding-A20wsK/a --json\nagent_setup_failed\n","stdout":"","stderr":"agent_setup_failed\n"}
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-backend-binding.test.js:488:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    [errors]: [
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-backend-binding-A20wsK/a --json
+      agent_setup_failed
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-backend-binding-A20wsK/a --json
+      agent_setup_failed
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at Socket.<anonymous> (node:internal/child_process:498:11)
+          at Socket.emit (node:events:514:28)
+          at Pipe.<anonymous> (node:net:362:12),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-backend-binding-A20wsK/a --json
+      agent_setup_failed
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-backend-binding-A20wsK/a --json
+      agent_setup_failed
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5)
+    ]
+  }
+
+test at dist/tests/agent-clone.test.js:106:1
+✖ clone starts with independent empty stores despite source work, memory, conversation and artifacts (131.437542ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-clone.test.js:108:26)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-clone.test.js:380:1
+✖ CLI clone reports the new ready profile and supports explicit completed-clone resume (311.074917ms)
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js clone --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-clone-SZKnPa/source --destination /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-clone-SZKnPa/copy --name CLI clone --json
+  agent_setup_failed
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:514:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: 1,
+    killed: false,
+    signal: null,
+    cmd: '/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js clone --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-clone-SZKnPa/source --destination /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-clone-SZKnPa/copy --name CLI clone --json',
+    stdout: '',
+    stderr: 'agent_setup_failed\n'
+  }
+
+test at dist/tests/agent-host-identities.test.js:189:1
+✖ a full folder copy can inspect the old head but cannot claim it or alter either source (92.557709ms)
+  Error: agent_directory_unsafe
+      at profileBoundaryFailure (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:44:11)
+      at profileDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:97:16)
+      at #read (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:71:29)
+      ... 6 lines matching cause stack trace ...
+      at Test.postRun (node:internal/test_runner/test:1537:19) {
+    code: 'agent_directory_unsafe',
+    [cause]: Error: metadata_directory_unsafe
+        at PosixMetadataFiles.inspectDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/posix-metadata-files.js:88:19)
+        at profileDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:90:27)
+        at #read (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:71:29)
+        at #inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:123:33)
+        at FileAgentProfileStore.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:116:42)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identities.test.js:194:116)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+        at Test.postRun (node:internal/test_runner/test:1537:19) {
+      code: 'unsafe',
+      operation: 'directory'
+    }
+  }
+
+test at dist/tests/agent-host-identities.test.js:224:1
+✖ two processes claiming copied objects admit only the actual no-replace winner (141.086917ms)
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-host-identities-worker.js /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-host-identities-RDw0TK/engine /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-host-identities-RDw0TK/manual-copy /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-host-identities-RDw0TK/host-registry /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-host-identities-RDw0TK/barrier 1
+  file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:44
+      throw new AgentProfileError(reason, { cause: error });
+            ^
+  
+  AgentProfileError: agent_directory_unsafe
+      at profileBoundaryFailure (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:44:11)
+      at profileDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:97:16)
+      at #read (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:71:29)
+      ... 5 lines matching cause stack trace ...
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+    code: 'agent_directory_unsafe',
+    [cause]: FileBoundaryFault [Error]: metadata_directory_unsafe
+        at PosixMetadataFiles.inspectDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/posix-metadata-files.js:88:19)
+        at profileDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:90:27)
+        at #read (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:71:29)
+        at #inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:123:33)
+        at FileAgentProfileStore.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:116:42)
+        at file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-host-identities-worker.js:28:55
+        at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+        at async node:internal/modules/esm/loader:647:26
+        at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+      code: 'unsafe',
+      operation: 'directory'
+    }
+  }
+  
+  Node.js v24.20.0
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:514:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: 1,
+    killed: false,
+    signal: null,
+    cmd: '/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-host-identities-worker.js /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-host-identities-RDw0TK/engine /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-host-identities-RDw0TK/manual-copy /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-host-identities-RDw0TK/host-registry /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-host-identities-RDw0TK/barrier 1',
+    stdout: '',
+    stderr: "file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:44\n    throw new AgentProfileError(reason, { cause: error });\n          ^\n\nAgentProfileError: agent_directory_unsafe\n    at profileBoundaryFailure (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:44:11)\n    at profileDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:97:16)\n    at #read (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:71:29)\n    ... 5 lines matching cause stack trace ...\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  code: 'agent_directory_unsafe',\n  [cause]: FileBoundaryFault [Error]: metadata_directory_unsafe\n      at PosixMetadataFiles.inspectDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/posix-metadata-files.js:88:19)\n      at profileDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-profile-files.js:90:27)\n      at #read (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:71:29)\n      at #inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:123:33)\n      at FileAgentProfileStore.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-agent-profile.js:116:42)\n      at file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-host-identities-worker.js:28:55\n      at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n      at async node:internal/modules/esm/loader:647:26\n      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n    code: 'unsafe',\n    operation: 'directory'\n  }\n}\n\nNode.js v24.20.0\n"
+  }
+
+test at dist/tests/agent-host-identities.test.js:331:1
+✖ the same agent ID with a different creation identity cannot reuse an existing registration (95.378042ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /agent_host_identity_history_invalid/. Input:
+  
+  'Error: metadata_directory_unsafe'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identities.test.js:340:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: metadata_directory_unsafe
+        at PosixMetadataFiles.inspectDirectory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/posix-metadata-files.js:88:19)
+        at directory (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-host-identities.js:102:42)
+        at new IdentityContext (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-host-identities.js:111:29)
+        at inspectAgentHostIdentity (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-host-identities.js:295:21)
+        at file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identities.test.js:340:29
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identities.test.js:340:16)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1397:25),
+    expected: /agent_host_identity_history_invalid/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-host-identity-recovery.test.js:117:5
+✖ sqlite: a verified local restore needs explicit rebind before stores reopen with all original records (140.415541ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:47:30)
+      at fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:57:26)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:118:25)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-host-identity-recovery.test.js:117:5
+✖ file-journal: a verified local restore needs explicit rebind before stores reopen with all original records (153.775083ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteKnowledgeRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-knowledge.js:31:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:103:25)
+      at open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:47:30)
+      at fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:57:26)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:118:25)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-host-identity-recovery.test.js:151:1
+✖ rebind rejects the wrong expected head, backup, operation, and missing offline confirmation without changing registration (141.102542ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:47:30)
+      at fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:57:26)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:152:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-host-identity-recovery.test.js:162:1
+✖ a pending restore marker prevents rebind even when a matching completion marker exists (143.286792ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:47:30)
+      at fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:57:26)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:163:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-host-identity-recovery.test.js:173:1
+✖ an older restore without a completion marker is preserved and cannot manufacture rebind authority (153.804583ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:47:30)
+      at fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:57:26)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:174:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-host-identity-recovery.test.js:182:1
+✖ a real live runtime lease blocks restore rebind and is neither deleted nor taken over (165.18125ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:47:30)
+      at fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:57:26)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:183:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-host-identity-recovery.test.js:201:1
+✖ same-operation rebind retry is idempotent and does not authorize another copy or the preserved old object (161.887625ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:47:30)
+      at fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:57:26)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:202:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-host-identity-recovery.test.js:219:1
+✖ changed restored bytes are not accepted solely on the completion marker (177.027ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:47:30)
+      at fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:57:26)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:220:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-host-identity-recovery.test.js:228:1
+✖ changed archive originals are rejected and retained instead of trusting only the saved digest field (172.138833ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at open (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:47:30)
+      at fixture (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:57:26)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-host-identity-recovery.test.js:229:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-profile.test.js:197:1
+✖ CLI first call, status, version and invalid commands expose readiness without claiming runtime execution (290.208ms)
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-ptQHVd/agent --json
+  agent_setup_failed
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:514:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: 1,
+    killed: false,
+    signal: null,
+    cmd: '/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-ptQHVd/agent --json',
+    stdout: '',
+    stderr: 'agent_setup_failed\n'
+  }
+
+test at dist/tests/agent-profile.test.js:215:1
+✖ separate CLI processes initializing concurrently settle on exactly one identity (408.154541ms)
+  Error [AggregateError]: concurrent_initialization_failed
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+  agent_setup_failed
+  
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+  agent_setup_failed
+  
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+  agent_host_identity_publication_incomplete
+  
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+  agent_host_identity_publication_incomplete
+  
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+  agent_setup_failed
+  
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+  agent_setup_failed
+  
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+  agent_setup_failed
+  
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+  agent_host_identity_publication_incomplete
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-profile.test.js:221:19)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    [errors]: [
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+      agent_setup_failed
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+      agent_setup_failed
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+      agent_host_identity_publication_incomplete
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+      agent_host_identity_publication_incomplete
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+      agent_setup_failed
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+      agent_setup_failed
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+      agent_setup_failed
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5),
+      Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/agent-cli-isolated-worker.js init --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/agent-profile-fxhf1e/agent --json
+      agent_host_identity_publication_incomplete
+      
+          at genericNodeError (node:internal/errors:986:15)
+          at wrappedFn (node:internal/errors:540:14)
+          at ChildProcess.exithandler (node:child_process:417:12)
+          at ChildProcess.emit (node:events:514:28)
+          at maybeClose (node:internal/child_process:1141:16)
+          at ChildProcess._handle.onexit (node:internal/child_process:306:5)
+    ]
+  }
+
+test at dist/tests/agent-stores.test.js:24:1
+✖ two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen (201.899333ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-stores.test.js:26:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.start (node:internal/test_runner/test:1257:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-stores.test.js:60:1
+✖ agent work files cannot traverse into engine or another agent and remain separate (206.512042ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-stores.test.js:62:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-stores.test.js:81:1
+✖ copying another agents database is detected by its durable owner before runtime access (213.039417ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-stores.test.js:83:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }
+
+test at dist/tests/agent-stores.test.js:137:1
+✖ changing config after SQLite initialization cannot replace it with an empty journal (224.718333ms)
+  TypeError: The "options" argument must be an object.
+      at openHostSqliteDatabase (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/windows-sqlite.js:93:16)
+      at new SqliteStateRepository (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:14:20)
+      at openAgentStores (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-stores.js:93:25)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-stores.test.js:140:30)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1397:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:969:18)
+      at Test.postRun (node:internal/test_runner/test:1537:19)
+      at Test.run (node:internal/test_runner/test:1462:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_INVALID_ARG_TYPE'
+  }

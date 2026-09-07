@@ -1,0 +1,42 @@
+✔ sqlite: explicit goal intake preserves work, original transcript and budget; replay uses the first command (196.760875ms)
+✔ sqlite: after_receive resumes the original goal command after reconnect (157.840542ms)
+✔ sqlite: after_commit resumes the original goal command after reconnect (173.907083ms)
+✔ file-journal: explicit goal intake preserves work, original transcript and budget; replay uses the first command (236.082167ms)
+✔ file-journal: after_receive resumes the original goal command after reconnect (193.496541ms)
+✔ file-journal: after_commit resumes the original goal command after reconnect (208.273458ms)
+✔ a newer applied input rejects the old editor basis durably without changing goal or transcript head (169.568167ms)
+✔ a control change inside the goal commit CAS is rechecked and cannot overwrite the newer mode (128.477375ms)
+✔ goal intake validates authority, selected session, original IDs, and server-owned fields before receipt publication (125.559042ms)
+✔ cancelled work stays terminal; rejected input remains auditable and cannot become another work (137.770375ms)
+✖ completed response can receive an explicit new goal while old answer, read artifacts and actual usage remain historical (627.137792ms)
+✔ only an accepted old main-turn question is superseded; external response and evidence obligations survive (278.288625ms)
+✔ narrowed policy at dispatch is rejected instead of expanding the caller authority (126.795458ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2862.049458
+
+✖ failing tests:
+
+test at dist/tests/agent-goal-change.test.js:173:1
+✖ completed response can receive an explicit new goal while old answer, read artifacts and actual usage remain historical (627.137792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'blocked'
+  - 'completed'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-goal-change.test.js:199:12)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'blocked',
+    expected: 'completed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

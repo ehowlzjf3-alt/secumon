@@ -1,0 +1,988 @@
+TAP version 13
+# Subtest: file-journal agents separate identical work IDs, events and historical receipts across reopen
+ok 1 - file-journal agents separate identical work IDs, events and historical receipts across reopen
+  ---
+  duration_ms: 155.40286
+  type: 'test'
+  ...
+# Subtest: file-journal state keeps private memory and channel messages in separately owned SQLite databases
+ok 2 - file-journal state keeps private memory and channel messages in separately owned SQLite databases
+  ---
+  duration_ms: 87.190996
+  type: 'test'
+  ...
+# Subtest: a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+ok 3 - a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+  ---
+  duration_ms: 110.283484
+  type: 'test'
+  ...
+# Subtest: copying another agents complete journal is rejected before binding a new backend marker
+ok 4 - copying another agents complete journal is rejected before binding a new backend marker
+  ---
+  duration_ms: 56.642328
+  type: 'test'
+  ...
+# Subtest: file-journal selection does not bypass foreign memory or channel SQLite ownership
+ok 5 - file-journal selection does not bypass foreign memory or channel SQLite ownership
+  ---
+  duration_ms: 148.127129
+  type: 'test'
+  ...
+# Subtest: empty and populated legacy v1 journals are not automatically adopted by an agent
+ok 6 - empty and populated legacy v1 journals are not automatically adopted by an agent
+  ---
+  duration_ms: 83.413646
+  type: 'test'
+  ...
+# Subtest: changing config between SQLite and file-journal never creates a replacement state store
+ok 7 - changing config between SQLite and file-journal never creates a replacement state store
+  ---
+  duration_ms: 170.934347
+  type: 'test'
+  ...
+# Subtest: an owned legacy SQLite agent gains only its backend marker and preserves historical data
+ok 8 - an owned legacy SQLite agent gains only its backend marker and preserves historical data
+  ---
+  duration_ms: 55.421814
+  type: 'test'
+  ...
+# Subtest: an unowned legacy SQLite database is preserved without creating a backend marker
+ok 9 - an unowned legacy SQLite database is preserved without creating a backend marker
+  ---
+  duration_ms: 34.890216
+  type: 'test'
+  ...
+# Subtest: copying another agents backend marker is rejected before creating any state or private databases
+ok 10 - copying another agents backend marker is rejected before creating any state or private databases
+  ---
+  duration_ms: 34.867561
+  type: 'test'
+  ...
+# Subtest: malformed, unsupported or linked backend markers cannot initialize state stores
+ok 11 - malformed, unsupported or linked backend markers cannot initialize state stores
+  ---
+  duration_ms: 48.04662
+  type: 'test'
+  ...
+# Subtest: ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+ok 12 - ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+  ---
+  duration_ms: 41.514136
+  type: 'test'
+  ...
+# Subtest: concurrent CLI first storage opens retain one agent, backend selection and journal identity
+ok 13 - concurrent CLI first storage opens retain one agent, backend selection and journal identity
+  ---
+  duration_ms: 864.224844
+  type: 'test'
+  ...
+# Subtest: two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+ok 14 - two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+  ---
+  duration_ms: 126.784763
+  type: 'test'
+  ...
+# Subtest: agent work files cannot traverse into engine or another agent and remain separate
+ok 15 - agent work files cannot traverse into engine or another agent and remain separate
+  ---
+  duration_ms: 86.77333
+  type: 'test'
+  ...
+# Subtest: copying another agents database is detected by its durable owner before runtime access
+ok 16 - copying another agents database is detected by its durable owner before runtime access
+  ---
+  duration_ms: 75.29703
+  type: 'test'
+  ...
+# Subtest: unowned existing databases are not silently adopted
+ok 17 - unowned existing databases are not silently adopted
+  ---
+  duration_ms: 17.111831
+  type: 'test'
+  ...
+# Subtest: symlink database and sidecar destinations cannot overwrite another file
+ok 18 - symlink database and sidecar destinations cannot overwrite another file
+  ---
+  duration_ms: 29.952174
+  type: 'test'
+  ...
+# Subtest: changing config after SQLite initialization cannot replace it with an empty journal
+ok 19 - changing config after SQLite initialization cannot replace it with an empty journal
+  ---
+  duration_ms: 55.062472
+  type: 'test'
+  ...
+# Subtest: metadata boundary: host dispatch exposes declared POSIX mechanisms and refuses unsupported or emulated hosts
+ok 20 - metadata boundary: host dispatch exposes declared POSIX mechanisms and refuses unsupported or emulated hosts
+  ---
+  duration_ms: 3.655248
+  type: 'test'
+  ...
+# Subtest: metadata boundary: missing directories return null; regular files and linked directories are rejected
+ok 21 - metadata boundary: missing directories return null; regular files and linked directories are rejected
+  ---
+  duration_ms: 2.364948
+  type: 'test'
+  ...
+# Subtest: metadata boundary: directory access keeps private and owner-writable policies distinct without chmod
+ok 22 - metadata boundary: directory access keeps private and owner-writable policies distinct without chmod
+  ---
+  duration_ms: 1.389127
+  type: 'test'
+  ...
+# Subtest: metadata boundary: public parent traversal permits a private file without weakening its access policy
+ok 23 - metadata boundary: public parent traversal permits a private file without weakening its access policy
+  ---
+  duration_ms: 5.23446
+  type: 'test'
+  ...
+# Subtest: metadata boundary: files enforce their own access policy and preserve original bytes and permissions
+ok 24 - metadata boundary: files enforce their own access policy and preserve original bytes and permissions
+  ---
+  duration_ms: 0.899248
+  type: 'test'
+  ...
+# Subtest: metadata boundary: only a missing read has missing code and its original ENOENT cause
+ok 25 - metadata boundary: only a missing read has missing code and its original ENOENT cause
+  ---
+  duration_ms: 0.730694
+  type: 'test'
+  ...
+# Subtest: metadata boundary: named pipes are rejected without waiting for a writer
+ok 26 - metadata boundary: named pipes are rejected without waiting for a writer
+  ---
+  duration_ms: 82.60827
+  type: 'test'
+  ...
+# Subtest: metadata boundary: maximum counts bytes and includes exact, one-over and empty zero-byte cases
+ok 27 - metadata boundary: maximum counts bytes and includes exact, one-over and empty zero-byte cases
+  ---
+  duration_ms: 2.265989
+  type: 'test'
+  ...
+# Subtest: metadata boundary: invalid maximums fail before allocating or reading data
+ok 28 - metadata boundary: invalid maximums fail before allocating or reading data
+  ---
+  duration_ms: 1.579424
+  type: 'test'
+  ...
+# Subtest: metadata boundary: a leaf may contain Unicode and spaces but cannot traverse directories
+ok 29 - metadata boundary: a leaf may contain Unicode and spaces but cannot traverse directories
+  ---
+  duration_ms: 1.927016
+  type: 'test'
+  ...
+# Subtest: metadata boundary: copied, fabricated and foreign adapter directory references cannot authorize access
+ok 30 - metadata boundary: copied, fabricated and foreign adapter directory references cannot authorize access
+  ---
+  duration_ms: 2.141939
+  type: 'test'
+  ...
+# Subtest: metadata boundary: an issued directory reference detects replacement before read, sync and reinspection
+ok 31 - metadata boundary: an issued directory reference detects replacement before read, sync and reinspection
+  ---
+  duration_ms: 1.544489
+  type: 'test'
+  ...
+# Subtest: metadata boundary: issued directory access is rechecked after permissions change
+ok 32 - metadata boundary: issued directory access is rechecked after permissions change
+  ---
+  duration_ms: 0.926179
+  type: 'test'
+  ...
+# Subtest: metadata boundary: external hard links are rejected and a matching sibling publication pair can be allowed
+ok 33 - metadata boundary: external hard links are rejected and a matching sibling publication pair can be allowed
+  ---
+  duration_ms: 3.349156
+  type: 'test'
+  ...
+# Subtest: metadata boundary: publication link removal during policy observation retries the stable single-link file
+ok 34 - metadata boundary: publication link removal during policy observation retries the stable single-link file
+  ---
+  duration_ms: 0.847795
+  type: 'test'
+  ...
+# Subtest: metadata boundary: sibling inspection cannot escape its issued directory
+ok 35 - metadata boundary: sibling inspection cannot escape its issued directory
+  ---
+  duration_ms: 0.654077
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated changed-once observation preserves stable-read and descriptor cleanup contracts
+ok 36 - metadata boundary: isolated changed-once observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 46.142274
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated changed-twice observation preserves stable-read and descriptor cleanup contracts
+ok 37 - metadata boundary: isolated changed-twice observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 52.126244
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated replaced-once observation preserves stable-read and descriptor cleanup contracts
+ok 38 - metadata boundary: isolated replaced-once observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 54.816102
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated directory-replaced observation preserves stable-read and descriptor cleanup contracts
+ok 39 - metadata boundary: isolated directory-replaced observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 52.11822
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated grew-over-limit observation preserves stable-read and descriptor cleanup contracts
+ok 40 - metadata boundary: isolated grew-over-limit observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 45.584391
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated read-error observation preserves stable-read and descriptor cleanup contracts
+ok 41 - metadata boundary: isolated read-error observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 41.406516
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated sync-error observation preserves stable-read and descriptor cleanup contracts
+ok 42 - metadata boundary: isolated sync-error observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 48.626626
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated foreign-file-uid observation preserves stable-read and descriptor cleanup contracts
+ok 43 - metadata boundary: isolated foreign-file-uid observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 35.081616
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated foreign-directory-uid observation preserves stable-read and descriptor cleanup contracts
+ok 44 - metadata boundary: isolated foreign-directory-uid observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 57.13966
+  type: 'test'
+  ...
+# Subtest: metadata boundary: isolated policy-error observation preserves stable-read and descriptor cleanup contracts
+ok 45 - metadata boundary: isolated policy-error observation preserves stable-read and descriptor cleanup contracts
+  ---
+  duration_ms: 131.657719
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated check-failure preserves notification, syscall and cleanup boundaries
+ok 46 - metadata sync observer: isolated check-failure preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 62.117716
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated open-eio preserves notification, syscall and cleanup boundaries
+ok 47 - metadata sync observer: isolated open-eio preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 37.005944
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated opened-object-replaced preserves notification, syscall and cleanup boundaries
+ok 48 - metadata sync observer: isolated opened-object-replaced preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 48.292773
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated fsync-eio preserves notification, syscall and cleanup boundaries
+ok 49 - metadata sync observer: isolated fsync-eio preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 53.653125
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated success preserves notification, syscall and cleanup boundaries
+ok 50 - metadata sync observer: isolated success preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 82.060308
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated after-fsync-replaced preserves notification, syscall and cleanup boundaries
+ok 51 - metadata sync observer: isolated after-fsync-replaced preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 56.761519
+  type: 'test'
+  ...
+# Subtest: metadata sync observer: isolated observer-throws preserves notification, syscall and cleanup boundaries
+ok 52 - metadata sync observer: isolated observer-throws preserves notification, syscall and cleanup boundaries
+  ---
+  duration_ms: 83.731768
+  type: 'test'
+  ...
+# Subtest: profile wrapper preserves absent reads, zero-byte reads and original missing sync error
+ok 53 - profile wrapper preserves absent reads, zero-byte reads and original missing sync error
+  ---
+  duration_ms: 5.453108
+  type: 'test'
+  ...
+# Subtest: common diagnostics include directory checks without replacing consumer read counters
+ok 54 - common diagnostics include directory checks without replacing consumer read counters
+  ---
+  duration_ms: 1.516013
+  type: 'test'
+  ...
+# Subtest: profile wrapper preserves open disappearance error and closes opened files
+ok 55 - profile wrapper preserves open disappearance error and closes opened files
+  ---
+  duration_ms: 133.026952
+  type: 'test'
+  ...
+# Subtest: profile wrapper preserves named-lstat disappearance error and closes opened files
+ok 56 - profile wrapper preserves named-lstat disappearance error and closes opened files
+  ---
+  duration_ms: 145.275007
+  type: 'test'
+  ...
+# Subtest: emulated unsupported platform refuses profile and standalone journal writes before creating files
+ok 57 - emulated unsupported platform refuses profile and standalone journal writes before creating files
+  ---
+  duration_ms: 192.739933
+  type: 'test'
+  ...
+# Subtest: workspace: missing or denying memory validators block file operations before workspace I/O
+ok 58 - workspace: missing or denying memory validators block file operations before workspace I/O
+  ---
+  duration_ms: 74.500057
+  type: 'test'
+  ...
+# Subtest: workspace: stage rechecks memory custody after its asynchronous I/O
+ok 59 - workspace: stage rechecks memory custody after its asynchronous I/O
+  ---
+  duration_ms: 24.3167
+  type: 'test'
+  ...
+# Subtest: workspace: read rechecks memory custody after its asynchronous I/O
+ok 60 - workspace: read rechecks memory custody after its asynchronous I/O
+  ---
+  duration_ms: 11.083222
+  type: 'test'
+  ...
+# Subtest: workspace: checkpoint rechecks memory custody after its asynchronous I/O
+ok 61 - workspace: checkpoint rechecks memory custody after its asynchronous I/O
+  ---
+  duration_ms: 12.951757
+  type: 'test'
+  ...
+# Subtest: workspace: restore rechecks memory custody after its asynchronous I/O
+ok 62 - workspace: restore rechecks memory custody after its asynchronous I/O
+  ---
+  duration_ms: 15.382536
+  type: 'test'
+  ...
+# Subtest: workspace: cleanup rechecks memory custody after its asynchronous I/O
+ok 63 - workspace: cleanup rechecks memory custody after its asynchronous I/O
+  ---
+  duration_ms: 11.20076
+  type: 'test'
+  ...
+# Subtest: workspace: sqlite checkpoint and byte-for-byte restore survive new state, artifact and workspace instances
+ok 64 - workspace: sqlite checkpoint and byte-for-byte restore survive new state, artifact and workspace instances
+  ---
+  duration_ms: 44.910535
+  type: 'test'
+  ...
+# Subtest: workspace: file-journal checkpoint and byte-for-byte restore survive new state, artifact and workspace instances
+ok 65 - workspace: file-journal checkpoint and byte-for-byte restore survive new state, artifact and workspace instances
+  ---
+  duration_ms: 56.419025
+  type: 'test'
+  ...
+# Subtest: workspace: identical paths are isolated by both work and attempt and ownership is checked before file access
+ok 66 - workspace: identical paths are isolated by both work and attempt and ownership is checked before file access
+  ---
+  duration_ms: 16.510462
+  type: 'test'
+  ...
+# Subtest: workspace: traversal, absolute, ambiguous and platform-specific paths cannot be staged
+ok 67 - workspace: traversal, absolute, ambiguous and platform-specific paths cannot be staged
+  ---
+  duration_ms: 5.537001
+  type: 'test'
+  ...
+# Subtest: workspace: repeated identical staging is idempotent and different content cannot overwrite it
+ok 68 - workspace: repeated identical staging is idempotent and different content cannot overwrite it
+  ---
+  duration_ms: 11.554946
+  type: 'test'
+  ...
+# Subtest: workspace: caller mutations after starting stage cannot change the bytes being staged
+ok 69 - workspace: caller mutations after starting stage cannot change the bytes being staged
+  ---
+  duration_ms: 6.474995
+  type: 'test'
+  ...
+# Subtest: workspace: two processes cannot overwrite the same staged path with different bytes
+ok 70 - workspace: two processes cannot overwrite the same staged path with different bytes
+  ---
+  duration_ms: 231.328542
+  type: 'test'
+  ...
+# Subtest: workspace: artifact saved during a state change remains uncommitted and cannot replace the authoritative revision
+ok 71 - workspace: artifact saved during a state change remains uncommitted and cannot replace the authoritative revision
+  ---
+  duration_ms: 10.116139
+  type: 'test'
+  ...
+# Subtest: workspace: narrower actor grants never replace the stored work policy during checkpoint commit
+ok 72 - workspace: narrower actor grants never replace the stored work policy during checkpoint commit
+  ---
+  duration_ms: 7.9366
+  type: 'test'
+  ...
+# Subtest: workspace: policy change during file read prevents returning previously read bytes
+ok 73 - workspace: policy change during file read prevents returning previously read bytes
+  ---
+  duration_ms: 3.686733
+  type: 'test'
+  ...
+# Subtest: workspace: generation change during file read prevents returning previously read bytes
+ok 74 - workspace: generation change during file read prevents returning previously read bytes
+  ---
+  duration_ms: 3.784841
+  type: 'test'
+  ...
+# Subtest: workspace: policy change during staging prevents a successful stale response and preserves the local file
+ok 75 - workspace: policy change during staging prevents a successful stale response and preserves the local file
+  ---
+  duration_ms: 5.611448
+  type: 'test'
+  ...
+# Subtest: workspace: generation change during staging prevents a successful stale response and preserves the local file
+ok 76 - workspace: generation change during staging prevents a successful stale response and preserves the local file
+  ---
+  duration_ms: 6.211921
+  type: 'test'
+  ...
+# Subtest: workspace: generation changes block even source-free checkpoints and preserve their staged files
+ok 77 - workspace: generation changes block even source-free checkpoints and preserve their staged files
+  ---
+  duration_ms: 14.203559
+  type: 'test'
+  ...
+# Subtest: workspace: restricted is checked when restoring a checkpoint even without a generation change
+ok 78 - workspace: restricted is checked when restoring a checkpoint even without a generation change
+  ---
+  duration_ms: 19.148188
+  type: 'test'
+  ...
+# Subtest: workspace: deleted is checked when restoring a checkpoint even without a generation change
+ok 79 - workspace: deleted is checked when restoring a checkpoint even without a generation change
+  ---
+  duration_ms: 15.373511
+  type: 'test'
+  ...
+# Subtest: workspace: labels is checked when restoring a checkpoint even without a generation change
+ok 80 - workspace: labels is checked when restoring a checkpoint even without a generation change
+  ---
+  duration_ms: 13.207989
+  type: 'test'
+  ...
+# Subtest: workspace: artifact is checked when restoring a checkpoint even without a generation change
+ok 81 - workspace: artifact is checked when restoring a checkpoint even without a generation change
+  ---
+  duration_ms: 18.584943
+  type: 'test'
+  ...
+# Subtest: workspace: lifecycle changes during artifact restore prevent files from being staged
+ok 82 - workspace: lifecycle changes during artifact restore prevent files from being staged
+  ---
+  duration_ms: 30.470507
+  type: 'test'
+  ...
+# Subtest: workspace: cleanup preserves files while active
+ok 83 - workspace: cleanup preserves files while active
+  ---
+  duration_ms: 14.405562
+  type: 'test'
+  ...
+# Subtest: workspace: cleanup preserves files while unknown
+ok 84 - workspace: cleanup preserves files while unknown
+  ---
+  duration_ms: 11.319931
+  type: 'test'
+  ...
+# Subtest: workspace: cleanup preserves files while obligation
+ok 85 - workspace: cleanup preserves files while obligation
+  ---
+  duration_ms: 7.745442
+  type: 'test'
+  ...
+# Subtest: workspace: cleanup preserves files while uncheckpointed
+ok 86 - workspace: cleanup preserves files while uncheckpointed
+  ---
+  duration_ms: 4.086655
+  type: 'test'
+  ...
+# Subtest: workspace: a file staged after cleanup inspection causes manifest conflict and remains preserved
+ok 87 - workspace: a file staged after cleanup inspection causes manifest conflict and remains preserved
+  ---
+  duration_ms: 11.585521
+  type: 'test'
+  ...
+# Subtest: workspace: missing checkpoint content prevents cleanup of the surviving staged file
+ok 88 - workspace: missing checkpoint content prevents cleanup of the surviving staged file
+  ---
+  duration_ms: 10.6059
+  type: 'test'
+  ...
+# Subtest: workspace: a remaining lock is never stolen by staging or cleanup
+ok 89 - workspace: a remaining lock is never stolen by staging or cleanup
+  ---
+  duration_ms: 8.893692
+  type: 'test'
+  ...
+# Subtest: workspace: symlink files and replaced roots are rejected instead of reading or overwriting them
+ok 90 - workspace: symlink files and replaced roots are rejected instead of reading or overwriting them
+  ---
+  duration_ms: 6.357203
+  type: 'test'
+  ...
+# Subtest: workspace: content corruption and configured byte or file capacity limits fail without silent truncation
+ok 91 - workspace: content corruption and configured byte or file capacity limits fail without silent truncation
+  ---
+  duration_ms: 8.777919
+  type: 'test'
+  ...
+# Subtest: workspace directories: a removed observed root is not recreated by listing or staging
+ok 92 - workspace directories: a removed observed root is not recreated by listing or staging
+  ---
+  duration_ms: 17.290244
+  type: 'test'
+  ...
+# Subtest: workspace directories: a removed observed work is not recreated by listing or staging
+ok 93 - workspace directories: a removed observed work is not recreated by listing or staging
+  ---
+  duration_ms: 4.549402
+  type: 'test'
+  ...
+# Subtest: workspace directories: a removed observed attempt is not recreated by listing or staging
+ok 94 - workspace directories: a removed observed attempt is not recreated by listing or staging
+  ---
+  duration_ms: 4.523607
+  type: 'test'
+  ...
+# Subtest: workspace directories: a removed observed files is not recreated by listing or staging
+ok 95 - workspace directories: a removed observed files is not recreated by listing or staging
+  ---
+  duration_ms: 3.964902
+  type: 'test'
+  ...
+# Subtest: workspace directories: an observed work replacement is rejected without altering foreign contents
+ok 96 - workspace directories: an observed work replacement is rejected without altering foreign contents
+  ---
+  duration_ms: 2.762805
+  type: 'test'
+  ...
+# Subtest: workspace directories: an observed attempt replacement is rejected without altering foreign contents
+ok 97 - workspace directories: an observed attempt replacement is rejected without altering foreign contents
+  ---
+  duration_ms: 2.283822
+  type: 'test'
+  ...
+# Subtest: workspace directories: an observed files replacement is rejected without altering foreign contents
+ok 98 - workspace directories: an observed files replacement is rejected without altering foreign contents
+  ---
+  duration_ms: 3.318929
+  type: 'test'
+  ...
+# Subtest: workspace directories: private access remains enforced independently at each observed scope
+ok 99 - workspace directories: private access remains enforced independently at each observed scope
+  ---
+  duration_ms: 13.619814
+  type: 'test'
+  ...
+# Subtest: workspace directories: a descendant symlink is rejected without traversing the preserved original
+ok 100 - workspace directories: a descendant symlink is rejected without traversing the preserved original
+  ---
+  duration_ms: 4.196138
+  type: 'test'
+  ...
+# Subtest: workspace locks: consecutive successful calls accept distinct lock objects and release every acquired lock
+ok 101 - workspace locks: consecutive successful calls accept distinct lock objects and release every acquired lock
+  ---
+  duration_ms: 256.65717
+  type: 'test'
+  ...
+# Subtest: workspace locks: lock-removed after acquisition prevents success and never deletes an unowned lock
+ok 102 - workspace locks: lock-removed after acquisition prevents success and never deletes an unowned lock
+  ---
+  duration_ms: 136.444509
+  type: 'test'
+  ...
+# Subtest: workspace locks: lock-replaced after acquisition prevents success and never deletes an unowned lock
+ok 103 - workspace locks: lock-replaced after acquisition prevents success and never deletes an unowned lock
+  ---
+  duration_ms: 194.458071
+  type: 'test'
+  ...
+# Subtest: workspace locks: lock-unsafe after acquisition prevents success and never deletes an unowned lock
+ok 104 - workspace locks: lock-unsafe after acquisition prevents success and never deletes an unowned lock
+  ---
+  duration_ms: 132.512294
+  type: 'test'
+  ...
+# Subtest: workspace locks: attempt-replaced after acquisition prevents success and never deletes an unowned lock
+ok 105 - workspace locks: attempt-replaced after acquisition prevents success and never deletes an unowned lock
+  ---
+  duration_ms: 170.773339
+  type: 'test'
+  ...
+# Subtest: workspace directories: files replacement or disappearance after the final parent sync still prevents success
+ok 106 - workspace directories: files replacement or disappearance after the final parent sync still prevents success
+  ---
+  duration_ms: 342.720509
+  type: 'test'
+  ...
+# Subtest: workspace directories: changes during the final cleanup sync prevent success without removing a later owner lock
+ok 107 - workspace directories: changes during the final cleanup sync prevent success without removing a later owner lock
+  ---
+  duration_ms: 368.177724
+  type: 'test'
+  ...
+# Subtest: workspace locks: acquisition inspection failure preserves the unconfirmed lock and vanished new files fail before use
+ok 108 - workspace locks: acquisition inspection failure preserves the unconfirmed lock and vanished new files fail before use
+  ---
+  duration_ms: 394.850641
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated order preserves order, original errors and cleanup
+ok 109 - workspace directory sync: isolated order preserves order, original errors and cleanup
+  ---
+  duration_ms: 226.32878
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated constructor-sync-eio preserves order, original errors and cleanup
+ok 110 - workspace directory sync: isolated constructor-sync-eio preserves order, original errors and cleanup
+  ---
+  duration_ms: 153.059387
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated open-eio preserves order, original errors and cleanup
+ok 111 - workspace directory sync: isolated open-eio preserves order, original errors and cleanup
+  ---
+  duration_ms: 206.020173
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated files-fsync-eio preserves order, original errors and cleanup
+ok 112 - workspace directory sync: isolated files-fsync-eio preserves order, original errors and cleanup
+  ---
+  duration_ms: 212.030473
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated cleanup-sync-eio preserves order, original errors and cleanup
+ok 113 - workspace directory sync: isolated cleanup-sync-eio preserves order, original errors and cleanup
+  ---
+  duration_ms: 213.678815
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated action-only preserves order, original errors and cleanup
+ok 114 - workspace directory sync: isolated action-only preserves order, original errors and cleanup
+  ---
+  duration_ms: 150.596148
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated action-unlock-eio preserves order, original errors and cleanup
+ok 115 - workspace directory sync: isolated action-unlock-eio preserves order, original errors and cleanup
+  ---
+  duration_ms: 184.459716
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated action-cleanup-sync-eio preserves order, original errors and cleanup
+ok 116 - workspace directory sync: isolated action-cleanup-sync-eio preserves order, original errors and cleanup
+  ---
+  duration_ms: 204.31503
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated cleanup-new-lock preserves order, original errors and cleanup
+ok 117 - workspace directory sync: isolated cleanup-new-lock preserves order, original errors and cleanup
+  ---
+  duration_ms: 193.859129
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated cleanup-new-lock-sync-eio preserves order, original errors and cleanup
+ok 118 - workspace directory sync: isolated cleanup-new-lock-sync-eio preserves order, original errors and cleanup
+  ---
+  duration_ms: 211.671166
+  type: 'test'
+  ...
+# Subtest: workspace directory sync: isolated unsupported-platform preserves order, original errors and cleanup
+ok 119 - workspace directory sync: isolated unsupported-platform preserves order, original errors and cleanup
+  ---
+  duration_ms: 211.239168
+  type: 'test'
+  ...
+# Subtest: workspace: actual SIGKILL at lock-created preserves interruption artifacts and never steals the remaining lock
+ok 120 - workspace: actual SIGKILL at lock-created preserves interruption artifacts and never steals the remaining lock
+  ---
+  duration_ms: 221.784403
+  type: 'test'
+  ...
+# Subtest: workspace: actual SIGKILL at candidate-synced preserves interruption artifacts and never steals the remaining lock
+ok 121 - workspace: actual SIGKILL at candidate-synced preserves interruption artifacts and never steals the remaining lock
+  ---
+  duration_ms: 180.041048
+  type: 'test'
+  ...
+# Subtest: workspace: actual SIGKILL at file-published preserves interruption artifacts and never steals the remaining lock
+ok 122 - workspace: actual SIGKILL at file-published preserves interruption artifacts and never steals the remaining lock
+  ---
+  duration_ms: 196.220334
+  type: 'test'
+  ...
+# Subtest: workspace record: exact serialized limit accepts JSON whitespace without rewriting it and one extra byte retains read/list error distinction
+ok 123 - workspace record: exact serialized limit accepts JSON whitespace without rewriting it and one extra byte retains read/list error distinction
+  ---
+  duration_ms: 25.46567
+  type: 'test'
+  ...
+# Subtest: workspace record: a valid self-consistent raw payload above its bound is too large for both read and list
+ok 124 - workspace record: a valid self-consistent raw payload above its bound is too large for both read and list
+  ---
+  duration_ms: 5.80445
+  type: 'test'
+  ...
+# Subtest: workspace record: canonical empty content remains a valid read and listed file
+ok 125 - workspace record: canonical empty content remains a valid read and listed file
+  ---
+  duration_ms: 4.633736
+  type: 'test'
+  ...
+# Subtest: workspace record: checksum is rejected after stable read by both entry points
+ok 126 - workspace record: checksum is rejected after stable read by both entry points
+  ---
+  duration_ms: 6.282589
+  type: 'test'
+  ...
+# Subtest: workspace record: base64-whitespace is rejected after stable read by both entry points
+ok 127 - workspace record: base64-whitespace is rejected after stable read by both entry points
+  ---
+  duration_ms: 6.343959
+  type: 'test'
+  ...
+# Subtest: workspace record: base64-missing-padding is rejected after stable read by both entry points
+ok 128 - workspace record: base64-missing-padding is rejected after stable read by both entry points
+  ---
+  duration_ms: 5.8882
+  type: 'test'
+  ...
+# Subtest: workspace record: base64-nonzero-padbits is rejected after stable read by both entry points
+ok 129 - workspace record: base64-nonzero-padbits is rejected after stable read by both entry points
+  ---
+  duration_ms: 5.179356
+  type: 'test'
+  ...
+# Subtest: workspace record: byte-length is rejected after stable read by both entry points
+ok 130 - workspace record: byte-length is rejected after stable read by both entry points
+  ---
+  duration_ms: 5.045372
+  type: 'test'
+  ...
+# Subtest: workspace record: content-sha is rejected after stable read by both entry points
+ok 131 - workspace record: content-sha is rejected after stable read by both entry points
+  ---
+  duration_ms: 7.841825
+  type: 'test'
+  ...
+# Subtest: workspace record: schema-version is rejected after stable read by both entry points
+ok 132 - workspace record: schema-version is rejected after stable read by both entry points
+  ---
+  duration_ms: 10.555222
+  type: 'test'
+  ...
+# Subtest: workspace record: schema-extra-record is rejected after stable read by both entry points
+ok 133 - workspace record: schema-extra-record is rejected after stable read by both entry points
+  ---
+  duration_ms: 6.185145
+  type: 'test'
+  ...
+# Subtest: workspace record: schema-extra-file is rejected after stable read by both entry points
+ok 134 - workspace record: schema-extra-file is rejected after stable read by both entry points
+  ---
+  duration_ms: 5.258831
+  type: 'test'
+  ...
+# Subtest: workspace record: schema-path is rejected after stable read by both entry points
+ok 135 - workspace record: schema-path is rejected after stable read by both entry points
+  ---
+  duration_ms: 5.010342
+  type: 'test'
+  ...
+# Subtest: workspace record: json is rejected after stable read by both entry points
+ok 136 - workspace record: json is rejected after stable read by both entry points
+  ---
+  duration_ms: 2.950369
+  type: 'test'
+  ...
+# Subtest: workspace record: work binds metadata to its requested scope and physical filename
+ok 137 - workspace record: work binds metadata to its requested scope and physical filename
+  ---
+  duration_ms: 2.720975
+  type: 'test'
+  ...
+# Subtest: workspace record: attempt binds metadata to its requested scope and physical filename
+ok 138 - workspace record: attempt binds metadata to its requested scope and physical filename
+  ---
+  duration_ms: 2.182714
+  type: 'test'
+  ...
+# Subtest: workspace record: path binds metadata to its requested scope and physical filename
+ok 139 - workspace record: path binds metadata to its requested scope and physical filename
+  ---
+  duration_ms: 2.13177
+  type: 'test'
+  ...
+# Subtest: workspace record: filename binds metadata to its requested scope and physical filename
+ok 140 - workspace record: filename binds metadata to its requested scope and physical filename
+  ---
+  duration_ms: 4.151234
+  type: 'test'
+  ...
+# Subtest: workspace record: filename-before-checksum binds metadata to its requested scope and physical filename
+ok 141 - workspace record: filename-before-checksum binds metadata to its requested scope and physical filename
+  ---
+  duration_ms: 4.997313
+  type: 'test'
+  ...
+# Subtest: workspace record: three external aliases preserve existing unrestricted hardlink read/list/stage and targeted removal
+ok 142 - workspace record: three external aliases preserve existing unrestricted hardlink read/list/stage and targeted removal
+  ---
+  duration_ms: 7.601273
+  type: 'test'
+  ...
+# Subtest: workspace record: unrelated.pending blocks aggregate operations without broadening the single-file read
+ok 143 - workspace record: unrelated.pending blocks aggregate operations without broadening the single-file read
+  ---
+  duration_ms: 4.189997
+  type: 'test'
+  ...
+# Subtest: workspace record: unrelated.txt blocks aggregate operations without broadening the single-file read
+ok 144 - workspace record: unrelated.txt blocks aggregate operations without broadening the single-file read
+  ---
+  duration_ms: 5.740884
+  type: 'test'
+  ...
+# Subtest: workspace stable read: one concurrent change retries once and validates the final complete record
+ok 145 - workspace stable read: one concurrent change retries once and validates the final complete record
+  ---
+  duration_ms: 173.748385
+  type: 'test'
+  ...
+# Subtest: workspace stable read: two changing attempts fail with a file-change cause without a third read
+ok 146 - workspace stable read: two changing attempts fail with a file-change cause without a third read
+  ---
+  duration_ms: 205.51085
+  type: 'test'
+  ...
+# Subtest: workspace stable read: losing the named file after open is changed data, not an initially absent file
+ok 147 - workspace stable read: losing the named file after open is changed data, not an initially absent file
+  ---
+  duration_ms: 170.016564
+  type: 'test'
+  ...
+# Subtest: workspace stable read: replacing the containing files directory during read preserves the directory error
+ok 148 - workspace stable read: replacing the containing files directory during read preserves the directory error
+  ---
+  duration_ms: 197.631966
+  type: 'test'
+  ...
+# Subtest: workspace stable read: the first open ENOENT retains the existing public error distinction
+ok 149 - workspace stable read: the first open ENOENT retains the existing public error distinction
+  ---
+  duration_ms: 167.632196
+  type: 'test'
+  ...
+# Subtest: workspace stable read: open access denial remains a file safety error with its original cause
+ok 150 - workspace stable read: open access denial remains a file safety error with its original cause
+  ---
+  duration_ms: 197.506405
+  type: 'test'
+  ...
+# Subtest: workspace stable read: read EIO is propagated as the original I/O error and releases the lock
+ok 151 - workspace stable read: read EIO is propagated as the original I/O error and releases the lock
+  ---
+  duration_ms: 210.969123
+  type: 'test'
+  ...
+# Subtest: workspace stable read: fstat EIO is propagated as the original I/O error and releases the lock
+ok 152 - workspace stable read: fstat EIO is propagated as the original I/O error and releases the lock
+  ---
+  duration_ms: 205.039035
+  type: 'test'
+  ...
+# Subtest: workspace stable read: cleanup failure retains the new file-change error and both original causes
+ok 153 - workspace stable read: cleanup failure retains the new file-change error and both original causes
+  ---
+  duration_ms: 198.345004
+  type: 'test'
+  ...
+# Subtest: workspace stable list: one concurrent change retries once and validates the final complete record
+ok 154 - workspace stable list: one concurrent change retries once and validates the final complete record
+  ---
+  duration_ms: 168.194601
+  type: 'test'
+  ...
+# Subtest: workspace stable list: two changing attempts fail with a file-change cause without a third read
+ok 155 - workspace stable list: two changing attempts fail with a file-change cause without a third read
+  ---
+  duration_ms: 140.839328
+  type: 'test'
+  ...
+# Subtest: workspace stable list: losing the named file after open is changed data, not an initially absent file
+ok 156 - workspace stable list: losing the named file after open is changed data, not an initially absent file
+  ---
+  duration_ms: 156.829963
+  type: 'test'
+  ...
+# Subtest: workspace stable list: replacing the containing files directory during read preserves the directory error
+ok 157 - workspace stable list: replacing the containing files directory during read preserves the directory error
+  ---
+  duration_ms: 174.105252
+  type: 'test'
+  ...
+# Subtest: workspace stable list: the first open ENOENT retains the existing public error distinction
+ok 158 - workspace stable list: the first open ENOENT retains the existing public error distinction
+  ---
+  duration_ms: 191.797088
+  type: 'test'
+  ...
+# Subtest: workspace stable list: open access denial remains a file safety error with its original cause
+ok 159 - workspace stable list: open access denial remains a file safety error with its original cause
+  ---
+  duration_ms: 138.803235
+  type: 'test'
+  ...
+# Subtest: workspace stable list: read EIO is propagated as the original I/O error and releases the lock
+ok 160 - workspace stable list: read EIO is propagated as the original I/O error and releases the lock
+  ---
+  duration_ms: 143.577514
+  type: 'test'
+  ...
+# Subtest: workspace stable list: fstat EIO is propagated as the original I/O error and releases the lock
+ok 161 - workspace stable list: fstat EIO is propagated as the original I/O error and releases the lock
+  ---
+  duration_ms: 169.272561
+  type: 'test'
+  ...
+# Subtest: workspace stable list: cleanup failure retains the new file-change error and both original causes
+ok 162 - workspace stable list: cleanup failure retains the new file-change error and both original causes
+  ---
+  duration_ms: 197.835592
+  type: 'test'
+  ...
+# Subtest: workspace stable read: disappearance before a retry open retains the changed-file error instead of initial absence
+ok 163 - workspace stable read: disappearance before a retry open retains the changed-file error instead of initial absence
+  ---
+  duration_ms: 198.352142
+  type: 'test'
+  ...
+1..163
+# tests 163
+# suites 0
+# pass 163
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9090.190272

@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 1,
+  "kind": "mcp_wait_recovery",
+  "test": "sqlite: MCP item wait survives SIGKILL and reopens without resetting its due time or consuming an early successor",
+  "backend": "sqlite",
+  "waitKind": "item",
+  "codeDigest": "d9356ffc2b0bdf3442cc863a2b7e17bd66b9204be200f5dab3a1ca5d6e9cec48",
+  "marker": {
+    "schemaVersion": 1,
+    "backend": "sqlite",
+    "kind": "item",
+    "workId": "mcp-wait-recovery",
+    "workerPid": 38789,
+    "peerPid": 38791,
+    "owner": "mcp-wait-before",
+    "parentAttemptId": "attempt-e2af5b04-aa77-4a52-846e-5ed13bf7111a",
+    "successorTaskId": "resume-after-wait",
+    "head": {
+      "id": "cced9ad990d3dd6662b2ab9651eb202b6d1d8fa80ce01e96ac41e286eb79df38",
+      "sha256": "0a0ccbbd8bb2f94a84fe1bdcaf162a9e931314049df74131e72361a5e62072ed",
+      "byteLength": 964,
+      "mediaType": "application/json",
+      "tenantId": "tenant-a",
+      "labels": [
+        "synthetic"
+      ]
+    },
+    "resume": {
+      "id": "5579d367037cd1df06ae44d8ff48815552d83de287a8610cc5b45654d1dd0aab",
+      "sha256": "6f2faec57b3caf99dd0effd907672708a9c495ac9cfd120aa8de9c0b9f747a62",
+      "byteLength": 9837,
+      "mediaType": "application/json",
+      "tenantId": "tenant-a",
+      "labels": [
+        "synthetic"
+      ]
+    },
+    "checkpointDigest": "2082a5d04b6e276d2f1ae1eefedeee53cb9eef28f656231e6ded4843cf9107b8",
+    "stateDigest": "0345b0fe0360a3756139712f95e70bde2a98aabdbd61d318d69ad1e78b5e255c",
+    "at": 1000,
+    "retryAt": 3500,
+    "deadlineAt": 61000,
+    "revision": 12,
+    "budget": {
+      "limits": {
+        "toolCalls": 10,
+        "modelCalls": 5,
+        "tokens": 10000,
+        "replans": 5,
+        "wallTimeMs": 60000
+      },
+      "used": {
+        "toolCalls": 1,
+        "modelCalls": 0,
+        "tokens": 0,
+        "replans": 1,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "calls": [
+      {
+        "request": {
+          "requestId": "read_request-e1484420-79db-4e1c-ac7b-466b9a0fd79c",
+          "cursor": null,
+          "snapshot": null,
+          "retryItems": null,
+          "itemLimit": 2
+        },
+        "attemptId": "attempt-e2af5b04-aa77-4a52-846e-5ed13bf7111a",
+        "status": "accepted",
+        "response": {
+          "id": "9279f4b9f09fbdf5c44c04b14a093c077b38db1905eb65583e84e06f18ac1bc3",
+          "sha256": "af78d54abc117607d2aa3e42912941bea9a126ae0fc715d48ebffd9fb4f30792",
+          "byteLength": 2371,
+          "mediaType": "application/json",
+          "tenantId": "tenant-a",
+          "labels": [
+            "synthetic"
+          ]
+        },
+        "dispatchedAt": 1000,
+        "receivedAt": 1000,
+        "errorCode": null
+      }
+    ],
+    "acceptedResponses": 1,
+    "completedItemIds": [
+      "a"
+    ]
+  },
+  "beforeAudit": [
+    {
+      "sequence": 1,
+      "pid": 38791,
+      "event": "start",
+      "mode": "item-rate-limit",
+      "retryAfterMs": 2500
+    },
+    {
+      "sequence": 2,
+      "pid": 38791,
+      "event": "method",
+      "method": "server/discover"
+    },
+    {
+      "sequence": 3,
+      "pid": 38791,
+      "event": "method",
+      "method": "tools/list"
+    },
+    {
+      "sequence": 4,
+      "pid": 38791,
+      "event": "method",
+      "method": "tools/call"
+    },
+    {
+      "sequence": 5,
+      "pid": 38791,
+      "event": "call",
+      "tool": "observations.page",
+      "mode": "item-rate-limit",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-e1484420-79db-4e1c-ac7b-466b9a0fd79c",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null
+    },
+    {
+      "sequence": 6,
+      "pid": 38791,
+      "event": "handler-ready",
+      "tool": "observations.page",
+      "mode": "item-rate-limit",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-e1484420-79db-4e1c-ac7b-466b9a0fd79c",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null,
+      "responseKind": "page",
+      "retryAfterMs": 2500,
+      "returnedIds": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "sequence": 7,
+      "pid": 38791,
+      "event": "response-sent",
+      "tool": "observations.page",
+      "mode": "item-rate-limit",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-e1484420-79db-4e1c-ac7b-466b9a0fd79c",
+      "retryIds": null,
+      "snapshot": null,
+      "cursor": null,
+      "responseKind": "page",
+      "retryAfterMs": 2500,
+      "returnedIds": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "sequence": 8,
+      "pid": 38791,
+      "event": "close",
+      "reason": "stdin-ended"
+    }
+  ],
+  "afterAudit": [
+    {
+      "sequence": 1,
+      "pid": 38797,
+      "event": "start",
+      "mode": "item-rate-limit",
+      "retryAfterMs": 2500
+    },
+    {
+      "sequence": 2,
+      "pid": 38797,
+      "event": "method",
+      "method": "server/discover"
+    },
+    {
+      "sequence": 3,
+      "pid": 38797,
+      "event": "method",
+      "method": "tools/list"
+    },
+    {
+      "sequence": 4,
+      "pid": 38797,
+      "event": "method",
+      "method": "tools/call"
+    },
+    {
+      "sequence": 5,
+      "pid": 38797,
+      "event": "call",
+      "tool": "observations.page",
+      "mode": "item-rate-limit",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-efa10841-10e8-40ac-b026-56f723e406f2",
+      "retryIds": [
+        "b"
+      ],
+      "snapshot": "mcpc-snapshot:773e4d49d2d423ee31df0ab4bcb67b7e3b3cf6257fb48bdfa0a509f361878472",
+      "cursor": null
+    },
+    {
+      "sequence": 6,
+      "pid": 38797,
+      "event": "handler-ready",
+      "tool": "observations.page",
+      "mode": "item-rate-limit",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-efa10841-10e8-40ac-b026-56f723e406f2",
+      "retryIds": [
+        "b"
+      ],
+      "snapshot": "mcpc-snapshot:773e4d49d2d423ee31df0ab4bcb67b7e3b3cf6257fb48bdfa0a509f361878472",
+      "cursor": null,
+      "responseKind": "page",
+      "retryAfterMs": 2500,
+      "returnedIds": [
+        "b"
+      ]
+    },
+    {
+      "sequence": 7,
+      "pid": 38797,
+      "event": "response-sent",
+      "tool": "observations.page",
+      "mode": "item-rate-limit",
+      "query": {
+        "ids": [
+          "a",
+          "b"
+        ]
+      },
+      "requestId": "read_request-efa10841-10e8-40ac-b026-56f723e406f2",
+      "retryIds": [
+        "b"
+      ],
+      "snapshot": "mcpc-snapshot:773e4d49d2d423ee31df0ab4bcb67b7e3b3cf6257fb48bdfa0a509f361878472",
+      "cursor": null,
+      "responseKind": "page",
+      "retryAfterMs": 2500,
+      "returnedIds": [
+        "b"
+      ]
+    },
+    {
+      "sequence": 8,
+      "pid": 38797,
+      "event": "close",
+      "reason": "stdin-ended"
+    }
+  ],
+  "transport": {
+    "endpointId": "wait-recovery-fixture",
+    "pid": null,
+    "generation": 2,
+    "connected": false,
+    "dirty": true,
+    "closed": true,
+    "activeCalls": 0,
+    "discovering": false,
+    "processStarts": 1,
+    "processCloses": 1,
+    "wireRequests": 3,
+    "toolCalls": 1,
+    "listPages": 1,
+    "requestBytes": 1068,
+    "responseBytes": 7545,
+    "protocolErrors": 0
+  },
+  "shutdown": {
+    "pids": {
+      "worker": 38789,
+      "peerBefore": 38791,
+      "peerAfter": 38797
+    },
+    "probe": "ESRCH"
+  },
+  "hostScheduling": "FakeClock and explicit runnable/workflow calls; no background daemon",
+  "final": {
+    "revision": 20,
+    "retryWakeAt": null,
+    "deadlineAt": 61000,
+    "budget": {
+      "limits": {
+        "toolCalls": 10,
+        "modelCalls": 5,
+        "tokens": 10000,
+        "replans": 5,
+        "wallTimeMs": 60000
+      },
+      "used": {
+        "toolCalls": 2,
+        "modelCalls": 0,
+        "tokens": 0,
+        "replans": 1,
+        "unmeasuredModelCalls": 0
+      },
+      "reservedToolCalls": 0,
+      "reservedModelCalls": 0,
+      "reservedTokens": 0
+    },
+    "attempts": [
+      {
+        "id": "attempt-e2af5b04-aa77-4a52-846e-5ed13bf7111a",
+        "owner": "mcp-wait-before",
+        "status": "partial",
+        "adopted": true,
+        "readProgress": {
+          "operationId": "read-c13b9a67-2119-4715-b337-86539cbf647b",
+          "head": {
+            "id": "cced9ad990d3dd6662b2ab9651eb202b6d1d8fa80ce01e96ac41e286eb79df38",
+            "sha256": "0a0ccbbd8bb2f94a84fe1bdcaf162a9e931314049df74131e72361a5e62072ed",
+            "byteLength": 964,
+            "mediaType": "application/json",
+            "tenantId": "tenant-a",
+            "labels": [
+              "synthetic"
+            ]
+          },
+          "callCount": 1,
+          "remainingCalls": 2,
+          "completedPages": 0,
+          "completedItems": 1,
+          "pendingItems": 1,
+          "unknownCalls": 0,
+          "phase": "partial",
+          "successorAttemptId": "attempt-adc2e524-6c90-4148-a43c-67680fc27dc6",
+          "retryAt": 3500,
+          "queryDigest": "9b416b1153977f9398598a95169f99b4c469be5786e06eebf5a3ba4f526b0ff6"
+        }
+      },
+      {
+        "id": "attempt-adc2e524-6c90-4148-a43c-67680fc27dc6",
+        "owner": "mcp-wait-after-3",
+        "status": "succeeded",
+        "adopted": true,
+        "readProgress": {
+          "operationId": "read-c13b9a67-2119-4715-b337-86539cbf647b",
+          "head": {
+            "id": "b52cb289a802e1fd08a782a7e0520eb2dfb7dac2c055f76add044ab305a98892",
+            "sha256": "bcbd246101f936c68c40876c4c5d0ccecad7552a8ced5402d04277da04e05af2",
+            "byteLength": 1129,
+            "mediaType": "application/json",
+            "tenantId": "tenant-a",
+            "labels": [
+              "synthetic"
+            ]
+          },
+          "callCount": 2,
+          "remainingCalls": 1,
+          "completedPages": 1,
+          "completedItems": 2,
+          "pendingItems": 0,
+          "unknownCalls": 0,
+          "phase": "complete",
+          "successorAttemptId": null,
+          "retryAt": null,
+          "queryDigest": "9b416b1153977f9398598a95169f99b4c469be5786e06eebf5a3ba4f526b0ff6"
+        }
+      }
+    ]
+  },
+  "tempCleaned": true
+}

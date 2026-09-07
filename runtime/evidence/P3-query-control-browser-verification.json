@@ -1,0 +1,100 @@
+{
+  "observedAt": "2026-09-05T17:19:56.564Z",
+  "scope": "Targeted local Web changes; synthetic SQLite fixture, final frontend from build-2; server storage implementation before final query-schema migration.",
+  "checks": [
+    {
+      "id": "empty-candidate-page",
+      "result": "passed",
+      "observed": "20 screen-denied candidates produce 0 cards with explicit continuation notice and More button"
+    },
+    {
+      "id": "next-page",
+      "result": "passed",
+      "observed": "More shows remaining 3 visible work cards and removes continuation button"
+    },
+    {
+      "id": "goal-control-input",
+      "result": "passed",
+      "observed": "Goal title change accepted with explicit goal and control revisions; displayed goal revision becomes 2"
+    },
+    {
+      "id": "cross-channel-stale-draft",
+      "result": "passed",
+      "observed": "CLI fast-to-deep change preserves draft text and goal-title focus; goal submit becomes disabled"
+    },
+    {
+      "id": "explicit-rebase-save",
+      "result": "passed",
+      "observed": "Explicit refresh retains draft; submission displays goal revision 3, final title and deep mode"
+    },
+    {
+      "id": "list-summary-current",
+      "result": "passed",
+      "observed": "After first-page refresh, explicit detail read re-adds the selected card: count 1, one visible card, empty notice hidden"
+    },
+    {
+      "id": "console",
+      "result": "passed",
+      "observed": "Browser console error list []"
+    },
+    {
+      "id": "cleanup",
+      "result": "passed",
+      "observed": "Temporary browser tab closed; server session 58362 SIGINT exited 0; fixture directory removed"
+    }
+  ],
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "screenshots": [
+    "runtime/evidence/P3-query-browser-empty-final.png",
+    "runtime/evidence/P3-query-browser-stale-final.png",
+    "runtime/evidence/P3-query-browser-current-final.png"
+  ],
+  "dom": "runtime/evidence/P3-query-browser-final-dom.txt",
+  "serverLoadedCode": [
+    {
+      "path": "runtime/dist/presentation/local-workbench.js",
+      "sha256": "7cda9a965210e202f60155ad07c135eda479b683811211f8b29ab520f18673c0"
+    },
+    {
+      "path": "runtime/dist/presentation/web-server.js",
+      "sha256": "de465a9f42bd983038e9848a23be10364dd4ffd805d57028d2553d160b9fdb09"
+    },
+    {
+      "path": "runtime/dist/application/execution-runtime.js",
+      "sha256": "4bc1d9ba5a19fed0854681c01f6e72665d336d5d71c46800992931ad75cfd6ee"
+    },
+    {
+      "path": "runtime/dist/application/work-view-service.js",
+      "sha256": "d07409f8f328e55d10ce7424574319b47999a8060a21b778a4dbec9b6d9b1fef"
+    },
+    {
+      "path": "runtime/dist/infrastructure/sqlite-state.js",
+      "sha256": "26388fa09b86c3499325a1aace42f974b6036deb1a4c74128751c9f74994eca6"
+    }
+  ],
+  "frontendCode": [
+    {
+      "path": "runtime/dist/presentation/web/client.js",
+      "sha256": "156fca403c46433c66cef53b13ca30f4b43ec5b95892ab21ff10cbeae63827c6"
+    },
+    {
+      "path": "runtime/dist/presentation/web/view-state.js",
+      "sha256": "37f5187b899894a6604556de80ac98db1a858a6d84173c47cbc50e85aada3765"
+    }
+  ],
+  "serverStopped": true,
+  "fixtureRemoved": true,
+  "consoleErrors": [],
+  "actualModelCalls": 0,
+  "actualServiceCalls": 0,
+  "limits": [
+    "This is not a repeat of all 15 previous Web checks; no CSS/layout policy changed.",
+    "The temporary browser server used the pre-final SQLite query schema; final schema migration is covered by subsequent repository and HTTP tests.",
+    "Browser DOM inspection once used a missing button selector and once selected the closed mode dialog; neither probe was used as acceptance evidence.",
+    "Final cursor expiry/eviction and commit CAS races are covered by automated tests rather than browser time manipulation."
+  ],
+  "intermediateFinding": "A visible card could coexist with count 0 and an empty notice after an explicit view refreshed the card. The list summary now updates on card insert/remove and session reset; the final screenshot/DOM confirms the correction."
+}

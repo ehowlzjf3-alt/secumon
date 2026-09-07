@@ -1,0 +1,969 @@
+TAP version 13
+# Subtest: file-journal agents separate identical work IDs, events and historical receipts across reopen
+ok 1 - file-journal agents separate identical work IDs, events and historical receipts across reopen
+  ---
+  duration_ms: 247.125758
+  type: 'test'
+  ...
+# Subtest: file-journal state keeps private memory and channel messages in separately owned SQLite databases
+ok 2 - file-journal state keeps private memory and channel messages in separately owned SQLite databases
+  ---
+  duration_ms: 180.875637
+  type: 'test'
+  ...
+# Subtest: a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+ok 3 - a file-journal clone opens a fresh owned journal and empty SQLite memory and channel stores
+  ---
+  duration_ms: 201.587786
+  type: 'test'
+  ...
+# Subtest: copying another agents complete journal is rejected before binding a new backend marker
+ok 4 - copying another agents complete journal is rejected before binding a new backend marker
+  ---
+  duration_ms: 94.741217
+  type: 'test'
+  ...
+# Subtest: file-journal selection does not bypass foreign memory or channel SQLite ownership
+ok 5 - file-journal selection does not bypass foreign memory or channel SQLite ownership
+  ---
+  duration_ms: 252.944996
+  type: 'test'
+  ...
+# Subtest: empty and populated legacy v1 journals are not automatically adopted by an agent
+ok 6 - empty and populated legacy v1 journals are not automatically adopted by an agent
+  ---
+  duration_ms: 142.656538
+  type: 'test'
+  ...
+# Subtest: changing config between SQLite and file-journal never creates a replacement state store
+ok 7 - changing config between SQLite and file-journal never creates a replacement state store
+  ---
+  duration_ms: 251.8324
+  type: 'test'
+  ...
+# Subtest: an owned legacy SQLite agent gains only its backend marker and preserves historical data
+ok 8 - an owned legacy SQLite agent gains only its backend marker and preserves historical data
+  ---
+  duration_ms: 108.716795
+  type: 'test'
+  ...
+# Subtest: an unowned legacy SQLite database is preserved without creating a backend marker
+ok 9 - an unowned legacy SQLite database is preserved without creating a backend marker
+  ---
+  duration_ms: 54.790183
+  type: 'test'
+  ...
+# Subtest: copying another agents backend marker is rejected before creating any state or private databases
+ok 10 - copying another agents backend marker is rejected before creating any state or private databases
+  ---
+  duration_ms: 117.759712
+  type: 'test'
+  ...
+# Subtest: malformed, unsupported or linked backend markers cannot initialize state stores
+ok 11 - malformed, unsupported or linked backend markers cannot initialize state stores
+  ---
+  duration_ms: 244.113225
+  type: 'test'
+  ...
+# Subtest: ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+ok 12 - ambiguous existing SQLite and journal stores are preserved without choosing a new backend
+  ---
+  duration_ms: 111.340333
+  type: 'test'
+  ...
+# Subtest: concurrent CLI first storage opens retain one agent, backend selection and journal identity
+ok 13 - concurrent CLI first storage opens retain one agent, backend selection and journal identity
+  ---
+  duration_ms: 986.620004
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at setup-operation.json
+ok 14 - clone resumes with one identity after actual process termination at setup-operation.json
+  ---
+  duration_ms: 358.864102
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at setup.json
+ok 15 - clone resumes with one identity after actual process termination at setup.json
+  ---
+  duration_ms: 273.160258
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at identity.json
+ok 16 - clone resumes with one identity after actual process termination at identity.json
+  ---
+  duration_ms: 300.226131
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at config.json
+ok 17 - clone resumes with one identity after actual process termination at config.json
+  ---
+  duration_ms: 255.227696
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at skill
+ok 18 - clone resumes with one identity after actual process termination at skill
+  ---
+  duration_ms: 284.414871
+  type: 'test'
+  ...
+# Subtest: clone resumes with one identity after actual process termination at before-complete
+ok 19 - clone resumes with one identity after actual process termination at before-complete
+  ---
+  duration_ms: 356.760562
+  type: 'test'
+  ...
+# Subtest: a published completion survives process termination and later source/skill edits do not trigger recopy
+ok 20 - a published completion survives process termination and later source/skill edits do not trigger recopy
+  ---
+  duration_ms: 265.648128
+  type: 'test'
+  ...
+# Subtest: source changes and target conflicts are preserved during explicit clone resume
+ok 21 - source changes and target conflicts are preserved during explicit clone resume
+  ---
+  duration_ms: 469.236011
+  type: 'test'
+  ...
+# Subtest: pending clone blocks nested setup and CLI repair explains explicit clone resume
+ok 22 - pending clone blocks nested setup and CLI repair explains explicit clone resume
+  ---
+  duration_ms: 1021.145235
+  type: 'test'
+  ...
+# Subtest: general initialization keeps its selected identity after interruption at the operation marker
+ok 23 - general initialization keeps its selected identity after interruption at the operation marker
+  ---
+  duration_ms: 218.191187
+  type: 'test'
+  ...
+# Subtest: competing clone commands never assign two identities to the same destination
+ok 24 - competing clone commands never assign two identities to the same destination
+  ---
+  duration_ms: 341.468122
+  type: 'test'
+  ...
+# Subtest: initialization and clone contention leave a single coherent ready profile
+ok 25 - initialization and clone contention leave a single coherent ready profile
+  ---
+  duration_ms: 224.026893
+  type: 'test'
+  ...
+# Subtest: a target config changed during skill publication cannot be marked clone-complete
+ok 26 - a target config changed during skill publication cannot be marked clone-complete
+  ---
+  duration_ms: 261.274426
+  type: 'test'
+  ...
+# Subtest: legacy v1 setup without an operation marker reopens untouched and repairs with its existing identity
+ok 27 - legacy v1 setup without an operation marker reopens untouched and repairs with its existing identity
+  ---
+  duration_ms: 57.091703
+  type: 'test'
+  ...
+# Subtest: pending filenames cannot hide data in clone memory, workspace or artifact directories
+ok 28 - pending filenames cannot hide data in clone memory, workspace or artifact directories
+  ---
+  duration_ms: 264.790556
+  type: 'test'
+  ...
+# Subtest: one interrupted publication at the entries boundary can resume with its safe pending file
+ok 29 - one interrupted publication at the entries boundary can resume with its safe pending file
+  ---
+  duration_ms: 1847.206496
+  type: 'test'
+  ...
+# Subtest: one interrupted publication at the bytes boundary can resume with its safe pending file
+ok 30 - one interrupted publication at the bytes boundary can resume with its safe pending file
+  ---
+  duration_ms: 741.224917
+  type: 'test'
+  ...
+# Subtest: clone creates a fresh identity while preserving reusable configuration and the original files
+ok 31 - clone creates a fresh identity while preserving reusable configuration and the original files
+  ---
+  duration_ms: 160.270051
+  type: 'test'
+  ...
+# Subtest: clone copies skill bytes, nested empty directories and executable bits without linking source files
+ok 32 - clone copies skill bytes, nested empty directories and executable bits without linking source files
+  ---
+  duration_ms: 137.248214
+  type: 'test'
+  ...
+# Subtest: clone starts with independent empty stores despite source work, memory, conversation and artifacts
+ok 33 - clone starts with independent empty stores despite source work, memory, conversation and artifacts
+  ---
+  duration_ms: 216.199606
+  type: 'test'
+  ...
+# Subtest: ordinary clone never overwrites an existing empty, populated or initialized destination
+ok 34 - ordinary clone never overwrites an existing empty, populated or initialized destination
+  ---
+  duration_ms: 95.305005
+  type: 'test'
+  ...
+# Subtest: clone rejects source overlap, nested agents and engine destinations without changing either tree
+ok 35 - clone rejects source overlap, nested agents and engine destinations without changing either tree
+  ---
+  duration_ms: 113.230419
+  type: 'test'
+  ...
+# Subtest: clone rejects missing or malformed sources and invalid options without creating a destination
+ok 36 - clone rejects missing or malformed sources and invalid options without creating a destination
+  ---
+  duration_ms: 71.407263
+  type: 'test'
+  ...
+# Subtest: clone rejects skill file and directory symlinks without modifying their outside targets
+ok 37 - clone rejects skill file and directory symlinks without modifying their outside targets
+  ---
+  duration_ms: 56.106898
+  type: 'test'
+  ...
+# Subtest: clone rejects hard-linked skill files and leaves both links unchanged
+ok 38 - clone rejects hard-linked skill files and leaves both links unchanged
+  ---
+  duration_ms: 31.263702
+  type: 'test'
+  ...
+# Subtest: clone rejects a POSIX FIFO skill instead of blocking on its contents
+ok 39 - clone rejects a POSIX FIFO skill instead of blocking on its contents
+  ---
+  duration_ms: 276.228125
+  type: 'test'
+  ...
+# Subtest: clone permits a four-MiB skill file and rejects a file exceeding that limit
+ok 40 - clone permits a four-MiB skill file and rejects a file exceeding that limit
+  ---
+  duration_ms: 159.733819
+  type: 'test'
+  ...
+# Subtest: clone enforces snapshot entry, total-byte and directory-depth limits
+ok 41 - clone enforces snapshot entry, total-byte and directory-depth limits
+  ---
+  duration_ms: 288.595649
+  type: 'test'
+  ...
+# Subtest: pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+ok 42 - pending clone rejects changed source skills or config and cannot be completed by ordinary init or repair
+  ---
+  duration_ms: 197.887643
+  type: 'test'
+  ...
+# Subtest: pending clone preserves target file conflicts instead of overwriting or accepting them
+ok 43 - pending clone preserves target file conflicts instead of overwriting or accepting them
+  ---
+  duration_ms: 148.439041
+  type: 'test'
+  ...
+# Subtest: finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+ok 44 - finished clone resumes idempotently and ordinary reopen preserves subsequent skill edits
+  ---
+  duration_ms: 118.149445
+  type: 'test'
+  ...
+# Subtest: CLI clone reports the new ready profile and supports explicit completed-clone resume
+ok 45 - CLI clone reports the new ready profile and supports explicit completed-clone resume
+  ---
+  duration_ms: 924.546783
+  type: 'test'
+  ...
+# Subtest: owner inspection preserves another connection write reservation against an external process
+ok 46 - owner inspection preserves another connection write reservation against an external process
+  ---
+  duration_ms: 504.747036
+  type: 'test'
+  ...
+# Subtest: actual termination leaves a hot rollback journal that ownership inspection refuses without changing original bytes
+ok 47 - actual termination leaves a hot rollback journal that ownership inspection refuses without changing original bytes
+  ---
+  duration_ms: 183.660785
+  type: 'test'
+  ...
+# Subtest: owner inspection uses one snapshot when another process commits the first owner between schema reads
+ok 48 - owner inspection uses one snapshot when another process commits the first owner between schema reads
+  ---
+  duration_ms: 225.74473
+  type: 'test'
+  ...
+# Subtest: initialization joins the same identity published after its first empty metadata observation
+ok 49 - initialization joins the same identity published after its first empty metadata observation
+  ---
+  duration_ms: 437.338147
+  type: 'test'
+  ...
+# Subtest: initialization reobserves malformed metadata after a concurrent publication and refuses without replacement
+ok 50 - initialization reobserves malformed metadata after a concurrent publication and refuses without replacement
+  ---
+  duration_ms: 404.647185
+  type: 'test'
+  ...
+# Subtest: initialization reobserves mismatch metadata after a concurrent publication and refuses without replacement
+ok 51 - initialization reobserves mismatch metadata after a concurrent publication and refuses without replacement
+  ---
+  duration_ms: 310.246453
+  type: 'test'
+  ...
+# Subtest: reobserving genuinely unowned metadata or memory still refuses assignment and preserves every original file
+ok 52 - reobserving genuinely unowned metadata or memory still refuses assignment and preserves every original file
+  ---
+  duration_ms: 23.438018
+  type: 'test'
+  ...
+# Subtest: agent setup preserves files, creates private identity/config and reopens without a model
+ok 53 - agent setup preserves files, creates private identity/config and reopens without a model
+  ---
+  duration_ms: 110.803233
+  type: 'test'
+  ...
+# Subtest: status and invalid initialization options do not create files
+ok 54 - status and invalid initialization options do not create files
+  ---
+  duration_ms: 2.926984
+  type: 'test'
+  ...
+# Subtest: separate directories get distinct IDs and moving a directory preserves its identity
+ok 55 - separate directories get distinct IDs and moving a directory preserves its identity
+  ---
+  duration_ms: 107.39959
+  type: 'test'
+  ...
+# Subtest: initialization can finish after a process stops between identity and config publication
+ok 56 - initialization can finish after a process stops between identity and config publication
+  ---
+  duration_ms: 68.548589
+  type: 'test'
+  ...
+# Subtest: missing identity uses explicit repair with the existing config; missing completed config is not reset
+ok 57 - missing identity uses explicit repair with the existing config; missing completed config is not reset
+  ---
+  duration_ms: 94.032137
+  type: 'test'
+  ...
+# Subtest: completed layout repairs missing directories only with explicit repair and preserves existing state
+ok 58 - completed layout repairs missing directories only with explicit repair and preserves existing state
+  ---
+  duration_ms: 84.080997
+  type: 'test'
+  ...
+# Subtest: unknown data without identity is not assigned a new ID
+ok 59 - unknown data without identity is not assigned a new ID
+  ---
+  duration_ms: 7.028058
+  type: 'test'
+  ...
+# Subtest: config identity mismatch, unsupported versions and malformed documents are preserved
+ok 60 - config identity mismatch, unsupported versions and malformed documents are preserved
+  ---
+  duration_ms: 37.954014
+  type: 'test'
+  ...
+# Subtest: metadata symlinks and external hard links cannot be used for setup
+ok 61 - metadata symlinks and external hard links cannot be used for setup
+  ---
+  duration_ms: 51.977868
+  type: 'test'
+  ...
+# Subtest: managed directory links and writable/public metadata are rejected without changing permissions
+ok 62 - managed directory links and writable/public metadata are rejected without changing permissions
+  ---
+  duration_ms: 39.375465
+  type: 'test'
+  ...
+# Subtest: engine overlap and nested agent registration are rejected
+ok 63 - engine overlap and nested agent registration are rejected
+  ---
+  duration_ms: 48.62986
+  type: 'test'
+  ...
+# Subtest: CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+ok 64 - CLI first call, status, version and invalid commands expose readiness without claiming runtime execution
+  ---
+  duration_ms: 821.260817
+  type: 'test'
+  ...
+# Subtest: separate CLI processes initializing concurrently settle on exactly one identity
+not ok 65 - separate CLI processes initializing concurrently settle on exactly one identity
+  ---
+  duration_ms: 740.10265
+  type: 'test'
+  location: '/home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/tests/agent-profile.test.js:213:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    concurrent_initialization_failed
+    Error: Command failed: /home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node /home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/presentation/agent-cli.js init --directory /home/shaneee/secumon-linux-test.pCJ0bd/tmp/agent-profile-qxOHV5/agent --json
+    agent_storage_owner_missing
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'AggregateError'
+  stack: |-
+    TestContext.<anonymous> (file:///home/shaneee/secumon-linux-test.pCJ0bd/runtime/dist/tests/agent-profile.test.js:219:19)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: setup mutations: a new private root syncs its unchanged 0755 parent before publishing ownership
+ok 66 - setup mutations: a new private root syncs its unchanged 0755 parent before publishing ownership
+  ---
+  duration_ms: 218.875304
+  type: 'test'
+  ...
+# Subtest: setup mutations: a failed new-root parent barrier reports creation uncertainty and a retry finishes the existing directory
+ok 67 - setup mutations: a failed new-root parent barrier reports creation uncertainty and a retry finishes the existing directory
+  ---
+  duration_ms: 462.009641
+  type: 'test'
+  ...
+# Subtest: setup mutations: write-failure before identity publication preserves the original I/O cause and resumes the same operation
+ok 68 - setup mutations: write-failure before identity publication preserves the original I/O cause and resumes the same operation
+  ---
+  duration_ms: 461.014658
+  type: 'test'
+  ...
+# Subtest: setup mutations: file-sync-failure before identity publication preserves the original I/O cause and resumes the same operation
+ok 69 - setup mutations: file-sync-failure before identity publication preserves the original I/O cause and resumes the same operation
+  ---
+  duration_ms: 185.234482
+  type: 'test'
+  ...
+# Subtest: setup mutations: link-after-failure reports published uncertainty with the original cause and can re-observe the same identity
+ok 70 - setup mutations: link-after-failure reports published uncertainty with the original cause and can re-observe the same identity
+  ---
+  duration_ms: 194.492087
+  type: 'test'
+  ...
+# Subtest: setup mutations: unlink-failure reports published uncertainty with the original cause and can re-observe the same identity
+ok 71 - setup mutations: unlink-failure reports published uncertainty with the original cause and can re-observe the same identity
+  ---
+  duration_ms: 201.222548
+  type: 'test'
+  ...
+# Subtest: setup mutations: directory-sync-failure reports published uncertainty with the original cause and can re-observe the same identity
+ok 72 - setup mutations: directory-sync-failure reports published uncertainty with the original cause and can re-observe the same identity
+  ---
+  duration_ms: 193.995514
+  type: 'test'
+  ...
+# Subtest: setup mutations: swap-parent after a candidate fsync rejects substitution without cleaning foreign names
+ok 73 - setup mutations: swap-parent after a candidate fsync rejects substitution without cleaning foreign names
+  ---
+  duration_ms: 144.388178
+  type: 'test'
+  ...
+# Subtest: setup mutations: swap-root after a candidate fsync rejects substitution without cleaning foreign names
+ok 74 - setup mutations: swap-root after a candidate fsync rejects substitution without cleaning foreign names
+  ---
+  duration_ms: 135.065492
+  type: 'test'
+  ...
+# Subtest: setup mutations: swap-metadata after a candidate fsync rejects substitution without cleaning foreign names
+ok 75 - setup mutations: swap-metadata after a candidate fsync rejects substitution without cleaning foreign names
+  ---
+  duration_ms: 162.549639
+  type: 'test'
+  ...
+# Subtest: setup mutations: the engine boundary rejects before any mutation scope can create a target
+ok 76 - setup mutations: the engine boundary rejects before any mutation scope can create a target
+  ---
+  duration_ms: 99.548948
+  type: 'test'
+  ...
+# Subtest: setup mutations: actual SIGKILL at kill-identity-synced preserves the published operation and resumes without reallocating identity
+ok 77 - setup mutations: actual SIGKILL at kill-identity-synced preserves the published operation and resumes without reallocating identity
+  ---
+  duration_ms: 220.996577
+  type: 'test'
+  ...
+# Subtest: setup mutations: actual SIGKILL at kill-config-linked preserves the published operation and resumes without reallocating identity
+ok 78 - setup mutations: actual SIGKILL at kill-config-linked preserves the published operation and resumes without reallocating identity
+  ---
+  duration_ms: 217.764289
+  type: 'test'
+  ...
+# Subtest: setup mutations: actual SIGKILL at kill-receipt-linked preserves the published operation and resumes without reallocating identity
+ok 79 - setup mutations: actual SIGKILL at kill-receipt-linked preserves the published operation and resumes without reallocating identity
+  ---
+  duration_ms: 219.306313
+  type: 'test'
+  ...
+# Subtest: sqlite initialization recovers after actual termination at before-profile
+ok 80 - sqlite initialization recovers after actual termination at before-profile
+  ---
+  duration_ms: 365.051632
+  type: 'test'
+  ...
+# Subtest: sqlite initialization recovers after actual termination at published-profile
+ok 81 - sqlite initialization recovers after actual termination at published-profile
+  ---
+  duration_ms: 267.93171
+  type: 'test'
+  ...
+# Subtest: file-journal initialization recovers after actual termination at before-profile
+ok 82 - file-journal initialization recovers after actual termination at before-profile
+  ---
+  duration_ms: 288.170076
+  type: 'test'
+  ...
+# Subtest: file-journal initialization recovers after actual termination at published-profile
+ok 83 - file-journal initialization recovers after actual termination at published-profile
+  ---
+  duration_ms: 311.40562
+  type: 'test'
+  ...
+# Subtest: assignment permits recovery of the empty runtime.sqlite left by actual termination
+ok 84 - assignment permits recovery of the empty runtime.sqlite left by actual termination
+  ---
+  duration_ms: 256.511699
+  type: 'test'
+  ...
+# Subtest: assignment permits recovery of the empty memory.sqlite left by actual termination
+ok 85 - assignment permits recovery of the empty memory.sqlite left by actual termination
+  ---
+  duration_ms: 245.637045
+  type: 'test'
+  ...
+# Subtest: assignment permits recovery of the empty channel.sqlite left by actual termination
+ok 86 - assignment permits recovery of the empty channel.sqlite left by actual termination
+  ---
+  duration_ms: 258.978644
+  type: 'test'
+  ...
+# Subtest: an empty preexisting state database without assignment is not adopted
+ok 87 - an empty preexisting state database without assignment is not adopted
+  ---
+  duration_ms: 60.695932
+  type: 'test'
+  ...
+# Subtest: an empty preexisting memory database without assignment is not adopted
+ok 88 - an empty preexisting memory database without assignment is not adopted
+  ---
+  duration_ms: 48.647514
+  type: 'test'
+  ...
+# Subtest: an empty preexisting channel database without assignment is not adopted
+ok 89 - an empty preexisting channel database without assignment is not adopted
+  ---
+  duration_ms: 53.865399
+  type: 'test'
+  ...
+# Subtest: a valid assignment cannot adopt a database with unknown application data
+ok 90 - a valid assignment cannot adopt a database with unknown application data
+  ---
+  duration_ms: 267.527453
+  type: 'test'
+  ...
+# Subtest: competing backend snapshots publish one choice and cannot create both stores
+ok 91 - competing backend snapshots publish one choice and cannot create both stores
+  ---
+  duration_ms: 423.29397
+  type: 'test'
+  ...
+# Subtest: two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+ok 92 - two agent stores reuse existing adapters while separating identical work/memory IDs and preserving reopen
+  ---
+  duration_ms: 192.24499
+  type: 'test'
+  ...
+# Subtest: agent work files cannot traverse into engine or another agent and remain separate
+ok 93 - agent work files cannot traverse into engine or another agent and remain separate
+  ---
+  duration_ms: 160.367857
+  type: 'test'
+  ...
+# Subtest: copying another agents database is detected by its durable owner before runtime access
+ok 94 - copying another agents database is detected by its durable owner before runtime access
+  ---
+  duration_ms: 122.719668
+  type: 'test'
+  ...
+# Subtest: unowned existing databases are not silently adopted
+ok 95 - unowned existing databases are not silently adopted
+  ---
+  duration_ms: 154.454607
+  type: 'test'
+  ...
+# Subtest: symlink database and sidecar destinations cannot overwrite another file
+ok 96 - symlink database and sidecar destinations cannot overwrite another file
+  ---
+  duration_ms: 173.339349
+  type: 'test'
+  ...
+# Subtest: changing config after SQLite initialization cannot replace it with an empty journal
+ok 97 - changing config after SQLite initialization cannot replace it with an empty journal
+  ---
+  duration_ms: 127.347586
+  type: 'test'
+  ...
+# Subtest: artifact I/O: metrics snapshots are independent and reset does not modify stored artifacts
+ok 98 - artifact I/O: metrics snapshots are independent and reset does not modify stored artifacts
+  ---
+  duration_ms: 33.22265
+  type: 'test'
+  ...
+# Subtest: artifact I/O: first put counts its missing existence probe, exact UTF-8 hashes, and two atomic file writes
+ok 99 - artifact I/O: first put counts its missing existence probe, exact UTF-8 hashes, and two atomic file writes
+  ---
+  duration_ms: 7.130375
+  type: 'test'
+  ...
+# Subtest: artifact I/O: duplicate put verifies the existing body and performs no file writes
+ok 100 - artifact I/O: duplicate put verifies the existing body and performs no file writes
+  ---
+  duration_ms: 7.879742
+  type: 'test'
+  ...
+# Subtest: artifact I/O: put repairs a corrupt existing object after counting the failed verification
+ok 101 - artifact I/O: put repairs a corrupt existing object after counting the failed verification
+  ---
+  duration_ms: 10.978754
+  type: 'test'
+  ...
+# Subtest: artifact I/O: get and exists each perform independent metadata, body, and integrity work under concurrent reads
+ok 102 - artifact I/O: get and exists each perform independent metadata, body, and integrity work under concurrent reads
+  ---
+  duration_ms: 6.748162
+  type: 'test'
+  ...
+# Subtest: artifact I/O: tenant and label denials count API calls without opening or hashing files
+ok 103 - artifact I/O: tenant and label denials count API calls without opening or hashing files
+  ---
+  duration_ms: 5.973752
+  type: 'test'
+  ...
+# Subtest: artifact I/O: missing json counts failed opens without claiming unread body bytes
+ok 104 - artifact I/O: missing json counts failed opens without claiming unread body bytes
+  ---
+  duration_ms: 6.57206
+  type: 'test'
+  ...
+# Subtest: artifact I/O: missing blob counts failed opens without claiming unread body bytes
+ok 105 - artifact I/O: missing blob counts failed opens without claiming unread body bytes
+  ---
+  duration_ms: 8.212169
+  type: 'test'
+  ...
+# Subtest: artifact I/O: invalid metadata is a verification failure after a successful metadata read
+ok 106 - artifact I/O: invalid metadata is a verification failure after a successful metadata read
+  ---
+  duration_ms: 10.212221
+  type: 'test'
+  ...
+# Subtest: artifact I/O: a metadata reference mismatch stops before body read or hashing
+ok 107 - artifact I/O: a metadata reference mismatch stops before body read or hashing
+  ---
+  duration_ms: 7.033978
+  type: 'test'
+  ...
+# Subtest: artifact I/O: same-size tampering hashes the read body
+ok 108 - artifact I/O: same-size tampering hashes the read body
+  ---
+  duration_ms: 9.531628
+  type: 'test'
+  ...
+# Subtest: artifact I/O: length mismatch preserves the existing hash short circuit
+ok 109 - artifact I/O: length mismatch preserves the existing hash short circuit
+  ---
+  duration_ms: 6.064928
+  type: 'test'
+  ...
+# Subtest: artifact I/O: a body symlink remains unreadable and contributes no target bytes
+ok 110 - artifact I/O: a body symlink remains unreadable and contributes no target bytes
+  ---
+  duration_ms: 9.699241
+  type: 'test'
+  ...
+# Subtest: content, metadata and permissions survive artifact store restart
+ok 111 - content, metadata and permissions survive artifact store restart
+  ---
+  duration_ms: 16.177924
+  type: 'test'
+  ...
+# Subtest: same bytes under different tenant/labels never share an accessible reference
+ok 112 - same bytes under different tenant/labels never share an accessible reference
+  ---
+  duration_ms: 9.163652
+  type: 'test'
+  ...
+# Subtest: corrupt bytes, missing originals, path traversal and symlink substitution are rejected
+ok 113 - corrupt bytes, missing originals, path traversal and symlink substitution are rejected
+  ---
+  duration_ms: 14.735082
+  type: 'test'
+  ...
+# Subtest: artifact stored before failed state commit is reused after reopening, without dangling references
+ok 114 - artifact stored before failed state commit is reused after reopening, without dangling references
+  ---
+  duration_ms: 34.081514
+  type: 'test'
+  ...
+# Subtest: execution intent and unadopted result persist independently of evidence acceptance
+ok 115 - execution intent and unadopted result persist independently of evidence acceptance
+  ---
+  duration_ms: 31.108211
+  type: 'test'
+  ...
+# Subtest: sqlite: board transitions, receipts and event cursors persist together and duplicates do not add events
+ok 116 - sqlite: board transitions, receipts and event cursors persist together and duplicates do not add events
+  ---
+  duration_ms: 609.24764
+  type: 'test'
+  ...
+# Subtest: sqlite: an event burst coalesces only after a complete current request scan
+ok 117 - sqlite: an event burst coalesces only after a complete current request scan
+  ---
+  duration_ms: 364.999561
+  type: 'test'
+  ...
+# Subtest: sqlite: missing event history under an established root is rejected rather than silently skipped
+ok 118 - sqlite: missing event history under an established root is rejected rather than silently skipped
+  ---
+  duration_ms: 266.728167
+  type: 'test'
+  ...
+# Subtest: sqlite: an owned worker killed after commit leaves one event and the same command receipt
+ok 119 - sqlite: an owned worker killed after commit leaves one event and the same command receipt
+  ---
+  duration_ms: 289.360925
+  type: 'test'
+  ...
+# Subtest: file-journal: board transitions, receipts and event cursors persist together and duplicates do not add events
+ok 120 - file-journal: board transitions, receipts and event cursors persist together and duplicates do not add events
+  ---
+  duration_ms: 574.521462
+  type: 'test'
+  ...
+# Subtest: file-journal: an event burst coalesces only after a complete current request scan
+ok 121 - file-journal: an event burst coalesces only after a complete current request scan
+  ---
+  duration_ms: 1143.670057
+  type: 'test'
+  ...
+# Subtest: file-journal: missing event history under an established root is rejected rather than silently skipped
+ok 122 - file-journal: missing event history under an established root is rejected rather than silently skipped
+  ---
+  duration_ms: 479.372092
+  type: 'test'
+  ...
+# Subtest: file-journal: an owned worker killed after commit leaves one event and the same command receipt
+ok 123 - file-journal: an owned worker killed after commit leaves one event and the same command receipt
+  ---
+  duration_ms: 277.82801
+  type: 'test'
+  ...
+# Subtest: sqlite: a pre-event database declares a rescan boundary and recovers current offers without fabricating past events
+ok 124 - sqlite: a pre-event database declares a rescan boundary and recovers current offers without fabricating past events
+  ---
+  duration_ms: 349.272113
+  type: 'test'
+  ...
+# Subtest: event pagination applies its byte limit to the final cursor including a digit boundary
+ok 125 - event pagination applies its byte limit to the final cursor including a digit boundary
+  ---
+  duration_ms: 1.046398
+  type: 'test'
+  ...
+# Subtest: board funding sqlite/documents: allocated public-data role reads, accepts, reasons, answers and settles
+ok 126 - board funding sqlite/documents: allocated public-data role reads, accepts, reasons, answers and settles
+  ---
+  duration_ms: 12131.041647
+  type: 'test'
+  ...
+# Subtest: board funding sqlite/observations: allocated public-data role reads, accepts, reasons, answers and settles
+ok 127 - board funding sqlite/observations: allocated public-data role reads, accepts, reasons, answers and settles
+  ---
+  duration_ms: 10681.592035
+  type: 'test'
+  ...
+# Subtest: board funding file-journal/documents: allocated public-data role reads, accepts, reasons, answers and settles
+ok 128 - board funding file-journal/documents: allocated public-data role reads, accepts, reasons, answers and settles
+  ---
+  duration_ms: 30877.148516
+  type: 'test'
+  ...
+# Subtest: board funding file-journal/observations: allocated public-data role reads, accepts, reasons, answers and settles
+ok 129 - board funding file-journal/observations: allocated public-data role reads, accepts, reasons, answers and settles
+  ---
+  duration_ms: 31155.604507
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: offered work rejects other-board preparation
+ok 130 - board funding sqlite: offered work rejects other-board preparation
+  ---
+  duration_ms: 452.74223
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: offered work rejects other-request preparation
+ok 131 - board funding sqlite: offered work rejects other-request preparation
+  ---
+  duration_ms: 453.488016
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: offered work rejects broad-read preparation
+ok 132 - board funding sqlite: offered work rejects broad-read preparation
+  ---
+  duration_ms: 344.410785
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: offered work rejects other-entity preparation
+ok 133 - board funding sqlite: offered work rejects other-entity preparation
+  ---
+  duration_ms: 423.876115
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: offered work rejects ordinary-tool preparation
+ok 134 - board funding sqlite: offered work rejects ordinary-tool preparation
+  ---
+  duration_ms: 367.815035
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: offered work rejects publish preparation
+ok 135 - board funding sqlite: offered work rejects publish preparation
+  ---
+  duration_ms: 375.156343
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: profile withdrawal after preparation blocks dispatch and returns unused funds
+ok 136 - board funding sqlite: profile withdrawal after preparation blocks dispatch and returns unused funds
+  ---
+  duration_ms: 422.584158
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: worker-authority withdrawal after preparation blocks dispatch and returns unused funds
+ok 137 - board funding sqlite: worker-authority withdrawal after preparation blocks dispatch and returns unused funds
+  ---
+  duration_ms: 396.678158
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: sponsor-authority withdrawal after preparation blocks dispatch and returns unused funds
+ok 138 - board funding sqlite: sponsor-authority withdrawal after preparation blocks dispatch and returns unused funds
+  ---
+  duration_ms: 413.836824
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: insufficient duration is rejected before creating a child
+ok 139 - board funding sqlite: insufficient duration is rejected before creating a child
+  ---
+  duration_ms: 236.692641
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: a competing acceptance drains the prepared allocation without discharging the request
+ok 140 - board funding sqlite: a competing acceptance drains the prepared allocation without discharging the request
+  ---
+  duration_ms: 1036.0196
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: duplicate allocation across reopen keeps one grant and returns only numeric references
+ok 141 - board funding sqlite: duplicate allocation across reopen keeps one grant and returns only numeric references
+  ---
+  duration_ms: 452.011248
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: a source-privileged worker does not hide the shared request metadata from its sponsor
+ok 142 - board funding sqlite: a source-privileged worker does not hide the shared request metadata from its sponsor
+  ---
+  duration_ms: 2193.734925
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: altered child goal cannot use a valid request and profile reference
+ok 143 - board funding sqlite: altered child goal cannot use a valid request and profile reference
+  ---
+  duration_ms: 266.309071
+  type: 'test'
+  ...
+# Subtest: board funding sqlite: allocation rejects caller-selected policy fields and foreign sponsor ownership
+ok 144 - board funding sqlite: allocation rejects caller-selected policy fields and foreign sponsor ownership
+  ---
+  duration_ms: 300.122094
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: offered work rejects other-board preparation
+ok 145 - board funding file-journal: offered work rejects other-board preparation
+  ---
+  duration_ms: 720.511244
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: offered work rejects other-request preparation
+ok 146 - board funding file-journal: offered work rejects other-request preparation
+  ---
+  duration_ms: 692.68305
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: offered work rejects broad-read preparation
+ok 147 - board funding file-journal: offered work rejects broad-read preparation
+  ---
+  duration_ms: 763.742364
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: offered work rejects other-entity preparation
+ok 148 - board funding file-journal: offered work rejects other-entity preparation
+  ---
+  duration_ms: 785.26049
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: offered work rejects ordinary-tool preparation
+ok 149 - board funding file-journal: offered work rejects ordinary-tool preparation
+  ---
+  duration_ms: 723.960882
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: offered work rejects publish preparation
+ok 150 - board funding file-journal: offered work rejects publish preparation
+  ---
+  duration_ms: 786.412993
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: profile withdrawal after preparation blocks dispatch and returns unused funds
+ok 151 - board funding file-journal: profile withdrawal after preparation blocks dispatch and returns unused funds
+  ---
+  duration_ms: 878.131814
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: worker-authority withdrawal after preparation blocks dispatch and returns unused funds
+ok 152 - board funding file-journal: worker-authority withdrawal after preparation blocks dispatch and returns unused funds
+  ---
+  duration_ms: 900.37498
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: sponsor-authority withdrawal after preparation blocks dispatch and returns unused funds
+ok 153 - board funding file-journal: sponsor-authority withdrawal after preparation blocks dispatch and returns unused funds
+  ---
+  duration_ms: 861.210982
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: insufficient duration is rejected before creating a child
+ok 154 - board funding file-journal: insufficient duration is rejected before creating a child
+  ---
+  duration_ms: 430.353331
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: a competing acceptance drains the prepared allocation without discharging the request
+ok 155 - board funding file-journal: a competing acceptance drains the prepared allocation without discharging the request
+  ---
+  duration_ms: 1988.6476
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: duplicate allocation across reopen keeps one grant and returns only numeric references
+ok 156 - board funding file-journal: duplicate allocation across reopen keeps one grant and returns only numeric references
+  ---
+  duration_ms: 742.839113
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: a source-privileged worker does not hide the shared request metadata from its sponsor
+ok 157 - board funding file-journal: a source-privileged worker does not hide the shared request metadata from its sponsor
+  ---
+  duration_ms: 5236.464303
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: altered child goal cannot use a valid request and profile reference
+ok 158 - board funding file-journal: altered child goal cannot use a valid request and profile reference
+  ---
+  duration_ms: 449.68722
+  type: 'test'
+  ...
+# Subtest: board funding file-journal: allocation rejects caller-selected policy fields and foreign sponsor ownership
+ok 159 - board funding file-journal: allocation rejects caller-selected policy fields and foreign sponsor ownership
+  ---
+  duration_ms: 407.187788
+  type: 'test'
+  ...

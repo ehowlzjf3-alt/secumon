@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "startedAt": "2026-09-06T14:04:41.166Z",
+  "environment": {
+    "platform": "linux",
+    "arch": "x64",
+    "node": "v24.20.0",
+    "kernel": "6.12.30+",
+    "osRelease": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\nOS_VERSION=1.17.0.0095\nOS_IS_BETA=False\n",
+    "cpus": 6,
+    "totalMemoryBytes": 16530345984,
+    "testConcurrency": 2,
+    "umask": "0022",
+    "temporaryDirectory": "/home/shaneee/secumon-linux-test.pCJ0bd/tmp"
+  },
+  "scope": "native_linux_runtime_build_tests_and_fixtures",
+  "externalModelCalls": false,
+  "internalServiceIntegration": false,
+  "productionDeployment": false,
+  "steps": [
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-09-06T14:04:41.168Z",
+      "status": "passed",
+      "log": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence/build.log",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-09-06T14:04:56.892Z"
+    },
+    {
+      "name": "c01-targeted",
+      "command": [
+        "/home/shaneee/secumon-linux-test.pCJ0bd/node-v24.20.0-linux-x64/bin/node",
+        "--test",
+        "--test-concurrency=2",
+        "--test-reporter=tap",
+        "dist/tests/agent-profile.test.js",
+        "dist/tests/agent-stores.test.js",
+        "dist/tests/cli.test.js"
+      ],
+      "startedAt": "2026-09-06T14:04:57.264Z",
+      "status": "failed",
+      "log": "/home/shaneee/secumon-linux-test.pCJ0bd/evidence/c01-targeted.log",
+      "exitCode": 1,
+      "signal": null,
+      "finishedAt": "2026-09-06T14:04:59.915Z"
+    }
+  ],
+  "buildPin": {
+    "sourceDigest": "0f49c4cacef25a517f21a31c4e361c1c8da77490fb5f962f7092a41b4d26d0aa",
+    "filesDigest": "d2db965e639c2a8aca24dbcdb9fc13045048b14f186e960cc994fddeca9dcd6b",
+    "fileCount": 1014
+  },
+  "finishedAt": "2026-09-06T14:04:59.916Z",
+  "error": "Error: step_failed:c01-targeted"
+}

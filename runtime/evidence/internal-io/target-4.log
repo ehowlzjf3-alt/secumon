@@ -1,0 +1,67 @@
+✔ checkpoint store: real v2 start/intent/settle records load the logical v1 result and preserve original bytes (119.568416ms)
+✔ checkpoint store: a legacy snapshot can anchor a v2 orphan resume without reissuing any raw page request (124.341916ms)
+✔ checkpoint store: missing base is detected through the actual file adapter (100.746709ms)
+✔ checkpoint store: tampered base is detected through the actual file adapter (91.539417ms)
+✔ checkpoint store: missing raw is detected through the actual file adapter (93.080791ms)
+✔ checkpoint store: tampered raw is detected through the actual file adapter (90.786875ms)
+✔ checkpoint store: a base reference with tenant cannot use an otherwise readable head (126.812ms)
+✔ checkpoint store: a base reference with labels cannot use an otherwise readable head (131.338ms)
+✔ checkpoint store: a base reference with missing-index cannot use an otherwise readable head (90.245833ms)
+✔ checkpoint store: a valid artifact hash cannot authenticate a forged logical digest (107.45775ms)
+✔ checkpoint store: returned byte/page/checkpoint mutations cannot poison a reader cache (86.948833ms)
+✔ checkpoint store: shared materialization rechecks every original and a new file instance decodes cold (96.880083ms)
+✔ checkpoint store: shared materialization cannot hide a revoked or unindexed original (81.775334ms)
+✔ checkpoint store: shared materialization evicts at 64-heads (1634.967958ms)
+✔ checkpoint store: shared materialization evicts at 16-MiB-logical-bytes (338.470625ms)
+✔ checkpoint store: eviction during a shared materialization await preserves the logical byte budget (278.429625ms)
+✔ checkpoint store: an in-flight head mutation cannot seed a different artifact materialization (95.723709ms)
+✔ checkpoint store: caller ref mutation cannot redirect cached-reference revalidation (99.066333ms)
+✔ checkpoint store: policy snapshots and exact index entries cannot be widened or aliased by callers (100.805ms)
+✔ checkpoint store: cached originals require real exists checks and new readers cannot inherit a deleted source (87.919333ms)
+✔ checkpoint store: raw source cache stays within 16 MiB and evicted sources are fetched again (219.961708ms)
+✔ checkpoint store: cycles and oversized records are rejected before decoding any logical history (0.742541ms)
+✔ checkpoint store: a record chain stops at 10000 records before requesting the next dependency (191.968541ms)
+✔ checkpoint store: a record chain stops at 64 MiB without caching the entire traversal (34.655042ms)
+✔ checkpoint store: a materialized base retains its chain byte cost for the next event (67.730167ms)
+✔ checkpoint store sqlite: a legacy committed root resumes through v2 records into an authenticated public result (226.974459ms)
+✔ checkpoint store file-journal: a legacy committed root resumes through v2 records into an authenticated public result (821.149334ms)
+✔ sqlite: text originals use one verified body read and no cross-call availability cache (135.35975ms)
+ℹ {"adapter":"sqlite","operation":"original","name":"original","elapsedMs":0.6762500000000102,"artifactApi":{"get":{"calls":1,"requestedBodyBytes":1733,"returnedBodyBytes":1733,"failures":0},"exists":{"calls":0,"referencedBodyBytes":0,"available":0,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":3,"receipt":0,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":1,"existsCalls":0,"putCalls":0,"metadataReadOperations":1,"metadataReadBytes":237,"bodyReadOperations":1,"bodyReadBytes":1733,"hashCalls":1,"hashBytes":1733,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ sqlite: one result materialization deduplicates repeated originals and preserves a final real verification (105.892667ms)
+ℹ {"adapter":"sqlite","operation":"result","name":"result","elapsedMs":2.3937499999999545,"artifactApi":{"get":{"calls":2,"requestedBodyBytes":6315,"returnedBodyBytes":6315,"failures":0},"exists":{"calls":1,"referencedBodyBytes":1733,"available":1,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":6,"receipt":1,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":2,"existsCalls":1,"putCalls":0,"metadataReadOperations":3,"metadataReadBytes":717,"bodyReadOperations":3,"bodyReadBytes":8048,"hashCalls":3,"hashBytes":8048,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ sqlite: a two-copy chain decodes and reads each dispatch once per materialization (208.626791ms)
+ℹ {"adapter":"sqlite","operation":"copy-chain","name":"copy-chain","elapsedMs":4.205375000000004,"artifactApi":{"get":{"calls":4,"requestedBodyBytes":16962,"returnedBodyBytes":16962,"failures":0},"exists":{"calls":1,"referencedBodyBytes":1733,"available":1,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":6,"receipt":3,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":4,"existsCalls":1,"putCalls":0,"metadataReadOperations":5,"metadataReadBytes":1203,"bodyReadOperations":5,"bodyReadBytes":18695,"hashCalls":5,"hashBytes":18695,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ sqlite: context uses verified copy materialization without rereading its dispatch pair (248.972667ms)
+ℹ {"adapter":"sqlite","operation":"context","name":"context","elapsedMs":55.040541000000076,"artifactApi":{"get":{"calls":9,"requestedBodyBytes":70567,"returnedBodyBytes":70567,"failures":0},"exists":{"calls":6,"referencedBodyBytes":20428,"available":6,"unavailable":0},"put":{"calls":1,"inputBodyBytes":37632,"returnedReferenceBodyBytes":37632,"failures":0}},"stateApi":{"get":24,"receipt":6,"commit":0,"events":1,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":9,"existsCalls":7,"putCalls":1,"metadataReadOperations":15,"metadataReadBytes":3616,"bodyReadOperations":15,"bodyReadBytes":90995,"hashCalls":17,"hashBytes":128778,"fileWrites":2,"metadataWriteBytes":244,"bodyWriteBytes":37632,"readFailures":1,"verificationFailures":1,"deniedReads":0,"writeFailures":0}}
+✔ sqlite: adapter argument mutation and returned metadata cannot change private reference snapshots (178.58225ms)
+✔ sqlite: cached original is rejected if deleted during a later state read (102.970666ms)
+✔ sqlite: cached original is rejected if corrupted during a later state read (95.514667ms)
+✔ sqlite: context rechecks metadata-reused originals after its staging await (195.858958ms)
+✔ sqlite: context rechecks ordinary cached originals after staging without a calls.get copy (137.668666ms)
+✔ sqlite: final cached-source check retains contract authority handling (104.368625ms)
+✔ sqlite: final cached-source check retains policy authority handling (97.173959ms)
+✔ sqlite: final cached-source check retains unrelated authority handling (98.420042ms)
+✔ file-journal: text originals use one verified body read and no cross-call availability cache (437.240334ms)
+ℹ {"adapter":"file-journal","operation":"original","name":"original","elapsedMs":15.977832999999919,"artifactApi":{"get":{"calls":1,"requestedBodyBytes":1733,"returnedBodyBytes":1733,"failures":0},"exists":{"calls":0,"referencedBodyBytes":0,"available":0,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":3,"receipt":0,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":1,"existsCalls":0,"putCalls":0,"metadataReadOperations":1,"metadataReadBytes":237,"bodyReadOperations":1,"bodyReadBytes":1733,"hashCalls":1,"hashBytes":1733,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ file-journal: one result materialization deduplicates repeated originals and preserves a final real verification (383.33425ms)
+ℹ {"adapter":"file-journal","operation":"result","name":"result","elapsedMs":25.29916699999967,"artifactApi":{"get":{"calls":2,"requestedBodyBytes":6315,"returnedBodyBytes":6315,"failures":0},"exists":{"calls":1,"referencedBodyBytes":1733,"available":1,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":6,"receipt":1,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":2,"existsCalls":1,"putCalls":0,"metadataReadOperations":3,"metadataReadBytes":717,"bodyReadOperations":3,"bodyReadBytes":8048,"hashCalls":3,"hashBytes":8048,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ file-journal: a two-copy chain decodes and reads each dispatch once per materialization (1012.350042ms)
+ℹ {"adapter":"file-journal","operation":"copy-chain","name":"copy-chain","elapsedMs":24.896749999999884,"artifactApi":{"get":{"calls":4,"requestedBodyBytes":16962,"returnedBodyBytes":16962,"failures":0},"exists":{"calls":1,"referencedBodyBytes":1733,"available":1,"unavailable":0},"put":{"calls":0,"inputBodyBytes":0,"returnedReferenceBodyBytes":0,"failures":0}},"stateApi":{"get":6,"receipt":3,"commit":0,"events":0,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":4,"existsCalls":1,"putCalls":0,"metadataReadOperations":5,"metadataReadBytes":1203,"bodyReadOperations":5,"bodyReadBytes":18695,"hashCalls":5,"hashBytes":18695,"fileWrites":0,"metadataWriteBytes":0,"bodyWriteBytes":0,"readFailures":0,"verificationFailures":0,"deniedReads":0,"writeFailures":0}}
+✔ file-journal: context uses verified copy materialization without rereading its dispatch pair (784.535542ms)
+ℹ {"adapter":"file-journal","operation":"context","name":"context","elapsedMs":59.93858300000011,"artifactApi":{"get":{"calls":9,"requestedBodyBytes":70567,"returnedBodyBytes":70567,"failures":0},"exists":{"calls":6,"referencedBodyBytes":20428,"available":6,"unavailable":0},"put":{"calls":1,"inputBodyBytes":37632,"returnedReferenceBodyBytes":37632,"failures":0}},"stateApi":{"get":24,"receipt":6,"commit":0,"events":1,"deliveries":0,"workIdsForConversation":0,"runnable":0,"close":0},"physical":{"getCalls":9,"existsCalls":7,"putCalls":1,"metadataReadOperations":15,"metadataReadBytes":3616,"bodyReadOperations":15,"bodyReadBytes":90995,"hashCalls":17,"hashBytes":128778,"fileWrites":2,"metadataWriteBytes":244,"bodyWriteBytes":37632,"readFailures":1,"verificationFailures":1,"deniedReads":0,"writeFailures":0}}
+✔ file-journal: adapter argument mutation and returned metadata cannot change private reference snapshots (418.879666ms)
+✔ file-journal: cached original is rejected if deleted during a later state read (224.328084ms)
+✔ file-journal: cached original is rejected if corrupted during a later state read (182.781792ms)
+✔ file-journal: context rechecks metadata-reused originals after its staging await (348.341875ms)
+✔ file-journal: context rechecks ordinary cached originals after staging without a calls.get copy (161.031334ms)
+✔ file-journal: final cached-source check retains contract authority handling (130.870292ms)
+✔ file-journal: final cached-source check retains policy authority handling (130.432583ms)
+✔ file-journal: final cached-source check retains unrelated authority handling (134.103417ms)
+ℹ tests 51
+ℹ suites 0
+ℹ pass 51
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6162.9575

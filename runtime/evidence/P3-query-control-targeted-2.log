@@ -1,0 +1,157 @@
+✔ sqlite: goal change rejects a mode changed by another channel without modifying goal, control or receipts (110.052625ms)
+✔ sqlite: goal control is rechecked after a commit CAS conflict and cannot overwrite the winning mode (96.93ms)
+✔ sqlite: unrelated commit contention retries the same goal request while incrementing control exactly once (105.761334ms)
+✔ sqlite: successful goal replay remains idempotent after a later mode change and restart (133.038334ms)
+✔ sqlite: goal mutation requires a positive safe control revision and strict fields before any receipt or state change (87.372542ms)
+✔ sqlite: a legacy goal without stored execution control still requires its explicit initial revision (110.400416ms)
+✔ sqlite: CLI goal changes require both explicit revisions, reject stale control and replay the saved receipt (1048.335875ms)
+✔ sqlite: Web strict goal input carries control revision through HTTP and rejects a newer channel mode (192.2175ms)
+✔ file-journal: goal change rejects a mode changed by another channel without modifying goal, control or receipts (432.897084ms)
+✔ file-journal: goal control is rechecked after a commit CAS conflict and cannot overwrite the winning mode (473.888167ms)
+✔ file-journal: unrelated commit contention retries the same goal request while incrementing control exactly once (289.599ms)
+✔ file-journal: successful goal replay remains idempotent after a later mode change and restart (373.56825ms)
+✔ file-journal: goal mutation requires a positive safe control revision and strict fields before any receipt or state change (228.064916ms)
+✔ file-journal: a legacy goal without stored execution control still requires its explicit initial revision (235.786833ms)
+✔ file-journal: CLI goal changes require both explicit revisions, reject stale control and replay the saved receipt (1135.704375ms)
+✔ file-journal: Web strict goal input carries control revision through HTTP and rejects a newer channel mode (361.497292ms)
+✔ Web goal schema accepts only an explicit positive safe numeric control revision (0.491792ms)
+✔ memory: recent metadata is bounded at the requested revision and omits payloads without changing state (8.9005ms)
+✖ memory: pages progress once per matching work across Unicode IDs and isolate the complete binding scope (6.007333ms)
+✔ memory: query limits, malformed cursors and empty repositories have a defined result (1.534292ms)
+✖ sqlite: recent metadata is bounded at the requested revision and omits payloads without changing state (3.3435ms)
+✖ sqlite: pages progress once per matching work across Unicode IDs and isolate the complete binding scope (6.290667ms)
+✔ sqlite: query limits, malformed cursors and empty repositories have a defined result (2.434458ms)
+✔ file-journal: recent metadata is bounded at the requested revision and omits payloads without changing state (432.247666ms)
+✖ file-journal: pages progress once per matching work across Unicode IDs and isolate the complete binding scope (569.1065ms)
+✔ file-journal: query limits, malformed cursors and empty repositories have a defined result (21.253791ms)
+✖ journal: each page inspects only its directory budget and a foreign-only page still advances (206.854125ms)
+✔ journal: cold, warm and external append distinguish body hashing from parsed and replayed records (206.881958ms)
+✔ journal: a warm query rejects same-length after caching the complete history (69.953375ms)
+✔ journal: a warm query rejects middle-delete after caching the complete history (70.94825ms)
+✔ journal: a warm query rejects tail-delete after caching the complete history (97.877083ms)
+✔ journal: a warm query rejects replacement after caching the complete history (128.122666ms)
+✔ journal: a warm query rejects symlink after caching the complete history (110.47525ms)
+✔ journal: a warm query rejects mode after caching the complete history (91.656791ms)
+✔ journal: a warm query rejects header after caching the complete history (76.879541ms)
+✔ journal: a warm read still fails when the directory durability fence fails (46.053709ms)
+✔ journal: cache accounting includes historical receipt snapshots and eviction releases record identities (94.088833ms)
+✔ journal: a delayed older commit acknowledgement cannot lower a newer observed head with caching disabled (127.30575ms)
+✖ sqlite: transactional migration backfills query indexes and an already open legacy writer keeps them current (78.719959ms)
+✔ sqlite: migration failure rolls back schema and leaves the legacy records unchanged (127.800625ms)
+✖ sqlite: a failed index write rolls back canonical state, events, receipt and binding changes together (58.417125ms)
+✔ sqlite: bounded query SQL selects metadata and IDs without loading event or work bodies (54.180875ms)
+✔ sqlite: page options cannot replace the trusted actor or conversation route (106.679417ms)
+✔ sqlite: diagnostics uses metadata through the current revision and never requests full event payloads (144.902208ms)
+✔ sqlite: a denied-only list page stops after one candidate page and continues after a detached anchor (777.053916ms)
+✔ sqlite: list cursor handles expire, stay instance scoped, and are evicted without resolving all IDs (67.877542ms)
+✔ file-journal: page options cannot replace the trusted actor or conversation route (206.070083ms)
+✔ file-journal: diagnostics uses metadata through the current revision and never requests full event payloads (303.111208ms)
+✔ file-journal: a denied-only list page stops after one candidate page and continues after a detached anchor (4296.401667ms)
+✔ file-journal: list cursor handles expire, stay instance scoped, and are evicted without resolving all IDs (31.57675ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 43
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6029.898542
+
+✖ failing tests:
+
+test at dist/tests/state-query.test.js:70:5
+✖ memory: pages progress once per matching work across Unicode IDs and isolate the complete binding scope (6.007333ms)
+  Error: invalid_contract
+      at parseContract (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/contracts.js:134:15)
+      at validateCommit (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/store-contract.js:15:19)
+      at MemoryStateRepository.commit (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/memory-state.js:16:23)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/state-query.test.js:98:21)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'invalid_contract',
+    paths: [ 'next.conversation.bindings' ]
+  }
+
+test at dist/tests/state-query.test.js:48:5
+✖ sqlite: recent metadata is bounded at the requested revision and omits payloads without changing state (3.3435ms)
+  Error: UNIQUE constraint failed: conversation_work.tenant_id, conversation_work.principal_id, conversation_work.channel, conversation_work.conversation_id, conversation_work.work_id
+      at SqliteStateRepository.commit (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:118:18)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/state-query.test.js:56:25)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_SQLITE_ERROR',
+    errcode: 1555,
+    errstr: 'constraint failed'
+  }
+
+test at dist/tests/state-query.test.js:70:5
+✖ sqlite: pages progress once per matching work across Unicode IDs and isolate the complete binding scope (6.290667ms)
+  Error: invalid_contract
+      at parseContract (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/contracts.js:134:15)
+      at validateCommit (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/store-contract.js:15:19)
+      at SqliteStateRepository.commit (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:98:19)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/state-query.test.js:98:21)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'invalid_contract',
+    paths: [ 'next.conversation.bindings' ]
+  }
+
+test at dist/tests/state-query.test.js:70:5
+✖ file-journal: pages progress once per matching work across Unicode IDs and isolate the complete binding scope (569.1065ms)
+  Error: invalid_contract
+      at parseContract (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/contracts.js:134:15)
+      at validateCommit (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/store-contract.js:15:19)
+      at FileJournalStateRepository.commit (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-journal-state.js:358:23)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/state-query.test.js:98:21)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'invalid_contract',
+    paths: [ 'next.conversation.bindings' ]
+  }
+
+test at dist/tests/state-query.test.js:118:1
+✖ journal: each page inspects only its directory budget and a foreign-only page still advances (206.854125ms)
+  Error: invalid_contract
+      at parseContract (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/contracts.js:134:15)
+      at validateCommit (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/store-contract.js:15:19)
+      at FileJournalStateRepository.commit (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/file-journal-state.js:358:23)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/state-query.test.js:141:17)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'invalid_contract',
+    paths: [ 'next.conversation.bindings' ]
+  }
+
+test at dist/tests/state-query.test.js:341:1
+✖ sqlite: transactional migration backfills query indexes and an already open legacy writer keeps them current (78.719959ms)
+  Error: UNIQUE constraint failed: conversation_work.tenant_id, conversation_work.principal_id, conversation_work.channel, conversation_work.conversation_id, conversation_work.work_id
+      at legacyWrite (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/state-query.test.js:330:191)
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/state-query.test.js:353:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    code: 'ERR_SQLITE_ERROR',
+    errcode: 1555,
+    errstr: 'constraint failed'
+  }
+
+test at dist/tests/state-query.test.js:379:1
+✖ sqlite: a failed index write rolls back canonical state, events, receipt and binding changes together (58.417125ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /injected_query_failure/. Input:
+  
+  'Error: UNIQUE constraint failed: conversation_work.tenant_id, conversation_work.principal_id, conversation_work.channel, conversation_work.conversation_id, conversation_work.work_id'
+  
+      at async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/state-query.test.js:388:5)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: UNIQUE constraint failed: conversation_work.tenant_id, conversation_work.principal_id, conversation_work.channel, conversation_work.conversation_id, conversation_work.work_id
+        at SqliteStateRepository.commit (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:118:18)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/state-query.test.js:388:32)
+        at async Test.run (node:internal/test_runner/test:1404:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:969:7),
+    expected: /injected_query_failure/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -1,0 +1,52 @@
+{
+  "status": "staged_helper_review_fixed_not_integrated_or_tested",
+  "recordedAt": "2026-09-07T18:34:16.499864+00:00",
+  "plan": "design/chapters/C05-mcp-collections-custody-plan.md",
+  "planSha256": "f7d36e9d01a32de3e21b0b7f4eac5981e6c118fb6cf6a69dea766b0c4ab0f75f",
+  "files": [
+    {
+      "source": "src/application/read-usage.ts",
+      "destination": "evidence/C05-mcp-collections-custody-staging/accounting/src/application/read-usage.ts",
+      "beforeSha256": null,
+      "afterSha256": "76032e3c050106d04e4012bafe6c6827215d30788e619d87011c61735949b79f",
+      "preservedStaging": "evidence/C05-mcp-collections-custody-staging/accounting/before-review1/read-usage.ts",
+      "preservedStagingSha256": "76032e3c050106d04e4012bafe6c6827215d30788e619d87011c61735949b79f",
+      "stagingChanged": false
+    },
+    {
+      "source": "src/application/stored-read-usage.ts",
+      "destination": "evidence/C05-mcp-collections-custody-staging/accounting/src/application/stored-read-usage.ts",
+      "beforeSha256": null,
+      "afterSha256": "1a8bb16b9e7c9f6f7a40659abe15cde7df349b7a4475cdae17a6667ba5c679c9",
+      "preservedStaging": "evidence/C05-mcp-collections-custody-staging/accounting/before-review1/stored-read-usage.ts",
+      "preservedStagingSha256": "ccaa8b5e5fc53befa7d883fb059625e588a9be8eb4b1cbc2fe3edf027af7a87e",
+      "stagingChanged": true
+    }
+  ],
+  "scope": "B proof and pure sum helper only; runtime settlement, required-ref context projection, and integration acceptance remain pending",
+  "review": {
+    "path": "runtime/evidence/C05-mcp-collections-custody-staging/accounting/review.md",
+    "sha256": "0d9634660367d935ba0ada665678a2934140eb5132fb58f068129b5a71b56761"
+  },
+  "beforeReview": {
+    "path": "runtime/evidence/C05-mcp-collections-custody-staging/accounting/before-review1/manifest.json",
+    "sha256": "2cbbee292003c9d5c8cbd8d0320672112b9e2012d877b4dd72f31cec1ada6ece"
+  },
+  "changes": [
+    "Remove unused visibleArtifact import under noUnusedLocals.",
+    "Revalidate each actually read exact ref through underlying artifacts.get and byteLength/SHA after all per-call observations, before retained final receipt/state guards.",
+    "Copy returned bytes before asynchronous SHA to avoid using a mutable external buffer."
+  ],
+  "validation": {
+    "sourceApplied": false,
+    "buildExecuted": false,
+    "testsExecuted": false,
+    "sshUsed": false,
+    "review": "Static diff and file/link checks only"
+  },
+  "limitations": [
+    "No multi-store atomicity or proof that files remain unchanged after the final fence.",
+    "One extra bounded read of the scope original set; adapter reads and separate proof passes add cost.",
+    "No collection ledger merge or ContextRecovery consumer is connected here."
+  ]
+}

@@ -1,0 +1,838 @@
+
+> long-horizon-runtime@0.1.0 verify
+> npm test && npm run typecheck:core && npm run check:architecture && npm run fixtures
+
+
+> long-horizon-runtime@0.1.0 test
+> npm run build && node --test dist/tests/*.test.js
+
+
+> long-horizon-runtime@0.1.0 build
+> tsc -p tsconfig.json && node scripts/record-build.mjs
+
+✔ artifact I/O: metrics snapshots are independent and reset does not modify stored artifacts (58.88325ms)
+✔ artifact I/O: first put counts its missing existence probe, exact UTF-8 hashes, and two atomic file writes (39.43075ms)
+✔ artifact I/O: duplicate put verifies the existing body and performs no file writes (63.851416ms)
+✔ artifact I/O: put repairs a corrupt existing object after counting the failed verification (100.851708ms)
+✔ artifact I/O: get and exists each perform independent metadata, body, and integrity work under concurrent reads (55.996666ms)
+✔ artifact I/O: tenant and label denials count API calls without opening or hashing files (50.027583ms)
+✔ artifact I/O: missing json counts failed opens without claiming unread body bytes (40.769042ms)
+✔ artifact I/O: missing blob counts failed opens without claiming unread body bytes (75.898417ms)
+✔ artifact I/O: invalid metadata is a verification failure after a successful metadata read (71.144834ms)
+✔ artifact I/O: a metadata reference mismatch stops before body read or hashing (63.684875ms)
+✔ artifact I/O: same-size tampering hashes the read body (59.890417ms)
+✔ artifact I/O: length mismatch preserves the existing hash short circuit (84.342708ms)
+✔ artifact I/O: a body symlink remains unreadable and contributes no target bytes (100.638958ms)
+✔ content, metadata and permissions survive artifact store restart (54.498083ms)
+✔ same bytes under different tenant/labels never share an accessible reference (119.359208ms)
+✔ corrupt bytes, missing originals, path traversal and symlink substitution are rejected (83.1535ms)
+✔ artifact stored before failed state commit is reused after reopening, without dangling references (160.310916ms)
+✔ execution intent and unadopted result persist independently of evidence acceptance (214.519917ms)
+✔ budget crash sqlite: SIGKILL after durable child-genesis resumes one grant without Tool or Planner entry (597.720459ms)
+✔ budget crash sqlite: SIGKILL after durable parent-grant resumes one grant without Tool or Planner entry (759.541208ms)
+✔ budget crash sqlite: SIGKILL after durable child-activation resumes one grant without Tool or Planner entry (623.124125ms)
+✔ budget crash sqlite: SIGKILL after parent-draining retains consumed usage and cancels unsent tool once (1241.111042ms)
+✔ budget crash sqlite: SIGKILL after child-fence retains consumed usage and cancels unsent tool once (1125.009417ms)
+✔ budget crash sqlite: SIGKILL after parent-settlement retains consumed usage and cancels unsent tool once (1194.464042ms)
+✔ budget crash sqlite: SIGKILL after parent-draining retains consumed usage and cancels unsent model once (1308.94325ms)
+✔ budget crash sqlite: SIGKILL after child-fence retains consumed usage and cancels unsent model once (1094.605292ms)
+✔ budget crash sqlite: SIGKILL after parent-settlement retains consumed usage and cancels unsent model once (1248.929875ms)
+✔ budget crash file-journal: SIGKILL after durable child-genesis resumes one grant without Tool or Planner entry (1415.838792ms)
+✔ budget crash file-journal: SIGKILL after durable parent-grant resumes one grant without Tool or Planner entry (1585.909125ms)
+✔ budget crash file-journal: SIGKILL after durable child-activation resumes one grant without Tool or Planner entry (1166.103792ms)
+✔ budget crash file-journal: SIGKILL after parent-draining retains consumed usage and cancels unsent tool once (6027.864417ms)
+✔ budget crash file-journal: SIGKILL after child-fence retains consumed usage and cancels unsent tool once (5045.664ms)
+✔ budget crash file-journal: SIGKILL after parent-settlement retains consumed usage and cancels unsent tool once (3532.13175ms)
+✔ budget crash file-journal: SIGKILL after parent-draining retains consumed usage and cancels unsent model once (5248.0565ms)
+✔ budget crash file-journal: SIGKILL after child-fence retains consumed usage and cancels unsent model once (4107.068166ms)
+✔ budget crash file-journal: SIGKILL after parent-settlement retains consumed usage and cancels unsent model once (4975.705292ms)
+✔ budget runtime sqlite: child execution settles once across duplicate creation, reconciliation and reopen without copying evidence (334.579917ms)
+✔ budget runtime sqlite: parent remaining calls execute while escrow prevents parent and sibling over-allocation (308.354667ms)
+✔ budget runtime sqlite: concurrent sibling grants cannot oversubscribe one parent's remaining budget (240.40025ms)
+✔ budget runtime sqlite: a child's last logical tool call is consumed by an actual dispatch and cannot be minted by a new task ID (274.084583ms)
+✔ budget runtime sqlite: actual model dispatch and reported tokens remain charged when its plan is rejected (299.448291ms)
+✔ budget runtime sqlite: a child token cap below the estimated reservation prevents durable model allocation and transport (192.267ms)
+✔ budget runtime sqlite: revoking an unsent tool reservation fences the child and returns only unused escrow (215.021041ms)
+✔ budget runtime sqlite: revoking an unsent model reservation fences the child and returns only unused escrow (294.841125ms)
+✔ budget runtime sqlite: revoke retains an active model's unknown usage, then late accounting settles once without adopting its plan (495.130375ms)
+✔ budget runtime sqlite: unknown write effects keep the grant outstanding after revoke and restart (446.683542ms)
+✔ budget runtime sqlite: reported model overage is charged to the parent without clamping and prevents further funding (344.509416ms)
+✔ budget runtime sqlite: reducing limits preserves committed charges and child deadlines while blocking new grants (450.135042ms)
+✔ budget runtime sqlite: pending genesis cannot execute before funding (282.922667ms)
+✔ budget runtime sqlite: pending genesis cannot execute before funding and parent cancellation wins activation (64.974833ms)
+✔ budget runtime sqlite: child funding rejects broader authority, altered duplicate commands and work ID reattachment (60.037458ms)
+✔ budget runtime sqlite: grant commit ACK loss resumes the same grant and child without another allocation (202.77725ms)
+✔ budget runtime sqlite: activation commit ACK loss resumes the same grant and child without another allocation (206.931958ms)
+✔ budget runtime sqlite: revocation during child activation installs a fence that the stale activation cannot overwrite (179.229709ms)
+✔ budget runtime sqlite: revoke after tool dispatch and before entry prevents transport while keeping the logical dispatch charge (456.110292ms)
+✔ budget runtime sqlite: revoke after model dispatch and before entry prevents transport while keeping the logical dispatch charge (461.721125ms)
+✔ budget runtime sqlite: actual replan adoption spends the child's delegated replan allowance once (606.084541ms)
+✔ budget runtime sqlite: nested child execution reconciles through both grants without double charging or copying originals (353.793375ms)
+✔ budget runtime sqlite: an unfunded pending child cannot turn resume or a new goal into execution authority (89.903459ms)
+✔ budget runtime sqlite: a parent goal change fences a child's previously reserved tool before entry (129.494ms)
+✔ budget runtime sqlite: a parent policy change fences a child's previously reserved tool before entry (103.416208ms)
+✔ budget runtime sqlite: a parent deadline change fences a child's previously reserved tool before entry (203.033833ms)
+✔ budget runtime sqlite: a partially reported model response retains known tokens and unknown reservation after revoke and reopen (441.967083ms)
+✔ budget runtime sqlite: sibling overage received during a tool dispatch ACK delay prevents its actual entry despite stale parent accounting (574.6025ms)
+✔ budget runtime sqlite: sibling overage received during a model dispatch ACK delay prevents its actual entry despite stale parent accounting (716.90025ms)
+✔ budget runtime file-journal: child execution settles once across duplicate creation, reconciliation and reopen without copying evidence (2933.133083ms)
+✔ budget runtime file-journal: parent remaining calls execute while escrow prevents parent and sibling over-allocation (2575.525208ms)
+✔ budget runtime file-journal: concurrent sibling grants cannot oversubscribe one parent's remaining budget (765.922625ms)
+✔ budget runtime file-journal: a child's last logical tool call is consumed by an actual dispatch and cannot be minted by a new task ID (3134.286125ms)
+✔ budget runtime file-journal: actual model dispatch and reported tokens remain charged when its plan is rejected (2280.9565ms)
+✔ budget runtime file-journal: a child token cap below the estimated reservation prevents durable model allocation and transport (821.565833ms)
+✔ budget runtime file-journal: revoking an unsent tool reservation fences the child and returns only unused escrow (1411.588417ms)
+✔ budget runtime file-journal: revoking an unsent model reservation fences the child and returns only unused escrow (1001.617375ms)
+✔ budget runtime file-journal: revoke retains an active model's unknown usage, then late accounting settles once without adopting its plan (1433.14525ms)
+✔ budget runtime file-journal: unknown write effects keep the grant outstanding after revoke and restart (1374.628833ms)
+✔ budget runtime file-journal: reported model overage is charged to the parent without clamping and prevents further funding (1472.905542ms)
+✔ budget runtime file-journal: reducing limits preserves committed charges and child deadlines while blocking new grants (2541.143375ms)
+✔ budget runtime file-journal: pending genesis cannot execute before funding (1916.941541ms)
+✔ budget runtime file-journal: pending genesis cannot execute before funding and parent cancellation wins activation (344.832667ms)
+✔ budget runtime file-journal: child funding rejects broader authority, altered duplicate commands and work ID reattachment (214.977041ms)
+✔ budget runtime file-journal: grant commit ACK loss resumes the same grant and child without another allocation (298.024666ms)
+✔ budget runtime file-journal: activation commit ACK loss resumes the same grant and child without another allocation (221.966541ms)
+✔ budget runtime file-journal: revocation during child activation installs a fence that the stale activation cannot overwrite (383.915458ms)
+✔ budget runtime file-journal: revoke after tool dispatch and before entry prevents transport while keeping the logical dispatch charge (1672.11025ms)
+✔ budget runtime file-journal: revoke after model dispatch and before entry prevents transport while keeping the logical dispatch charge (1669.597458ms)
+✔ budget runtime file-journal: actual replan adoption spends the child's delegated replan allowance once (3713.133ms)
+✔ budget runtime file-journal: nested child execution reconciles through both grants without double charging or copying originals (3563.01675ms)
+✔ budget runtime file-journal: an unfunded pending child cannot turn resume or a new goal into execution authority (297.9405ms)
+✔ budget runtime file-journal: a parent goal change fences a child's previously reserved tool before entry (1155.857833ms)
+✔ budget runtime file-journal: a parent policy change fences a child's previously reserved tool before entry (1092.257917ms)
+✔ budget runtime file-journal: a parent deadline change fences a child's previously reserved tool before entry (923.7965ms)
+✔ budget runtime file-journal: a partially reported model response retains known tokens and unknown reservation after revoke and reopen (1539.719416ms)
+✔ budget runtime file-journal: sibling overage received during a tool dispatch ACK delay prevents its actual entry despite stale parent accounting (2144.185417ms)
+✔ budget runtime file-journal: sibling overage received during a model dispatch ACK delay prevents its actual entry despite stale parent accounting (2013.342291ms)
+✔ budget exposure: own usage and reservations add each dimension without charging elapsed time or unknown counts as tokens (0.752584ms)
+✔ budget exposure: active and draining escrow count once even when the same child usage has already been observed (0.217959ms)
+✔ budget exposure: usage above allocation and outstanding reservations remain visible in independent dimensions (0.063792ms)
+✔ budget exposure: settling replaces escrow with accounted plus reserved amounts and repeated reads cannot refund twice (0.08875ms)
+✔ budget exposure: unknown and partially reported model usage keeps reserved tokens even on a settled summary (3.533083ms)
+✔ budget exposure: a lower parent limit preserves actual costs and reports each excess without negative remaining values (0.307209ms)
+✔ budget exposure: separate grants sum but duplicate IDs and duplicate child funding records are rejected (1.116584ms)
+✔ budget exposure: zero-funded grants remain explicit and cannot hide a later reported expense (0.0895ms)
+✔ budget exposure: max-safe totals are exact and overflow in local, grant, aggregate or combined arithmetic fails closed (0.275291ms)
+✔ budget exposure: fractional, negative, nonfinite, unsafe and missing values never become zero (0.436166ms)
+✔ budget exposure: grant schema keeps authority identity strict and requires a state revision for observed or settled accounting (0.44525ms)
+✔ budget exposure: parent links preserve pending, active and draining as different stored phases without conferring allocation authority (0.328792ms)
+✔ budget exposure: empty and absent grant lists are equivalent while malformed and over-cap lists are rejected (55.065ms)
+✔ budget exposure: projections and strict schema copies share no mutable vectors with the ledger (0.12375ms)
+✔ CLI resumes across processes, keeps conversation/work identities and separates disconnect, pause and cancel (4425.705042ms)
+✔ CLI human output is reception plus result, with no internal events or ANSI: documents-simple (1109.6235ms)
+✔ CLI human output is reception plus result, with no internal events or ANSI: observations-simple (1133.754709ms)
+✔ CLI goal changes require an explicit revision and failures have no success JSON on stdout (1067.944417ms)
+✔ CLI checkpoint is a derived reference and an old resume file does not reverse a paused work (2948.692459ms)
+✔ checkpoint v2: v1 retains its exact serialized shape and rejects v2 fields (24.52825ms)
+✔ checkpoint v2: an initial head preserves historical refs before any fresh observation (7.721791ms)
+✔ checkpoint v2: fresh observation and input intent each require their retained reservation (0.450791ms)
+✔ checkpoint v2: root identity, lifetime and bounded counters cannot be reset or enlarged (0.363834ms)
+✔ checkpoint v2: a child binds its own task and policy basis to the immutable claim (0.522167ms)
+✔ checkpoint v2: child actions use local indexes and cannot prepend the parent prefix or skip intent accounting (0.324167ms)
+✔ checkpoint v2: inherited conditions must be observed before a successor can issue an input (0.2135ms)
+✔ checkpoint v2: only verification may get a fresh read deadline after the root input deadline (0.184625ms)
+✔ checkpoint v2: completing a suffix requires every own input and every condition to be confirmed (0.444792ms)
+✔ checkpoint v2: zero-input completion requires a fully applied parent and fresh inheritance verification (13.146167ms)
+✔ checkpoint v2: strict parsing detaches the lineage and claim without silently accepting extra capabilities (1.371833ms)
+✔ sqlite: source loss during the awaited knowledge check is caught by the second resolution before input (2114.585709ms)
+✔ sqlite: source-head changing inside final input authorization prevents the successor input (1895.042417ms)
+✔ sqlite: reconciliation-proof changing inside final input authorization prevents the successor input (2023.354958ms)
+✔ sqlite: pause changing inside final input authorization prevents the successor input (1858.756875ms)
+✔ sqlite: goal changing inside final input authorization prevents the successor input (1923.036875ms)
+✔ sqlite: losing a parent proof after a successful child result blocks adoption, proof consumption and compaction (2863.700666ms)
+✔ sqlite: a child acquires a fresh epoch and rechecks conditions without replaying the old field input (2028.219542ms)
+✔ file-journal: source loss during the awaited knowledge check is caught by the second resolution before input (11460.792458ms)
+✔ file-journal: source-head changing inside final input authorization prevents the successor input (10270.307375ms)
+✔ file-journal: reconciliation-proof changing inside final input authorization prevents the successor input (17484.716667ms)
+
+Interrupted while running:
+
+⚠ dist/tests/computer-continuation-authority.test.js (dist/tests/computer-continuation-authority.test.js:1:1)
+⚠ dist/tests/computer-continuation-context.test.js (dist/tests/computer-continuation-context.test.js:1:1)
+⚠ dist/tests/computer-continuation-contracts.test.js (dist/tests/computer-continuation-contracts.test.js:1:1)
+⚠ dist/tests/computer-continuation-recovery.test.js (dist/tests/computer-continuation-recovery.test.js:1:1)
+⚠ dist/tests/computer-continuation-runner.test.js (dist/tests/computer-continuation-runner.test.js:1:1)
+⚠ dist/tests/computer-continuation-unavailable.test.js (dist/tests/computer-continuation-unavailable.test.js:1:1)
+⚠ dist/tests/computer-continuations.test.js (dist/tests/computer-continuations.test.js:1:1)
+⚠ dist/tests/computer-input-assurance.test.js (dist/tests/computer-input-assurance.test.js:1:1)
+⚠ dist/tests/computer-operation-contracts.test.js (dist/tests/computer-operation-contracts.test.js:1:1)
+⚠ dist/tests/computer-operation-recovery.test.js (dist/tests/computer-operation-recovery.test.js:1:1)
+⚠ dist/tests/computer-reconciliation-authority.test.js (dist/tests/computer-reconciliation-authority.test.js:1:1)
+⚠ dist/tests/computer-reconciliation-context.test.js (dist/tests/computer-reconciliation-context.test.js:1:1)
+⚠ dist/tests/computer-reconciliation-contracts.test.js (dist/tests/computer-reconciliation-contracts.test.js:1:1)
+⚠ dist/tests/computer-reconciliation-edges.test.js (dist/tests/computer-reconciliation-edges.test.js:1:1)
+⚠ dist/tests/computer-reconciliation-outbox.test.js (dist/tests/computer-reconciliation-outbox.test.js:1:1)
+⚠ dist/tests/computer-reconciliation-progress.test.js (dist/tests/computer-reconciliation-progress.test.js:1:1)
+⚠ dist/tests/computer-reconciliation-provenance.test.js (dist/tests/computer-reconciliation-provenance.test.js:1:1)
+⚠ dist/tests/computer-reconciliation-recovery.test.js (dist/tests/computer-reconciliation-recovery.test.js:1:1)
+✖ dist/tests/computer-continuation-authority.test.js (62384.890167ms)
+✔ continuation context sqlite: contract-seeded claim and latest parent originals survive five compactions and reopen (2125.3015ms)
+✔ continuation context sqlite: a final v2 child preserves historical, entry and inherited observations through compact and reopen (1818.645375ms)
+✔ continuation context sqlite: missing v2 entry reference invalidates an unchanged final child (1382.106125ms)
+✔ continuation context sqlite: missing v2 inherited reference invalidates an unchanged final child (1456.850625ms)
+✔ continuation context sqlite: v2 child rejects a forged canonical claim, unrelated initial basis and foreign observation owner (1367.810792ms)
+✔ continuation context sqlite: v2 inherited observation loss during model_context staging prevents return (1378.84425ms)
+✔ continuation context sqlite: v2 inherited observation loss during runtime_resume staging prevents return (1394.069875ms)
+✔ continuation context sqlite: late malformed parent receive cannot rewrite a claimed source (1059.564333ms)
+✔ continuation context sqlite: missing head fences an otherwise unchanged claim (1119.395208ms)
+✔ continuation context sqlite: missing result fences an otherwise unchanged claim (1058.983709ms)
+✔ continuation context sqlite: missing observation fences an otherwise unchanged claim (1173.489208ms)
+✔ continuation context sqlite: corrupt parent data and invalid bounded decode never produce a resume (949.417292ms)
+✔ continuation context sqlite: original loss during model_context storage is checked before return (1117.081042ms)
+✔ continuation context sqlite: original loss during runtime_resume storage is checked before return (1103.884917ms)
+✔ continuation context sqlite: visibility hides a claim while obligations remain and undeclared raw fields are discarded (1052.751709ms)
+✔ continuation context sqlite: unavailable continuation proof readers fail closed even without reconciliation records (1169.883292ms)
+✔ continuation context file-journal: contract-seeded claim and latest parent originals survive five compactions and reopen (7242.388584ms)
+✔ continuation context file-journal: a final v2 child preserves historical, entry and inherited observations through compact and reopen (6333.446083ms)
+✔ continuation context file-journal: missing v2 entry reference invalidates an unchanged final child (4386.740334ms)
+✔ continuation context file-journal: missing v2 inherited reference invalidates an unchanged final child (4820.411917ms)
+✔ continuation context file-journal: v2 child rejects a forged canonical claim, unrelated initial basis and foreign observation owner (3327.774333ms)
+✔ continuation context file-journal: v2 inherited observation loss during model_context staging prevents return (3715.244375ms)
+✔ continuation context file-journal: v2 inherited observation loss during runtime_resume staging prevents return (2708.52825ms)
+✔ continuation context file-journal: late malformed parent receive cannot rewrite a claimed source (3960.971833ms)
+✔ continuation context file-journal: missing head fences an otherwise unchanged claim (3916.852667ms)
+✖ dist/tests/computer-continuation-context.test.js (62389.295375ms)
+✔ computer continuation contract: optional fields leave legacy state, context and task digests unchanged (7.676291ms)
+✔ computer continuation contract: control metadata cannot carry raw actions, offsets or two resume mechanisms (0.825458ms)
+✔ computer continuation contract: counters, depth and mode cannot revive the action window or exceed inherited limits (16.159166ms)
+✔ computer continuation planning: exact parent and proof participate in task identity, including historical plans (25.695292ms)
+✔ computer continuation tools: proof metadata is mandatory and refresh cannot install an invalid or cacheable adapter (6.211458ms)
+✔ computer continuation tools: resume is required exactly for marked tools and verify needs no write permission (3.910375ms)
+✔ computer continuation transition: claim and a new reserved attempt plus budget must be committed together (0.754583ms)
+✔ computer continuation transition: a claimed parent cannot be replaced, removed or assigned a second sibling (1.017916ms)
+✔ computer continuation transition: source result, checkpoint and task identity stay immutable while the child progresses (0.477458ms)
+✔ computer continuation transition: an unknown parent requires the exact settled proof and source basis (0.425583ms)
+✔ computer continuation transition: a later generation inherits root limits and cannot reset counters, depth or the action deadline (0.477209ms)
+✔ memory: continuation CAS admits one sibling, preserves its receipt on retry and rejects history edits atomically (10.439667ms)
+✔ sqlite: continuation CAS admits one sibling, preserves its receipt on retry and rejects history edits atomically (97.103041ms)
+✔ file-journal: continuation CAS admits one sibling, preserves its receipt on retry and rejects history edits atomically (668.874834ms)
+✔ sqlite: SIGKILL after continuation reservation preserves one claim and executes only the existing child after restart (2860.934833ms)
+✔ sqlite: SIGKILL after child observation reservation preserves spent lineage budget without replaying an unreceived observation (1693.23375ms)
+✔ sqlite: SIGKILL after child Save reconciles its durable receipt and verifies depth two without repeating applied input (5142.989375ms)
+✔ file-journal: SIGKILL after continuation reservation preserves one claim and executes only the existing child after restart (18590.457791ms)
+✔ file-journal: SIGKILL after child observation reservation preserves spent lineage budget without replaying an unreceived observation (9224.835834ms)
+✖ dist/tests/computer-continuation-recovery.test.js (62248.051833ms)
+✔ sqlite: an applied-unknown prefix is reconciled once and only the two remaining inputs run (3743.839375ms)
+✔ sqlite: an unknown saved input is verified after the old action deadline without saving twice (2633.301042ms)
+✔ sqlite: a known not-applied input may be retried once while its applied prefix remains immutable (2314.063625ms)
+✔ sqlite: a later value supersedes the same field's earlier condition at the continuation frontier (2614.6955ms)
+✔ sqlite: changed inherited conditions stop a successor without repeating or extending the applied prefix (2147.918084ms)
+✔ sqlite: concurrent reservations create at most one successor and consume one work reservation (2049.318083ms)
+✔ sqlite: lineage observation and input budgets stay spent across failed successors (2503.629417ms)
+✔ sqlite: a new successor cannot reset the original action deadline (1048.113792ms)
+✔ file-journal: an applied-unknown prefix is reconciled once and only the two remaining inputs run (38268.054875ms)
+✖ dist/tests/computer-continuation-runner.test.js (61669.111208ms)
+✔ sqlite: structurally valid continue and verify plans fail before acceptance or cost (151.171792ms)
+✔ sqlite: a stored continuation plan cannot create a new attempt or budget reservation (82.556875ms)
+✔ sqlite: a stored continuation reservation cannot dispatch or enter through execute (148.493666ms)
+✔ sqlite: even an existing dispatch receipt cannot invoke a continuation adapter or its reuse hook (65.739708ms)
+✔ file-journal: structurally valid continue and verify plans fail before acceptance or cost (682.604584ms)
+✔ file-journal: a stored continuation plan cannot create a new attempt or budget reservation (940.894375ms)
+✔ file-journal: a stored continuation reservation cannot dispatch or enter through execute (897.827125ms)
+✔ file-journal: even an existing dispatch receipt cannot invoke a continuation adapter or its reuse hook (776.877167ms)
+✔ sqlite: continuation prepare pins only the unperformed suffix and preserves canonical state and driver input (1135.249666ms)
+✔ sqlite: continuation prepare refuses legacy checkpoint counters without upgrading or resetting the original deadline (1059.846291ms)
+✔ sqlite: continuation preparation rechecks canonical state after original checkpoint I/O (1115.155708ms)
+✔ sqlite: continuation resolve authenticates the canonical reservation receipt and never inspects the child's checkpoint (1182.178083ms)
+✔ sqlite: invalid claim graph is rejected before recursive original reads and raw proof checks never call knowledge (1214.464083ms)
+✔ sqlite: missing originals install a durable blocking obligation, cancel reservations, and recover without rewriting claims (1113.274709ms)
+✔ file-journal: continuation prepare pins only the unperformed suffix and preserves canonical state and driver input (4865.988333ms)
+✔ file-journal: continuation prepare refuses legacy checkpoint counters without upgrading or resetting the original deadline (4704.157542ms)
+✔ file-journal: continuation preparation rechecks canonical state after original checkpoint I/O (4707.94375ms)
+✔ file-journal: continuation resolve authenticates the canonical reservation receipt and never inspects the child's checkpoint (3527.964208ms)
+✔ file-journal: invalid claim graph is rejected before recursive original reads and raw proof checks never call knowledge (3648.767709ms)
+✔ file-journal: missing originals install a durable blocking obligation, cancel reservations, and recover without rewriting claims (4621.231791ms)
+✔ computer input assurance: omission keeps the old tool shape without silently adding a default to its digest (5.207833ms)
+✔ computer input assurance: renderer semantics are pinned for all four tools and cannot be changed through the original driver (0.490334ms)
+✔ computer input assurance: unknown profiles and proof-free declarations are rejected before any adapter call (15.100208ms)
+✔ computer input assurance: a profile declaration grants neither tool permission nor arbitrary browser commands (9.56575ms)
+✔ sqlite: replacing input assurance after dispatch invalidates the pinned attempt before driver entry (337.0565ms)
+✔ file-journal: replacing input assurance after dispatch invalidates the pinned attempt before driver entry (1395.54325ms)
+✔ computer operation contract: identity binds the requested input without copying the observed screen or mutable lease (2.381084ms)
+✔ computer operation contract: every routing and action component distinguishes an otherwise reused operation id (0.308959ms)
+✔ computer operation contract: strict identity retains the bounded typed-action boundary (0.929958ms)
+✔ computer operation contract: receipts record a decision and never treat an unknown response as a negative effect (1.131625ms)
+✔ computer operation contract: lookup cannot claim found without a receipt or turn an absent proof into not_applied (1.007834ms)
+✔ SIGKILL after durable Save permits exact original receipt lookup in a new epoch without replaying input (164.180083ms)
+✔ SIGKILL before Save leaves an absent receipt unknown rather than inventing a not-applied receipt (142.53475ms)
+✔ sqlite: lost receive ACK preserves the committed reconciliation response and settles without another lookup (1395.267916ms)
+✔ sqlite: pause during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation (1139.391875ms)
+✔ sqlite: goal during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation (1218.187042ms)
+✔ file-journal: lost receive ACK preserves the committed reconciliation response and settles without another lookup (7710.122125ms)
+✔ file-journal: pause during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation (5078.565458ms)
+✔ file-journal: goal during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation (3578.372917ms)
+✔ reconciliation context sqlite: reserved metadata and original refs survive compaction and repository reopen (1500.909ms)
+✔ reconciliation context sqlite: settled metadata and original refs survive compaction and repository reopen (1960.802709ms)
+✔ reconciliation context sqlite: missing proof rejects source reuse, compaction and restore (1466.85475ms)
+✔ reconciliation context sqlite: corrupt proof rejects source reuse, compaction and restore (1309.81075ms)
+✔ reconciliation context sqlite: proof loss during model_context staging is rejected before return (1344.146959ms)
+✔ reconciliation context sqlite: proof loss during runtime_resume staging is rejected before return (1319.488959ms)
+✔ reconciliation context sqlite: lifecycle and read permission changes hide the index and prevent resume without dropping the pending obligation (1430.078125ms)
+✔ reconciliation context sqlite: a runtime without an effect proof reader rejects settled metadata (1372.053708ms)
+✔ reconciliation context file-journal: reserved metadata and original refs survive compaction and repository reopen (4404.751042ms)
+✔ reconciliation context file-journal: settled metadata and original refs survive compaction and repository reopen (14161.2335ms)
+✔ reconciliation context file-journal: missing proof rejects source reuse, compaction and restore (7091.661041ms)
+✔ reconciliation context file-journal: corrupt proof rejects source reuse, compaction and restore (5920.758084ms)
+✔ reconciliation context file-journal: proof loss during model_context staging is rejected before return (6725.258917ms)
+✖ dist/tests/computer-reconciliation-context.test.js (51620.409125ms)
+✔ computer reconciliation contract: optional index preserves legacy states and contexts without adding empty metadata (5.838459ms)
+✔ computer reconciliation contract: metadata remains strict and bounded without accepting raw action or duplicate ids (17.237167ms)
+✔ computer reconciliation contract: received and settled require different proof stages and a timed response (0.882166ms)
+✔ computer reconciliation contract: lookup outcome does not erase an earlier applied prefix or invent a known absence (0.148584ms)
+✔ computer reconciliation transition: intent identity and the first response, proof, and timestamps cannot be replaced (2.30675ms)
+✔ computer reconciliation transition: new records cannot skip dispatch and existing records cannot disappear or restart (0.646917ms)
+✔ computer reconciliation transition: known claims remain historical even when the proof is invalidated (1.690042ms)
+✔ computer reconciliation transition: original task identity, result, and checkpoint remain fixed across late updates (1.169959ms)
+✔ memory: reconciliation CAS retains original results, rejects rollback atomically, and preserves historical receipts (8.339875ms)
+✔ sqlite: reconciliation CAS retains original results, rejects rollback atomically, and preserves historical receipts (156.800792ms)
+✔ file-journal: reconciliation CAS retains original results, rejects rollback atomically, and preserves historical receipts (817.074708ms)
+✔ sqlite: receipt identity and driver mismatches cannot close an effect and retain the measured read (2217.468375ms)
+✔ sqlite: a lease acquisition that ignores abort cannot hold cancellation or enter lookup later (920.006166ms)
+✔ sqlite: a reconciled expired input keeps its intent head and null result when the original runner returns late (639.870667ms)
+✔ sqlite: revoking a parent grant refunds an unused query and prevents a fresh lookup allowance (850.873917ms)
+✔ file-journal: receipt identity and driver mismatches cannot close an effect and retain the measured read (8526.642542ms)
+✔ file-journal: a lease acquisition that ignores abort cannot hold cancellation or enter lookup later (3931.246083ms)
+✔ file-journal: a reconciled expired input keeps its intent head and null result when the original runner returns late (3605.982208ms)
+✔ file-journal: revoking a parent grant refunds an unused query and prevents a fresh lookup allowance (4353.928917ms)
+✔ reconciliation outbox sqlite: current proof permits one result send and delivery obligation settlement (1325.098334ms)
+✔ reconciliation outbox sqlite: narrowed tool authority preserves proof validation while channel restrictions still apply (2430.452333ms)
+✔ reconciliation outbox sqlite: proof loss at the same revision prevents any result transport (1215.746167ms)
+✔ reconciliation outbox sqlite: proof loss defers lookup of an already sent uncertain result (1302.196875ms)
+✔ reconciliation outbox sqlite: proof loss after the send claim is checked before entering the sink (1222.583542ms)
+✔ reconciliation outbox sqlite: proof loss in the pre-lookup artifact await prevents receipt lookup (1362.18075ms)
+✔ reconciliation outbox sqlite: proof loss during send keeps the delivery unadopted without resending (1290.2585ms)
+✔ reconciliation outbox sqlite: proof loss during receipt lookup cannot close the delivery obligation (1052.862416ms)
+✔ reconciliation outbox sqlite: the commit guard rechecks proof after awaited artifact validation (1129.371167ms)
+✔ reconciliation outbox file-journal: current proof permits one result send and delivery obligation settlement (6857.114625ms)
+✖ dist/tests/computer-reconciliation-outbox.test.js (28308.382416ms)
+✔ sqlite: first verified effect settlement clears the no-progress gate and permits a read-only verification without creating evidence itself (4464.38025ms)
+✔ sqlite: duplicate settle and replay of the same reconciliation command add no progress, lookup or budget use (1857.176625ms)
+✔ sqlite: re-proving the same source operation after proof-read invalidation cannot earn a second progress credit (2282.480208ms)
+✖ dist/tests/computer-reconciliation-progress.test.js (20007.422042ms)
+✔ sqlite: reserve command receipt is required to authenticate an otherwise intact reconciliation proof (1099.45025ms)
+✔ sqlite: dispatch command receipt is required to authenticate an otherwise intact reconciliation proof (1177.181375ms)
+✔ sqlite: receive command receipt is required to authenticate an otherwise intact reconciliation proof (1230.830875ms)
+✔ sqlite: settle command receipt is required to authenticate an otherwise intact reconciliation proof (1184.357375ms)
+✔ sqlite: concurrent identical reserve, execute, and settle calls retain one intent, one lookup charge, and one proof (1063.975875ms)
+✖ dist/tests/computer-reconciliation-provenance.test.js (8836.875375ms)
+✔ sqlite: SIGKILL after reconciliation reservation preserves its owner and refunds only on expiry before an explicit new command (1431.82675ms)
+✔ sqlite: SIGKILL during dispatched lookup retains unknown usage and never reissues that command across expiry (1414.121667ms)
+✔ sqlite: SIGKILL after received reconciliation settles the stored timely response after lease expiry with no new lookup or input (1391.931875ms)
+✔ sqlite: SIGKILL after settlement reopens a current separate proof and duplicate commands remain read-only (1376.854583ms)
+✖ dist/tests/computer-reconciliation-recovery.test.js (8321.406ms)
+✖ dist/tests/computer-reconciliation-work-view.test.js
+✖ dist/tests/computer-reconciliation.test.js
+✖ dist/tests/computer-use-context.test.js
+✖ dist/tests/computer-use-contracts.test.js
+✖ dist/tests/computer-use-proof.test.js
+✖ dist/tests/computer-use-recovery.test.js
+✖ dist/tests/computer-use.test.js
+✖ dist/tests/context-compiler.test.js
+✖ dist/tests/context-copy.test.js
+✖ dist/tests/context-dispatch.test.js
+✖ dist/tests/context-guidance.test.js
+✖ dist/tests/context-lifecycle.test.js
+✖ dist/tests/context-reservation.test.js
+✖ dist/tests/context-selection.test.js
+✖ dist/tests/context-store.test.js
+✖ dist/tests/contracts.test.js
+✖ dist/tests/conversation-view.test.js
+✖ dist/tests/conversation.test.js
+✖ dist/tests/data-lifecycle.test.js
+✖ dist/tests/disclosure-boundaries.test.js
+✖ dist/tests/disclosure-comparison.test.js
+✖ dist/tests/disclosure-service.test.js
+✖ dist/tests/disclosure-workflow.test.js
+✖ dist/tests/doubles.test.js
+✖ dist/tests/effect-proof-retention-outbox.test.js
+✖ dist/tests/effect-proofs.test.js
+✖ dist/tests/effect-source-consumers.test.js
+✖ dist/tests/evaluation-build.test.js
+✖ dist/tests/evaluation-replay.test.js
+✖ dist/tests/evidence-discovery.test.js
+✖ dist/tests/evidence-lineage.test.js
+✖ dist/tests/execution-evaluation.test.js
+✖ dist/tests/execution-join.test.js
+✖ dist/tests/execution-mode-cli.test.js
+✖ dist/tests/execution-mode-runtime.test.js
+✖ dist/tests/execution-policy.test.js
+✖ dist/tests/execution.test.js
+✖ dist/tests/fixtures.test.js
+✖ dist/tests/goal-control-atomic.test.js
+✖ dist/tests/guidance-history-source.test.js
+✖ dist/tests/guidance-lifecycle.test.js
+✖ dist/tests/guidance-resource-lifecycle.test.js
+✖ dist/tests/guidance-source-current.test.js
+✖ dist/tests/instrumented-web-computer-driver.test.js
+✖ dist/tests/invocation-copy-access.test.js
+✖ dist/tests/invocation-registry-refresh.test.js
+✖ dist/tests/journal-fault.test.js
+✖ dist/tests/knowledge-effect-custody.test.js
+✖ dist/tests/knowledge-runtime.test.js
+✖ dist/tests/knowledge-tools.test.js
+✖ dist/tests/knowledge.test.js
+✖ dist/tests/local-evaluation.test.js
+✖ dist/tests/local-memory-profile.test.js
+✖ dist/tests/local-workbench.test.js
+✖ dist/tests/model-boundaries.test.js
+✖ dist/tests/model-conversation.test.js
+✖ dist/tests/model-runtime.test.js
+✖ dist/tests/persistent-workflow.test.js
+✖ dist/tests/read-checkpoint-record.test.js
+✖ dist/tests/read-checkpoint-store.test.js
+✖ dist/tests/read-checkpoints.test.js
+✖ dist/tests/read-collection-context.test.js
+✖ dist/tests/read-collection-io.test.js
+✖ dist/tests/read-collection-validation.test.js
+✖ dist/tests/read-collections.test.js
+✖ dist/tests/recovery.test.js
+✖ dist/tests/resource-io.test.js
+✖ dist/tests/resource-progress.test.js
+✖ dist/tests/resources.test.js
+✖ dist/tests/state-conformance.test.js
+✖ dist/tests/state-profile.test.js
+✖ dist/tests/state-query.test.js
+✖ dist/tests/storage.test.js
+✖ dist/tests/structured-planner.test.js
+✖ dist/tests/synthetic-computer-driver.test.js
+✖ dist/tests/synthetic-computer-receipts.test.js
+✖ dist/tests/synthetic-computer-storage.test.js
+✖ dist/tests/tool-broker-refresh.test.js
+✖ dist/tests/tool-catalog-lifecycle.test.js
+✖ dist/tests/tool-efficiency-runtime.test.js
+✖ dist/tests/tool-result-reuse.test.js
+✖ dist/tests/tool-result-validation.test.js
+✖ dist/tests/web-integration.test.js
+✖ dist/tests/web-server.test.js
+✖ dist/tests/web-view-state.test.js
+✖ dist/tests/work-progress-runtime.test.js
+✖ dist/tests/work-progress.test.js
+✖ dist/tests/work-query-view.test.js
+✖ dist/tests/work-view-cli.test.js
+✖ dist/tests/work-view-format.test.js
+✖ dist/tests/work-view-service.test.js
+✖ dist/tests/workflow-crash.test.js
+✖ dist/tests/workflow.test.js
+✖ dist/tests/workspace-checkpoints.test.js
+ℹ tests 383
+ℹ suites 0
+ℹ pass 280
+ℹ fail 0
+ℹ cancelled 103
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 62398.093333
+
+✖ failing tests:
+
+test at dist/tests/computer-continuation-authority.test.js:1:1
+✖ dist/tests/computer-continuation-authority.test.js (62384.890167ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-continuation-context.test.js:1:1
+✖ dist/tests/computer-continuation-context.test.js (62389.295375ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-continuation-recovery.test.js:1:1
+✖ dist/tests/computer-continuation-recovery.test.js (62248.051833ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-continuation-runner.test.js:1:1
+✖ dist/tests/computer-continuation-runner.test.js (61669.111208ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-reconciliation-context.test.js:1:1
+✖ dist/tests/computer-reconciliation-context.test.js (51620.409125ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-reconciliation-outbox.test.js:1:1
+✖ dist/tests/computer-reconciliation-outbox.test.js (28308.382416ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-reconciliation-progress.test.js:1:1
+✖ dist/tests/computer-reconciliation-progress.test.js (20007.422042ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-reconciliation-provenance.test.js:1:1
+✖ dist/tests/computer-reconciliation-provenance.test.js (8836.875375ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-reconciliation-recovery.test.js:1:1
+✖ dist/tests/computer-reconciliation-recovery.test.js (8321.406ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-reconciliation-work-view.test.js:1:1
+✖ dist/tests/computer-reconciliation-work-view.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-reconciliation.test.js:1:1
+✖ dist/tests/computer-reconciliation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-use-context.test.js:1:1
+✖ dist/tests/computer-use-context.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-use-contracts.test.js:1:1
+✖ dist/tests/computer-use-contracts.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-use-proof.test.js:1:1
+✖ dist/tests/computer-use-proof.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-use-recovery.test.js:1:1
+✖ dist/tests/computer-use-recovery.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/computer-use.test.js:1:1
+✖ dist/tests/computer-use.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/context-compiler.test.js:1:1
+✖ dist/tests/context-compiler.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/context-copy.test.js:1:1
+✖ dist/tests/context-copy.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/context-dispatch.test.js:1:1
+✖ dist/tests/context-dispatch.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/context-guidance.test.js:1:1
+✖ dist/tests/context-guidance.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/context-lifecycle.test.js:1:1
+✖ dist/tests/context-lifecycle.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/context-reservation.test.js:1:1
+✖ dist/tests/context-reservation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/context-selection.test.js:1:1
+✖ dist/tests/context-selection.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/context-store.test.js:1:1
+✖ dist/tests/context-store.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/contracts.test.js:1:1
+✖ dist/tests/contracts.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/conversation-view.test.js:1:1
+✖ dist/tests/conversation-view.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/conversation.test.js:1:1
+✖ dist/tests/conversation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/data-lifecycle.test.js:1:1
+✖ dist/tests/data-lifecycle.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/disclosure-boundaries.test.js:1:1
+✖ dist/tests/disclosure-boundaries.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/disclosure-comparison.test.js:1:1
+✖ dist/tests/disclosure-comparison.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/disclosure-service.test.js:1:1
+✖ dist/tests/disclosure-service.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/disclosure-workflow.test.js:1:1
+✖ dist/tests/disclosure-workflow.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/doubles.test.js:1:1
+✖ dist/tests/doubles.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/effect-proof-retention-outbox.test.js:1:1
+✖ dist/tests/effect-proof-retention-outbox.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/effect-proofs.test.js:1:1
+✖ dist/tests/effect-proofs.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/effect-source-consumers.test.js:1:1
+✖ dist/tests/effect-source-consumers.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/evaluation-build.test.js:1:1
+✖ dist/tests/evaluation-build.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/evaluation-replay.test.js:1:1
+✖ dist/tests/evaluation-replay.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/evidence-discovery.test.js:1:1
+✖ dist/tests/evidence-discovery.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/evidence-lineage.test.js:1:1
+✖ dist/tests/evidence-lineage.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/execution-evaluation.test.js:1:1
+✖ dist/tests/execution-evaluation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/execution-join.test.js:1:1
+✖ dist/tests/execution-join.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/execution-mode-cli.test.js:1:1
+✖ dist/tests/execution-mode-cli.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/execution-mode-runtime.test.js:1:1
+✖ dist/tests/execution-mode-runtime.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/execution-policy.test.js:1:1
+✖ dist/tests/execution-policy.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/execution.test.js:1:1
+✖ dist/tests/execution.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/fixtures.test.js:1:1
+✖ dist/tests/fixtures.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/goal-control-atomic.test.js:1:1
+✖ dist/tests/goal-control-atomic.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/guidance-history-source.test.js:1:1
+✖ dist/tests/guidance-history-source.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/guidance-lifecycle.test.js:1:1
+✖ dist/tests/guidance-lifecycle.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/guidance-resource-lifecycle.test.js:1:1
+✖ dist/tests/guidance-resource-lifecycle.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/guidance-source-current.test.js:1:1
+✖ dist/tests/guidance-source-current.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/instrumented-web-computer-driver.test.js:1:1
+✖ dist/tests/instrumented-web-computer-driver.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/invocation-copy-access.test.js:1:1
+✖ dist/tests/invocation-copy-access.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/invocation-registry-refresh.test.js:1:1
+✖ dist/tests/invocation-registry-refresh.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/journal-fault.test.js:1:1
+✖ dist/tests/journal-fault.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/knowledge-effect-custody.test.js:1:1
+✖ dist/tests/knowledge-effect-custody.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/knowledge-runtime.test.js:1:1
+✖ dist/tests/knowledge-runtime.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/knowledge-tools.test.js:1:1
+✖ dist/tests/knowledge-tools.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/knowledge.test.js:1:1
+✖ dist/tests/knowledge.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/local-evaluation.test.js:1:1
+✖ dist/tests/local-evaluation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/local-memory-profile.test.js:1:1
+✖ dist/tests/local-memory-profile.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/local-workbench.test.js:1:1
+✖ dist/tests/local-workbench.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/model-boundaries.test.js:1:1
+✖ dist/tests/model-boundaries.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/model-conversation.test.js:1:1
+✖ dist/tests/model-conversation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/model-runtime.test.js:1:1
+✖ dist/tests/model-runtime.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/persistent-workflow.test.js:1:1
+✖ dist/tests/persistent-workflow.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/read-checkpoint-record.test.js:1:1
+✖ dist/tests/read-checkpoint-record.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/read-checkpoint-store.test.js:1:1
+✖ dist/tests/read-checkpoint-store.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/read-checkpoints.test.js:1:1
+✖ dist/tests/read-checkpoints.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/read-collection-context.test.js:1:1
+✖ dist/tests/read-collection-context.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/read-collection-io.test.js:1:1
+✖ dist/tests/read-collection-io.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/read-collection-validation.test.js:1:1
+✖ dist/tests/read-collection-validation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/read-collections.test.js:1:1
+✖ dist/tests/read-collections.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/recovery.test.js:1:1
+✖ dist/tests/recovery.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/resource-io.test.js:1:1
+✖ dist/tests/resource-io.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/resource-progress.test.js:1:1
+✖ dist/tests/resource-progress.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/resources.test.js:1:1
+✖ dist/tests/resources.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/state-conformance.test.js:1:1
+✖ dist/tests/state-conformance.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/state-profile.test.js:1:1
+✖ dist/tests/state-profile.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/state-query.test.js:1:1
+✖ dist/tests/state-query.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/storage.test.js:1:1
+✖ dist/tests/storage.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/structured-planner.test.js:1:1
+✖ dist/tests/structured-planner.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/synthetic-computer-driver.test.js:1:1
+✖ dist/tests/synthetic-computer-driver.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/synthetic-computer-receipts.test.js:1:1
+✖ dist/tests/synthetic-computer-receipts.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/synthetic-computer-storage.test.js:1:1
+✖ dist/tests/synthetic-computer-storage.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/tool-broker-refresh.test.js:1:1
+✖ dist/tests/tool-broker-refresh.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/tool-catalog-lifecycle.test.js:1:1
+✖ dist/tests/tool-catalog-lifecycle.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/tool-efficiency-runtime.test.js:1:1
+✖ dist/tests/tool-efficiency-runtime.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/tool-result-reuse.test.js:1:1
+✖ dist/tests/tool-result-reuse.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/tool-result-validation.test.js:1:1
+✖ dist/tests/tool-result-validation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/web-integration.test.js:1:1
+✖ dist/tests/web-integration.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/web-server.test.js:1:1
+✖ dist/tests/web-server.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/web-view-state.test.js:1:1
+✖ dist/tests/web-view-state.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/work-progress-runtime.test.js:1:1
+✖ dist/tests/work-progress-runtime.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/work-progress.test.js:1:1
+✖ dist/tests/work-progress.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/work-query-view.test.js:1:1
+✖ dist/tests/work-query-view.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/work-view-cli.test.js:1:1
+✖ dist/tests/work-view-cli.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/work-view-format.test.js:1:1
+✖ dist/tests/work-view-format.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/work-view-service.test.js:1:1
+✖ dist/tests/work-view-service.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/workflow-crash.test.js:1:1
+✖ dist/tests/workflow-crash.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/workflow.test.js:1:1
+✖ dist/tests/workflow.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at dist/tests/workspace-checkpoints.test.js:1:1
+✖ dist/tests/workspace-checkpoints.test.js
+  'Promise resolution is still pending but the event loop has already resolved'

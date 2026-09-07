@@ -1,0 +1,216 @@
+✔ sqlite checkpoint omits only protected MCP raw custody and preserves the authoritative state and receipt across reopen (297.313916ms)
+✔ file-journal checkpoint omits only protected MCP raw custody and preserves the authoritative state and receipt across reopen (527.805833ms)
+✔ the same custody raw cannot be hidden when current evidence or an attempt result requires it (385.503291ms)
+✔ an unrelated forbidden artifact is not hidden alongside authenticated MCP custody (163.692375ms)
+✔ a legacy response receipt without the custody-only marker does not authorize hiding its raw reference (202.550708ms)
+✔ changed data generation and corrupted custody bytes prevent checkpoint publication (361.761083ms)
+✔ custody filtering cannot bypass work ownership, a wider persisted policy or a revoked host authority (145.118084ms)
+✔ a state commit during raw proof is re-evaluated instead of publishing an earlier custody projection (418.768875ms)
+✔ sqlite: actual stdio SIGKILL after raw preserves cancelled, narrowed custody and accounts only a receipted original (751.37725ms)
+✔ sqlite: actual stdio SIGKILL after response preserves cancelled, narrowed custody and accounts only a receipted original (778.311625ms)
+✔ sqlite: actual stdio SIGKILL after usage preserves cancelled, narrowed custody and accounts only a receipted original (773.2665ms)
+✔ file-journal: actual stdio SIGKILL after raw preserves cancelled, narrowed custody and accounts only a receipted original (867.726542ms)
+✔ file-journal: actual stdio SIGKILL after response preserves cancelled, narrowed custody and accounts only a receipted original (998.763708ms)
+✔ file-journal: actual stdio SIGKILL after usage preserves cancelled, narrowed custody and accounts only a receipted original (982.542125ms)
+✖ SQLite: CLI resume retains a public original input, projects out protected MCP custody and returns a valid blocked checkpoint (302.027708ms)
+✖ sqlite: CLI status stays read-only; resume accounts once then refuses the now-inaccessible original session input (214.813542ms)
+✖ sqlite: HTTP view stays read-only and cancel reconciles once while preserving cancelled state across server reopen (191.104792ms)
+✖ file-journal: CLI status stays read-only; resume accounts once then refuses the now-inaccessible original session input (227.279125ms)
+✖ file-journal: HTTP view stays read-only and cancel reconciles once while preserving cancelled state across server reopen (255.85225ms)
+✔ sqlite: profile close stops the actual MCP peer then drains captured custody before closing C01 stores (456.468292ms)
+✔ file-journal: profile close stops the actual MCP peer then drains captured custody before closing C01 stores (518.255416ms)
+✔ profile close deadline closes C01 stores and a subsequently released raw cannot publish response, usage or receive (5528.84475ms)
+✔ profile close preserves the first model-close error and MCP cleanup error while still draining raw and closing stores (462.116917ms)
+✔ sqlite: reopened usage custody refines the original attempt once without invoking or projecting (224.659875ms)
+✔ sqlite: two runtime accountants converge through one real usage receipt and never sum a transport measurement (152.82375ms)
+✔ sqlite: usage accounting preserves existing received, adopted and failed result bytes and receipts (533.834375ms)
+✔ file-journal: reopened usage custody refines the original attempt once without invoking or projecting (298.563416ms)
+✔ file-journal: two runtime accountants converge through one real usage receipt and never sum a transport measurement (266.042291ms)
+✔ file-journal: usage accounting preserves existing received, adopted and failed result bytes and receipts (924.847834ms)
+✔ contradictory known usage refuses accounting without rewriting the result or adding a receipt (144.261417ms)
+✔ execute failure preserves captured known usage while returning only a body-free result under narrower labels or a new goal (344.02525ms)
+✔ an explicit cancellation after decoded capture keeps the original usage and stop status without another call (302.241208ms)
+✔ late receive and adopt preserve an explicit blocked or completed work state and reject body adoption (337.503208ms)
+✔ intent alone supplies no received-response usage and does not trigger a replacement call (127.978875ms)
+✔ finishClose waits for a captured raw publication and usage settlement while rejecting new execution (161.012958ms)
+✔ finishClose timeout revokes custody so releasing an orphan raw cannot publish response or receive afterward (241.824666ms)
+✔ an untransmitted cancel reservation is not treated as a lost dispatch during reconciliation (153.444833ms)
+✔ an untransmitted expire reservation is not treated as a lost dispatch during reconciliation (124.692458ms)
+✔ sqlite: ordinary workflow resume records protected custody once and preserves cancellation without inference (231.987584ms)
+✔ file-journal: ordinary workflow resume records protected custody once and preserves cancellation without inference (375.901958ms)
+✔ custody ownership accepts a revoked narrower host while ordinary execution still refuses its broader persisted policy (252.358166ms)
+✔ foreign actor, wrong host scope and unissued host authority cannot start a custody proof (185.201208ms)
+✔ a replaced work incarnation during the proof cannot receive the selected workflow accounting commit (219.453209ms)
+✔ a real decoded reply has one immutable request-bound capture and unchanged normal return (91.059208ms)
+✔ post-capture abort rejects use but retains the decoded original and local send observation (78.220458ms)
+✔ real tools/list_changed preserves the response original with its old session before rejecting use (75.614083ms)
+✔ SDK reject after a real send does not fabricate a decoded response (91.019084ms)
+✔ pre-send authority rejection invokes neither the clock nor capture and reports zero send entries (70.940334ms)
+✔ the decoded json boundary rejects before capture (79.918875ms)
+✔ the decoded bytes boundary rejects before capture (80.952375ms)
+✔ an invalid observation clock cannot publish a capture (75.073125ms)
+✔ an invalid async capture is not awaited or treated as a successful response (78.833583ms)
+✔ two concurrent real requests retain separate input/session captures when the last observer closes the client (77.453042ms)
+✔ capture failure and owned-process close failure preserve both causes without losing the original (84.397292ms)
+✔ sqlite: decoded response custody survives authorization change without projecting an answer (173.493875ms)
+✔ sqlite: decoded response custody survives abort change without projecting an answer (143.222125ms)
+✔ sqlite: decoded response custody survives policy change without projecting an answer (149.118584ms)
+✔ sqlite: decoded response custody survives goal change without projecting an answer (153.059375ms)
+✔ file-journal: decoded response custody survives authorization change without projecting an answer (271.269042ms)
+✔ file-journal: decoded response custody survives abort change without projecting an answer (536.613584ms)
+✔ file-journal: decoded response custody survives policy change without projecting an answer (413.397ms)
+✔ file-journal: decoded response custody survives goal change without projecting an answer (384.068875ms)
+✔ sqlite: policy reduction at afterRaw retains original raw labels through response publication (281.183417ms)
+✔ sqlite: policy reduction at beforeResponseCommit retains original raw labels through response publication (309.890541ms)
+✔ file-journal: policy reduction at afterRaw retains original raw labels through response publication (701.29225ms)
+✔ file-journal: policy reduction at beforeResponseCommit retains original raw labels through response publication (663.520958ms)
+✔ custody rejects generation change at afterCapture, including a raw object already written (115.244667ms)
+✔ custody rejects owner change at afterCapture, including a raw object already written (113.907084ms)
+✔ custody rejects generation change at afterRaw, including a raw object already written (135.652791ms)
+✔ custody rejects owner change at afterRaw, including a raw object already written (126.748083ms)
+✔ custody rejects generation change at beforeResponseCommit, including a raw object already written (131.856375ms)
+✔ custody rejects owner change at beforeResponseCommit, including a raw object already written (196.922625ms)
+✔ decoded client sent-false preserves only a proven transport count (258.454917ms)
+✔ decoded client sent-true preserves only a proven transport count (176.889625ms)
+✔ decoded client arbitrary-error preserves only a proven transport count (109.331042ms)
+✔ sqlite: captured post-check failure cannot be promoted to a returned body even after reopen (194.663125ms)
+✔ file-journal: captured post-check failure cannot be promoted to a returned body even after reopen (305.943208ms)
+✔ legacy returned response signature remains readable without upgrading ambiguous failure usage (177.727958ms)
+✔ legacy sent-false response signature remains readable without upgrading ambiguous failure usage (184.181791ms)
+✔ legacy sent-true response signature remains readable without upgrading ambiguous failure usage (195.668833ms)
+✔ sqlite: a committed usage-only response survives reopen and then follows normal receive/adopt once (455.447042ms)
+✔ file-journal: a committed usage-only response survives reopen and then follows normal receive/adopt once (1091.491ms)
+✔ a legacy lease-only failure may gain usage and recover, preserving its original failure receipt (28.729584ms)
+✔ usage-only body recovery requires the exact accounting command, digest, original identity and execution (61.43325ms)
+✔ an invoked measurement with no durable accounting receipt remains unproven even if the provider reports the same usage (5.497209ms)
+✔ accounted usage does not revive changed goals, label restrictions, terminal states or already failed results (1512.688ms)
+✔ an accounting receipt replaced during result proof is rejected by the final receipt fence (18.223292ms)
+✔ changing a current known measurement cannot borrow a valid receipt for a different execution (10.869458ms)
+✔ stored usage returns only frozen measurements and custody references without writes or result validation (25.696833ms)
+✔ cancelled and completed work with new goals and attempts can account for the original dispatch after authority and deadline expire (15.719333ms)
+✔ a dispatched attempt whose error shares a reservation code remains eligible for proven accounting (11.095292ms)
+✔ responses captured beyond the original lease and deadline retain accounting while impossible time order is rejected (6.227042ms)
+✔ absent receipts are not found by scanning raw artifacts and missing callbacks are not candidates (5.047833ms)
+✔ received and adopted originals stay unchanged and usage-only proofs can distinguish an unobserved response (9.129208ms)
+✔ original owner, identity, generation and exact response reference cannot be substituted (46.695ms)
+✔ raw hashing and the fixed 512 KiB bound apply even when the current actor cannot read the original (8.636708ms)
+✔ fabricated tickets, a changed snapshot, callback race and source receipt replacement never authorize accounting (7.77125ms)
+✔ registration pins the usage callback receiver and rejects extra body fields or invalid usage without invoking result projection (4.672292ms)
+✔ provider replacement during usage restoration invalidates the captured callback and nonplain contracts remain excluded (4.044458ms)
+✔ nullable usage is recognized repeatedly with one events read and no raw, restore or mutation per lookup (27.0785ms)
+✔ no execution-bearing candidate avoids the events query entirely (9.60475ms)
+✔ malformed event payload, command or time metadata is not accepted as an accounting record (50.275167ms)
+✔ missing, forged, differently attributed or differently measured receipts fall back to ordinary proof (40.01125ms)
+✔ already accounted statistics remain recognizable when raw is unavailable after a later goal, restriction and cancellation (4.886584ms)
+✔ work, principal, tenant or incarnation mixing fails closed instead of suppressing a necessary proof (23.090166ms)
+✔ an actual state commit during the events or receipt await invalidates the captured accounting snapshot (9.44775ms)
+✔ duplicate event entries do not duplicate receipt reads and a changed known execution is not skipped (4.915167ms)
+✔ one attempt unknown measurements are refined without summing repeats or erasing known values (1.451541ms)
+✔ conflicting known measurements and incompatible invocation modes are refused instead of combined (0.351334ms)
+✔ malformed reported and prior measurements never become valid usage through merge (0.602292ms)
+✔ plain proof read receives a read-only custody callback; current policy restrictions remain execution restrictions (32.625125ms)
+✔ abort, elapsed lease/deadline and changed goal/plan do not erase an already entered original call (17.021667ms)
+✔ terminal or explicitly blocked work preserves custody but does not grant execution authority (16.746417ms)
+✔ original catalog entry can be removed or replaced after entry without changing old raw custody (6.587292ms)
+✔ non-plain definitions and a reused result do not receive a custody callback (1184.137ms)
+✔ custody rejects changed tenant/principal, removed attempt and immutable attempt identity without writing (38.922834ms)
+✔ data deletion generation invalidates custody even when tenant and dispatch still match (2.901667ms)
+✔ missing or altered dispatch is rejected at custody recheck and corrupt original dispatch prevents entry (14.2655ms)
+✔ custody remains bound to the original state port and closes after success or original failure (5.880875ms)
+✔ custody already waiting on storage is revoked when the execute promise finishes (2.372209ms)
+✔ revocation while reading dispatch/current state is checked after the last await (2.526833ms)
+ℹ tests 121
+ℹ suites 0
+ℹ pass 116
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17765.690958
+
+✖ failing tests:
+
+test at dist/tests/mcp-custody-entry.test.js:272:13
+✖ SQLite: CLI resume retains a public original input, projects out protected MCP custody and returns a valid blocked checkpoint (302.027708ms)
+  Error: provider_listing_failed
+      at file:///Users/seunghanee/Documents/secumon/runtime/dist/application/provider-tool-snapshot.js:30:60
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    [cause]: Error: mcp_connect_failed
+        at McpStdioClient.discover (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-stdio-client.js:308:19)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-read-tools.js:334:29)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/host-tools.js:70:26) {
+      code: 'mcp_connect_failed',
+      sent: false,
+      stage: undefined,
+      cleanupError: undefined
+    }
+  }
+
+test at dist/tests/mcp-custody-entry.test.js:312:9
+✖ sqlite: CLI status stays read-only; resume accounts once then refuses the now-inaccessible original session input (214.813542ms)
+  Error: provider_listing_failed
+      at file:///Users/seunghanee/Documents/secumon/runtime/dist/application/provider-tool-snapshot.js:30:60
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    [cause]: Error: mcp_connect_failed
+        at McpStdioClient.discover (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-stdio-client.js:308:19)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-read-tools.js:334:29)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/host-tools.js:70:26) {
+      code: 'mcp_connect_failed',
+      sent: false,
+      stage: undefined,
+      cleanupError: undefined
+    }
+  }
+
+test at dist/tests/mcp-custody-entry.test.js:344:9
+✖ sqlite: HTTP view stays read-only and cancel reconciles once while preserving cancelled state across server reopen (191.104792ms)
+  Error: provider_listing_failed
+      at file:///Users/seunghanee/Documents/secumon/runtime/dist/application/provider-tool-snapshot.js:30:60
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    [cause]: Error: mcp_connect_failed
+        at McpStdioClient.discover (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-stdio-client.js:308:19)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-read-tools.js:334:29)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/host-tools.js:70:26) {
+      code: 'mcp_connect_failed',
+      sent: false,
+      stage: undefined,
+      cleanupError: undefined
+    }
+  }
+
+test at dist/tests/mcp-custody-entry.test.js:312:9
+✖ file-journal: CLI status stays read-only; resume accounts once then refuses the now-inaccessible original session input (227.279125ms)
+  Error: provider_listing_failed
+      at file:///Users/seunghanee/Documents/secumon/runtime/dist/application/provider-tool-snapshot.js:30:60
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    [cause]: Error: mcp_connect_failed
+        at McpStdioClient.discover (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-stdio-client.js:308:19)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-read-tools.js:334:29)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/host-tools.js:70:26) {
+      code: 'mcp_connect_failed',
+      sent: false,
+      stage: undefined,
+      cleanupError: undefined
+    }
+  }
+
+test at dist/tests/mcp-custody-entry.test.js:344:9
+✖ file-journal: HTTP view stays read-only and cancel reconciles once while preserving cancelled state across server reopen (255.85225ms)
+  Error: provider_listing_failed
+      at file:///Users/seunghanee/Documents/secumon/runtime/dist/application/provider-tool-snapshot.js:30:60
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    [cause]: Error: mcp_connect_failed
+        at McpStdioClient.discover (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-stdio-client.js:308:19)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-read-tools.js:334:29)
+        at async Object.list (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/host-tools.js:70:26) {
+      code: 'mcp_connect_failed',
+      sent: false,
+      stage: undefined,
+      cleanupError: undefined
+    }
+  }

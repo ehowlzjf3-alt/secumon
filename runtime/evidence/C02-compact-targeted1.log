@@ -1,0 +1,106 @@
+✔ sqlite: completed X, three compacts in Y, and reopened Z retain quotes and independent work ledgers (918.599792ms)
+✔ file-journal: completed X, three compacts in Y, and reopened Z retain quotes and independent work ledgers (3032.001916ms)
+✔ sqlite: SIGKILL after compact reply reuses stored response and preserves one usage settlement (545.354625ms)
+✔ sqlite: SIGKILL after compact publication reuses stored response and preserves one usage settlement (669.9785ms)
+✔ file-journal: SIGKILL after compact reply reuses stored response and preserves one usage settlement (2350.463542ms)
+✔ file-journal: SIGKILL after compact publication reuses stored response and preserves one usage settlement (1411.941084ms)
+✖ sqlite: repeated manual compact preserves actual history, then restarts with summary and latest raw input (344.305416ms)
+✖ file-journal: repeated manual compact preserves actual history, then restarts with summary and latest raw input (938.449292ms)
+✖ installed CLI explicitly enables synthetic compact; retry and readonly status do not create another call (1038.380583ms)
+✔ Web exposes safe unavailable and refused free-text compact without hiding or rewriting original messages (339.209667ms)
+✔ Web exposes safe unavailable and refused unmatched-fixture compact without hiding or rewriting original messages (369.845459ms)
+✔ Web compact remains interruptible by input; late fixture reply cannot publish a summary (281.9455ms)
+✔ Web compact remains interruptible by cancel; late fixture reply cannot publish a summary (289.323375ms)
+✖ automatic compact precedes fixture execution when the current session tail exceeds its entry limit (384.606792ms)
+✔ context status is a separate compact reference projection; older responses cannot replace newer status (0.21075ms)
+✔ compact uses the normal reservation and usage ledger while accepting no plan or tool execution (26.98975ms)
+✔ a no-op explicit compact request stays a no-op after later context growth (5.5055ms)
+✔ stored compact response recovers after publication but before work adoption, even after lease expiry (7.866417ms)
+✔ an uncertain publish acknowledgement is reconciled by receipt without a second candidate (5.363167ms)
+✔ a timely received compact reply survives restart beyond its execution lease before first publication (5.630333ms)
+✔ an undispatched compact cancellation returns its reserved resources (3.763916ms)
+✔ late compact after input does not publish but preserves reported usage (5.575375ms)
+✔ late compact after cancel does not publish but preserves reported usage (4.753042ms)
+✔ late compact after authority does not publish but preserves reported usage (4.708333ms)
+✔ compact transport failure retains unknown usage and prevents another unaccounted model call (4.762833ms)
+✔ compact-only orchestration uses bounded raw context after failure and refuses a missing checkpoint context (5.302917ms)
+✔ a forged receipt cannot settle a compact response for another source manifest (4.368042ms)
+✔ compact estimation is checked before any reservation or provider call (2.980666ms)
+✔ a policy change after receipt rejects publication without recharging usage (4.385125ms)
+✔ compact source rejects a history entry whose text differs from its immutable intake receipt (371.290459ms)
+✔ matching altered history and receipt text still fail the original intake digest check (270.805416ms)
+✔ the first compact cannot publish an empty retained list for a segment containing user text (389.711959ms)
+✔ repeated compact rejects deleting a retained item or changing its status without a new source (1030.87325ms)
+✔ a valid source anchor does not permit an additional fabricated quotation (392.602875ms)
+✔ fixed raw v1 and fixed summary v2 contexts remain current when only the summary head advances (537.166792ms)
+✔ source policy withdrawal or actual original artifact loss invalidates an accepted derived summary (1607.107583ms)
+✔ history queries a strict open-start closed-end interval and carries its bounds across pages (18.9465ms)
+✔ legacy history cursors keep lower bound zero and malformed interval cursors fail closed (13.400041ms)
+✔ compact storage is an owner-checked additive extension; three revisions and receipts survive reopen without changing raw state (15.570667ms)
+✔ summary CAS permits same-cutoff recovery and immutable earlier prefixes without regressing the active head (15.948083ms)
+✔ summary history can find an older same-cutoff revision before falling back to an earlier prefix (12.634375ms)
+✔ policy reconstruction can retain several bounded prefixes below a newer physical head, then replace the same cutoff (13.415666ms)
+✔ summary previous refs and scopes cannot substitute another agent, user or session (13.114292ms)
+✔ compact publish refuses missing or foreign channel owners before adding extension tables (25.500667ms)
+✔ summary publication rollback preserves head and receipt; failed first publication rolls back its schema migration (14.713792ms)
+✔ two channel connections compete by summary CAS and recheck a changed owner before reading published summaries (12.123541ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 42
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9179.969292
+
+✖ failing tests:
+
+test at dist/tests/session-compact-presentation.test.js:39:5
+✖ sqlite: repeated manual compact preserves actual history, then restarts with summary and latest raw input (344.305416ms)
+  Error: token_budget_exhausted
+      at PlanningRuntime.reserveModel (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:200:19)
+      at async requestLocalCompact (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/local-compact.js:25:18)
+      at async file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/local-workbench.js:105:28
+
+test at dist/tests/session-compact-presentation.test.js:39:5
+✖ file-journal: repeated manual compact preserves actual history, then restarts with summary and latest raw input (938.449292ms)
+  Error: token_budget_exhausted
+      at PlanningRuntime.reserveModel (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:200:19)
+      at async requestLocalCompact (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/local-compact.js:25:18)
+      at async file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/local-workbench.js:105:28
+
+test at dist/tests/session-compact-presentation.test.js:111:1
+✖ installed CLI explicitly enables synthetic compact; retry and readonly status do not create another call (1038.380583ms)
+  Error: Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-cli.js work compact work-2c81c72ec9fdc5d24b289c31a9d091dcdec27990d374b00731830fb6c7f43cd5 --goal-revision 1 --request-id manual --compact-provider synthetic --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/session-compact-presentation-VB1zYD/agent --json
+  오류: token_budget_exhausted
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:514:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: 1,
+    killed: false,
+    signal: null,
+    cmd: '/Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node /Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-cli.js work compact work-2c81c72ec9fdc5d24b289c31a9d091dcdec27990d374b00731830fb6c7f43cd5 --goal-revision 1 --request-id manual --compact-provider synthetic --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/session-compact-presentation-VB1zYD/agent --json',
+    stdout: '',
+    stderr: '오류: token_budget_exhausted\n'
+  }
+
+test at dist/tests/session-compact-presentation.test.js:237:1
+✖ automatic compact precedes fixture execution when the current session tail exceeds its entry limit (384.606792ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(state.modelCalls.some(call => call.purpose === 'session_compact' && call.status === 'accepted'))
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/session-compact-presentation.test.js:247:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "ready": true,
+  "actualDriver": "locally_verified_instrumented_web",
+  "expectedInnerFiles": 98,
+  "verify": {
+    "command": "npm run verify",
+    "log": "runtime/evidence/P3-local-web-driver-verify.log",
+    "exitCode": 0,
+    "testsPassed": 1950,
+    "testsSkipped": 0
+  },
+  "targeted": {
+    "command": "node --test dist/tests/instrumented-web-computer-driver.test.js dist/tests/computer-input-assurance.test.js",
+    "log": "runtime/evidence/P3-local-web-driver-targeted-final.log",
+    "exitCode": 0,
+    "testsPassed": 20,
+    "testsSkipped": 0
+  },
+  "acceptanceEvidence": [
+    "runtime/src/tests/computer-input-assurance.test.ts",
+    "runtime/src/tests/instrumented-web-computer-driver.test.ts",
+    "runtime/src/tests/local-web-computer.browser.ts"
+  ],
+  "browser": {
+    "status": "passed",
+    "summary": "runtime/evidence/P3-local-web-driver-browser-verification.json",
+    "logs": [
+      "runtime/evidence/P3-local-web-driver-browser-final.log"
+    ],
+    "sourceDigestPointer": "/codeDigest",
+    "checks": [
+      {
+        "pointer": "/passed",
+        "equals": true
+      },
+      {
+        "pointer": "/testsPassed",
+        "equals": 17
+      },
+      {
+        "pointer": "/failed",
+        "equals": 0
+      },
+      {
+        "pointer": "/skipped",
+        "equals": 0
+      },
+      {
+        "pointer": "/nativeOsInput",
+        "equals": false
+      },
+      {
+        "pointer": "/fixtureGracefulReopen",
+        "equals": true
+      }
+    ],
+    "observation": {
+      "driverKind": "instrumented_local_web",
+      "nativeInput": false,
+      "actualModelCalls": 0,
+      "externalServiceCalls": 0,
+      "backends": [
+        "sqlite",
+        "file-journal"
+      ],
+      "browserVersion": "152.0.7977.76",
+      "playwrightVersion": "1.62.1",
+      "transport": "injected Playwright Page -> fixed typed DOM bridge -> cooperating localhost app"
+    }
+  },
+  "comparison": {
+    "status": "passed",
+    "summary": "runtime/evidence/P3-local-web-driver-comparison.json",
+    "logs": [
+      "runtime/evidence/P3-local-web-driver-browser-final.log"
+    ],
+    "sourceDigestPointer": "/codeDigest",
+    "checks": [
+      {
+        "pointer": "/allEightCellsPassed",
+        "equals": true
+      },
+      {
+        "pointer": "/cells/2/rendererMetrics/domInputsDispatched",
+        "equals": 2
+      },
+      {
+        "pointer": "/cells/3/highLevelToolCalls",
+        "equals": 2
+      },
+      {
+        "pointer": "/cells/6/rendererMetrics/bridgeCalls",
+        "equals": 13
+      },
+      {
+        "pointer": "/cells/7/rendererMetrics/bridgeCalls",
+        "equals": 10
+      }
+    ],
+    "observation": {
+      "sameGoal": true,
+      "actualModelCalls": 0,
+      "cohorts": [
+        "synthetic:separate",
+        "synthetic:batched",
+        "web:separate",
+        "web:batched"
+      ],
+      "timingClaim": "local_observation_only",
+      "denominators": {
+        "cells": 8,
+        "trialsPerCell": 1,
+        "stores": 2,
+        "highLevelToolCalls": "runtime attempts: 3 individual vs 2 batch",
+        "usageTransportCalls": "observe/act/wait reported calls, excludes acquire/release: 7 vs 6",
+        "webBridge": "all renderer commands including acquire/release: 13 vs 10",
+        "http": "renderer HTTP calls: 10 vs 8",
+        "input": "2 real DOM inputs for web; 2 app commits, 1 Save, each cell",
+        "images": "no image input; UI QA screenshots separate"
+      }
+    }
+  },
+  "uiQa": {
+    "status": "passed",
+    "summary": "runtime/evidence/P3-local-web-driver-ui-qa.json",
+    "logs": [
+      "runtime/evidence/P3-local-web-driver-ui-desktop-dom.txt",
+      "runtime/evidence/P3-local-web-driver-ui-final-dom.txt"
+    ],
+    "artifacts": [
+      "runtime/evidence/P3-local-web-driver-ui-desktop.jpg",
+      "runtime/evidence/P3-local-web-driver-ui-390.jpg",
+      "runtime/evidence/P3-local-web-driver-ui-320.jpg"
+    ],
+    "sourceDigestPointer": "/codeDigest",
+    "checks": [
+      {
+        "pointer": "/passed",
+        "equals": true
+      },
+      {
+        "pointer": "/rows/0/query",
+        "equals": "local demo"
+      },
+      {
+        "pointer": "/rows/0/inputCount",
+        "equals": "4"
+      },
+      {
+        "pointer": "/rows/1/scrollWidth",
+        "equals": 390
+      },
+      {
+        "pointer": "/rows/2/buttonsFit",
+        "equals": true
+      },
+      {
+        "pointer": "/temporaryViewportReset",
+        "equals": true
+      }
+    ],
+    "observation": {
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "widths": [
+        1280,
+        390,
+        320
+      ],
+      "method": "Codex in-app Browser semantic actions, read-only DOM metrics, native tool screenshots; JPEG bytes preserved as returned"
+    }
+  },
+  "shutdown": {
+    "status": "passed",
+    "summary": "runtime/evidence/P3-local-web-driver-shutdown-final.json",
+    "logs": [
+      "runtime/evidence/P3-local-web-driver-shutdown.log"
+    ],
+    "checks": [
+      {
+        "pointer": "/ownedProcessesStopped",
+        "equals": true
+      },
+      {
+        "pointer": "/fixtureServersOpened",
+        "equals": 19
+      },
+      {
+        "pointer": "/fixtureServersClosed",
+        "equals": 19
+      },
+      {
+        "pointer": "/uiPortClosed",
+        "equals": true
+      }
+    ],
+    "observation": {
+      "ownedBrowserStopped": true,
+      "loopbackServerStopped": true
+    }
+  },
+  "additionalArtifacts": [
+    "runtime/evidence/P3-local-web-driver-adapter-review.md",
+    "runtime/evidence/P3-local-web-driver-boundary-review.md",
+    "runtime/evidence/P3-local-web-driver-browser-1.log",
+    "runtime/evidence/P3-local-web-driver-browser-2.log",
+    "runtime/evidence/P3-local-web-driver-browser-3.log",
+    "runtime/evidence/P3-local-web-driver-browser-final.log",
+    "runtime/evidence/P3-local-web-driver-build-1.log",
+    "runtime/evidence/P3-local-web-driver-build-2.log",
+    "runtime/evidence/P3-local-web-driver-build-3.log",
+    "runtime/evidence/P3-local-web-driver-build-4.log",
+    "runtime/evidence/P3-local-web-driver-build-5.log",
+    "runtime/evidence/P3-local-web-driver-fixture-final-review.md",
+    "runtime/evidence/P3-local-web-driver-fixture-review.md",
+    "runtime/evidence/P3-local-web-driver-next-chapter-review.md",
+    "runtime/evidence/P3-local-web-driver-record.cjs",
+    "runtime/evidence/P3-local-web-driver-shutdown.log",
+    "runtime/evidence/P3-local-web-driver-targeted-1.log",
+    "runtime/evidence/P3-local-web-driver-targeted-final.log",
+    "runtime/evidence/P3-local-web-driver-typecheck-1.log",
+    "runtime/evidence/P3-local-web-driver-typecheck-2.log",
+    "runtime/evidence/P3-local-web-driver-ui-320-dom.txt",
+    "runtime/evidence/P3-local-web-driver-ui-320.jpg",
+    "runtime/evidence/P3-local-web-driver-ui-390.jpg",
+    "runtime/evidence/P3-local-web-driver-ui-desktop-dom.txt",
+    "runtime/evidence/P3-local-web-driver-ui-desktop.jpg",
+    "runtime/evidence/P3-local-web-driver-ui-final-dom.txt",
+    "runtime/evidence/P3-local-web-driver-verification-plan.md",
+    "runtime/evidence/P3-local-web-driver-verify-interrupted.log",
+    "runtime/evidence/P3-local-web-driver-verify.log"
+  ],
+  "knownLimits": [
+    "Instrumented localhost cooperating app and typed DOM automation only, not native OS or generic sites",
+    "Host authorization -> RPC is not atomic revocation; in-flight loss/cancel stays uncertain",
+    "Server graceful reopen and browser reload tested, not server SIGKILL/power loss/fsync faults",
+    "Operation/receipt cap256, no cross-process ownership or long-lived retention guarantee",
+    "Real models/API/internal services/Knox not run; model experiment remains cancelled",
+    "Each comparison cell executed once; no general speed or p95 claim",
+    "P3-04 remains in_progress/partially_verified; overall P0-P6 goal remains active"
+  ]
+}

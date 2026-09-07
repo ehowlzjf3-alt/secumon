@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "status": "frozen_staging_not_applied",
+  "scope": "read connection fallback inspection",
+  "priorBatch": {
+    "path": "runtime/evidence/C05-mcp-collections-staging/linux/linux-staging-manifest.json",
+    "sha256": "f4ad3d7e739ae96cc2babdc3a14de66794a3978e54d1333ac9beb6fb1e003ca6",
+    "allFiveStagedFilesUnchanged": true
+  },
+  "files": [
+    {
+      "source": "runtime/src/application/read-connection-control.ts",
+      "originalSha256": null,
+      "staged": "runtime/evidence/C05-mcp-collections-staging/linux/src/application/read-connection-control.ts",
+      "stagedSha256": "16a4058717e87be50caa74f3af1e450f96ee81c06b7de5e90eaa7337e22b2694",
+      "change": "new"
+    },
+    {
+      "source": "runtime/src/tests/read-connection-control.test.ts",
+      "originalSha256": null,
+      "staged": "runtime/evidence/C05-mcp-collections-staging/linux/src/tests/read-connection-control.test.ts",
+      "stagedSha256": "a1121a00e95aa9d08ebc437acc09ed877ec1e993f5d5798db7aeecf3f8362d8f",
+      "change": "new"
+    }
+  ],
+  "readOnlySourceDependencies": [
+    {
+      "path": "runtime/src/application/read-checkpoints.ts",
+      "sha256": "359bc3988483b53d2da47b0489f9b6444ff4def2cc6f5b8db85031c5d5f130fd"
+    },
+    {
+      "path": "runtime/src/application/read-collection-validation.ts",
+      "sha256": "a61008251f097ceac209be9db87ba7f06f99d87979c52493c7ac382c6087aed5"
+    },
+    {
+      "path": "runtime/src/application/read-waits.ts",
+      "sha256": "7d9710b93aca3287745f131a1403716783e30b21fec4ca4d3896fb06f31e0739"
+    },
+    {
+      "path": "runtime/src/application/execution-decision.ts",
+      "sha256": "23738f0d84481ba89e4e81203246aa0b9694cf274509668cee00451f91f0db0a"
+    },
+    {
+      "path": "runtime/src/domain/control.ts",
+      "sha256": "d829bf9cd9a6e7e9987b9b254a84ee7019519977471440b3b933c59c70dfd3c0"
+    },
+    {
+      "path": "runtime/src/domain/task-status.ts",
+      "sha256": "945333c2d06ed6d9e8321f09737e6b154e7c83fbea5aabbf092032c1605ff30e"
+    },
+    {
+      "path": "runtime/src/application/execution-authority.ts",
+      "sha256": "cd694e17a3ab388ed87cebdaad04e82d0a254f72650b1ae998b412c1c1cc6d36"
+    }
+  ],
+  "contract": "inspectReadConnectionControl(services: RuntimeServices, contracts: ToolContracts, state: WorkState, control: Control): Promise<Control>",
+  "behavior": [
+    "only replan/plan_cannot_complete_goal can be replaced",
+    "ready/running/waiting states are eligible; an already published wait is reinspected on ordinary executor resume",
+    "same task digest/current goal/scope/terminal unclaimed tip; adopted partial is allowed",
+    "actual ReadCheckpoints.read; only latest accepted/deferred call and a valid pure nextRequest can justify wait",
+    "original retryAt retained; call/page/item limits and permanent retry denial keep base",
+    "after await, exact state digest, catalog revision, registration identity and tool_connection_required are checked",
+    "host execution authority is checked before each original checkpoint read and after the final awaited state read",
+    "original checkpoint/IO errors propagate; no reserve/dispatch/model/network/ID allocation"
+  ],
+  "cost": "At most one ReadCheckpoints.read per eligible current task tip plus one final state.get. Each read authenticates retained raw/chain/source references using the existing reader; this adds real artifact bytes and metadata access and is not a measured optimization. No cross-call cache or extra persisted state.",
+  "tests": {
+    "file": "src/tests/read-connection-control.test.ts",
+    "expectedCases": 21,
+    "executed": false,
+    "fixture": "Real core-created checkpoint/response bytes on SQLite/file-journal; explicit synthetic source. nonfinal/intent stop is a test-local exception after the real commit, not SIGKILL.",
+    "reviewAdditions": [
+      "SQLite and file-journal ordinary executor runUntilYield publishes waiting and preserves it on two later entries with no model/tool call or new event",
+      "Host authority revoked before raw access rejects without reading; revocation during actual raw await rejects after inspection without state change"
+    ],
+    "integrationDependency": "The ordinary executor re-entry cases require the root staged inspectedControl integration to be applied with this helper; they do not monkeypatch runtime.step or persist a fake wait."
+  },
+  "execution": {
+    "typecheck": false,
+    "build": false,
+    "tests": false,
+    "nas": false,
+    "ssh": false
+  },
+  "staticReview": {
+    "importsResolve": true,
+    "originalAndPriorStagingUnchanged": true
+  },
+  "previousManifest": {
+    "path": "runtime/evidence/C05-mcp-collections-staging/linux/read-connection-control-manifest-before-review.json",
+    "sha256": "572908937c0ea9375271721362cd77f674dfaa29e3db5f780f2fd4ab23b04712",
+    "reason": "Immutable snapshot before waiting-state and execution-authority corrections"
+  }
+}

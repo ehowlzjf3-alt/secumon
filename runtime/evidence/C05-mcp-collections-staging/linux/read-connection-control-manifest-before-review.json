@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "status": "frozen_staging_not_applied",
+  "scope": "read connection fallback inspection",
+  "priorBatch": {
+    "path": "runtime/evidence/C05-mcp-collections-staging/linux/linux-staging-manifest.json",
+    "sha256": "f4ad3d7e739ae96cc2babdc3a14de66794a3978e54d1333ac9beb6fb1e003ca6",
+    "allFiveStagedFilesUnchanged": true
+  },
+  "files": [
+    {
+      "source": "runtime/src/application/read-connection-control.ts",
+      "originalSha256": null,
+      "staged": "runtime/evidence/C05-mcp-collections-staging/linux/src/application/read-connection-control.ts",
+      "stagedSha256": "f8f17b329b1fed265da1bc53ff7fc2dfb01d1988de310c84722f9fbc6c7f1bef",
+      "change": "new"
+    },
+    {
+      "source": "runtime/src/tests/read-connection-control.test.ts",
+      "originalSha256": null,
+      "staged": "runtime/evidence/C05-mcp-collections-staging/linux/src/tests/read-connection-control.test.ts",
+      "stagedSha256": "349e7b16dab24da2c665ee107d725bd8b0eff3ac51d15ab8d2eb66da05c7950c",
+      "change": "new"
+    }
+  ],
+  "readOnlySourceDependencies": [
+    {
+      "path": "runtime/src/application/read-checkpoints.ts",
+      "sha256": "359bc3988483b53d2da47b0489f9b6444ff4def2cc6f5b8db85031c5d5f130fd"
+    },
+    {
+      "path": "runtime/src/application/read-collection-validation.ts",
+      "sha256": "a61008251f097ceac209be9db87ba7f06f99d87979c52493c7ac382c6087aed5"
+    },
+    {
+      "path": "runtime/src/application/read-waits.ts",
+      "sha256": "7d9710b93aca3287745f131a1403716783e30b21fec4ca4d3896fb06f31e0739"
+    },
+    {
+      "path": "runtime/src/application/execution-decision.ts",
+      "sha256": "23738f0d84481ba89e4e81203246aa0b9694cf274509668cee00451f91f0db0a"
+    },
+    {
+      "path": "runtime/src/domain/control.ts",
+      "sha256": "d829bf9cd9a6e7e9987b9b254a84ee7019519977471440b3b933c59c70dfd3c0"
+    },
+    {
+      "path": "runtime/src/domain/task-status.ts",
+      "sha256": "945333c2d06ed6d9e8321f09737e6b154e7c83fbea5aabbf092032c1605ff30e"
+    }
+  ],
+  "contract": "inspectReadConnectionControl(services: RuntimeServices, contracts: ToolContracts, state: WorkState, control: Control): Promise<Control>",
+  "behavior": [
+    "only replan/plan_cannot_complete_goal can be replaced",
+    "same task digest/current goal/scope/terminal unclaimed tip; adopted partial is allowed",
+    "actual ReadCheckpoints.read; only latest accepted/deferred call and a valid pure nextRequest can justify wait",
+    "original retryAt retained; call/page/item limits and permanent retry denial keep base",
+    "after await, exact state digest, catalog revision, registration identity and tool_connection_required are checked",
+    "original checkpoint/IO errors propagate; no reserve/dispatch/model/network/ID allocation"
+  ],
+  "cost": "At most one ReadCheckpoints.read per eligible current task tip plus one final state.get. Each read authenticates retained raw/chain/source references using the existing reader; this adds real artifact bytes and metadata access and is not a measured optimization. No cross-call cache or extra persisted state.",
+  "tests": {
+    "file": "src/tests/read-connection-control.test.ts",
+    "expectedCases": 17,
+    "executed": false,
+    "fixture": "Real core-created checkpoint/response bytes on SQLite/file-journal; explicit synthetic source. nonfinal/intent stop is a test-local exception after the real commit, not SIGKILL."
+  },
+  "execution": {
+    "typecheck": false,
+    "build": false,
+    "tests": false,
+    "nas": false,
+    "ssh": false
+  },
+  "staticReview": {
+    "importsResolve": true,
+    "originalAndPriorStagingUnchanged": true
+  }
+}

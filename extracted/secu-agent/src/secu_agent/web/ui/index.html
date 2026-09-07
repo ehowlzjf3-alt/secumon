@@ -1,0 +1,2573 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Enterprise Security Agent</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0c0f12;
+      --band: #12171b;
+      --panel: #171d22;
+      --panel-2: #1d252b;
+      --line: #2a343b;
+      --muted: #8e9ca5;
+      --text: #e8eef2;
+      --soft: #c4cdd3;
+      --accent: #2fb7a4;
+      --accent-2: #64c7ff;
+      --warn: #d9a441;
+      --bad: #e06c75;
+      --ok: #7ccf8a;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .28);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      letter-spacing: 0;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #20282e;
+      min-height: 34px;
+      border-radius: 6px;
+      padding: 7px 10px;
+      cursor: pointer;
+    }
+
+    button:hover { border-color: #49616b; background: #253138; }
+    button.primary { background: #1f6f65; border-color: #2fb7a4; }
+    button.warn { border-color: #735f2c; color: #f1cf79; }
+    button.danger { border-color: #75424a; color: #ff9aa4; }
+    button.ghost { background: transparent; }
+    button.icon { width: 34px; padding: 0; display: inline-grid; place-items: center; }
+    button[disabled] { opacity: .48; cursor: not-allowed; }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #0f1418;
+      border-radius: 6px;
+      padding: 9px 10px;
+      outline: none;
+    }
+
+    textarea { resize: vertical; min-height: 62px; max-height: 130px; line-height: 1.45; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    .app-shell {
+      height: 100dvh;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 300px minmax(520px, 1fr);
+      grid-template-rows: 58px minmax(0, 1fr);
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(47, 183, 164, .05), transparent 260px),
+        var(--bg);
+    }
+
+    .topbar {
+      grid-column: 1 / -1;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(12, 15, 18, .94);
+      position: relative;
+      z-index: 10;
+    }
+
+    .brand { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+    .brand h1 { font-size: 17px; margin: 0; font-weight: 650; }
+    .brand span { color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .status-strip { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 24px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #11171b;
+      color: var(--soft);
+      white-space: nowrap;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 999px; background: var(--muted); }
+    .dot.ok { background: var(--ok); }
+    .dot.warn { background: var(--warn); }
+    .dot.bad { background: var(--bad); }
+
+    .agent-rail {
+      border-right: 1px solid var(--line);
+      background: var(--band);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100dvh - 58px);
+      min-height: 0;
+      overflow: auto;
+      gap: 14px;
+    }
+
+    .rail-section { display: grid; gap: 10px; }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .section-head h2, .section-head h3 {
+      margin: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .agent-create-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+
+    .agent-list {
+      display: grid;
+      gap: 8px;
+      max-height: 46vh;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .agent-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: stretch;
+      background: #141a1f;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .agent-row.active {
+      border-color: var(--accent);
+      background: #162521;
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+    .agent-row-main {
+      display: grid;
+      gap: 5px;
+      text-align: left;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      min-height: 0;
+    }
+    .agent-row-main:hover { background: rgba(255,255,255,0.04); border-color: transparent; }
+    .agent-row-archive {
+      background: transparent;
+      border: none;
+      border-left: 1px solid var(--line);
+      border-radius: 0;
+      color: var(--muted);
+      padding: 0 10px;
+      font-size: 18px;
+      line-height: 1;
+      min-height: 0;
+      cursor: pointer;
+    }
+    .agent-row-archive:hover { color: #ff9aa4; background: rgba(117,66,74,0.18); border-color: transparent; }
+    .agent-row strong { font-size: 13px; overflow-wrap: anywhere; }
+    .agent-row small { color: var(--muted); }
+
+    .report-menu {
+      display: grid;
+      gap: 8px;
+    }
+    .report-menu button {
+      width: 100%;
+      text-align: left;
+      display: grid;
+      gap: 4px;
+      background: #141a1f;
+      border-color: var(--line);
+      border-radius: 6px;
+      padding: 10px;
+    }
+    .report-menu button.active {
+      border-color: var(--accent-2);
+      background: #14212a;
+      box-shadow: inset 3px 0 0 var(--accent-2);
+    }
+    .report-menu strong { font-size: 13px; }
+    .report-menu small { color: var(--muted); line-height: 1.35; }
+
+    .workbench {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      min-width: 0;
+      height: calc(100dvh - 58px);
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .agent-header {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #0f1418;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: start;
+    }
+    .agent-title { display: grid; gap: 5px; min-width: 0; }
+    .agent-title h2 { margin: 0; font-size: 18px; font-weight: 650; overflow-wrap: anywhere; }
+    .agent-title p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .agent-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .chat-pane {
+      min-height: 0;
+      overflow: auto;
+      padding: 12px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.014), transparent 180px),
+        #0d1115;
+    }
+    /* v3.53-12: flex children 이 압축되지 않게 — 넘치면 압축이 아니라 스크롤. */
+    .chat-pane > * { flex-shrink: 0; }
+    .empty-state {
+      border: 1px dashed #314048;
+      background: #11171b;
+      border-radius: 6px;
+      padding: 16px;
+      color: var(--soft);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .msg {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 6px;
+      padding: 8px 11px;
+      max-width: 940px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.5;
+      font-size: 12.5px;
+    }
+    .msg.user { align-self: flex-end; background: #10241f; border-color: #22685f; }
+    .msg.assistant { align-self: flex-start; }
+    .msg.system { align-self: stretch; color: var(--soft); background: #151b20; font-size: 11.5px; padding: 6px 10px; }
+    .msg.error { align-self: stretch; border-color: #7a3c46; color: #ffc1c7; background: #23161a; }
+
+    /* step block — 5/18 식 가벼운 톤. reasoning + tool 통합, summary 한 줄 */
+    .step-block, .chat-step {
+      align-self: stretch;
+      border: 1px solid #2f3a42;
+      background: #11171c;
+      border-radius: 5px;
+      min-height: 0;
+      overflow: hidden;
+      font-size: 12px;
+      margin: 2px 0;
+    }
+    .step-block.step-reasoning { border-color: #35546f; background: #131c25; }
+    .step-block.step-tool { border-color: #2f5a52; background: #112019; }
+    .step-block.step-tool.error { border-color: #75424a; background: #1f1518; }
+    .step-block.step-event { border-color: #2a3138; }
+    .step-block.step-loop { border-color: #2a3138; background: #11171c; }
+    .step-block.step-loop.error { border-color: #75424a; background: #1f1518; }
+    .step-block.step-loop:not([open]) .loop-body { display: none; }
+    .step-block.step-loop[open] .loop-todo-preview { display: none; }
+    .step-block summary {
+      min-height: 26px;
+      padding: 4px 9px;
+      cursor: pointer;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 11.5px;
+      user-select: none;
+    }
+    .step-block summary:hover { background: rgba(125,133,144,0.08); }
+    .step-block[open] summary { color: var(--soft); }
+    .step-block.step-loop > summary {
+      align-items: center;
+      min-height: 32px;
+      padding: 7px 11px;
+      color: var(--soft);
+      font-size: 12.5px;
+    }
+    .event-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 16px;
+      padding: 0 5px;
+      border-radius: 999px;
+      border: 1px solid #3a4850;
+      color: #b7c6cd;
+      font-size: 9.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .event-badge.reasoning { border-color: #35607c; color: #9ed8ff; }
+    .event-badge.tool { border-color: #31675e; color: #a7eadf; }
+    .event-badge.error { border-color: #75424a; color: #ffb0b8; }
+    .step-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+    .tool-status {
+      color: var(--muted);
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
+    .step-block pre {
+      margin: 0;
+      padding: 10px 12px;
+      min-height: 32px;
+      max-height: 520px;
+      overflow: auto;
+      border-top: 1px solid #233038;
+      color: #d8e2e7;
+      background: #0a0e12;
+      white-space: pre-wrap;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .step-block.step-reasoning pre { color: #c5dcf5; background: #0c141c; }
+    .step-block.step-tool pre { color: #cde7df; background: #0a1310; }
+    .step-todo-chip {
+      margin-left: auto;
+      color: #9ddfd6;
+      border: 1px solid #285f58;
+      padding: 0 5px;
+      border-radius: 999px;
+      font-size: 10px;
+    }
+    .loop-latest {
+      color: #d4dde3;
+      font-size: 12.5px;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .loop-todo-summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 16px;
+      padding: 0 5px;
+      border-radius: 999px;
+      border: 1px solid #285f58;
+      color: #9ddfd6;
+      background: rgba(40,95,88,0.18);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .loop-todo-summary[hidden] { display: none; }
+    .loop-todo-preview {
+      flex: 1 0 100%;
+      display: grid;
+      gap: 4px;
+      padding: 6px 8px;
+      border: 1px solid #285f58;
+      border-radius: 4px;
+      background: rgba(40,95,88,0.10);
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .loop-todo-preview[hidden] { display: none; }
+    .loop-counter {
+      margin-left: auto;
+      color: #9ddfd6;
+      border: 1px solid #285f58;
+      padding: 0 5px;
+      border-radius: 999px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .loop-body {
+      display: grid;
+      gap: 3px;
+      padding: 6px 6px 6px 14px;
+      border-top: 1px solid var(--line);
+      border-left: 2px solid #2a3540;
+      margin-left: 8px;
+      background: #0c1014;
+    }
+    .loop-op {
+      align-self: stretch;
+      display: block;
+      width: 100%;
+      border: 1px solid #2f3a42;
+      background: #11171c;
+      border-radius: 5px;
+      overflow: hidden;
+      font-size: 12px;
+      margin: 1px 0;
+    }
+    .loop-op.reasoning { border-color: #35546f; background: #131c25; }
+    .loop-op.tool { border-color: #2f5a52; background: #112019; }
+    .loop-op.todo { border-color: #2f6a62; background: #112019; }
+    .loop-op.error { border-color: #75424a; background: #1f1518; }
+    .loop-op-header {
+      display: flex;
+      min-height: 30px;
+      padding: 7px 11px;
+      align-items: center;
+      gap: 8px;
+      color: #c9d3da;
+      border-bottom: 1px solid #233038;
+      font-size: 12px;
+      font-family: ui-monospace, Menlo, monospace;
+      background: rgba(255,255,255,0.018);
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+    }
+    .loop-op-header::-webkit-details-marker,
+    .loop-op-header::marker { display: none; }
+    .loop-op-header:hover { background: rgba(255,255,255,0.04); }
+    .loop-op:not([open]) .loop-op-header { border-bottom-color: transparent; }
+    .loop-op-header::before {
+      content: "▶";
+      font-size: 9px;
+      color: var(--muted);
+      transition: transform 120ms ease;
+      display: inline-block;
+      width: 10px;
+    }
+    .loop-op[open] .loop-op-header::before { transform: rotate(90deg); }
+    .loop-op-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .loop-op pre {
+      margin: 0;
+      padding: 10px 12px;
+      min-height: 32px;
+      max-height: 520px;
+      overflow: auto;
+      color: #d8e2e7;
+      background: #0a0e12;
+      white-space: pre-wrap;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .loop-op.reasoning pre { color: #c5dcf5; background: #0c141c; }
+    .loop-op.tool pre { color: #cde7df; background: #0a1310; }
+    .loop-op.todo pre { color: #c8e7e0; background: #0a1310; }
+    .timeline-archive {
+      align-self: stretch;
+      border: 1px dashed #2a3439;
+      background: rgba(125,133,144,0.03);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .timeline-archive[hidden] { display: none; }
+    .timeline-archive > summary {
+      min-height: 26px;
+      padding: 5px 9px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 11px;
+      font-family: ui-monospace, Menlo, monospace;
+    }
+    .timeline-archive-body {
+      display: grid;
+      gap: 4px;
+      padding: 6px;
+      border-top: 1px solid var(--line);
+    }
+
+    .composer {
+      border-top: 1px solid var(--line);
+      background: #10161a;
+      padding: 12px 18px 14px;
+      display: grid;
+      gap: 9px;
+    }
+    .chat-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .chat-state-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .chat-command-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .hint-text {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .composer-row { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: end; }
+
+    .todo-panel-header {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .todo-chip {
+      border: 1px solid var(--line);
+      background: rgba(125,133,144,0.06);
+      border-radius: 999px;
+      padding: 1px 7px;
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
+    .todo-list {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+    .todo-item {
+      border: 1px solid #232c32;
+      background: rgba(125,133,144,0.04);
+      border-radius: 4px;
+      padding: 4px 8px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 8px;
+      line-height: 1.4;
+      font-size: 11.5px;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+    .todo-mark {
+      color: var(--soft);
+      width: 16px;
+      text-align: center;
+      font-size: 11px;
+    }
+    .todo-item.completed { color: #9fb1b9; text-decoration: line-through; opacity: 0.75; }
+    .todo-item.in_progress { border-color: var(--accent); color: #a7eadf; font-weight: 600; }
+    .todo-item.blocked { border-color: #75424a; color: #ffb0b8; }
+
+    .approval-card {
+      border: 1px solid #775c2c;
+      background: #211b10;
+      border-radius: 6px;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+    .approval-card .actions { display: flex; gap: 8px; }
+    .approval-card .status { color: var(--muted); font-size: 12px; }
+
+    .banner {
+      border: 1px solid #295d56;
+      background: #11231f;
+      border-radius: 6px;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+    .banner-actions { display: flex; gap: 8px; }
+
+    /* v3.53-14: 팝업(modal) → 메인 영역 페이지 전환. dim 배경/그림자 제거하고
+       workbench 영역을 꽉 채운다. sidebar/topbar 는 그대로 — 별도 메뉴 페이지처럼. */
+    .report-modal {
+      position: fixed;
+      inset: 58px 0 0 300px;
+      z-index: 20;
+      background: #0d1115;
+      padding: 0;
+      display: grid;
+      place-items: stretch;
+    }
+    .report-modal[hidden] { display: none; }
+    .report-panel {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      background: #0d1115;
+      box-shadow: none;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+    }
+    .report-head {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #0f1418;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .report-head h2 { margin: 0; font-size: 18px; font-weight: 650; }
+    .report-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .report-back {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--soft);
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    .report-back:hover { border-color: var(--accent); color: var(--text); }
+    .report-body {
+      min-height: 0;
+      overflow: auto;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+    .report-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .report-stat {
+      border: 1px solid var(--line);
+      background: #11171b;
+      border-radius: 6px;
+      padding: 9px;
+      min-width: 0;
+    }
+    .report-stat small { display: block; color: var(--muted); font-size: 10px; text-transform: uppercase; }
+    .report-stat strong { display: block; margin-top: 3px; font-size: 18px; }
+    .report-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .report-links a {
+      color: var(--soft);
+      text-decoration: none;
+    }
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .report-table th, .report-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 7px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .report-table th {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+    .finding-table th {
+      vertical-align: top;
+    }
+    .severity-high, .severity-critical { color: #ff9aa4; }
+    .severity-medium { color: #f1cf79; }
+    .severity-low { color: #9ed8ff; }
+    .severity-informational { color: #9fc8b8; }
+
+    /* v3.82 U3b: 제네릭 finding 목록 — 행 클릭 → 인라인 read-only 상세 */
+    .finding-table { font-size: 12.5px; width: 100%; }
+    .finding-table td { line-height: 1.5; }
+    .finding-table td code { word-break: break-all; }
+    .finding-table tbody tr.finding-row:hover { background: rgba(255,255,255,0.025); }
+    .finding-table .finding-row { cursor: pointer; }
+    .finding-detail-row > td { background: #10161a; }
+    .findings-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .findings-toolbar label { color: var(--muted); font-size: 11px; }
+    .findings-toolbar select {
+      width: auto;
+      min-height: 28px;
+      padding: 4px 8px;
+      border-radius: 5px;
+      border: 1px solid #28343c;
+      background: #10161a;
+      color: #d8e2e7;
+      font-size: 11.5px;
+    }
+    .finding-detail-inline { display: grid; gap: 6px; padding: 4px 2px 8px; }
+    .finding-detail-inline h4 { margin: 6px 0 0; font-size: 11px; color: var(--muted); text-transform: uppercase; }
+    .finding-detail-inline p { margin: 0; line-height: 1.55; color: #d8e2e7; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .finding-detail-inline pre {
+      margin: 0;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #0d1115;
+      font-size: 11px;
+      overflow: auto;
+      max-height: 260px;
+    }
+    .finding-detail-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .finding-detail-grid > div {
+      border: 1px solid var(--line);
+      background: #11171b;
+      border-radius: 6px;
+      padding: 7px 9px;
+      min-width: 150px;
+    }
+    .finding-detail-grid small { display: block; color: var(--muted); font-size: 10px; text-transform: uppercase; }
+    .finding-detail-grid strong { display: block; margin-top: 3px; font-size: 12.5px; word-break: break-all; }
+    .report-hint { margin-top: 8px; font-size: 11px; }
+
+    /* v3.82 U5: assistant 마크다운 렌더 — 스트리밍은 textContent, 턴 종료 시 재렌더 */
+    .msg.assistant.md { white-space: normal; }
+    .msg.md p { margin: 4px 0; }
+    .msg.md h1, .msg.md h2, .msg.md h3, .msg.md h4, .msg.md h5, .msg.md h6 {
+      margin: 8px 0 4px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .msg.md h1 { font-size: 15px; }
+    .msg.md h2 { font-size: 14px; }
+    .msg.md pre {
+      margin: 6px 0;
+      padding: 8px 10px;
+      background: #0a0e12;
+      border: 1px solid #233038;
+      border-radius: 5px;
+      overflow: auto;
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+    .msg.md code {
+      background: rgba(125,133,144,0.14);
+      border-radius: 3px;
+      padding: 0 3px;
+      font-size: 11.5px;
+    }
+    .msg.md pre code { background: transparent; padding: 0; }
+    .msg.md ul, .msg.md ol { margin: 4px 0; padding-left: 20px; }
+    .msg.md li { margin: 2px 0; }
+    .msg.md a { color: var(--accent-2); }
+    .msg.md .md-href { color: var(--muted); font-size: 11px; word-break: break-all; }
+    .msg.md table { border-collapse: collapse; margin: 6px 0; font-size: 11.5px; }
+    .msg.md th, .msg.md td { border: 1px solid var(--line); padding: 4px 7px; text-align: left; }
+
+    /* v3.82 U5: Goal 라이프사이클 1급 배너 — 분해=파랑, 일시정지=노랑, 완료=초록 */
+    .goal-banner {
+      align-self: stretch;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px 12px;
+      display: grid;
+      gap: 5px;
+      font-size: 12.5px;
+    }
+    .goal-banner strong { font-size: 12px; }
+    .goal-banner p { margin: 0; line-height: 1.5; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .goal-banner small { color: var(--muted); }
+    .goal-banner.goal-decomposed { border-color: #35607c; background: #10202c; color: #cde4f7; }
+    .goal-banner.goal-paused { border-color: #735f2c; background: #221c0f; color: #f1e2b3; }
+    .goal-banner.goal-done { border-color: #2f6a4a; background: #102019; color: #c8e7d4; }
+    .goal-banner .banner-actions { display: flex; gap: 8px; }
+
+    /* v3.82 U5: 세션 rail — rename/복원/보관 + agent_type·skill 생성폼 */
+    .agent-row.archived { opacity: .55; }
+    .agent-row.archived:hover { opacity: .85; }
+    .agent-row-rename:hover { color: #9ed8ff; background: rgba(53,96,124,0.18); border-color: transparent; }
+    .agent-row-restore { font-size: 11px; white-space: nowrap; }
+    .agent-row-restore:hover { color: #a7eadf; background: rgba(47,90,82,0.18); border-color: transparent; }
+    .skill-chip { color: #9ddfd6; overflow-wrap: anywhere; }
+    .archived-toggle {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+      cursor: pointer;
+      text-transform: none;
+    }
+    .archived-toggle input { width: auto; min-height: 0; padding: 0; margin: 0; }
+    .section-head-actions { display: inline-flex; gap: 8px; align-items: center; }
+    .agent-create-form { display: grid; gap: 6px; }
+
+    /* v3.82 U5: 승인 모드 토글 (topbar) */
+    .approval-pill select {
+      width: auto;
+      min-height: 0;
+      border: none;
+      background: transparent;
+      padding: 0 2px;
+      color: var(--soft);
+      cursor: pointer;
+    }
+
+    .muted { color: var(--muted); }
+    .nowrap { white-space: nowrap; }
+
+    @media (max-width: 1180px) {
+      .app-shell { grid-template-columns: 280px minmax(0, 1fr); }
+    }
+
+    @media (max-width: 760px) {
+      html, body { overflow: auto; }
+      .app-shell { display: block; height: auto; min-height: 100dvh; overflow: visible; }
+      .topbar { position: static; height: auto; padding: 12px; align-items: flex-start; gap: 10px; }
+      .brand, .status-strip { flex-wrap: wrap; }
+      .agent-rail { height: auto; max-height: 36dvh; min-height: 0; }
+      .workbench { height: 64dvh; min-height: 520px; }
+      .report-modal { inset: 0; padding: 10px; }
+      .report-panel { height: calc(100dvh - 20px); }
+      .report-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .agent-header, .composer-row, .chat-controls { grid-template-columns: 1fr; }
+      .agent-actions, .chat-command-row { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <h1>Enterprise Security Agent</h1>
+        <span>Autonomous agent control room</span>
+      </div>
+      <div class="status-strip">
+        <span class="pill"><span id="ws-dot" class="dot"></span><span id="ws-state">disconnected</span></span>
+        <span class="pill" id="profile-chip" title="활성 LLM 프로파일">프로필 …</span>
+        <label class="pill approval-pill" title="도구 승인 모드 (다음 연결부터 적용)">승인
+          <select id="approval-mode" aria-label="승인 모드">
+            <option value="ask">ask</option>
+            <option value="auto">auto</option>
+            <option value="smart">smart</option>
+            <option value="deny">deny</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <aside class="agent-rail">
+      <section class="rail-section">
+        <div class="section-head">
+          <h2>Sessions</h2>
+          <div class="section-head-actions">
+            <label class="archived-toggle"><input type="checkbox" id="show-archived"> 보관 포함</label>
+            <button id="agent-refresh" class="icon" title="새로고침">↻</button>
+          </div>
+        </div>
+        <div class="agent-create-form">
+          <div class="agent-create-row">
+            <select id="agent-agent_type" aria-label="agent_type 선택" title="agent_type 선택"></select>
+            <button id="agent-create" class="primary" title="새 세션 생성">＋</button>
+          </div>
+          <input id="agent-label" placeholder="세션 라벨 (선택)">
+          <input id="agent-skills" placeholder="skills — 쉼표/공백 구분 (선택)">
+        </div>
+        <div id="agent-list" class="agent-list" data-mode="agents"></div>
+      </section>
+
+      <section class="rail-section">
+        <div class="section-head">
+          <h2>Findings</h2>
+          <button id="report-refresh" class="icon" title="발견사항 새로고침">↻</button>
+        </div>
+        <div id="report-menu" class="report-menu">
+          <button id="findings-open">
+            <strong>Findings</strong>
+            <small>발견사항 목록</small>
+          </button>
+        </div>
+      </section>
+
+    </aside>
+
+    <main class="workbench">
+      <section class="agent-header">
+        <div class="agent-title">
+          <h2 id="current-agent-title">Agent를 생성하거나 여세요</h2>
+          <p id="current-agent-subtitle">Agent는 특정 도메인에 묶이지 않습니다. 세션에서 지시하면 필요한 탐색, 정리, 추가 분석을 이어갑니다.</p>
+        </div>
+        <div class="agent-actions">
+          <button id="chat-new" class="ghost">New</button>
+          <button id="session-delete" class="warn">End</button>
+          <button id="chat-compact" class="ghost">Compact</button>
+          <button id="chat-cancel" class="danger">Cancel</button>
+        </div>
+      </section>
+
+      <section id="chat-log" class="chat-pane" aria-live="polite">
+        <div class="empty-state">
+          왼쪽에서 agent를 생성한 뒤 기존 채팅처럼 자연어로 지시하세요.
+        </div>
+      </section>
+
+      <form id="composer" class="composer">
+        <div class="chat-controls">
+          <div class="chat-state-row">
+            <span class="pill">session <strong id="chat-session-chip">none</strong></span>
+            <span class="pill">queue <strong id="chat-queue-state">ready</strong></span>
+            <span class="pill">turn <strong id="chat-turn-state">idle</strong></span>
+            <span class="pill">tokens <strong id="chat-token-meter">—</strong></span>
+          </div>
+          <div class="chat-command-row">
+            <button type="button" id="chat-reconnect" class="ghost">Reconnect</button>
+            <button type="button" id="chat-new-inline" class="ghost">New</button>
+            <button type="button" id="chat-compact-inline" class="ghost">Compact</button>
+            <button type="button" id="chat-cancel-inline" class="danger">Cancel</button>
+          </div>
+        </div>
+        <div class="composer-row">
+          <textarea id="chat-input" placeholder="agent에게 지시 입력"></textarea>
+          <button type="submit" class="primary">Send</button>
+          <button type="button" id="chat-reset-input" class="ghost">Clear</button>
+        </div>
+        <div class="hint-text">Enter sends. Shift+Enter inserts a newline. During a running turn, extra input is queued or treated as a revision by the busy-input policy.</div>
+      </form>
+
+    </main>
+
+    <section id="report-modal" class="report-modal" hidden aria-label="Finding report">
+      <div class="report-panel">
+        <header class="report-head">
+          <h2 id="report-title">Finding Report</h2>
+          <div class="report-head-actions">
+            <button id="report-close" class="report-back">← 채팅으로 돌아가기</button>
+          </div>
+        </header>
+        <div id="report-body" class="report-body"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token') || localStorage.getItem('th_token') || 'devtoken';
+    localStorage.setItem('th_token', token);
+
+    let currentSessionId = null;
+    let currentAgent = null;
+    let currentAgentType = 'agent';
+    let ws = null;
+    let activeAssistantNode = null;
+    let activeReasoningStep = null;
+    let activeOperationGroup = null;
+    let historyOperationGroup = null;
+    let toolSteps = new Map();
+    let approvalCards = new Map();
+    let _latestTodoSnapshot = null;
+    let activeTodoPanel = null;   // v3.66: 단일 sticky todo 패널(라이브) — 턴마다 새로 안 만든다.
+    let historyTodoPanel = null;  // v3.66: history replay 용 단일 패널.
+    // v3.82 U3b: 제네릭 finding 목록 — GET /api/findings + 상태 필터 (read-only v1).
+    let currentReportItems = [];   // 현재 목록 items (detail lookup 용)
+    const REPORT_STATE_KEY = 'th_report_state';
+    const FINDING_STATUSES = ['open', 'triaged', 'false_positive', 'accepted_risk', 'remediated'];
+    let findingStatusFilter = 'all';
+    // v3.82 U5: 세션 rail — 보관 포함 토글 + agent_type 목록 캐시.
+    let showArchived = false;
+    let knownAgentTypes = ['agent'];
+    // v3.82 U5: WS 자동 재연결 — 지수 backoff (1s→2s→…→30s, open 시 리셋).
+    let wsReconnectDelayMs = 1000;
+    let wsReconnectTimer = null;
+    const WS_RECONNECT_MAX_MS = 30000;
+    // v3.82 U5: 승인 모드 — localStorage 보존, WS 연결 시 ?approval_mode= 전달.
+    const APPROVAL_MODE_KEY = 'th_approval_mode';
+    const APPROVAL_MODES = ['ask', 'auto', 'smart', 'deny'];
+
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+    // v3.82 U5: REST 인증 — ?token= 쿼리(로그 유출 표면) 대신 Authorization 헤더.
+    function api(path, extra = {}) {
+      const u = new URL(path, location.origin);
+      Object.entries(extra).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && v !== '') u.searchParams.set(k, v);
+      });
+      return u;
+    }
+
+    function approvalMode() {
+      const v = localStorage.getItem(APPROVAL_MODE_KEY);
+      return APPROVAL_MODES.includes(v) ? v : 'auto';
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch]));
+    }
+
+    // v3.82 U5: 초소형 마크다운 렌더러 — 외부 라이브러리/CDN 없음 (폐쇄망).
+    // sanitize-by-construction: 입력은 마크업으로 해석되기 전에 반드시
+    // escapeHtml 을 거친다 (mdInline 은 escape 된 텍스트만 받음).
+    function mdInline(escaped) {
+      let out = escaped;
+      const codes = [];
+      out = out.replace(/`([^`]+)`/g, (_, c) => {
+        codes.push(`<code>${c}</code>`);
+        return `\u0000${codes.length - 1}\u0000`;
+      });
+      // 링크: http/https 만 <a> + href 노출 — javascript: 등은 plain text 로만.
+      out = out.replace(/\[([^\]]+)\]\(([^()\s]+)\)/g, (_, label, href) => {
+        if (/^https?:\/\//i.test(href)) {
+          return `<a href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>`
+            + `<span class="md-href"> (${href})</span>`;
+        }
+        return `${label} (${href})`;
+      });
+      out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      out = out.replace(/(^|[^\w*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+      out = out.replace(/\u0000(\d+)\u0000/g, (_, i) => codes[Number(i)]);
+      return out;
+    }
+
+    function renderMarkdown(raw) {
+      const lines = String(raw ?? '').replace(/\r\n?/g, '\n').split('\n');
+      const out = [];
+      let para = [];
+      let list = null;
+      const flushPara = () => {
+        if (!para.length) return;
+        out.push(`<p>${para.map(l => mdInline(escapeHtml(l))).join('<br>')}</p>`);
+        para = [];
+      };
+      const flushList = () => {
+        if (!list) return;
+        out.push(`<${list.tag}>${list.items.map(it => `<li>${it}</li>`).join('')}</${list.tag}>`);
+        list = null;
+      };
+      let i = 0;
+      while (i < lines.length) {
+        const line = lines[i];
+        if (/^\s*```/.test(line)) {
+          flushPara(); flushList();
+          const code = [];
+          i += 1;
+          while (i < lines.length && !/^\s*```/.test(lines[i])) { code.push(lines[i]); i += 1; }
+          i += 1;  // 닫는 ``` 스킵 (없으면 EOF 까지 코드로)
+          out.push(`<pre><code>${escapeHtml(code.join('\n'))}</code></pre>`);
+          continue;
+        }
+        const heading = line.match(/^(#{1,6})\s+(.*)$/);
+        if (heading) {
+          flushPara(); flushList();
+          const level = heading[1].length;
+          out.push(`<h${level}>${mdInline(escapeHtml(heading[2]))}</h${level}>`);
+          i += 1;
+          continue;
+        }
+        const li = line.match(/^\s*(?:[-*+]|\d+[.)])\s+(.*)$/);
+        if (li) {
+          flushPara();
+          const tag = /^\s*\d/.test(line) ? 'ol' : 'ul';
+          if (!list || list.tag !== tag) { flushList(); list = { tag, items: [] }; }
+          list.items.push(mdInline(escapeHtml(li[1])));
+          i += 1;
+          continue;
+        }
+        // 테이블: 헤더행 + 구분행(---|---) 이 이어질 때만.
+        if (line.includes('|') && i + 1 < lines.length
+            && lines[i + 1].includes('-') && /^\s*\|?[\s:|-]+\|?\s*$/.test(lines[i + 1])) {
+          flushPara(); flushList();
+          const cells = l => l.replace(/^\s*\|/, '').replace(/\|\s*$/, '')
+            .split('|').map(c => mdInline(escapeHtml(c.trim())));
+          const head = cells(line);
+          i += 2;
+          const rows = [];
+          while (i < lines.length && lines[i].includes('|')) { rows.push(cells(lines[i])); i += 1; }
+          out.push('<table><thead><tr>'
+            + head.map(c => `<th>${c}</th>`).join('')
+            + '</tr></thead><tbody>'
+            + rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')
+            + '</tbody></table>');
+          continue;
+        }
+        if (!line.trim()) { flushPara(); flushList(); i += 1; continue; }
+        para.push(line);
+        i += 1;
+      }
+      flushPara(); flushList();
+      return out.join('');
+    }
+
+    // 스트리밍 중엔 textContent 로 안전하게 쌓고, turn 종료 시 마크다운 재렌더.
+    function finalizeAssistantMessage(node) {
+      if (!node || node._mdRendered) return;
+      const raw = node.textContent || '';
+      if (!raw.trim()) return;
+      node.innerHTML = renderMarkdown(raw);
+      node.classList.add('md');
+      node._mdRendered = true;
+    }
+
+    function setWsState(state, tone = '') {
+      $('#ws-state').textContent = state;
+      $('#ws-dot').className = `dot ${tone}`;
+    }
+
+    function refreshChatChrome() {
+      $('#chat-session-chip').textContent = currentSessionId ? `#${currentSessionId}` : 'none';
+    }
+
+    function setQueueState(text) {
+      $('#chat-queue-state').textContent = text || 'ready';
+    }
+
+    function setTurnState(text) {
+      $('#chat-turn-state').textContent = text || 'idle';
+    }
+
+    // v3.79 ② U1: 누적 토큰 미터 (TokenMeter 프레임)
+    function fmtTok(n) {
+      if (!n && n !== 0) return '0';
+      if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+      if (n >= 1e3) return (n / 1e3).toFixed(0) + 'K';
+      return String(n);
+    }
+    function setTokenMeter(p) {
+      const el = $('#chat-token-meter');
+      if (!el) return;
+      const cache = p.cache_hit_pct ? ` · cache ${p.cache_hit_pct}%` : '';
+      el.textContent = `in ${fmtTok(p.input_tokens)} · out ${fmtTok(p.output_tokens)}${cache}`;
+      el.title = `LLM 호출 ${p.calls}회 누적 (cache_read ${fmtTok(p.cache_read_input_tokens || 0)})`;
+    }
+
+    function isWsOpen() {
+      return Boolean(ws && ws.readyState === 1);
+    }
+
+    function cancelActiveTurn(reason = 'escape') {
+      if (!isWsOpen()) {
+        setTurnState('cancel unavailable');
+        return;
+      }
+      ws.send(JSON.stringify({ action: 'cancel', reason }));
+      setTurnState('cancelling');
+    }
+
+    function setStatus(text, kind = 'system') {
+      addMessage(kind, text);
+    }
+
+    function removeEmptyState() {
+      $$('.empty-state', $('#chat-log')).forEach(node => node.remove());
+    }
+
+    function ensureTimelineArchive() {
+      let archive = $('#timeline-archive');
+      if (archive) return archive;
+      archive = document.createElement('details');
+      archive.id = 'timeline-archive';
+      archive.className = 'timeline-archive';
+      archive.hidden = true;
+      archive.innerHTML = '<summary>Earlier operations (0)</summary><div class="timeline-archive-body"></div>';
+      $('#chat-log').prepend(archive);
+      return archive;
+    }
+
+    function updateTimelineArchiveLabel() {
+      const archive = ensureTimelineArchive();
+      const count = $('.timeline-archive-body', archive).children.length;
+      $('summary', archive).textContent = `Earlier operations (${count})`;
+      archive.hidden = count === 0;
+    }
+
+    function compactTimelineSteps() {
+      // v3.53-9: archive 로 옮기지 않음 — timeline 에 모두 남기되 default close.
+      // 최신 1개만 expand, 나머지는 헤더만 한 줄로 보임 (사용자 클릭으로 펼침).
+      // todo 는 항상 open 유지 (직전 op close 로직에서 제외돼있음).
+      const keep = 1;
+      const _ = keep;  // 의도 보존 marker
+      updateTimelineArchiveLabel();
+    }
+
+    function clearChat() {
+      // v3.53-11: 진행 중이던 op timer 누수 방지.
+      toolSteps.forEach(s => { if (s && s.timerId) clearInterval(s.timerId); });
+      $('#chat-log').innerHTML = '';
+      activeAssistantNode = null;
+      activeReasoningStep = null;
+      activeOperationGroup = null;
+      historyOperationGroup = null;
+      toolSteps = new Map();
+      approvalCards = new Map();
+      _latestTodoSnapshot = null;
+      activeTodoPanel = null;
+      historyTodoPanel = null;
+    }
+
+    function scrollChatToBottom() {
+      const log = $('#chat-log');
+      if (!log) return;
+      log.scrollTop = log.scrollHeight;
+      requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
+    }
+
+    // v3.53-11: op 진행 시간 타이머. status span 에 "⏱ 1.3s" 갱신.
+    function startOpTimer(step) {
+      if (!step || !step.status) return;
+      step.startTime = Date.now();
+      const tick = () => {
+        if (!step.status) return;
+        const sec = ((Date.now() - step.startTime) / 1000).toFixed(1);
+        step.status.textContent = `⏱ ${sec}s`;
+      };
+      tick();
+      step.timerId = setInterval(tick, 100);
+    }
+    function stopOpTimer(step, mark) {
+      if (!step) return;
+      if (step.timerId) { clearInterval(step.timerId); step.timerId = null; }
+      if (step.status && step.startTime) {
+        const sec = ((Date.now() - step.startTime) / 1000).toFixed(1);
+        step.status.textContent = `${mark || ''} ${sec}s`.trim();
+      }
+    }
+
+    function addMessage(role, text) {
+      removeEmptyState();
+      const log = $('#chat-log');
+      const node = document.createElement('div');
+      node.className = `msg ${role}`;
+      node.textContent = text || '';
+      log.appendChild(node);
+      scrollChatToBottom();
+      return node;
+    }
+
+    function formatPayload(payload) {
+      if (typeof payload === 'string') return payload;
+      if (payload === undefined || payload === null) return '';
+      return JSON.stringify(payload, null, 2);
+    }
+
+    function createOperationGroup(options = {}) {
+      // v3.53-10: 묶음(wrapper) 구조. 한 turn 의 reasoning/tool 을 하나의
+      // details 로 묶고, summary = 최신 op 텍스트. 안쪽 op 는 들여쓰기 + 접힘.
+      // todo 는 wrapper 밖에서 별도로 떠있음 (addLoopOperation 에서 분리).
+      removeEmptyState();
+      const log = $('#chat-log');
+      const det = document.createElement('details');
+      det.className = 'step-block chat-step step-loop';
+      det.open = true;
+      const summary = document.createElement('summary');
+      const badge = document.createElement('span');
+      badge.className = 'event-badge tool';
+      badge.textContent = '진행';
+      const latest = document.createElement('span');
+      latest.className = 'loop-latest';
+      latest.textContent = '작업 시작…';
+      summary.appendChild(badge);
+      summary.appendChild(latest);
+      const body = document.createElement('div');
+      body.className = 'loop-body';
+      det.appendChild(summary);
+      det.appendChild(body);
+      det._latest = latest;
+      det._body = body;
+      det._reasoningOp = null;
+      log.appendChild(det);
+      scrollChatToBottom();
+      return det;
+    }
+
+    function ensureOperationGroup(options = {}) {
+      if (options.history) {
+        if (!historyOperationGroup) historyOperationGroup = createOperationGroup({ title: 'replayed loop' });
+        return historyOperationGroup;
+      }
+      if (!activeOperationGroup) activeOperationGroup = createOperationGroup({ title: 'agent loop' });
+      return activeOperationGroup;
+    }
+
+    function resetOperationGroup(scope = 'active') {
+      if (scope === 'history') {
+        historyOperationGroup = null;
+      } else {
+        activeOperationGroup = null;
+      }
+      activeReasoningStep = null;
+    }
+
+    function updateOperationGroupSummary(group, latestTitle, options = {}) {
+      // v3.53-10: wrapper summary = 최신 op 텍스트 (메타 chrome 없음).
+      if (!group || !group._latest) return;
+      const text = (latestTitle || 'operation').replace(/\s+/g, ' ').trim();
+      group._latest.textContent = text.length > 140 ? text.slice(0, 140) + '…' : text;
+      if (options.error && group.classList) group.classList.add('error');
+      scrollChatToBottom();
+    }
+
+    function renderTodoItems(snapshot) {
+      const items = (snapshot.items || []).map(item => {
+        const mark = item.status === 'completed' ? '✓'
+          : item.status === 'in_progress' ? '…'
+          : item.status === 'blocked' ? '!'
+          : item.status === 'cancelled' ? '~'
+          : '□';
+        return `
+          <div class="todo-item ${escapeHtml(item.status)}">
+            <span class="todo-mark">${mark}</span>
+            <span>${escapeHtml(item.id)}. ${escapeHtml(item.content || '')}</span>
+          </div>
+        `;
+      }).join('');
+      return items ? `<div class="todo-list">${items}</div>` : '';
+    }
+
+    function addLoopOperation(title, payload, options = {}) {
+      // v3.53-10: kind=todo 는 wrapper 밖 (chat-log) 에 고정·열림으로,
+      // reasoning/tool 은 wrapper(group._body) 안에 들여쓰기·접힘으로.
+      const kind = options.kind || 'event';
+      const isTodo = kind === 'todo';
+      const node = document.createElement('details');
+      node.className = `loop-op ${kind}${options.error ? ' error' : ''}`;
+      const header = document.createElement('summary');
+      header.className = 'loop-op-header';
+      const badge = document.createElement('span');
+      badge.className = `event-badge ${kind}${options.error ? ' error' : ''}`;
+      badge.textContent = options.badge || kind;
+      const label = document.createElement('span');
+      label.className = 'loop-op-title';
+      label.textContent = title;
+      const status = document.createElement('span');
+      status.className = 'tool-status';
+      status.textContent = options.status || '';
+      header.appendChild(badge);
+      header.appendChild(label);
+      header.appendChild(status);  // timer 갱신 대상 — 항상 붙임
+      const pre = document.createElement('pre');
+      pre.textContent = formatPayload(payload);
+      node.appendChild(header);
+      node.appendChild(pre);
+
+      // 펼치면 그 op 가 보이게 + 본문 하단으로 스크롤.
+      node.addEventListener('toggle', () => {
+        if (node.open) {
+          pre.scrollTop = pre.scrollHeight;
+          node.scrollIntoView({ block: 'nearest' });
+        }
+      });
+
+      let group = null;
+      if (isTodo) {
+        // todo 는 진행 상황 — 펼친 채 wrapper 위에 고정.
+        node.open = true;
+        removeEmptyState();
+        const log = $('#chat-log');
+        const grp = options.history ? historyOperationGroup : activeOperationGroup;
+        if (grp && grp.parentNode === log) log.insertBefore(node, grp);
+        else log.appendChild(node);
+      } else {
+        group = ensureOperationGroup({ history: options.history });
+        node.open = false;  // 안쪽 op 는 접힘 — wrapper summary 가 최신 보여줌
+        group._body.appendChild(node);
+        updateOperationGroupSummary(group, title, { status: options.status, error: options.error });
+      }
+      const op = { node, label, status, pre, group, kind };
+      scrollChatToBottom();
+      return op;
+    }
+
+    function appendStepText(step, text) {
+      if (!step || !step.pre) return;
+      step.pre.textContent += text || '';
+      // reasoning streaming — wrapper summary 에 누적 텍스트 끝부분 미리보기.
+      if (step.pre) step.pre.scrollTop = step.pre.scrollHeight;  // 펼친 op 자체 하단으로
+      if (step.group && step.kind === 'reasoning') {
+        updateOperationGroupSummary(step.group, step.pre.textContent, {});
+      }
+      scrollChatToBottom();
+    }
+
+    function updateStep(step, title, payload, options = {}) {
+      if (!step) return;
+      if (step.label && title) step.label.textContent = title;
+      if (step.pre) step.pre.textContent = formatPayload(payload);
+      if (options.error && step.node) step.node.classList.add('error');
+      // v3.53-11: timer 돌고 있었으면 정지 + 최종 경과시간. 아니면 status 텍스트.
+      if (step.timerId || step.startTime) {
+        stopOpTimer(step, options.error ? '✗' : '✓');
+      } else if (step.status) {
+        step.status.textContent = options.status || '';
+      }
+      updateOperationGroupSummary(step.group, title, {
+        status: options.status,
+        error: options.error
+      });
+    }
+
+    function shouldDisplayToolEvent(name) {
+      return Boolean(name);
+    }
+
+    function startReasoningChunk(text, options = {}) {
+      const group = ensureOperationGroup({ history: options.history });
+      if (!group._reasoningOp) {
+        group._reasoningOp = addLoopOperation('reasoning', '', {
+          kind: 'reasoning',
+          badge: 'reason',
+          status: 'streaming',
+          history: options.history
+        });
+      }
+      activeReasoningStep = group._reasoningOp;
+      appendStepText(group._reasoningOp, text);
+    }
+
+    function createToolStep(payload, options = {}) {
+      // v3.79 ② U2: 대상까지 제목에 — "tool · probe @ 10.1.2.3"
+      const target = payload.target ? ` @ ${payload.target}` : '';
+      const title = `tool · ${payload.name || 'unknown'}${target}`;
+      const step = addLoopOperation(title, payload.input || {}, {
+        kind: 'tool',
+        badge: 'tool',
+        status: 'running',
+        history: options.history
+      });
+      step._target = payload.target || '';
+      // history replay 는 이미 끝난 것 — timer 돌리지 않음.
+      if (!options.history) startOpTimer(step);
+      if (payload.id) toolSteps.set(payload.id, step);
+      return step;
+    }
+
+    function ensureTodoPanel(options = {}) {
+      // v3.66: 턴마다 새 패널을 만들던 것을 "단일 sticky 패널"로. 진행 중인 그룹
+      // 바로 위로 재배치 → 화면엔 항상 최신 활동 옆에 todo 패널 하나만 뜬다.
+      // (이전: TurnStarted 마다 group._todoOp 새로 생성 → 턴 수만큼 todo 가 쌓임.)
+      const hist = !!options.history;
+      let panel = hist ? historyTodoPanel : activeTodoPanel;
+      if (!panel || !panel.node || !panel.node.isConnected) {
+        // div 컨테이너(예전엔 details). 이 패널은 항상 펼친 flat 패널이고
+        // renderTodoPanel 이 innerHTML 을 통째로 갈아끼우므로 details>summary 구조가
+        // 필요없다(없으면 malformed details). 토글도 안 쓴다.
+        const node = document.createElement('div');
+        node.className = 'loop-op todo';
+        const header = document.createElement('div');
+        header.className = 'loop-op-header';
+        const badge = document.createElement('span');
+        badge.className = 'event-badge todo';
+        badge.textContent = 'todo';
+        const label = document.createElement('span');
+        label.className = 'loop-op-title';
+        label.textContent = 'todo';
+        const status = document.createElement('span');
+        status.className = 'tool-status';
+        header.appendChild(badge);
+        header.appendChild(label);
+        header.appendChild(status);
+        const pre = document.createElement('pre');
+        node.appendChild(header);
+        node.appendChild(pre);
+        panel = { node, label, status, pre, group: null, kind: 'todo' };
+        if (hist) historyTodoPanel = panel; else activeTodoPanel = panel;
+      }
+      // 진행 중인 그룹 바로 위로 (원래 insertBefore(activeGroup) 위치 보존, 단 단일 노드 이동).
+      removeEmptyState();
+      const log = $('#chat-log');
+      const grp = hist ? historyOperationGroup : activeOperationGroup;
+      if (grp && grp.parentNode === log) {
+        if (panel.node.nextSibling !== grp) log.insertBefore(panel.node, grp);
+      } else if (panel.node.parentNode !== log) {
+        log.appendChild(panel.node);
+      }
+      return panel;
+    }
+
+    function renderTodoPanel(panel, snapshot) {
+      if (!panel || !panel.node || !snapshot) return;
+      panel.node.innerHTML = `
+        <div class="todo-panel-header">
+          <strong>Todo</strong>
+          <span class="todo-chip">pending ${escapeHtml(snapshot.pending || 0)}</span>
+          <span class="todo-chip">active ${escapeHtml(snapshot.in_progress || 0)}</span>
+          <span class="todo-chip">done ${escapeHtml(snapshot.completed || 0)}/${escapeHtml(snapshot.total || 0)}</span>
+          <span class="muted">${escapeHtml(snapshot.reason || '')}</span>
+        </div>
+        ${renderTodoItems(snapshot)}
+      `;
+      // innerHTML 재작성 후 참조 갱신 (flat 패널 — summary/pre 없음).
+      panel.label = $('.todo-panel-header strong', panel.node);
+      panel.status = null;
+      panel.pre = null;
+    }
+
+    function upsertTodoRunning(payload, options = {}) {
+      // todo 도구 호출 START — 단일 패널 확보 + 최신 활동 옆으로 이동.
+      const panel = ensureTodoPanel(options);
+      if (_latestTodoSnapshot) {
+        renderTodoPanel(panel, _latestTodoSnapshot);
+      } else if (panel.label) {
+        panel.label.textContent = 'todo (갱신 중)';
+      }
+      return panel;
+    }
+
+    function parseTodoResult(text) {
+      if (typeof text !== 'string' || !text.startsWith('todo')) return null;
+      const first = text.split('\n')[0] || '';
+      const m = first.match(/todo \((\d+)\): pending=(\d+) in_progress=(\d+) completed=(\d+) cancelled=(\d+) blocked=(\d+)/);
+      if (!m) return null;
+      const statusMap = {
+        ' ': 'pending',
+        '>': 'in_progress',
+        x: 'completed',
+        '~': 'cancelled',
+        '!': 'blocked'
+      };
+      const items = [];
+      text.split('\n').slice(1).forEach(line => {
+        const item = line.match(/^\s+\[( |>|x|~|!)\]\s+(.+?)\.\s+(.*)$/);
+        if (!item) return;
+        items.push({
+          status: statusMap[item[1]] || 'pending',
+          id: item[2],
+          content: item[3]
+        });
+      });
+      return {
+        total: Number(m[1] || 0),
+        pending: Number(m[2] || 0),
+        in_progress: Number(m[3] || 0),
+        completed: Number(m[4] || 0),
+        cancelled: Number(m[5] || 0),
+        blocked: Number(m[6] || 0),
+        items
+      };
+    }
+
+    function updateTodoSnapshotFromResult(payload, options = {}) {
+      if (!payload || typeof payload !== 'object') return false;
+      if (payload.name === 'todo') {
+        const parsed = parseTodoResult(payload.result || '');
+        if (parsed) {
+          _latestTodoSnapshot = parsed;
+          upsertTodoPanel(_latestTodoSnapshot, options);
+          return true;
+        }
+        return false;
+      }
+      if ('pending' in payload || 'completed' in payload || 'total' in payload) {
+        _latestTodoSnapshot = {
+          pending: Number(payload.pending || 0),
+          completed: Number(payload.completed || 0),
+          total: Number(payload.total || 0),
+          in_progress: Number(payload.in_progress || 0),
+          blocked: Number(payload.blocked || 0),
+          reason: payload.reason || ''
+        };
+        upsertTodoPanel(_latestTodoSnapshot, options);
+        return true;
+      }
+      return false;
+    }
+
+    function upsertTodoPanel(snapshot, options = {}) {
+      // todo 결과/스냅샷 도착 — 단일 패널에 in-place 렌더. wrapper summary 에는
+      // todo 를 더 이상 echo 하지 않는다(예전엔 tool 스타일로 또 떠서 중복으로 보였음).
+      if (!snapshot) return;
+      const panel = ensureTodoPanel(options);
+      renderTodoPanel(panel, snapshot);
+      return panel;
+    }
+
+    async function fetchJson(url, options = {}) {
+      // v3.82 U5: REST 인증을 Authorization 헤더로 — 쿼리 ?token= 미사용.
+      const headers = { 'Authorization': `Bearer ${token}`, ...(options.headers || {}) };
+      const r = await fetch(url, { ...options, headers });
+      if (!r.ok) {
+        const bodyText = await r.text();
+        let detail = bodyText;
+        try {
+          const j = JSON.parse(bodyText);
+          if (j && j.detail) detail = typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail);
+        } catch (_) { /* JSON 아님 — 원문 그대로 */ }
+        const err = new Error(`${r.status} ${detail}`);
+        err.status = r.status;
+        err.detail = detail;
+        throw err;
+      }
+      return r.json();
+    }
+
+    function normalizeReportState(raw) {
+      if (!raw || raw.view !== 'findings') return null;
+      const detailId = raw.detail_id == null ? '' : String(raw.detail_id);
+      return { view: 'findings', detail_id: detailId };
+    }
+
+    function reportStateFromUrl() {
+      const p = new URLSearchParams(location.search);
+      if (p.get('view') !== 'findings') return null;
+      return normalizeReportState({
+        view: 'findings',
+        detail_id: p.get('finding_id') || ''
+      });
+    }
+
+    function savedReportState() {
+      const urlState = reportStateFromUrl();
+      if (urlState) return urlState;
+      try {
+        return normalizeReportState(JSON.parse(localStorage.getItem(REPORT_STATE_KEY) || 'null'));
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function syncReportUrl(state) {
+      const url = new URL(location.href);
+      if (state && state.view === 'findings') {
+        url.searchParams.set('view', 'findings');
+        if (state.detail_id) url.searchParams.set('finding_id', state.detail_id);
+        else url.searchParams.delete('finding_id');
+      } else {
+        url.searchParams.delete('view');
+        url.searchParams.delete('finding_id');
+      }
+      history.replaceState(null, '', url);
+    }
+
+    function saveReportState(state) {
+      const normalized = normalizeReportState(state);
+      if (!normalized) {
+        localStorage.removeItem(REPORT_STATE_KEY);
+        syncReportUrl(null);
+        return;
+      }
+      localStorage.setItem(REPORT_STATE_KEY, JSON.stringify(normalized));
+      syncReportUrl(normalized);
+    }
+
+    function closeFindingReport() {
+      $('#report-modal').hidden = true;
+      saveReportState(null);
+    }
+
+    // v3.82 U3b: 단일 진입점 — 코어 제네릭 API GET /api/findings.
+    async function loadFindingReport(options = {}) {
+      const detailId = options.detailId == null ? '' : String(options.detailId);
+      if (options.persist !== false) {
+        saveReportState({ view: 'findings', detail_id: detailId });
+      }
+      $('#report-title').textContent = '발견사항';
+      $('#report-body').innerHTML = '<div class="empty-state">발견사항 불러오는 중...</div>';
+      $('#report-modal').hidden = false;
+      try {
+        const payload = await fetchJson(api('/api/findings', {
+          limit: 200,
+          status: findingStatusFilter === 'all' ? '' : findingStatusFilter
+        }));
+        currentReportItems = payload.items || [];
+        renderFindings(payload);
+        if (detailId) toggleFindingDetail(detailId, { persist: false });
+      } catch (e) {
+        $('#report-body').innerHTML = `<div class="msg error">${escapeHtml(e.message || String(e))}</div>`;
+      }
+    }
+
+    function findingStatusLabel(status) {
+      return ({
+        open: '열림',
+        triaged: '검토 중',
+        false_positive: '오탐',
+        accepted_risk: '위험 수용',
+        remediated: '조치 완료'
+      })[status] || status || '-';
+    }
+    function severityLabel(severity) {
+      return ({
+        critical: '매우 높음',
+        high: '높음',
+        medium: '중간',
+        low: '낮음',
+        informational: '정보'
+      })[severity] || severity || '-';
+    }
+
+    function truncateText(value, max = 96) {
+      const text = String(value ?? '').replace(/\s+/g, ' ').trim();
+      if (!text) return '-';
+      if (text.length <= max) return text;
+      return text.slice(0, Math.max(0, max - 1)).trimEnd() + '\u2026';
+    }
+
+    function fmtEpoch(value) {
+      const n = Number(value);
+      if (!value || !Number.isFinite(n) || n <= 0) return '';
+      const d = new Date(n * 1000);
+      return Number.isNaN(d.getTime()) ? '' : d.toLocaleString();
+    }
+
+    // v3.82 U3b: 상태 필터 — 변경 시 ?status= 로 재조회.
+    function renderStatusFilter(payload) {
+      const counts = (payload && payload.status_counts) || {};
+      const total = payload && payload.total != null ? payload.total : currentReportItems.length;
+      const options = ['all', ...FINDING_STATUSES].map(st => {
+        const label = st === 'all' ? '전체' : findingStatusLabel(st);
+        const count = st !== 'all' && counts[st] != null ? ` (${counts[st]})` : '';
+        return `<option value="${escapeHtml(st)}"${findingStatusFilter === st ? ' selected' : ''}>`
+          + `${escapeHtml(label)}${escapeHtml(count)}</option>`;
+      }).join('');
+      return `<div class="findings-toolbar">`
+        + `<label for="findings-status-filter">상태</label>`
+        + `<select id="findings-status-filter" aria-label="상태 필터">${options}</select>`
+        + `<span class="muted">표시 ${escapeHtml(total)}건</span>`
+        + `</div>`;
+    }
+
+    // v3.82 U3b: 인라인 read-only 상세 — 전체 요약 + 부가 필드 (편집은 U5).
+    function renderFindingDetail(item) {
+      const fields = [
+        ['fingerprint', item.fingerprint],
+        ['자산 유형', item.asset_kind],
+        ['담당자', item.owner],
+        ['티켓', item.ticket_ref],
+        ['SLA 기한', fmtEpoch(item.sla_due)],
+        ['증거 참조', item.evidence_ref],
+        ['최초 발견', fmtEpoch(item.first_seen)],
+        ['최근 발견', fmtEpoch(item.last_seen)],
+        ['발견 횟수', item.seen_count]
+      ].filter(([, v]) => v !== null && v !== undefined && v !== '');
+      const extra = item.extra && Object.keys(item.extra).length
+        ? `<pre>${escapeHtml(JSON.stringify(item.extra, null, 2))}</pre>`
+        : '';
+      return `<div class="finding-detail-inline">`
+        + `<h4>요약</h4><p>${escapeHtml(item.summary || '-')}</p>`
+        + `<h4>자산</h4><p><code>${escapeHtml(item.asset || '-')}</code></p>`
+        + (fields.length
+          ? `<div class="finding-detail-grid">${fields.map(([label, value]) =>
+              `<div><small>${escapeHtml(label)}</small><strong>${escapeHtml(value)}</strong></div>`).join('')}</div>`
+          : '')
+        + (extra ? `<h4>extra</h4>${extra}` : '')
+        + `</div>`;
+    }
+
+    // 행 클릭 → 해당 finding 의 인라인 상세 토글.
+    function toggleFindingDetail(findingId, options = {}) {
+      const idx = currentReportItems.findIndex(it => String(it.id) === String(findingId));
+      const detail = idx < 0 ? null : $(`#report-body [data-finding-detail="${idx}"]`);
+      if (!detail) {
+        if (options.persist !== false) saveReportState({ view: 'findings', detail_id: '' });
+        return;
+      }
+      const show = detail.hidden;
+      detail.hidden = !show;
+      if (options.persist !== false) {
+        saveReportState({ view: 'findings', detail_id: show ? String(findingId) : '' });
+      }
+    }
+
+    // v3.82 U3b: 제네릭 목록 — id/유형/심각도/상태/자산/요약/최근 발견.
+    function renderFindings(payload) {
+      const rows = currentReportItems.map((item, idx) => `
+          <tr class="finding-row" data-finding-idx="${idx}">
+            <td class="nowrap">${escapeHtml(item.id)}</td>
+            <td class="nowrap">${escapeHtml(item.task_type || '-')}</td>
+            <td class="nowrap severity-${escapeHtml(item.severity)}"><strong>${escapeHtml(severityLabel(item.severity))}</strong></td>
+            <td class="nowrap">${escapeHtml(findingStatusLabel(item.status))}</td>
+            <td title="${escapeHtml(item.asset || '')}"><code>${escapeHtml(truncateText(item.asset, 64))}</code></td>
+            <td>${escapeHtml(truncateText(item.summary, 140))}</td>
+            <td class="nowrap">${escapeHtml(fmtEpoch(item.last_seen) || '-')}</td>
+          </tr>
+          <tr class="finding-detail-row" data-finding-detail="${idx}" hidden>
+            <td colspan="7">${renderFindingDetail(item)}</td>
+          </tr>`).join('')
+        || '<tr><td colspan="7" class="muted">조건에 맞는 발견사항이 없습니다.</td></tr>';
+      $('#report-body').innerHTML = `
+        ${renderStatusFilter(payload)}
+        <table class="report-table finding-table">
+          <thead><tr>
+            <th>ID</th><th>유형</th><th>심각도</th><th>상태</th><th>자산</th><th>요약</th><th>최근 발견</th>
+          </tr></thead>
+          <tbody id="findings-tbody">${rows}</tbody>
+        </table>
+        <div class="report-hint muted">행을 클릭하면 상세가 펼쳐집니다. (읽기 전용 — 편집은 추후 제공)</div>
+      `;
+      const sel = $('#findings-status-filter');
+      if (sel) {
+        sel.addEventListener('change', () => {
+          findingStatusFilter = sel.value || 'all';
+          loadFindingReport({ detailId: '' });
+        });
+      }
+    }
+
+    function refreshActiveReport() {
+      const state = savedReportState();
+      loadFindingReport({ detailId: state && state.detail_id });
+    }
+
+    function agentLabel(agent) {
+      return agent?.label || `agent #${agent?.id || '-'}`;
+    }
+
+    // v3.82 U5: agent_type 선택지 — GET /api/chat/sessions 응답의 agent_types 로 채움.
+    function renderAgentTypeOptions() {
+      const sel = $('#agent-agent_type');
+      if (!sel) return;
+      const prev = sel.value || 'agent';
+      sel.innerHTML = knownAgentTypes.map(h =>
+        `<option value="${escapeHtml(h)}"${h === prev ? ' selected' : ''}>${escapeHtml(h)}</option>`).join('');
+      if (!knownAgentTypes.includes(prev) && knownAgentTypes.includes('agent')) sel.value = 'agent';
+    }
+
+    function parseSkillsInput(raw) {
+      return String(raw || '').split(/[\s,]+/).map(s => s.trim()).filter(Boolean);
+    }
+
+    async function loadAgents(selectLatest = false) {
+      const data = await fetchJson(api('/api/chat/sessions', {
+        include_archived: showArchived ? 'true' : 'false',
+        limit: 100
+      }));
+      if (Array.isArray(data.agent_types) && data.agent_types.length) {
+        knownAgentTypes = data.agent_types;
+        renderAgentTypeOptions();
+      }
+      const list = $('#agent-list');
+      list.innerHTML = '';
+      if (!data.items.length) {
+        list.innerHTML = '<div class="empty-state">아직 active agent가 없습니다.</div>';
+      }
+      data.items.forEach(agent => {
+        const archived = (agent.status || 'active') === 'archived';
+        const row = document.createElement('div');
+        row.className = `agent-row ${agent.id === currentSessionId ? 'active' : ''}${archived ? ' archived' : ''}`;
+        const main = document.createElement('button');
+        main.type = 'button';
+        main.className = 'agent-row-main';
+        const skills = (agent.settings && agent.settings.skills) || [];
+        const skillChip = skills.length
+          ? `<small class="skill-chip" title="${escapeHtml(skills.join(', '))}">🧩 ${escapeHtml(truncateText(skills.join(', '), 30))}</small>`
+          : '';
+        main.innerHTML = `
+          <strong>${escapeHtml(agentLabel(agent))}</strong>
+          <small>#${agent.id} · ${escapeHtml(agent.agent_type || 'agent')} · messages ${agent.message_count || 0}${archived ? ' · 보관됨' : ''}</small>
+          ${skillChip}
+          <small>${escapeHtml(agent.updated_at || agent.started_at || '')}</small>
+        `;
+        main.addEventListener('click', () => openAgent(agent));
+        main.addEventListener('dblclick', (ev) => { ev.preventDefault(); renameSession(agent); });
+        const rename = document.createElement('button');
+        rename.type = 'button';
+        rename.className = 'agent-row-archive agent-row-rename';
+        rename.title = '라벨 변경 (더블클릭도 가능)';
+        rename.textContent = '✎';
+        rename.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          renameSession(agent);
+        });
+        row.appendChild(main);
+        row.appendChild(rename);
+        if (archived) {
+          const restore = document.createElement('button');
+          restore.type = 'button';
+          restore.className = 'agent-row-archive agent-row-restore';
+          restore.title = '보관 해제 — active 로 복원';
+          restore.textContent = '복원';
+          restore.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            restoreSession(agent);
+          });
+          row.appendChild(restore);
+        } else {
+          const archive = document.createElement('button');
+          archive.type = 'button';
+          archive.className = 'agent-row-archive';
+          archive.title = '세션 종료 (archive — 기록은 유지)';
+          archive.textContent = '×';
+          archive.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            archiveSession(agent);
+          });
+          row.appendChild(archive);
+        }
+        list.appendChild(row);
+      });
+      if (selectLatest && data.items.length && !currentSessionId) {
+        await openAgent(data.items[0]);
+      }
+      return data.items;
+    }
+
+    // v3.82 U5: 세션 rename — ✎/더블클릭 → prompt → PATCH label.
+    async function renameSession(agent) {
+      if (!agent || agent.id == null) return;
+      const sid = Number(agent.id);
+      const next = prompt('세션 라벨 변경', agent.label || agentLabel(agent));
+      if (next == null) return;
+      const label = next.trim();
+      if (!label) return;
+      await fetchJson(api(`/api/chat/sessions/${sid}`), {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ label })
+      });
+      if (sid === currentSessionId) $('#current-agent-title').textContent = label;
+      await loadAgents();
+    }
+
+    // v3.82 U5: 보관된 세션 복원 — PATCH status:"active".
+    async function restoreSession(agent) {
+      if (!agent || agent.id == null) return;
+      const sid = Number(agent.id);
+      await fetchJson(api(`/api/chat/sessions/${sid}`), {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ status: 'active' })
+      });
+      await loadAgents();
+    }
+
+    async function createAgent(label) {
+      // v3.82 U5: 생성폼 — agent_type 선택 + 라벨 + per-session skills.
+      const agent_type = ($('#agent-agent_type') && $('#agent-agent_type').value) || 'agent';
+      const skills = parseSkillsInput($('#agent-skills') ? $('#agent-skills').value : '');
+      const payload = {
+        agent_type,
+        label: label || $('#agent-label').value.trim() || 'Autonomous agent'
+      };
+      if (skills.length) payload.skills = skills;
+      let data;
+      try {
+        data = await fetchJson(api('/api/chat/sessions'), {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (e) {
+        // 400 — 서버 detail (예: 미존재 skill 이름) 그대로 노출.
+        addMessage('error', `세션 생성 실패: ${e.detail || e.message || e}`);
+        throw e;
+      }
+      $('#agent-label').value = '';
+      if ($('#agent-skills')) $('#agent-skills').value = '';
+      await loadAgents();
+      await openAgent(data.session);
+      return data.session;
+    }
+
+    async function ensureAgent() {
+      if (currentSessionId) return currentAgent;
+      const items = await loadAgents(true);
+      if (currentSessionId) return currentAgent;
+      if (items.length) return items[0];
+      return createAgent('Autonomous agent');
+    }
+
+    async function openAgent(agent) {
+      // findings 리포트가 열려 있으면 닫고 채팅 화면으로 전환 (agent 클릭 = 채팅 보기).
+      $('#report-modal').hidden = true;
+      currentAgent = agent;
+      currentSessionId = Number(agent.id);
+      currentAgentType = agent.agent_type || 'agent';
+      $('#current-agent-title').textContent = agentLabel(agent);
+      $('#current-agent-subtitle').textContent = `session #${agent.id} · ${currentAgentType} · domain-agnostic autonomous operator`;
+      refreshChatChrome();
+      setQueueState('ready');
+      setTurnState('idle');
+      $$('.agent-row').forEach(row => row.classList.remove('active'));
+      await loadHistory();
+      connectChat();
+      await loadAgents();
+      $('#chat-input').focus();
+    }
+
+    async function archiveSession(agent) {
+      if (!agent || agent.id == null) return;
+      const sid = Number(agent.id);
+      const label = agentLabel(agent);
+      if (!confirm(`${label} 종료? 채팅 기록은 유지되고 active 목록에서만 빠집니다.`)) return;
+      const isCurrent = sid === currentSessionId;
+      if (isCurrent && ws) {
+        // 사용자가 명시적으로 세션을 종료 — 자동 재연결 금지.
+        closeWs({ intentional: true });
+      }
+      await fetchJson(api(`/api/chat/sessions/${sid}`), {method: 'DELETE'});
+      if (isCurrent) {
+        currentSessionId = null;
+        currentAgent = null;
+        $('#current-agent-title').textContent = 'Agent를 생성하거나 여세요';
+        $('#current-agent-subtitle').textContent = 'Agent는 특정 도메인에 묶이지 않습니다. 세션에서 지시하면 필요한 탐색, 정리, 추가 분석을 이어갑니다.';
+        refreshChatChrome();
+        setQueueState('ready');
+        setTurnState('idle');
+        clearChat();
+        $('#chat-log').innerHTML = '<div class="empty-state">세션이 종료됐습니다. 기록은 유지됩니다. 왼쪽에서 다른 세션을 열거나 새 세션을 만드세요.</div>';
+      }
+      await loadAgents(isCurrent);
+    }
+
+    async function deleteCurrentSession() {
+      if (!currentSessionId) return;
+      await archiveSession(currentAgent || {id: currentSessionId});
+    }
+
+    async function startNewChat() {
+      const session = await createAgent('Autonomous agent');
+      setStatus(`ChatSessionReset: new agent session #${session.id}`);
+    }
+
+    async function loadHistory() {
+      if (!currentSessionId) return;
+      clearChat();
+      const data = await fetchJson(api('/api/chat/history', {
+        agent_type: currentAgentType || 'agent',
+        session_id: currentSessionId,
+        limit: 150
+      }));
+      if (!data.messages.length) {
+        $('#chat-log').innerHTML = '<div class="empty-state">이 agent에는 아직 대화가 없습니다.</div>';
+        return;
+      }
+      data.messages.forEach(m => {
+        const text = m.content?.text || JSON.stringify(m.content || {});
+        if (m.role === 'tool_event') {
+          renderHistoryToolEvent(m.content || {});
+        } else {
+          if (m.role === 'user') resetOperationGroup('history');
+          const node = addMessage(m.role === 'assistant' ? 'assistant' : m.role === 'user' ? 'user' : 'system', text);
+          if (m.role === 'assistant') {
+            finalizeAssistantMessage(node);  // 히스토리는 완성본 — 바로 마크다운 렌더
+            resetOperationGroup('history');
+          }
+        }
+      });
+    }
+
+    function renderHistoryToolEvent(content) {
+      if (content.event === 'ToolCallStarted') {
+        if (content.name === 'todo') {
+          upsertTodoRunning({
+            id: content.id,
+            name: content.name,
+            input: content.input || {}
+          }, { history: true });
+          return;
+        }
+        if (!shouldDisplayToolEvent(content.name)) return;
+        createToolStep({
+          id: content.id,
+          name: content.name,
+          input: content.input || {}
+        }, { history: true });
+        return;
+      }
+      if (content.event === 'ToolCallCompleted') {
+        if (content.name === 'todo') {
+          const handled = updateTodoSnapshotFromResult({
+            name: content.name,
+            ok: content.ok,
+            result: content.result
+          }, { history: true });
+          if (!handled) {
+            const step = upsertTodoRunning({ name: 'todo', input: {} }, { history: true });
+            updateStep(step, 'todo', { ok: content.ok, result: content.result }, {
+              status: content.ok ? 'ok' : 'error',
+              error: !content.ok
+            });
+          }
+          return;
+        }
+        const step = content.id ? toolSteps.get(content.id) : null;
+        const resultPayload = {
+          input: step?.pre?.textContent ? safeJsonParse(step.pre.textContent) : undefined,
+          ok: content.ok,
+          result: content.result
+        };
+        if (step) {
+          updateStep(step, `tool · ${content.name || 'unknown'}`, resultPayload, {
+            status: content.ok ? 'ok' : 'error',
+            error: !content.ok
+          });
+        } else {
+          addLoopOperation(`tool · ${content.name || 'unknown'}`, resultPayload, {
+            kind: 'tool',
+            badge: 'tool',
+            status: content.ok ? 'ok' : 'error',
+            error: !content.ok,
+            history: true
+          });
+        }
+        return;
+      }
+      if (GOAL_BANNER_EVENTS.includes(content.event)) {
+        renderGoalBanner(content.event, content);
+        return;
+      }
+      addLoopOperation(content.event || 'tool event', content, {
+        kind: 'event',
+        badge: 'event',
+        history: true
+      });
+    }
+
+    // v3.82 U5: WS 종료 헬퍼 — intentional 이면 자동 재연결을 막는다.
+    function closeWs(options = {}) {
+      if (!ws) return;
+      if (options.intentional) ws._intentionalClose = true;
+      try { ws.close(); } catch (_) { /* 이미 닫힘 */ }
+      ws = null;
+    }
+
+    // v3.82 U5: 예기치 못한 WS 종료 — 지수 backoff 자동 재연결 (1s→2s→…→30s).
+    function scheduleWsReconnect() {
+      if (!currentSessionId || wsReconnectTimer) return;
+      const delay = wsReconnectDelayMs;
+      wsReconnectDelayMs = Math.min(wsReconnectDelayMs * 2, WS_RECONNECT_MAX_MS);
+      setWsState(`재연결 중… ${Math.round(delay / 1000)}s`, 'warn');
+      wsReconnectTimer = setTimeout(() => {
+        wsReconnectTimer = null;
+        connectChat();
+      }, delay);
+    }
+
+    function connectChat() {
+      if (!currentSessionId) return;
+      if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
+      closeWs({ intentional: true });  // 교체 — 이전 소켓의 close 로 재연결하지 않음
+      const scheme = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const u = new URL(`${scheme}//${location.host}/ws/chat`);
+      u.searchParams.set('agent_type', currentAgentType || 'agent');
+      u.searchParams.set('session_id', currentSessionId);
+      // v3.82 U5: 승인 모드 — routes/chat.py ws_chat 가 ?approval_mode= 를 읽음.
+      u.searchParams.set('approval_mode', approvalMode());
+      // v3.79 ② 보안: 토큰을 URL(access log 유출) 대신 subprotocol 로 전달
+      const tokenProto = 'th-token.' + btoa(token)
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      const sock = new WebSocket(u, [tokenProto]);
+      ws = sock;
+      sock.addEventListener('open', () => {
+        wsReconnectDelayMs = 1000;  // backoff 리셋
+        setWsState('connected', 'ok');
+      });
+      sock.addEventListener('close', () => {
+        if (sock._intentionalClose) return;
+        setWsState('disconnected', 'bad');
+        scheduleWsReconnect();
+      });
+      sock.addEventListener('error', () => setWsState('error', 'bad'));
+      sock.addEventListener('message', ev => {
+        try {
+          handleWsEvent(JSON.parse(ev.data));
+        } catch (e) {
+          addMessage('error', String(e));
+        }
+      });
+    }
+
+    function normalizeEventName(name) {
+      return ({
+        turn_started: 'TurnStarted',
+        text_chunk: 'TextChunk',
+        text_delta: 'TextChunk',
+        reasoning_chunk: 'ReasoningChunk',
+        reasoning_delta: 'ReasoningChunk',
+        StreamReasoningDelta: 'ReasoningChunk',
+        tool_call_started: 'ToolCallStarted',
+        tool_call_completed: 'ToolCallCompleted',
+        loop_completed: 'LoopCompleted',
+        loop_error: 'LoopError'
+      })[name] || name;
+    }
+
+    function handleWsEvent(payload) {
+      const event = normalizeEventName(payload.event || payload.type);
+      if (event === 'TurnStarted') {
+        resetOperationGroup();
+        activeAssistantNode = null;
+        setTurnState(`turn ${payload.turn || ''}`.trim());
+      } else if (event === 'UserMessage') {
+        resetOperationGroup();
+        addMessage('user', payload.text || '');
+        activeAssistantNode = null;
+        setTurnState('running');
+        setQueueState('ready');
+      } else if (event === 'ReasoningChunk') {
+        startReasoningChunk(payload.text || '');
+      } else if (event === 'TextChunk') {
+        activeReasoningStep = null;
+        if (!activeAssistantNode) activeAssistantNode = addMessage('assistant', '');
+        activeAssistantNode.textContent += payload.text || '';
+        scrollChatToBottom();
+      } else if (event === 'TokenMeter') {
+        setTokenMeter(payload);
+      } else if (event === 'ToolCallStarted') {
+        activeReasoningStep = null;
+        // v3.79 ② U2: "지금 뭘 점검 중인지" — 서버 정규화 target 표시
+        setTurnState(`tool:${payload.name || 'running'}${payload.target ? ' @ ' + payload.target : ''}`);
+        if (payload.name === 'todo') {
+          upsertTodoRunning(payload);
+        } else if (shouldDisplayToolEvent(payload.name)) {
+          createToolStep(payload);
+        }
+      } else if (event === 'ToolCallCompleted') {
+        activeReasoningStep = null;
+        setTurnState('running');
+        if (payload.name === 'todo') {
+          const handled = updateTodoSnapshotFromResult(payload);
+          if (!handled) {
+            const step = upsertTodoRunning(payload);
+            updateStep(step, 'todo', { ok: payload.ok, result: payload.result }, {
+              status: payload.ok ? 'ok' : 'error',
+              error: !payload.ok
+            });
+          }
+          return;
+        }
+        const step = payload.id ? toolSteps.get(payload.id) : null;
+        const resultPayload = {
+          input: step?.pre?.textContent ? safeJsonParse(step.pre.textContent) : undefined,
+          ok: payload.ok,
+          result: payload.result
+        };
+        if (step) {
+          const doneTarget = step._target ? ` @ ${step._target}` : '';
+          updateStep(step, `tool · ${payload.name || 'unknown'}${doneTarget}`, resultPayload, {
+            status: payload.ok ? 'ok' : 'error',
+            error: !payload.ok
+          });
+        } else {
+          addLoopOperation(`tool · ${payload.name || 'unknown'}`, resultPayload, {
+            kind: 'tool',
+            badge: 'tool',
+            status: payload.ok ? 'ok' : 'error',
+            error: !payload.ok
+          });
+        }
+        updateTodoSnapshotFromResult(payload);
+      } else if (event === 'LoopCompleted') {
+        toolSteps.forEach(s => { if (s && s.timerId) stopOpTimer(s, '✓'); });
+        finalizeAssistantMessage(activeAssistantNode);  // turn 종료 — 마크다운 재렌더
+        activeAssistantNode = null;
+        resetOperationGroup();
+        setTurnState(payload.reason ? `idle · ${payload.reason}` : 'idle');
+        setQueueState('ready');
+        loadAgents();
+      } else if (event === 'LoopError') {
+        toolSteps.forEach(s => { if (s && s.timerId) stopOpTimer(s, '✗'); });
+        addMessage('error', payload.message || 'LoopError');
+        finalizeAssistantMessage(activeAssistantNode);
+        activeAssistantNode = null;
+        resetOperationGroup();
+        setTurnState('error');
+      } else if (event === 'ApprovalRequested') {
+        activeReasoningStep = null;
+        setTurnState('approval');
+        renderApprovalRequest(payload);
+      } else if (event === 'ApprovalResolved') {
+        setTurnState('running');
+        markApprovalResolved(payload);
+      } else if (event === 'TurnInputQueued') {
+        setQueueState(`queued ${payload.queue_depth || 1}`);
+        addMessage('system', `입력 대기열에 추가됨: ${payload.text}`);
+      } else if (event === 'TurnRevisionAccepted') {
+        setQueueState('revision');
+        addMessage('system', `현재 작업을 새 입력으로 다시 시작: ${payload.text}`);
+      } else if (event === 'SystemNote') {
+        addMessage('system', payload.text || 'SystemNote');
+      } else if (event === 'ChatSessionReset') {
+        currentSessionId = Number(payload.session_id);
+        refreshChatChrome();
+        setQueueState('ready');
+        setTurnState('idle');
+        const tm = $('#chat-token-meter');
+        if (tm) tm.textContent = '—';
+        addMessage('system', `ChatSessionReset: #${currentSessionId}`);
+        loadAgents();
+      } else if (event === 'GoalChecklistUpdated') {
+        updateTodoSnapshotFromResult(payload);
+      } else if (GOAL_BANNER_EVENTS.includes(event)) {
+        // GoalDecomposed / GoalPaused / GoalDone / GoalContinuation — 1급 배너
+        renderGoalBanner(event, payload);
+      } else if (event === 'ScheduleFireStarted' || event === 'ScheduleFireFinished' || event === 'ScheduleFireQueued') {
+        addMessage('system', `${event}: schedule #${payload.schedule_id}`);
+      } else if (event === 'BgTaskCompleted') {
+        activeReasoningStep = null;
+        renderBgCompletionBanner(payload);
+      } else if (typeof event === 'string' && event.endsWith('Measured')) {
+        // v3.66: 순수 백엔드 계측 이벤트(LlmCallMeasured 등 *Measured) — display 아님.
+        // 구버전/미래 백엔드가 흘려보내도 미지-이벤트 fallback 이 잡동사니 박스를
+        // 그리지 않도록 명시적으로 무시.
+        return;
+      } else {
+        addLoopOperation(event || 'event', payload, {
+          kind: 'event',
+          badge: 'event'
+        });
+      }
+    }
+
+    function safeJsonParse(text) {
+      try {
+        return JSON.parse(text);
+      } catch (_) {
+        return text;
+      }
+    }
+
+    async function sendUserText(text) {
+      const value = (text || $('#chat-input').value || '').trim();
+      if (!value) return;
+      await ensureAgent();
+      if (!isWsOpen()) connectChat();
+      setTurnState('sending');
+      const send = () => ws.send(JSON.stringify({ text: value }));
+      if (isWsOpen()) send();
+      else ws.addEventListener('open', send, { once: true });
+      $('#chat-input').value = '';
+      $('#chat-input').focus();
+    }
+
+    function sendApprovalDecision(approvalId, decision) {
+      if (!isWsOpen()) return;
+      ws.send(JSON.stringify({
+        action: 'approval',
+        approval_id: approvalId,
+        decision,
+        reason: `operator ${decision} from web ui`
+      }));
+    }
+
+    function renderApprovalRequest(payload) {
+      removeEmptyState();
+      const card = document.createElement('div');
+      card.className = 'approval-card';
+      card.dataset.approvalId = payload.approval_id || '';
+      card.innerHTML = `
+        <strong>ApprovalRequested · ${escapeHtml(payload.tool_name)}</strong>
+        <pre>${escapeHtml(JSON.stringify(payload.tool_input || {}, null, 2))}</pre>
+        <div class="muted">${escapeHtml(payload.reason || '')}</div>
+        <div class="status" data-approval-status>waiting for operator decision</div>
+        <div class="actions">
+          <button class="primary">Allow</button>
+          <button class="danger">Deny</button>
+        </div>
+      `;
+      const [allow, deny] = $$('button', card);
+      allow.addEventListener('click', () => sendApprovalDecision(payload.approval_id, 'allow'));
+      deny.addEventListener('click', () => sendApprovalDecision(payload.approval_id, 'deny'));
+      $('#chat-log').appendChild(card);
+      if (payload.approval_id) approvalCards.set(payload.approval_id, card);
+    }
+
+    function markApprovalResolved(payload) {
+      const card = approvalCards.get(payload.approval_id);
+      if (!card) return;
+      const status = $('[data-approval-status]', card);
+      if (status) status.textContent = `resolved: ${payload.decision || 'done'}`;
+      $$('button', card).forEach(btn => btn.disabled = true);
+    }
+
+    function renderBgCompletionBanner(payload) {
+      removeEmptyState();
+      const node = document.createElement('div');
+      node.className = 'banner';
+      node.innerHTML = `
+        <strong>BgTaskCompleted · exit ${escapeHtml(payload.exit_code)}</strong>
+        <code>${escapeHtml(payload.command || '')}</code>
+        <pre>${escapeHtml(payload.output_tail || '')}</pre>
+        <div class="banner-actions">
+          <button data-bg-continue>Continue</button>
+          <button data-bg-dismiss>Dismiss</button>
+        </div>
+      `;
+      $('[data-bg-continue]', node).addEventListener('click', () => {
+        sendUserText(`background process 완료 결과를 이어서 분석해줘: ${payload.output_path || payload.command || ''}`);
+        node.remove();
+      });
+      $('[data-bg-dismiss]', node).addEventListener('click', () => node.remove());
+      $('#chat-log').appendChild(node);
+    }
+
+    // v3.82 U5: Goal 라이프사이클 1급 배너 — generic event box 대신 상태 배너.
+    const GOAL_BANNER_EVENTS = ['GoalDecomposed', 'GoalPaused', 'GoalDone', 'GoalContinuation'];
+
+    function renderGoalBanner(event, payload) {
+      removeEmptyState();
+      const tone = event === 'GoalPaused' ? 'paused'
+        : event === 'GoalDone' ? 'done'
+        : 'decomposed';  // GoalDecomposed/GoalContinuation = 파랑(정보)
+      const titles = {
+        GoalDecomposed: '목표 분해됨',
+        GoalPaused: '목표 일시정지',
+        GoalDone: '목표 완료',
+        GoalContinuation: '목표 이어서 진행'
+      };
+      const meta = event === 'GoalDecomposed' && payload.item_count != null
+        ? `체크리스트 ${payload.item_count}개 항목`
+        : (payload.reason || '');
+      const node = document.createElement('div');
+      node.className = `goal-banner goal-${tone}`;
+      node.innerHTML = `
+        <strong>${escapeHtml(titles[event] || event)}</strong>
+        <p>${escapeHtml(payload.goal_text || '')}</p>
+        ${meta ? `<small>${escapeHtml(meta)}</small>` : ''}
+      `;
+      if (event === 'GoalPaused') {
+        const actions = document.createElement('div');
+        actions.className = 'banner-actions';
+        const resume = document.createElement('button');
+        resume.type = 'button';
+        resume.className = 'primary';
+        resume.textContent = '이어서 진행';
+        resume.addEventListener('click', () => {
+          sendUserText('이어서 진행');
+          resume.disabled = true;
+        });
+        actions.appendChild(resume);
+        node.appendChild(actions);
+      }
+      $('#chat-log').appendChild(node);
+      scrollChatToBottom();
+    }
+
+    // v3.82 U5: 프로필 칩 — GET /api/profile (401/오류 시 '프로필 ?').
+    async function loadProfileChip() {
+      const el = $('#profile-chip');
+      if (!el) return;
+      try {
+        const p = await fetchJson(api('/api/profile'));
+        const parts = [p.profile || '?', p.model || '?'];
+        if (p.reasoning_effort) parts.push(p.reasoning_effort);
+        el.textContent = parts.join(' · ');
+        el.title = p.transport ? `transport: ${p.transport}` : '활성 LLM 프로파일';
+      } catch (_) {
+        el.textContent = '프로필 ?';
+      }
+    }
+
+    function bindEvents() {
+      $('#agent-create').addEventListener('click', () => createAgent().catch(() => {}));
+      $('#agent-refresh').addEventListener('click', () => loadAgents());
+      // v3.82 U5: 보관 포함 토글 — include_archived=true 재조회.
+      $('#show-archived').addEventListener('change', () => {
+        showArchived = $('#show-archived').checked;
+        loadAgents();
+      });
+      // v3.82 U5: 승인 모드 — localStorage 저장, 다음 WS 연결부터 적용.
+      $('#approval-mode').addEventListener('change', () => {
+        const mode = $('#approval-mode').value;
+        localStorage.setItem(APPROVAL_MODE_KEY, mode);
+        if (isWsOpen()) {
+          connectChat();  // 재연결로 즉시 적용
+          addMessage('system', `승인 모드 변경: ${mode} (재연결 적용)`);
+        }
+      });
+      $('#findings-open').addEventListener('click', () => loadFindingReport());
+      $('#report-refresh').addEventListener('click', refreshActiveReport);
+      $('#report-close').addEventListener('click', closeFindingReport);
+      // v3.82 U3b: 목록 행 클릭 → 인라인 상세 토글 (이벤트 위임).
+      $('#report-body').addEventListener('click', (ev) => {
+        const row = ev.target.closest('.finding-row');
+        if (!row) return;
+        const item = currentReportItems[Number(row.dataset.findingIdx)];
+        if (item) toggleFindingDetail(item.id);
+      });
+      $('#session-delete').addEventListener('click', deleteCurrentSession);
+      $('#chat-new').addEventListener('click', () => startNewChat().catch(() => {}));
+      $('#chat-compact').addEventListener('click', () => sendUserText('/compact'));
+      $('#chat-cancel').addEventListener('click', () => cancelActiveTurn('button'));
+      $('#chat-reconnect').addEventListener('click', () => {
+        wsReconnectDelayMs = 1000;  // 수동 재연결 — backoff 리셋
+        connectChat();
+      });
+      $('#chat-new-inline').addEventListener('click', () => startNewChat().catch(() => {}));
+      $('#chat-compact-inline').addEventListener('click', () => sendUserText('/compact'));
+      $('#chat-cancel-inline').addEventListener('click', () => cancelActiveTurn('button'));
+      $('#chat-reset-input').addEventListener('click', () => $('#chat-input').value = '');
+      $('#chat-input').addEventListener('keydown', ev => {
+        if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
+          ev.preventDefault();
+          sendUserText();
+        }
+      });
+      document.addEventListener('keydown', ev => {
+        if (ev.key !== 'Escape') return;
+        if (!$('#report-modal').hidden) {
+          ev.preventDefault();
+          closeFindingReport();
+          return;
+        }
+        const target = ev.target;
+        if (target && target.closest && target.closest('select, option')) return;
+        ev.preventDefault();
+        cancelActiveTurn('escape');
+      });
+      $('#composer').addEventListener('submit', ev => {
+        ev.preventDefault();
+        sendUserText();
+      });
+    }
+
+    async function boot() {
+      bindEvents();
+      $('#approval-mode').value = approvalMode();  // localStorage 복원
+      await Promise.allSettled([
+        loadAgents(true),
+        loadProfileChip()
+      ]);
+      const reportState = savedReportState();
+      if (reportState) {
+        await loadFindingReport({ detailId: reportState.detail_id });
+      }
+    }
+
+    window.openAgent = openAgent;
+    window.startNewChat = startNewChat;
+    window.deleteCurrentSession = deleteCurrentSession;
+    window.sendApprovalDecision = sendApprovalDecision;
+    window.renderBgCompletionBanner = renderBgCompletionBanner;
+    window.sendUserText = sendUserText;
+    window.upsertTodoPanel = upsertTodoPanel;
+    window.updateTodoSnapshotFromResult = updateTodoSnapshotFromResult;
+    window.loadFindingReport = loadFindingReport;
+    window.closeFindingReport = closeFindingReport;
+    window.renderMarkdown = renderMarkdown;
+    window.renderGoalBanner = renderGoalBanner;
+
+    boot().catch(e => addMessage('error', e.stack || String(e)));
+  </script>
+</body>
+</html>

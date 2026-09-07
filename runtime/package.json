@@ -1,0 +1,48 @@
+{
+  "name": "long-horizon-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.20.0 <25"
+  },
+  "scripts": {
+    "bundle:offline": "node dist/presentation/agent-cli.js lifecycle bundle",
+    "build": "tsc -p tsconfig.json && node scripts/record-build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck:core": "tsc -p tsconfig.core.json",
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "fixtures": "node dist/presentation/fixtures.js",
+    "evaluate": "node dist/presentation/evaluate.js",
+    "compare:disclosure": "node dist/presentation/disclosure.js",
+    "check:architecture": "node scripts/check-architecture.mjs",
+    "verify:computer-web": "npm run build && node --test dist/tests/local-web-computer.browser.js",
+    "computer:fixture": "npm run build && node dist/presentation/local-web-computer.js",
+    "verify": "npm test && npm run typecheck:core && npm run check:architecture && npm run fixtures"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.0.0",
+    "ajv": "8.20.0",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
+    "@types/node": "24.13.3",
+    "typescript": "6.0.3"
+  },
+  "bin": {
+    "secumon-agent": "dist/presentation/agent-cli.js"
+  },
+  "files": [
+    "dist/domain/",
+    "dist/application/",
+    "dist/infrastructure/",
+    "dist/presentation/",
+    "fixtures/*.json",
+    "src/presentation/web/index.html",
+    "src/presentation/web/styles.css",
+    "guidance/",
+    "examples/",
+    "native/windows-files/secumon_windows_files.node"
+  ]
+}

@@ -1,0 +1,1433 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enterprise Security Agent 기능/하네스 개선 분석 리포트</title>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --ink: #16212c;
+      --muted: #5f7080;
+      --line: #d8e1e8;
+      --soft: #eef5f8;
+      --soft2: #f8fbfc;
+      --blue: #1b6f8f;
+      --green: #3f7d35;
+      --amber: #a35f10;
+      --red: #9b2f35;
+      --purple: #6652a3;
+      --code: #263542;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.62 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    header {
+      background: #102532;
+      color: #fff;
+      padding: 42px 28px 34px;
+      border-bottom: 5px solid var(--blue);
+    }
+
+    header .inner,
+    main {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 23px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    p { margin: 8px 0; }
+
+    main { padding: 28px; }
+
+    section {
+      margin: 0 0 24px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px;
+    }
+
+    code,
+    .path {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--code);
+      background: #edf1f5;
+      border-radius: 4px;
+      padding: 1px 5px;
+      overflow-wrap: anywhere;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .subtitle {
+      max-width: 980px;
+      color: #cbd9e2;
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    header .small { color: #cbd9e2; }
+
+    .toc a {
+      display: inline-block;
+      margin: 4px 12px 4px 0;
+      font-weight: 650;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      background: var(--soft2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .card h3 { margin-top: 0; }
+
+    .metric {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .metric div {
+      border: 1px solid var(--line);
+      background: var(--soft2);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 22px;
+      color: var(--blue);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 10px 11px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #edf3f7;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) td { background: #fcfdfe; }
+
+    ul,
+    ol {
+      margin: 8px 0 0 22px;
+      padding: 0;
+    }
+
+    li { margin: 5px 0; }
+
+    .status {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 800;
+      color: #fff;
+      background: var(--blue);
+      margin-right: 6px;
+      white-space: nowrap;
+    }
+
+    .done { background: var(--green); }
+    .live { background: var(--blue); }
+    .partial { background: var(--amber); }
+    .open { background: var(--red); }
+    .deferred { background: var(--muted); }
+    .p0 { background: var(--red); }
+    .p1 { background: var(--amber); }
+    .p2 { background: var(--green); }
+    .p3 { background: var(--purple); }
+
+    .note {
+      border-left: 4px solid var(--blue);
+      background: var(--soft);
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin: 12px 0;
+    }
+
+    .note.good {
+      border-left-color: var(--green);
+      background: #eef7ec;
+    }
+
+    .note.warn {
+      border-left-color: var(--amber);
+      background: #fff5e6;
+    }
+
+    .note.risk {
+      border-left-color: var(--red);
+      background: #faeaec;
+    }
+
+    .flow {
+      border: 1px solid var(--line);
+      background: #fbfcfd;
+      border-radius: 8px;
+      padding: 14px;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: stretch;
+      gap: 10px;
+      min-width: 980px;
+      margin: 8px 0;
+    }
+
+    .node {
+      flex: 1;
+      min-width: 140px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 7px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .node strong {
+      display: block;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+
+    .arrow {
+      align-self: center;
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    pre.diagram {
+      background: #102532;
+      color: #dceaf2;
+      border-radius: 8px;
+      padding: 14px;
+      overflow-x: auto;
+      font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #fbfcfd;
+      margin: 10px 0;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    @media (max-width: 950px) {
+      .grid,
+      .grid.two,
+      .grid.four,
+      .metric {
+        grid-template-columns: 1fr;
+      }
+
+      main,
+      header {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      table { table-layout: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="inner">
+      <h1>Enterprise Security Agent 기능/하네스 개선 분석 리포트</h1>
+      <p class="subtitle">
+        Hermes Agent의 장기 실행 구조, Claude Code source snapshot의 도구 제어 패턴,
+        AI Secu Agent의 보안 도메인 contract layer를 구분해 정리한 문서다.
+        비교 대상의 장단점을 과장하지 않고, 실제 구현 근거가 있는 기능만 표시했다.
+      </p>
+      <p class="small">
+        최종 갱신: 2026-06-10 · 대상 프로젝트:
+        <code>/home/shaneee.baek/project/secu-agent</code>
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section class="toc">
+      <h2>목차</h2>
+      <a href="#executive">1. 현재 상태 요약</a>
+      <a href="#completion">2. 개선 완료 현황</a>
+      <a href="#architecture">3. 전체 아키텍처 흐름</a>
+      <a href="#features">4. 기능 단위 상세</a>
+      <a href="#harness">5. 하네스/검증 체계</a>
+      <a href="#flows">6. 주요 플로우 차트</a>
+      <a href="#comparison">7. Claude/Hermes 비교 반영</a>
+      <a href="#roadmap">8. 남은 개선 로드맵</a>
+      <a href="#open-issues">9. 열려 있는 운영 이슈</a>
+      <a href="#sources">10. 근거 파일</a>
+    </section>
+
+    <section id="executive">
+      <h2>1. 현재 상태 요약</h2>
+      <div class="note good">
+        초기 분석 당시의 가장 큰 갭이었던 승인 흐름, SQLite 운영 가드, LLM fallback, tool discovery/toolset,
+        checkpoint/rollback, finding lifecycle, scheduler history, browser evidence, report bundle은 대부분 구현 완료됐다.
+        지금 프로젝트는 단순 SMB 점검 도구가 아니라, 웹 UI/스케줄러/승인/보고서/검증 하네스를 가진 내부 기업 보안 agent 런타임으로 올라왔다.
+      </div>
+      <div class="note">
+        <strong>정확한 설계 설명:</strong>
+        이 프로젝트는 Hermes Agent의 long-running goal/session/scheduler 아이디어를 참고하고,
+        Claude Code source snapshot에서 tool metadata, deferred tool search, permission guardrail 패턴을 참고했다.
+        여기에 두 프로젝트와 별개로 evidence judgment, reporting contract, masking, domain scope 같은 보안 도메인 contract layer를 추가했다.
+        Hermes가 보안적으로 취약하다고 단정하기보다는, 범용 agent framework를 내부 보안 점검 제품에 맞게 좁히고 강화했다고 보는 편이 정확하다.
+      </div>
+
+      <div class="metric">
+        <div><strong>785</strong>이전 pytest 통과 기록</div>
+        <div><strong>192</strong>test_*.py 파일</div>
+        <div><strong>176</strong>src Python 파일</div>
+        <div><strong>1</strong>현재 doctor 실패</div>
+        <div><strong>103</strong>agent tool classes</div>
+      </div>
+
+      <h3>프로젝트 계보</h3>
+      <p>
+        Hermes Agent의 핵심 장점은 <code>/goal</code> 기반 persistent goal이다.
+        Hermes 문서에서는 이를 Ralph loop로 설명하며, 목표가 끝났는지 judge가 매 turn 확인하고
+        미완료면 같은 세션에 continuation을 다시 넣어 장시간 작업을 이어간다.
+        예약 실행은 로컬 Hermes 기준 <code>/schedule</code>이 아니라 <code>/cron</code> slash command와 <code>cronjob</code> tool이다.
+        AI Secu Agent는 같은 목적의 제품 기능을 <code>schedule</code> tool과 scheduler history로 구현했다.
+      </p>
+      <p>
+        Claude Code 쪽에서 참고한 부분은 “agent가 오래 도는 구조”보다 “도구를 언제 보여주고, 어떤 권한으로 실행하고,
+        위험한 호출을 어떻게 승인받는가”에 가깝다. 실제 source snapshot의 <code>Tool</code> interface에는
+        <code>shouldDefer</code>, <code>isReadOnly</code>, <code>isDestructive</code>, <code>isConcurrencySafe</code>,
+        <code>checkPermissions</code>, <code>maxResultSizeChars</code> 같은 실행 메타데이터가 있고,
+        <code>ToolSearch</code>가 deferred tool schema를 필요할 때만 열어주는 구조다.
+      </p>
+
+      <div class="grid four">
+        <div class="card">
+          <h3>현재 가장 강한 부분</h3>
+          <ul>
+            <li>SMB discovery/walk/review에 특화된 도메인 모델과 안전 정책</li>
+            <li>agent loop, tool registry, deferred tool, capability gate, tool_search</li>
+            <li>approval UI와 approval audit history</li>
+            <li>finding lifecycle, scheduler run history, report bundle</li>
+            <li>browser supervisor evidence capture와 web probe lifecycle 연결</li>
+            <li>pytest + scenario eval + runtime doctor 하네스</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Claude Code에서 반영된 패턴</h3>
+          <ul>
+            <li>deferred tool과 <code>tool_search</code> 기반 schema unlock</li>
+            <li>read-only/destructive/concurrency metadata</li>
+            <li>permission allow/deny/ask와 approval resolver</li>
+            <li>host edit 전 안전장치와 rollback 개념</li>
+            <li>plan mode와 operator 승인 중심의 작업 전환</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Hermes에서 반영된 패턴</h3>
+          <ul>
+            <li><code>/goal</code> persistent goal, Ralph loop continuation</li>
+            <li><code>/cron</code>/<code>cronjob</code> 기반 scheduled automation</li>
+            <li>toolset, <code>check_fn</code>, provider fallback 개념</li>
+            <li>LLM provider fallback chain</li>
+            <li>context engine과 long-running session 압축 방향</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>자체 보안 contract layer</h3>
+          <ul>
+            <li>evidence judgment로 finding 제출 전 증거 품질 검증</li>
+            <li>secret/PII masking과 raw secret persistence 차단</li>
+            <li>web allowed domain/CIDR, same-origin, URL safety</li>
+            <li>heuristic result를 후보와 confirmed evidence로 분리</li>
+            <li>finding lifecycle, owner/ticket/SLA/report bundle 연결</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>한 줄 결론</h3>
+      <p>
+        지금부터의 우선순위는 “핵심 런타임 보강”이 아니라
+        <strong>비-SMB 에이전트 품질, 실제 사내 delivery/ticket 연동, owner/risk scoring, Linux 내 배포 운영성</strong>이다.
+        MCP/plugin은 사내 특정 유저 환경에서는 필수 우선순위가 아니므로 보류해도 된다.
+      </p>
+    </section>
+
+    <section id="completion">
+      <h2>2. 개선 완료 현황</h2>
+      <p>
+        아래 표는 초기 개선 리스트를 최신 상태로 갱신한 것이다. `DONE`은 구현 및 테스트 완료,
+        `PARTIAL`은 기반은 있으나 사내 운영 품질까지는 추가 작업이 필요한 항목,
+        `DEFERRED`는 현재 사용자/운영 조건상 뒤로 미룬 항목이다.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>영역</th>
+            <th>상태</th>
+            <th>완료된 내용</th>
+            <th>주요 파일/검증</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>P0 Runtime Improvements</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              approval primitive/resolver, SQLite WAL/runtime guard/schema version,
+              LLM fallback chain, tool discovery/toolsets, host write/edit checkpoint/rollback.
+            </td>
+            <td>
+              <code>docs/plans/PLAN_p0_runtime_improvements.md</code>,
+              <code>tests/test_tool_invoker_approval.py</code>,
+              <code>tests/test_llm_provider_fallback.py</code>,
+              <code>tests/test_checkpoints.py</code>
+            </td>
+          </tr>
+          <tr>
+            <td>Multi-AgentType WebSocket Runtime</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              <code>agent_type=smb/github/jenkins/confluence/web</code> WebSocket runtime 연결.
+              SMB 고정 하드스톱 제거, agent_type별 prompt/registry 경로를 사용할 수 있게 정리.
+            </td>
+            <td><code>docs/plans/PLAN_multi_agent_type_websocket.md</code>, <code>tests/web/test_chat_ws.py</code></td>
+          </tr>
+          <tr>
+            <td>Approval WebSocket/UI</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              destructive tool이 승인을 요구하면 웹 채팅에 approval card를 띄우고,
+              사용자가 allow/deny를 보내면 agent turn이 이어지거나 fail-closed 처리된다.
+            </td>
+            <td><code>docs/plans/PLAN_approval_ws_ui.md</code>, <code>src/secu_agent/web/routes/chat.py</code></td>
+          </tr>
+          <tr>
+            <td>Approval Audit History</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              승인 요청/결정/actor/tool/input hash/updated hash를 DB에 저장하고,
+              token-protected API와 UI 탭에서 조회한다. 원본 tool input은 저장하지 않는다.
+            </td>
+            <td>
+              <code>docs/plans/PLAN_approval_audit_history.md</code>,
+              <code>src/secu_agent/web/services/approvals.py</code>,
+              <code>tests/web/test_approvals.py</code>
+            </td>
+          </tr>
+          <tr>
+            <td>Finding Lifecycle V1</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              finding fingerprint dedup, status, owner, ticket, SLA, evidence_ref, seen_count를 관리한다.
+              <code>submit_finding</code>이 lifecycle row를 자동 upsert한다.
+            </td>
+            <td><code>docs/plans/PLAN_finding_lifecycle.md</code>, <code>tests/test_state_finding_lifecycle.py</code></td>
+          </tr>
+          <tr>
+            <td>Finding Lifecycle API/UI</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              Findings 탭, list/detail/update API, status/owner/ticket/SLA 수정 UI를 추가했다.
+            </td>
+            <td><code>docs/plans/PLAN_finding_lifecycle_api_ui.md</code>, <code>tests/web/test_findings.py</code></td>
+          </tr>
+          <tr>
+            <td>Context Engine V1</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              <code>off/stub/summary/hybrid</code> 정책, compression stats, ChatSession 통합.
+              GPT-OSS/o4-mini급 context window에서도 장시간 operator chat을 버티기 위한 내부 engine.
+            </td>
+            <td><code>docs/plans/PLAN_context_engine.md</code>, <code>tests/test_context_engine.py</code></td>
+          </tr>
+          <tr>
+            <td>Browser Supervisor V1</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              browser health, event ring, stale page detection, snapshot/html/screenshot capture,
+              local test URL safety mode.
+            </td>
+            <td><code>docs/plans/PLAN_browser_supervisor.md</code>, <code>tests/test_browser_tool.py</code></td>
+          </tr>
+          <tr>
+            <td>Browser Supervisor V2</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              request/response/requestfailed/console/pageerror event 수집,
+              network/console JSON evidence, screenshot hash diff metadata,
+              URL query secret redaction.
+            </td>
+            <td>
+              <code>docs/plans/PLAN_browser_supervisor_v2.md</code>,
+              <code>src/secu_agent/agent/tools/browser_tool.py</code>,
+              <code>tests/test_browser_tool.py</code>
+            </td>
+          </tr>
+          <tr>
+            <td>Linux Runtime Doctor</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              <code>secu-agent doctor --json</code>, Python/SQLite/WAL/results dir/WebSocket/Playwright/LLM profile/chat token check,
+              Linux bootstrap 문서와 스크립트.
+            </td>
+            <td><code>docs/plans/PLAN_linux_runtime_doctor.md</code>, <code>docs/linux_bootstrap.md</code></td>
+          </tr>
+          <tr>
+            <td>Scheduler Run History</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              schedule_fire history, internal report dry-run delivery audit, Scheduler API/UI,
+              run detail drawer와 delivery payload/hash 확인.
+            </td>
+            <td><code>docs/plans/PLAN_scheduler_run_history.md</code>, <code>tests/web/test_scheduler.py</code></td>
+          </tr>
+          <tr>
+            <td>Finding Report Bundle</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              finding lifecycle, evidence refs, approval audit, scheduler dry-run delivery를 JSON/HTML bundle로 묶는다.
+              Reports 탭에서 JSON/HTML 확인 가능.
+            </td>
+            <td>
+              <code>docs/plans/PLAN_finding_report_bundle.md</code>,
+              <code>src/secu_agent/web/services/reports.py</code>,
+              <code>tests/web/test_reports.py</code>
+            </td>
+          </tr>
+          <tr>
+            <td>Web Probe Evidence/Lifecycle</td>
+            <td><span class="status done">DONE</span></td>
+            <td>
+              <code>web_task_scan</code>이 crawl, semantic resource probe, vuln heuristic,
+              evidence judgment, follow-up URL 분리를 한 번에 수행한다.
+              <code>web_vuln_probe</code>는 raw heuristic을 confirmed/unconfirmed로 분리하고,
+              confirmed만 <code>finding_lifecycle</code>에 <code>evidence_ref</code>와 함께 자동 upsert한다.
+            </td>
+            <td><code>src/secu_agent/agent/tools/web_tools.py</code>, <code>tests/test_web_task_scan_tool.py</code>, <code>tests/test_url_safety.py</code></td>
+          </tr>
+          <tr>
+            <td>MCP/Plugin Runtime</td>
+            <td><span class="status deferred">DEFERRED</span></td>
+            <td>
+              사내 특정 유저 중심 환경에서는 현재 우선순위가 낮다.
+              외부 connector 수가 많아지고 팀 단위 배포가 필요해질 때 다시 잡는 것이 맞다.
+            </td>
+            <td>초기 분석상 P1이었지만 현재 운영 조건에서는 보류.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="architecture">
+      <h2>3. 전체 아키텍처 흐름</h2>
+      <p>
+        현재 구조는 “operator chat 중심의 agent runtime”과 “deterministic agent_type/tool layer”가 결합된 형태다.
+        LLM은 판단과 orchestration을 맡고, 실제 자산 접근/스캔/증적 저장은 도구와 state/evidence 계층이 맡는다.
+      </p>
+
+      <div class="flow">
+        <div class="flow-row">
+          <div class="node"><strong>Operator</strong>웹 UI 또는 CLI에서 점검 지시</div>
+          <div class="arrow">-&gt;</div>
+          <div class="node"><strong>Web/CLI Frontend</strong>FastAPI, WebSocket, argparse</div>
+          <div class="arrow">-&gt;</div>
+          <div class="node"><strong>ChatSession</strong>history, goal, context engine</div>
+          <div class="arrow">-&gt;</div>
+          <div class="node"><strong>Agent Engine</strong>LLM streaming, tool calls, compaction</div>
+          <div class="arrow">-&gt;</div>
+          <div class="node"><strong>Tool Invoker</strong>permission, approval, checkpoints</div>
+        </div>
+        <div class="flow-row">
+          <div class="node"><strong>Domain Tools</strong>SMB/Web/GitHub/Jenkins/Confluence</div>
+          <div class="arrow">-&gt;</div>
+          <div class="node"><strong>Evidence Dir</strong>finding.json, browser captures, web probes</div>
+          <div class="arrow">-&gt;</div>
+          <div class="node"><strong>SQLite State</strong>session, finding, approval, scheduler</div>
+          <div class="arrow">-&gt;</div>
+          <div class="node"><strong>Dashboard</strong>Findings, Approvals, Scheduler, Reports</div>
+          <div class="arrow">-&gt;</div>
+          <div class="node"><strong>Report Bundle</strong>JSON/HTML handoff</div>
+        </div>
+      </div>
+
+      <pre class="diagram">High-level sequence
+
+User request
+  -&gt; /ws/chat?agent_type=...
+  -&gt; ChatSession.run_turn()
+  -&gt; ContextEngine.maybe_compress()
+  -&gt; LLM provider/fallback chain
+  -&gt; tool_call blocks
+  -&gt; ToolInvoker
+       - permission check
+       - approval resolver if destructive
+       - checkpoint if host write/edit
+       - execute tool
+  -&gt; tool_result blocks
+  -&gt; submit_finding or scheduled report
+  -&gt; SQLite lifecycle/audit/history
+  -&gt; Dashboard and Report Bundle</pre>
+
+      <h3>주요 계층</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>계층</th>
+            <th>책임</th>
+            <th>대표 파일</th>
+            <th>현재 상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Presentation</td>
+            <td>Web UI, API routes, WebSocket chat, CLI command</td>
+            <td><code>web/routes/*</code>, <code>web/ui/index.html</code>, <code>cli.py</code></td>
+            <td><span class="status live">LIVE</span> 주요 운영 화면과 API 존재</td>
+          </tr>
+          <tr>
+            <td>Application/runtime</td>
+            <td>ChatSession, agent engine, context engine, scheduler tick, approval resolver</td>
+            <td><code>agent/chat_session.py</code>, <code>agent/engine.py</code>, <code>agent/context_engine.py</code></td>
+            <td><span class="status live">LIVE</span> 장시간 세션과 tool orchestration 가능</td>
+          </tr>
+          <tr>
+            <td>Tool/infrastructure</td>
+            <td>SMB/Web/browser/host/sandbox/LLM 외부 접점</td>
+            <td><code>agent/tools/*</code>, <code>agent_types/*</code>, <code>agent/llm/*</code></td>
+            <td><span class="status live">LIVE</span> SMB와 browser/web evidence 강화 완료</td>
+          </tr>
+          <tr>
+            <td>State/evidence</td>
+            <td>SQLite state, WAL/runtime guard, evidence file store</td>
+            <td><code>state.py</code>, <code>findings/</code>, <code>SA_RESULTS_DIR</code></td>
+            <td><span class="status live">LIVE</span> schema version <code>2026051703</code></td>
+          </tr>
+          <tr>
+            <td>Verification</td>
+            <td>pytest, scenario eval, doctor, UI smoke</td>
+            <td><code>tests/</code>, <code>agent/eval/*</code>, <code>runtime_doctor.py</code></td>
+            <td><span class="status live">LIVE</span> 이전 전체 회귀 기록 785 passed</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="features">
+      <h2>4. 기능 단위 상세 분석</h2>
+
+      <h3>4.1 Agent Loop / Chat Runtime</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>설명</th>
+            <th>완료된 개선</th>
+            <th>남은 작업</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Streaming engine</td>
+            <td>LLM streaming 응답에서 text/tool_call block을 해석하고, read-only tool은 batch 실행한다.</td>
+            <td><span class="status done">DONE</span> fallback provider와 context engine 통합</td>
+            <td>tool progress UI를 더 세밀하게 하고, token/cost metrics를 scheduler/report에도 노출.</td>
+          </tr>
+          <tr>
+            <td>ChatSession</td>
+            <td>웹/CLI operator turn의 history, persistent session, goal loop, context compression을 관리한다.</td>
+            <td><span class="status done">DONE</span> Context Engine V1, multi-agent_type WebSocket</td>
+            <td>agent_type별 long-running run metadata와 비용/성공률 dashboard.</td>
+          </tr>
+          <tr>
+            <td>Goal/Ralph loop</td>
+            <td>작업 목표와 checklist를 유지하고, agent가 스스로 진행 상태를 판단한다.</td>
+            <td><span class="status live">LIVE</span> DB-backed goal/checklist 존재</td>
+            <td>goal별 SLA, retry, operator intervention reason 기록.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.2 Tool System / Permission / Checkpoint</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>설명</th>
+            <th>완료된 개선</th>
+            <th>남은 작업</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tool registry</td>
+            <td>class 기반 Tool, domain, deferred, capability metadata. task type별 registry 구성.</td>
+            <td><span class="status done">DONE</span> tool discovery/toolset 기반 보강</td>
+            <td>완전한 plugin/entrypoint discovery는 보류. 현재 단일 내부 배포에는 필수 아님.</td>
+          </tr>
+          <tr>
+            <td>Approval resolver</td>
+            <td>destructive tool이 operator 승인을 기다리고, allow/deny 결과로 실행을 결정한다.</td>
+            <td><span class="status done">DONE</span> WebSocket UI + audit history</td>
+            <td>Slack/Teams 같은 원격 승인 채널은 아직 없음.</td>
+          </tr>
+          <tr>
+            <td>Checkpoint/rollback</td>
+            <td>host write/edit 전 snapshot을 남기고 rollback 가능성을 만든다.</td>
+            <td><span class="status done">DONE</span> host write/edit/checkpoint 테스트 완료</td>
+            <td>sandbox artifact import와 대량 파일 작업까지 checkpoint 범위 확대.</td>
+          </tr>
+          <tr>
+            <td>Sandbox</td>
+            <td>ai-sandbox adapter, untrusted 실행 결과를 evidence로 가져오는 기반.</td>
+            <td><span class="status partial">PARTIAL</span> adapter와 tests 존재, approval로 실사용 가능해짐</td>
+            <td>artifact provenance, retention, rollback 연결 강화.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.3 State / Finding / Reporting</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>설명</th>
+            <th>완료된 개선</th>
+            <th>남은 작업</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SQLite runtime guard</td>
+            <td>WAL, busy_timeout, foreign_keys, schema version, migration guard.</td>
+            <td><span class="status done">DONE</span> doctor와 state tests로 검증</td>
+            <td>장기적으로 domain DB/session DB 분리 검토.</td>
+          </tr>
+          <tr>
+            <td>Finding lifecycle</td>
+            <td>dedup fingerprint, status, owner, ticket, SLA, evidence_ref, seen_count.</td>
+            <td><span class="status done">DONE</span> API/UI/update form까지 완료</td>
+            <td>Jira/SOAR ticket sync와 owner inference.</td>
+          </tr>
+          <tr>
+            <td>Report bundle</td>
+            <td>finding/evidence/approval/scheduler delivery를 JSON/HTML로 묶는 handoff bundle.</td>
+            <td><span class="status done">DONE</span> Reports tab과 API 완료</td>
+            <td>서명, zip export, retention policy, external upload는 후속.</td>
+          </tr>
+          <tr>
+            <td>Approval audit</td>
+            <td>raw input 없이 hash/size/decision/actor/reason을 저장.</td>
+            <td><span class="status done">DONE</span> API/UI/detail drawer 완료</td>
+            <td>감사 로그 export와 SIEM forwarding.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.4 AgentTypes</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>에이전트</th>
+            <th>현재 기능</th>
+            <th>상태</th>
+            <th>다음 개선</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SMB</td>
+            <td>subnet target, credential pool, null/guest/auth mode, lockout guard, share/file/hit state, review tools.</td>
+            <td><span class="status live">LIVE</span> 가장 성숙</td>
+            <td>대규모 subnet batching, owner inference, 재검증 workflow.</td>
+          </tr>
+          <tr>
+            <td>Web</td>
+            <td>crawl/fetch/resource probe/vuln probe/web_task_scan, URL safety, browser supervisor evidence, lifecycle upsert.</td>
+            <td><span class="status live">LIVE</span> semantic validation과 통합 점검 하네스 완료</td>
+            <td>인증 세션 프로필, download capture, 더 깊은 SPA/JS 분석.</td>
+          </tr>
+          <tr>
+            <td>GitHub</td>
+            <td>repo/path/blob/recent commit 도구 기반 존재.</td>
+            <td><span class="status partial">PARTIAL</span> runtime 연결은 있으나 e2e 약함</td>
+            <td>GitHub Enterprise credential, code owner, secret validation, finding lifecycle e2e.</td>
+          </tr>
+          <tr>
+            <td>Jenkins</td>
+            <td>jobs/builds/console/config fetch 도구 기반 존재.</td>
+            <td><span class="status partial">PARTIAL</span> domain tools는 있으나 운영 runbook 약함</td>
+            <td>credential handling, crumb/session, console secret detector, job owner mapping.</td>
+          </tr>
+          <tr>
+            <td>Confluence</td>
+            <td>page/attachment listing/fetch 도구 기반 존재.</td>
+            <td><span class="status partial">PARTIAL</span> domain tools는 있으나 e2e 약함</td>
+            <td>space allowlist, attachment detector, page owner/risk scoring.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.5 Browser Supervisor</h3>
+      <div class="note good">
+        초기 분석의 “브라우저 snapshot/evidence 부족” 항목은 V1/V2를 거치며 완료 처리할 수 있다.
+        현재는 HTML/snapshot/screenshot뿐 아니라 network/console/screenshot diff metadata까지 남긴다.
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>기능</th>
+            <th>출력</th>
+            <th>위치</th>
+            <th>보안 처리</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>snapshot/html</td>
+            <td><code>capture_*.snapshot.txt</code>, <code>capture_*.html</code></td>
+            <td><code>evidence_dir/browser_captures/</code></td>
+            <td>selector 범위와 max_chars cap으로 context 폭주 방지</td>
+          </tr>
+          <tr>
+            <td>screenshot</td>
+            <td><code>capture_*.png</code></td>
+            <td><code>evidence_dir/browser_captures/</code></td>
+            <td>viewport screenshot, full-page 기본 비활성</td>
+          </tr>
+          <tr>
+            <td>network</td>
+            <td><code>capture_*.network.json</code></td>
+            <td><code>evidence_dir/browser_captures/</code></td>
+            <td>token/password/secret/key 계열 query value redaction</td>
+          </tr>
+          <tr>
+            <td>console/pageerror</td>
+            <td><code>capture_*.console.json</code></td>
+            <td><code>evidence_dir/browser_captures/</code></td>
+            <td>bounded event ring, 2,000자 text cap</td>
+          </tr>
+          <tr>
+            <td>screenshot diff</td>
+            <td><code>capture_*.screenshot_diff.json</code></td>
+            <td><code>evidence_dir/browser_captures/</code></td>
+            <td>이미지 원본 비교 대신 hash/size delta metadata</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="harness">
+      <h2>5. 하네스/검증 체계</h2>
+      <p>
+        이 프로젝트의 강점은 기능별 TDD가 가능한 테스트 하네스가 이미 촘촘하다는 점이다.
+        최근 개선도 모두 “실패 테스트 추가 - 구현 - 타깃 테스트 - 전체 테스트 - doctor” 순서로 진행했다.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>하네스</th>
+            <th>역할</th>
+            <th>대표 테스트</th>
+            <th>검증하는 리스크</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>State tests</td>
+            <td>SQLite schema, migration, CRUD, lifecycle, scheduler, approval audit 검증.</td>
+            <td><code>tests/test_state_*.py</code></td>
+            <td>DB lock, FK, schema drift, dedup 실패, status filter 오류.</td>
+          </tr>
+          <tr>
+            <td>Tool tests</td>
+            <td>각 Tool의 입력 검증, permission, output shape, safety guard 검증.</td>
+            <td><code>tests/test_browser_tool.py</code>, <code>tests/test_url_safety.py</code>, <code>tests/test_host_tools.py</code></td>
+            <td>SSRF, secret leak, destructive action 무승인 실행, evidence 누락.</td>
+          </tr>
+          <tr>
+            <td>Web API tests</td>
+            <td>FastAPI routes, token protection, list/detail/update shape 검증.</td>
+            <td><code>tests/web/test_*.py</code></td>
+            <td>API contract drift, 인증 누락, UI가 기대하는 필드 누락.</td>
+          </tr>
+          <tr>
+            <td>WebSocket tests</td>
+            <td>operator chat, cancel, approval allow/deny, multi-agent_type runtime 검증.</td>
+            <td><code>tests/web/test_chat_ws.py</code></td>
+            <td>장시간 turn 중단 실패, approval deadlock, agent_type routing 오류.</td>
+          </tr>
+          <tr>
+            <td>Scenario eval</td>
+            <td>ScriptedLLM으로 agent behavior를 회귀 검증.</td>
+            <td><code>tests/test_eval_*.py</code>, <code>agent/eval/scenarios/*.yaml</code></td>
+            <td>tool_search 누락, plan mode anti-pattern, sandbox 정책 위반.</td>
+          </tr>
+          <tr>
+            <td>Runtime doctor</td>
+            <td>Linux 반입 전 로컬 의존성/환경을 네트워크 없이 점검.</td>
+            <td><code>tests/test_runtime_doctor.py</code>, <code>tests/test_cli_doctor.py</code></td>
+            <td>Playwright 미설치, SQLite 불가, results dir 권한, LLM profile 누락.</td>
+          </tr>
+          <tr>
+            <td>HTML smoke</td>
+            <td>정적 UI가 API hook과 tab/view를 노출하는지 검증.</td>
+            <td><code>tests/web/test_index_html.py</code></td>
+            <td>프론트 탭 누락, API path drift, approval/report/scheduler hook 누락.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>최근 검증 결과</h3>
+      <ul>
+        <li><code>uv run --extra dev pytest</code>: 785 passed 기록 존재. 이번 문서 정정 턴에서는 전체 pytest를 재실행하지 않았다.</li>
+        <li><code>.venv/bin/python -m secu_agent.cli doctor --json</code>: 현재 환경 기준 <code>ok: false</code>, <code>fail_count: 1</code>, <code>warn_count: 1</code>.</li>
+        <li>doctor 실패: state DB path가 <code>postgres://localhost:5432/secu_agent</code>로 잡혀 SQLite PRAGMA check가 실패한다. Postgres를 의도한 설정이면 doctor 확장, SQLite 운영이면 DB env 정리가 필요하다.</li>
+        <li>doctor warning: <code>SA_CHAT_TOKEN</code>이 dev 기본값 또는 미설정. 현재 실행 플랫폼은 Linux다.</li>
+      </ul>
+    </section>
+
+    <section id="flows">
+      <h2>6. 주요 플로우 차트</h2>
+
+      <h3>6.1 Approval Flow</h3>
+      <pre class="diagram">Destructive tool approval
+
+Agent decides to call host_write / host_edit / bash_evidence / browser_action
+  -&gt; Tool.check_permission()
+  -&gt; PermissionDecision(ask)
+  -&gt; WebSocketApprovalResolver emits ApprovalRequested
+  -&gt; UI renders approval card
+  -&gt; Operator clicks allow or deny
+  -&gt; decision is written to approval_audit
+  -&gt; ToolInvoker continues with approved input or fails closed
+  -&gt; Approval tab and Report Bundle can later review the decision hash</pre>
+
+      <h3>6.2 Finding Lifecycle / Report Bundle Flow</h3>
+      <pre class="diagram">Finding handoff
+
+AgentType/tool finds issue
+  -&gt; evidence file written under evidence_dir
+  -&gt; submit_finding or web_vuln_probe calls state.finding_upsert()
+  -&gt; finding_lifecycle row gets fingerprint, status, severity, owner/ticket/SLA fields
+  -&gt; Findings tab can inspect/update status
+  -&gt; Scheduler may create dry-run delivery records
+  -&gt; Reports tab builds JSON/HTML bundle:
+       metadata + findings + evidence_refs + approval audit hashes + scheduler deliveries</pre>
+
+      <h3>6.3 Browser Supervisor Evidence Flow</h3>
+      <pre class="diagram">Browser capture
+
+browser_session start
+  -&gt; Playwright page created
+  -&gt; observers attached:
+       request, response, requestfailed, console, pageerror
+  -&gt; browser_action navigate/click/fill/press/scroll
+  -&gt; browser_supervisor capture
+       - snapshot text
+       - selected HTML
+       - screenshot PNG
+       - network JSON with query secret redaction
+       - console/pageerror JSON
+       - screenshot hash diff JSON
+  -&gt; metadata JSON points to every artifact</pre>
+
+      <h3>6.4 Scheduler Flow</h3>
+      <pre class="diagram">Scheduled task audit
+
+schedule row due
+  -&gt; scheduler_tick starts schedule_fire
+  -&gt; child ChatSession executes agent_type prompt
+  -&gt; schedule_fire is finished with ok/error and result summary
+  -&gt; internal_report_dry_run delivery row is recorded
+  -&gt; Scheduler tab shows schedules, recent runs, delivery payload/hash
+  -&gt; Report Bundle includes scheduler run/delivery context</pre>
+
+      <h3>6.5 Context Engine Flow</h3>
+      <pre class="diagram">Long-running session context
+
+Chat history grows
+  -&gt; ContextEngine policy selected: off / stub / summary / hybrid
+  -&gt; cheap compactor stubs bulky tool outputs where safe
+  -&gt; LLM summarizer can compress older conversation
+  -&gt; ChatSession continues with smaller context
+  -&gt; compression stats are available for debugging and tests</pre>
+    </section>
+
+    <section id="comparison">
+      <h2>7. Claude/Hermes 비교 반영</h2>
+      <p>
+        비교의 핵심은 “어느 프레임워크가 약하다”가 아니라, 각 프로젝트가 잘하는 계층이 다르다는 점이다.
+        Hermes는 장시간 실행과 multi-platform toolset 운영, toolset 단위의 coarse-grained 제어에 강하다.
+        Claude Code에서 참고한 부분은 그 위에서 한 turn 안에 어떤 schema를 보여주고, 어떤 위험도로 실행할지 정하는
+        per-tool runtime dispatch 패턴이다. AI Secu Agent는 두 패턴을 보안 점검 제품에 맞게 가져오되,
+        finding으로 인정 가능한 증거인지 판단하는 contract layer를 별도로 둔다.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>실제 구조</th>
+            <th>강점</th>
+            <th>AI Secu Agent 반영</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hermes Agent</td>
+            <td>
+              <code>toolsets.py</code>의 <code>_HERMES_CORE_TOOLS</code>와 <code>TOOLSETS</code>로 노출 도구를 묶고,
+              <code>tools/registry.py</code>의 <code>ToolEntry</code>와 <code>check_fn</code>으로 환경별 사용 가능 여부를 거른다.
+              cron job은 <code>enabled_toolsets</code>로 job별 toolset을 제한할 수 있다.
+            </td>
+            <td>
+              <code>/goal</code> Ralph loop, <code>/cron</code>/<code>cronjob</code>, session/memory/delegation,
+              multi-platform gateway, broad plugin/toolset 운영. 큰 범위의 tool governance는 Hermes식 2-depth 구조가
+              오히려 더 명확하다.
+            </td>
+            <td>
+              long-running goal, scheduler, context/session 유지, provider fallback, domain/agent_type 단위 tool grouping 방향을 참고했다.
+              다만 messaging, smart home, TTS, RL training 같은 범용/소비자 자동화 표면은 보안 점검 기본면에서 제외했다.
+            </td>
+          </tr>
+          <tr>
+            <td>Claude Code</td>
+            <td>
+              <code>Tool</code> interface가 <code>shouldDefer</code>, <code>isReadOnly</code>,
+              <code>isDestructive</code>, <code>isConcurrencySafe</code>, <code>checkPermissions</code>,
+              <code>maxResultSizeChars</code>를 가진다. <code>ToolSearch</code>가 deferred tool을 검색/선택해
+              필요한 schema만 unlock한다.
+            </td>
+            <td>
+              도구가 많아져도 초기 prompt에 모든 schema를 넣지 않고, 위험 도구는 permission pipeline에서
+              allow/deny/ask로 제어한다. Hermes toolset을 대체한다기보다, 활성 toolset 내부에서 필요한 tool을
+              더 세밀하게 찾고 실행하는 데 적합하다.
+            </td>
+            <td>
+              Python <code>Tool</code> base에 <code>deferred</code>, <code>is_read_only</code>,
+              <code>is_destructive</code>, <code>requires_capabilities</code>를 두고,
+              <code>tool_search</code>와 approval resolver/audit로 옮겼다.
+            </td>
+          </tr>
+          <tr>
+            <td>AI Secu Agent</td>
+            <td>
+              총 <code>103</code>개 agent tool class를 task domain별로 구성한다.
+              core tool은 항상 보이고, 무겁거나 도메인 특화된 tool은 deferred listing에 이름과 hint만 노출한다.
+              destructive tool은 기본적으로 operator approval을 요구하고, scheduled execution에서는 destructive tool을 차단한다.
+            </td>
+            <td>
+              내부망 보안 점검에 필요한 SMB/Web/GitHub/Jenkins/Confluence/browser/evidence/finding/report 흐름을
+              하나의 lifecycle로 묶는다.
+            </td>
+            <td>
+              Claude Code식 tool guardrail 위에 evidence judgment, reporting contract, masking, allowed scope,
+              finding lifecycle, report bundle을 추가했다.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Guardrail과 Contract의 차이</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>계층</th>
+            <th>질문</th>
+            <th>대표 구현</th>
+            <th>효과</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tool guardrail</td>
+            <td>이 도구를 지금 실행해도 되는가?</td>
+            <td>
+              <code>is_destructive</code>, <code>is_read_only</code>, <code>requires_capabilities</code>,
+              <code>check_permission</code>, approval resolver, scheduled destructive 차단.
+            </td>
+            <td>
+              위험한 write/edit/bash/browser action을 무승인 실행하지 못하게 하고,
+              UI가 처리할 수 없는 plan/approval 도구는 registry에서 보이지 않게 한다.
+            </td>
+          </tr>
+          <tr>
+            <td>Evidence/reporting contract</td>
+            <td>도구 결과를 보안 finding으로 인정해도 되는가?</td>
+            <td>
+              <code>evidence_judgment.py</code>, <code>reporting_contract</code>,
+              <code>mask_scanned_text</code>, URL safety, <code>SA_WEB_ALLOWED_DOMAINS</code>,
+              <code>SA_WEB_ALLOWED_CIDRS</code>, browser same-origin response capture.
+            </td>
+            <td>
+              LLM의 추측성 보고를 줄이고, heuristic 후보와 confirmed evidence를 분리한다.
+              민감값 원문은 저장하지 않고, scope 밖 URL이나 다른 PC/도메인으로 번지는 행동을 막는다.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>보안 도메인에 맞지 않아 덜어낸 범용 요소</h3>
+      <p>
+        “범용 요소를 뺐다”는 말은 속도만의 문제가 아니다.
+        사내망 보안 점검에서는 도구 수가 늘수록 agent가 잘못된 도구를 고르거나, 결과를 증거로 과대해석하거나,
+        외부 채널에 민감 정보를 내보낼 위험이 커진다. 그래서 기본 노출면은 내부 보안 작업에 필요한 도구로 좁히고,
+        필요할 때만 deferred search로 열게 했다.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Hermes 범용 요소</th>
+            <th>왜 기본면에서 제외했나</th>
+            <th>이 프로젝트의 대응</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Discord/Slack/WhatsApp/Signal/SMS/Email gateway, <code>send_message</code>, Yuanbao DM/sticker</td>
+            <td>보안 finding, 증거 preview, 내부 자산명이 외부/개인 메시징 채널로 나갈 수 있다.</td>
+            <td>웹 UI, approval audit, report bundle, scheduler dry-run delivery 중심. 실제 delivery는 내부 file drop/webhook부터 검토.</td>
+          </tr>
+          <tr>
+            <td>Home Assistant 도구: <code>ha_list_entities</code>, <code>ha_call_service</code> 등</td>
+            <td>소비자용 자동화/스마트홈 제어는 내부망 보안 점검의 기본 workflow가 아니다.</td>
+            <td>SMB/Web/GitHub/Jenkins/Confluence 같은 기업 보안 도메인 도구로 대체.</td>
+          </tr>
+          <tr>
+            <td>TTS, image generation, 범용 vision/video 분석</td>
+            <td>보고서나 UX 보조에는 쓸 수 있지만, finding 증거 계약의 핵심 경로는 아니다.</td>
+            <td><code>image_inspect</code>, browser screenshot/snapshot, masked evidence preview처럼 보안 증거에 필요한 형태로 제한.</td>
+          </tr>
+          <tr>
+            <td>RL training, generic code execution, MoA/범용 delegation, Kanban worker 기능</td>
+            <td>장기 실행에는 유용하지만 내부 보안 에이전트의 기본 tool schema에 항상 노출할 필요는 없다.</td>
+            <td><code>agent</code>, <code>goal</code>, <code>delegate_file_review</code>, scenario eval처럼 보안 작업 단위에 맞춘 실행 경로만 유지.</td>
+          </tr>
+          <tr>
+            <td>범용 <code>web_search</code>/<code>web_extract</code></td>
+            <td>외부 웹 리서치와 내부망 스캔은 scope, 증거, SSRF 리스크가 다르다.</td>
+            <td><code>web_fetch</code>, <code>web_crawl</code>, <code>web_resource_probe</code>, <code>web_site_sweep</code>,
+              <code>web_task_scan</code>에 URL safety와 reporting contract를 붙였다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>개선 반영 상태</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>역량</th>
+            <th>초기 평가</th>
+            <th>현재 반영 상태</th>
+            <th>판단</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Permission/Approval</td>
+            <td>Claude Code식 ask 흐름과 비교하면 UI 승인 연결이 약했다.</td>
+            <td><span class="status done">DONE</span> WebSocket approval + audit history.</td>
+            <td>핵심 갭 해소. 외부 채널 approval만 남음.</td>
+          </tr>
+          <tr>
+            <td>Tool discovery</td>
+            <td>Hermes식 toolset만으로도 큰 범위 제한은 가능하지만, 활성 domain 안에서 도구가 많아지면 turn-level schema 노출 제어가 추가로 필요하다.</td>
+            <td><span class="status done">DONE</span> deferred tool listing + <code>tool_search</code>.</td>
+            <td>103개 tool class를 모두 한 번에 노출하지 않고 domain별로 unlock 가능.</td>
+          </tr>
+          <tr>
+            <td>Provider runtime</td>
+            <td>Hermes식 fallback chain에 비해 단일 OpenAI-compatible profile 중심이었다.</td>
+            <td><span class="status done">DONE</span> profile chain/fallback 구현.</td>
+            <td>사내 GPT-OSS/o4-mini 비교 테스트에 충분한 기반.</td>
+          </tr>
+          <tr>
+            <td>SessionDB</td>
+            <td>장시간 agent에는 WAL/schema/retry 같은 운영 DB 안정성이 필요했다.</td>
+            <td><span class="status done">DONE</span> WAL, runtime guard, schema version.</td>
+            <td>운영 DB 안정성 1차 보강 완료.</td>
+          </tr>
+          <tr>
+            <td>Checkpoint</td>
+            <td>파일 write/edit 계열은 승인뿐 아니라 복구 가능성이 필요했다.</td>
+            <td><span class="status done">DONE</span> host write/edit checkpoint/rollback.</td>
+            <td>파일 변경 위험 도구의 최소 복구성 확보.</td>
+          </tr>
+          <tr>
+            <td>Context compression</td>
+            <td>long-running goal에는 session context 압축 정책이 필요했다.</td>
+            <td><span class="status done">DONE</span> Context Engine V1.</td>
+            <td>GPT-OSS급 모델 운용을 위한 기반 완료.</td>
+          </tr>
+          <tr>
+            <td>Browser supervisor</td>
+            <td>웹 취약점 주장은 재현 가능한 화면/네트워크 증거가 필요했다.</td>
+            <td><span class="status done">DONE</span> V1/V2 evidence capture.</td>
+            <td>사내 웹 점검 재현성 크게 향상.</td>
+          </tr>
+          <tr>
+            <td>Plugin/MCP</td>
+            <td>Hermes/Claude는 connector 확장성이 강하지만, 현재 단일 내부 배포에서는 우선순위가 낮다.</td>
+            <td><span class="status deferred">DEFERRED</span> 내부 특정 사용자 환경상 보류.</td>
+            <td>팀/외부 connector가 늘면 allowlist와 install/disable lifecycle 포함해 재검토.</td>
+          </tr>
+          <tr>
+            <td>Gateway delivery</td>
+            <td>Hermes는 multi-platform gateway가 강하다. 현재는 웹 UI와 dry-run 중심이다.</td>
+            <td><span class="status partial">PARTIAL</span> scheduler dry-run delivery만 있음.</td>
+            <td>다음 운영성 개선 후보.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="roadmap">
+      <h2>8. 남은 개선 로드맵</h2>
+      <p>
+        핵심 런타임은 상당 부분 완료됐으므로, 다음은 사내 반입 후 바로 쓸 수 있는 운영 기능과
+        비-SMB 에이전트 품질을 올리는 쪽이 효율적이다.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>우선순위</th>
+            <th>개선 건</th>
+            <th>왜 필요한가</th>
+            <th>완료 기준</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status p0">P0</span></td>
+            <td>Non-SMB agent_type e2e 품질 강화</td>
+            <td>GitHub/Jenkins/Confluence/Web은 도구 기반은 있으나 SMB만큼 검증된 runbook과 lifecycle e2e가 약하다.</td>
+            <td>각 agent_type별 seed fixture, tool mock, submit_finding/lifecycle/report bundle까지 이어지는 테스트.</td>
+          </tr>
+          <tr>
+            <td><span class="status p0">P0</span></td>
+            <td>Scheduler controls UI</td>
+            <td>현재 Scheduler 탭은 read-only history 중심이다. 운영자는 pause/resume/run-now가 필요하다.</td>
+            <td>token-protected pause/resume/run-now API, UI button, audit row, tests.</td>
+          </tr>
+          <tr>
+            <td><span class="status p1">P1</span></td>
+            <td>Internal delivery adapter</td>
+            <td>dry-run delivery는 완료됐지만 실제 사내 report/ticket/channel delivery는 아직 없다.</td>
+            <td>file drop 또는 internal webhook adapter, retry/backoff, delivery status history.</td>
+          </tr>
+          <tr>
+            <td><span class="status p1">P1</span></td>
+            <td>Owner/risk scoring</td>
+            <td>finding이 많아질수록 우선순위와 담당자 추정이 중요해진다.</td>
+            <td>asset criticality, severity, exposure, recurrence 기반 score와 owner field 추천.</td>
+          </tr>
+          <tr>
+            <td><span class="status p1">P1</span></td>
+            <td>Secret validation/revocation workflow</td>
+            <td>token-like 문자열이 실제 위험인지, rotate가 필요한지 판단해야 한다.</td>
+            <td>allowlisted provider에 한해 dry-run validation, rate limit, no raw secret persistence.</td>
+          </tr>
+          <tr>
+            <td><span class="status p2">P2</span></td>
+            <td>Browser downloads/HAR</td>
+            <td>V2는 network summary를 남기지만, 파일 다운로드와 full HAR body capture는 아직 제한적이다.</td>
+            <td>safe download capture, body size cap, retention policy, optional HAR export.</td>
+          </tr>
+          <tr>
+            <td><span class="status p3">P3</span></td>
+            <td>MCP/plugin packaging</td>
+            <td>현재 단일 내부 사용자 환경에서는 낮은 우선순위. 조직 확장 시 필요.</td>
+            <td>connector plugin interface, allowlist, install/disable lifecycle.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="open-issues">
+      <h2>9. 열려 있는 운영 이슈</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>이슈</th>
+            <th>상태</th>
+            <th>설명</th>
+            <th>권장 조치</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>State DB doctor mismatch</td>
+            <td><span class="status open">OPEN</span></td>
+            <td>
+              현재 doctor는 SQLite runtime guard를 확인하지만, state DB path가
+              <code>postgres://localhost:5432/secu_agent</code>로 잡혀 PRAGMA check가 실패한다.
+            </td>
+            <td>Postgres 운영을 의도했다면 doctor/state adapter를 확장하고, SQLite 운영이면 DB env를 SQLite path로 정리.</td>
+          </tr>
+          <tr>
+            <td>literal <code>${HOME}</code> 산출물</td>
+            <td><span class="status done">DONE</span></td>
+            <td>현재 작업 디렉터리 기준 literal <code>${HOME}</code> 산출물은 확인되지 않았다.</td>
+            <td>evidence path 정책은 계속 유지. 새 산출물 생성 시 env expansion 테스트로 회귀 방지.</td>
+          </tr>
+          <tr>
+            <td><code>SA_CHAT_TOKEN</code> dev 기본값</td>
+            <td><span class="status open">OPEN</span></td>
+            <td>doctor가 token 미설정 또는 dev 기본값을 경고한다.</td>
+            <td>사내 Linux에서 반드시 강한 token 설정. reverse proxy 사용 시 header auth도 검토.</td>
+          </tr>
+          <tr>
+            <td>실제 런타임 target은 Linux</td>
+            <td><span class="status done">DONE</span></td>
+            <td>현재 doctor는 Linux에서 실행됐다.</td>
+            <td><code>docs/linux_bootstrap.md</code> 절차는 사내 반입 환경에서 한 번 더 재검증.</td>
+          </tr>
+          <tr>
+            <td>External delivery 부재</td>
+            <td><span class="status partial">PARTIAL</span></td>
+            <td>scheduler dry-run delivery는 있으나 실제 사내 채널/티켓 전송은 없다.</td>
+            <td>내부 file drop/webhook부터 작게 시작.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="sources">
+      <h2>10. 근거 파일</h2>
+      <h3>계획/완료 문서</h3>
+      <ul>
+        <li><code>docs/plans/PLAN_p0_runtime_improvements.md</code></li>
+        <li><code>docs/plans/PLAN_multi_agent_type_websocket.md</code></li>
+        <li><code>docs/plans/PLAN_approval_ws_ui.md</code></li>
+        <li><code>docs/plans/PLAN_approval_audit_history.md</code></li>
+        <li><code>docs/plans/PLAN_finding_lifecycle.md</code></li>
+        <li><code>docs/plans/PLAN_finding_lifecycle_api_ui.md</code></li>
+        <li><code>docs/plans/PLAN_context_engine.md</code></li>
+        <li><code>docs/plans/PLAN_browser_supervisor.md</code></li>
+        <li><code>docs/plans/PLAN_browser_supervisor_v2.md</code></li>
+        <li><code>docs/plans/PLAN_linux_runtime_doctor.md</code></li>
+        <li><code>docs/plans/PLAN_scheduler_run_history.md</code></li>
+        <li><code>docs/plans/PLAN_finding_report_bundle.md</code></li>
+      </ul>
+
+      <h3>핵심 구현 파일</h3>
+      <ul>
+        <li><code>src/secu_agent/state.py</code> - SQLite schema, WAL guard, finding/approval/scheduler state</li>
+        <li><code>src/secu_agent/agent/engine.py</code> - LLM streaming loop and tool orchestration</li>
+        <li><code>src/secu_agent/agent/chat_session.py</code> - persistent chat, context engine, goal loop</li>
+        <li><code>src/secu_agent/agent/context_engine.py</code> - context compression policy</li>
+        <li><code>src/secu_agent/agent/tools/base.py</code> - tool metadata, permission defaults, concurrency metadata</li>
+        <li><code>src/secu_agent/agent/tools/tool_search_tool.py</code> - Claude Code ToolSearch pattern port</li>
+        <li><code>src/secu_agent/agent/tools/invoker.py</code> - permission and approval-aware tool execution</li>
+        <li><code>src/secu_agent/agent/tools/approval.py</code> - approval domain primitives</li>
+        <li><code>src/secu_agent/agent/evidence_judgment.py</code> - evidence/reporting contract judgment</li>
+        <li><code>src/secu_agent/detectors/text_scan.py</code> - canonical secret/PII masking</li>
+        <li><code>src/secu_agent/agent/tools/browser_tool.py</code> - browser supervisor V1/V2</li>
+        <li><code>src/secu_agent/agent/tools/web_tools.py</code> - web crawl/fetch/vuln probe and evidence lifecycle</li>
+        <li><code>src/secu_agent/web/services/reports.py</code> - finding report bundle service</li>
+        <li><code>src/secu_agent/web/ui/index.html</code> - dashboard, chat, findings, approvals, scheduler, reports views</li>
+        <li><code>src/secu_agent/runtime_doctor.py</code> - local runtime health checks</li>
+      </ul>
+
+      <h3>Hermes/Claude Code 비교 근거</h3>
+      <ul>
+        <li><code>/home/shaneee.baek/project/hermes-agent/website/docs/user-guide/features/goals.md</code> - <code>/goal</code>, Ralph loop 설명</li>
+        <li><code>/home/shaneee.baek/project/hermes-agent/website/docs/reference/slash-commands.md</code> - <code>/goal</code>, <code>/cron</code>, approval 관련 slash command</li>
+        <li><code>/home/shaneee.baek/project/hermes-agent/toolsets.py</code> - <code>_HERMES_CORE_TOOLS</code>, <code>TOOLSETS</code>, gateway/toolset 구성</li>
+        <li><code>/home/shaneee.baek/project/hermes-agent/tools/registry.py</code> - <code>ToolEntry</code>, <code>check_fn</code>, <code>get_definitions</code></li>
+        <li><code>/home/shaneee.baek/project/hermes-agent/RELEASE_v0.13.0.md</code> - <code>/goal</code>, redaction, allowlist, cron security wave</li>
+        <li><code>/home/shaneee.baek/project/hermes-agent/RELEASE_v0.11.0.md</code> - cron per-job <code>enabled_toolsets</code></li>
+        <li><code>/home/shaneee.baek/project/my_claude_code/Tool.ts</code> - tool metadata, permission, deferred schema fields</li>
+        <li><code>/home/shaneee.baek/project/my_claude_code/tools/ToolSearchTool/ToolSearchTool.ts</code> - deferred tool search/select</li>
+        <li><code>/home/shaneee.baek/project/my_claude_code/tools/ToolSearchTool/prompt.ts</code> - <code>shouldDefer</code> deferral policy</li>
+        <li><code>/home/shaneee.baek/project/my_claude_code/hooks/useCanUseTool.tsx</code> - allow/deny/ask permission flow</li>
+      </ul>
+
+      <h3>검증 파일</h3>
+      <ul>
+        <li><code>tests/test_browser_tool.py</code>, <code>tests/test_url_safety.py</code></li>
+        <li><code>tests/test_context_engine.py</code>, <code>tests/test_chat_session.py</code></li>
+        <li><code>tests/test_state_finding_lifecycle.py</code>, <code>tests/test_state_approval_audit.py</code>, <code>tests/test_state_schedule_history.py</code></li>
+        <li><code>tests/web/test_chat_ws.py</code>, <code>tests/web/test_findings.py</code>, <code>tests/web/test_approvals.py</code>, <code>tests/web/test_scheduler.py</code>, <code>tests/web/test_reports.py</code></li>
+        <li><code>tests/web/test_index_html.py</code>, <code>tests/test_runtime_doctor.py</code>, <code>tests/test_cli_doctor.py</code></li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

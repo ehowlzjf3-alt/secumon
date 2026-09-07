@@ -1,0 +1,590 @@
+{
+  "createdAt": "2026-09-06T11:19:23.611Z",
+  "asOf": "2026-09-06T10:43:26.564Z",
+  "scope": "read_only_project_review",
+  "backlogRevision": "v0.50",
+  "counts": {
+    "verified": 9,
+    "in_progress": 12,
+    "not_started": 9,
+    "conditional_not_started": 1
+  },
+  "phases": [
+    {
+      "id": "P0",
+      "title": "계약·합성 기준선·구현 선택",
+      "exit_intent": "외부 명세 미확인은 대역과 의존 조건으로 기록하고 코어 진행을 막지 않음",
+      "status": "verified",
+      "work_items": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04"
+      ],
+      "derivedStatus": "verified"
+    },
+    {
+      "id": "P1",
+      "title": "저장소 독립적인 최소 코어",
+      "exit_intent": "첫 요청의 접수·계획/가설·실행·근거·재개·답변을 하나로 검증",
+      "status": "in_progress",
+      "work_items": [
+        "P1-01",
+        "P1-02",
+        "P1-03",
+        "P1-04",
+        "P1-05",
+        "P1-06",
+        "P1-07"
+      ],
+      "derivedStatus": "in_progress"
+    },
+    {
+      "id": "P2",
+      "title": "기억·컨텍스트·효율·경계",
+      "exit_intent": "저장소 교체와 반복 compact 뒤에도 품질/의무/권한 유지",
+      "status": "in_progress",
+      "work_items": [
+        "P2-01",
+        "P2-02",
+        "P2-03",
+        "P2-04",
+        "P2-05",
+        "P2-06"
+      ],
+      "derivedStatus": "in_progress"
+    },
+    {
+      "id": "P3",
+      "title": "단일 에이전트 도구·채널·컴퓨터 유즈",
+      "exit_intent": "실제 adapter 계약과 조용한 CLI/Web/Knox, 선택 GUI 경로 검증",
+      "status": "in_progress",
+      "work_items": [
+        "P3-01",
+        "P3-02",
+        "P3-03",
+        "P3-04",
+        "P3-05"
+      ],
+      "derivedStatus": "in_progress"
+    },
+    {
+      "id": "P4",
+      "title": "협업·A2A·상시 임무",
+      "exit_intent": "두 역할의 근거 결합·비용 통제·사건 기반 재개",
+      "status": "not_started",
+      "work_items": [
+        "P4-01",
+        "P4-02",
+        "P4-03",
+        "P4-04"
+      ],
+      "derivedStatus": "in_progress"
+    },
+    {
+      "id": "P5",
+      "title": "범용 업무 배치·변경 관리",
+      "exit_intent": "같은 코어의 두 업무 모듈과 검토된 bundle 배치",
+      "status": "not_started",
+      "work_items": [
+        "P5-01",
+        "P5-02"
+      ],
+      "derivedStatus": "not_started"
+    },
+    {
+      "id": "P6",
+      "title": "복원·시범·운영",
+      "exit_intent": "보존/복구/용량/권한·효과 대조를 확인하고 제한된 도입",
+      "status": "not_started",
+      "work_items": [
+        "P6-01",
+        "P6-02",
+        "P6-03"
+      ],
+      "derivedStatus": "not_started"
+    }
+  ],
+  "items": [
+    {
+      "id": "P0-01",
+      "phase": "P0",
+      "title": "대표 업무와 합성 기준선",
+      "status": "verified",
+      "outcome": "공개 문서 비교와 합성 관측 검토의 목표·완료 조건·반증·대기·실패 fixture를 정의한다.",
+      "acceptance": [
+        "단순/복잡한 업무를 같은 범용 개념으로 표현",
+        "초기 성공·잘못된 완료·비용/지연 측정 기준을 기록"
+      ],
+      "local": null,
+      "record": "runtime/evidence/P0-verification.json",
+      "document": "design/chapters/P0-result.md"
+    },
+    {
+      "id": "P0-02",
+      "phase": "P0",
+      "title": "코어·저장·정책의 최소 계약",
+      "status": "verified",
+      "outcome": "상태/근거/계획·저장 포트·모델/도구 결과·사용자 입력·예산·정보 경계의 최소 계약을 정의한다.",
+      "acceptance": [
+        "상태/사건/의무의 원자적 커밋 경계와 부분 실패 의미 명시",
+        "SQL/ORM이 없는 계약, id/revision·시각·오류·부분 결과 fixture"
+      ],
+      "local": null,
+      "record": "runtime/evidence/P0-verification.json",
+      "document": "design/chapters/P0-result.md"
+    },
+    {
+      "id": "P0-03",
+      "phase": "P0",
+      "title": "구현 기준과 짧은 적합성 결정",
+      "status": "verified",
+      "outcome": "언어·실행 관리자·첫 영속 adapter·모델 adapter·지원 버전을 비교해 첫 구현의 ADR을 남긴다.",
+      "acceptance": [
+        "TS/Python 없는 제품 범위와 외부 서비스 의존성을 구분",
+        "작은 복구/대기 시나리오로 후보를 평가하고 제품 경로 하나 선택"
+      ],
+      "local": null,
+      "record": "runtime/evidence/P0-verification.json",
+      "document": "design/chapters/P0-result.md"
+    },
+    {
+      "id": "P0-04",
+      "phase": "P0",
+      "title": "재사용 후보와 외부 계약 목록",
+      "status": "verified",
+      "outcome": "첫 업무에 필요한 도구·지침만 선별하고 유지/재구현/기존 MCP 연결의 근거를 기록한다.",
+      "acceptance": [
+        "정적 160개 선언 중 테스트 40개와 후보 120개를 구분",
+        "Knox/SIEM/EDR/OS 계약의 확인/미확인과 대역을 기록; 명세 부재를 구현된 기능으로 표시하지 않음"
+      ],
+      "local": null,
+      "record": "runtime/evidence/P0-verification.json",
+      "document": "design/chapters/P0-result.md"
+    },
+    {
+      "id": "P1-01",
+      "phase": "P1",
+      "title": "코어 구성과 대역",
+      "status": "verified",
+      "outcome": "코어와 바깥 adapter의 주입 경계, schema 검증, fake model/tool/clock/sink를 만든다.",
+      "acceptance": [
+        "DB/ORM/채널 SDK 없이 코어 규칙 시험 가능",
+        "두 업무군 fixture를 같은 도메인 타입으로 읽음"
+      ],
+      "local": null,
+      "record": "runtime/evidence/P1-foundation-verification.json",
+      "document": null
+    },
+    {
+      "id": "P1-02",
+      "phase": "P1",
+      "title": "영속 상태·원본·장부",
+      "status": "verified",
+      "outcome": "첫 영속 adapter와 artifact backend에 상태/사건/실행 의도/결과·outbox를 저장한다.",
+      "acceptance": [
+        "상태/사건 동시 커밋과 요청/결과 중복 방지",
+        "원본 저장-DB 참조 사이 장애·깨진 참조·재시작 처리"
+      ],
+      "local": null,
+      "record": "runtime/evidence/P1-foundation-verification.json",
+      "document": null
+    },
+    {
+      "id": "P1-03",
+      "phase": "P1",
+      "title": "결정적인 최소 실행 루프",
+      "status": "verified",
+      "outcome": "scripted planner로 계획 검증·배정·실행·결과 수락·상태 변경·제어 분기를 연결한다.",
+      "acceptance": [
+        "무효 DAG/낡은 plan revision/완료 조건 누락 거부",
+        "continue/replan/wait/blocked/complete, 예산·취소·unknown 효과를 구분"
+      ],
+      "local": null,
+      "record": "runtime/evidence/P1-execution-verification.json",
+      "document": null
+    },
+    {
+      "id": "P1-04",
+      "phase": "P1",
+      "title": "작은 도구·지침·근거 경로",
+      "status": "verified",
+      "outcome": "작은 catalog와 Broker/호출 장부, 근거 ID 조회, 지침 하나의 선택 로딩을 연결한다.",
+      "acceptance": [
+        "정확한 ID/제한된 검색과 schema·권한·version 검증",
+        "단순 업무는 필요한 method만 선택; tool/skill/권한의 역할 구분"
+      ],
+      "local": null,
+      "record": "runtime/evidence/P1-resources-verification.json",
+      "document": null
+    },
+    {
+      "id": "P1-05",
+      "phase": "P1",
+      "title": "CLI와 대화/전달 의미",
+      "status": "verified",
+      "outcome": "접수 저장→짧은 접수 응답→상태 조회/변경/취소→최종 답변을 CLI와 가짜 채널에 연결한다.",
+      "acceptance": [
+        "conversation/work ID 분리, 닫기와 취소 구분",
+        "내부 이벤트마다 새 말풍선 없음; result_ready/완료/전달 분리"
+      ],
+      "local": null,
+      "record": "runtime/evidence/P1-conversation-verification.json",
+      "document": null
+    },
+    {
+      "id": "P1-06",
+      "phase": "P1",
+      "title": "실제 모델과 가설·계획 변경",
+      "status": "in_progress",
+      "outcome": "선택한 모델 adapter에서 합성 입력으로 가설·판별 질문·계획 변경을 제안하고 코어 검증에 연결한다.",
+      "acceptance": [
+        "늦은 반증으로 영향받는 가설/계획 수정, 유효 계획은 continue",
+        "단순 경로의 추가 critic/가설 생략, usage/잘림/오류와 모델 목적지 기록"
+      ],
+      "local": "verified",
+      "record": "runtime/evidence/P1-model-local-verification.json",
+      "document": null
+    },
+    {
+      "id": "P1-07",
+      "phase": "P1",
+      "title": "첫 전체 경로와 최소 재개 패킷",
+      "status": "in_progress",
+      "outcome": "한 업무의 접수부터 결과까지와 중단/재개·사용자 변경·구조화 ContextPacket 복원을 완성한다.",
+      "acceptance": [
+        "실행 전/외부 결과 수신 후 저장 전/저장 후 응답 전 장애 구간 시험",
+        "목표·반증·의무·원본 참조 복원, fake sink 중복 효과와 잘못된 완료 없음"
+      ],
+      "local": "verified",
+      "record": "runtime/evidence/P1-recovery-local-verification.json",
+      "document": "design/chapters/P1-recovery-plan.md"
+    },
+    {
+      "id": "P2-01",
+      "phase": "P2",
+      "title": "두 번째 영속 adapter 적합성",
+      "status": "in_progress",
+      "outcome": "다른 종류의 영속 구현을 제한된 범위로 연결해 저장소 독립성을 확인한다.",
+      "acceptance": [
+        "코어 코드 수정 없이 동일 대표 시나리오/저장 계약 시험",
+        "각 구현에서 재시작·충돌·중복·원자적 경계 보장 확인; 대역 통과와 구분"
+      ],
+      "local": "verified",
+      "record": "runtime/evidence/P2-storage-local-verification.json",
+      "document": "design/chapters/P2-storage-result.md"
+    },
+    {
+      "id": "P2-02",
+      "phase": "P2",
+      "title": "기억·근거 수명과 조회",
+      "status": "in_progress",
+      "outcome": "개인/조직 기억·lineage·직접/조건 검색·색인 지연·정정/삭제·작업 공간 체크포인트를 구현한다.",
+      "acceptance": [
+        "새 근거를 색인 전 ID로 읽고 신선도/범위 표시",
+        "정정/권한 철회가 요약·검색·캐시·관련 의무에 반영"
+      ],
+      "local": "verified",
+      "record": "runtime/evidence/P2-memory-local-verification.json",
+      "document": "design/chapters/P2-memory-result.md"
+    },
+    {
+      "id": "P2-03",
+      "phase": "P2",
+      "title": "컨텍스트 수명과 compact",
+      "status": "in_progress",
+      "outcome": "미사용 명세/내용 정리와 검증된 snapshot/packet 교체, 선택 재로딩을 구현한다.",
+      "acceptance": [
+        "반복 context 교체 후 중요한 반증·제약·대기/unknown 의무 복원",
+        "저장 후 참조화, tool-call 쌍·revision 검증, 재로딩 진동과 실제 입력 비용 기록"
+      ],
+      "local": "verified",
+      "record": "runtime/evidence/P2-context-local-verification.json",
+      "document": "design/chapters/P2-context-result.md"
+    },
+    {
+      "id": "P2-04",
+      "phase": "P2",
+      "title": "도구·지침 호출 효율",
+      "status": "in_progress",
+      "outcome": "유효 결과 재사용·in-flight dedup·batch·페이지/증분·명세 예산·catalog 갱신을 최적화한다.",
+      "acceptance": [
+        "권한/버전/효과에 맞는 캐시·재시도·폐기; 목록 부분 실패 구분",
+        "모델/MCP 왕복·내부 연산·이미지·대기 비용을 구분한 비교"
+      ],
+      "local": "verified",
+      "record": "runtime/evidence/P2-internal-io-local-verification.json",
+      "document": "design/chapters/P2-internal-io-result.md"
+    },
+    {
+      "id": "P2-05",
+      "phase": "P2",
+      "title": "모드·예산·무진전과 평가",
+      "status": "in_progress",
+      "outcome": "자동/빠르게/깊게와 무진전 제어를 보정하고 고정 세트로 전체 품질/비용을 비교한다.",
+      "acceptance": [
+        "명시 상한·부모/자식 예약/사용액·재시도 총기한 보존",
+        "저장 결과 replay와 새 추론 구분, 완료율/잘못된 완료/재조회/지연 비교"
+      ],
+      "local": "verified",
+      "record": "runtime/evidence/P2-evaluation-local-verification.json",
+      "document": "design/chapters/P2-evaluation-result.md"
+    },
+    {
+      "id": "P2-06",
+      "phase": "P2",
+      "title": "정보 경계 대안과 공개 정책",
+      "status": "in_progress",
+      "outcome": "전체 내부/외부 리드+게이트/내부 주도+자문을 합성 자료로 비교하고 실제 배치에 적용할 경계 정책을 정한다.",
+      "acceptance": [
+        "원문·요약·검색 카드·로그/화면·artifact·채널·모델 목적지 권한 검증",
+        "도구/A2A 본문이 사용자 지시/권한으로 승격되지 않음; 금지 fixture의 outbound 노출 검사"
+      ],
+      "local": "verified",
+      "record": "runtime/evidence/P2-boundary-local-verification.json",
+      "document": "design/chapters/P2-boundary-result.md"
+    },
+    {
+      "id": "P3-01",
+      "phase": "P3",
+      "title": "기존 MCP의 실제 adapter",
+      "status": "in_progress",
+      "outcome": "확인된 기존 MCP의 작은 기능 집합을 단일 에이전트에서 연결한다.",
+      "acceptance": [
+        "auth/scope·version·pagination·rate limit·취소·늦은 결과·부분/unknown 시험",
+        "요청/결과/수집 cursor/효과 상태가 공통 장부에 반영"
+      ],
+      "local": "partially_verified",
+      "record": "runtime/evidence/P3-mcp-settlement-local-verification.json",
+      "document": "design/chapters/P3-mcp-settlement-result.md"
+    },
+    {
+      "id": "P3-02",
+      "phase": "P3",
+      "title": "Web과 CLI 업무 화면",
+      "status": "in_progress",
+      "outcome": "같은 공개 상태를 CLI/Web에 표시하고 snapshot/cursor 재접속·상세 근거·진단을 연결한다.",
+      "acceptance": [
+        "접수·결과·필수 질문, 현재 상태 갱신과 상세 보기 구분",
+        "다중 업무·변경/취소·재접속·키보드 초점·좁은 화면 검수"
+      ],
+      "local": "verified",
+      "record": "runtime/evidence/P3-query-control-local-verification.json",
+      "document": "design/chapters/P3-query-control-result.md"
+    },
+    {
+      "id": "P3-03",
+      "phase": "P3",
+      "title": "Knox 대화 연결",
+      "status": "not_started",
+      "outcome": "확인된 Knox 계약으로 수신→접수→최종 답변을 연결한다.",
+      "acceptance": [
+        "인증된 사람/방/work 연결과 답변 대상 권한 확인",
+        "불명확 발송 대조·중복 방지; 수정/스레드/버튼/읽음은 실제 지원만 사용"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    },
+    {
+      "id": "P3-04",
+      "phase": "P3",
+      "title": "컴퓨터 유즈 adapter",
+      "status": "in_progress",
+      "outcome": "로컬 합성 UI부터 관찰/행동+확인·짧은 묶음·조건 대기·세션 소유권을 구현하고 선택 환경에 연결한다.",
+      "acceptance": [
+        "stale 화면·창/초점 변경·부분 효과·사용자 인계·재시작 검증",
+        "같은 목표의 성공률·왕복·이미지·총 지연을 기존 단일 행동 기준선과 비교"
+      ],
+      "local": "partially_verified",
+      "record": "runtime/evidence/P3-local-web-driver-local-verification.json",
+      "document": "design/chapters/P3-local-web-driver-result.md"
+    },
+    {
+      "id": "P3-05",
+      "phase": "P3",
+      "title": "단일 에이전트 연동 통합",
+      "status": "not_started",
+      "outcome": "CLI/Web/Knox와 선택 도구/컴퓨터 유즈를 같은 업무 상태·권한·전달 계약으로 통합 검수한다.",
+      "acceptance": [
+        "모드 변경·취소·재접속·목표 변경 뒤 늦은 응답 일치",
+        "fake/실제 연결 결과를 구분하고 미확인 채널을 통과로 보고하지 않음"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    },
+    {
+      "id": "P4-01",
+      "phase": "P4",
+      "title": "두 에이전트와 게시판",
+      "status": "in_progress",
+      "outcome": "지속되는 역할 ID·개인 관측·공유 entity·게시판을 두 역할로 연결한다.",
+      "acceptance": [
+        "같은 원본의 중복 인용을 독립 근거로 세지 않음",
+        "의무/권한·근거 충돌·철회·대화/위임 상한·교착/무진전 처리",
+        "에이전트가 배정·추가 요청·회수/재배정을 판단하고 런타임이 사용량 기록·정산·반환을 자동 집행하며 중복 소비·중복 반환을 방지"
+      ],
+      "local": "partially_verified",
+      "record": "runtime/evidence/P4-board-budget-authority-local-verification.json",
+      "document": "design/chapters/P4-budget-authority-result.md"
+    },
+    {
+      "id": "P4-02",
+      "phase": "P4",
+      "title": "A2A 업무 계약",
+      "status": "not_started",
+      "outcome": "외부 동료와 task/status/artifact·version·deadline·cancel을 교환하는 adapter를 만든다.",
+      "acceptance": [
+        "상대 ID/권한·오류·부분 결과·늦은 결과·재전달 검증",
+        "상대 메시지가 루트 목표/권한을 임의 변경하지 않음"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    },
+    {
+      "id": "P4-03",
+      "phase": "P4",
+      "title": "상시 임무와 사건 기반 재개",
+      "status": "not_started",
+      "outcome": "예약/관측/회신 대기와 durable wake, 증분 수집·게시판 구독을 연결한다.",
+      "acceptance": [
+        "fake clock 장기 대기와 별도 실제 시간 재개 시험",
+        "수집/집계와 추론 분리, 중복 wake·cursor·fan-out 예산·취소 처리"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    },
+    {
+      "id": "P4-04",
+      "phase": "P4",
+      "title": "협업 통합과 비용 검증",
+      "status": "not_started",
+      "outcome": "한 에이전트와 두 에이전트의 같은 문제를 비교해 협업 품질과 비용을 검증한다.",
+      "acceptance": [
+        "늦은 반증·부분 자료·충돌·권한 철회·부모 취소 전파",
+        "더 많은 메시지/역할 수를 개선으로 간주하지 않고 완료 품질·비용 비교"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    },
+    {
+      "id": "P5-01",
+      "phase": "P5",
+      "title": "두 업무 모듈의 배치 bundle",
+      "status": "not_started",
+      "outcome": "공개 문서 업무와 보안 관측 업무를 역할·도구·skill/방법·완료 기준·평가 fixture로 배치한다.",
+      "acceptance": [
+        "두 번째 업무군 추가에 공통 루프/저장소/게시판 복제나 보안 전용 코어 분기 없음",
+        "사람 대화 역할 공통 사용; 지침/도구/모델 revision 기록"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    },
+    {
+      "id": "P5-02",
+      "phase": "P5",
+      "title": "배치 정책과 변경 승격",
+      "status": "not_started",
+      "outcome": "모듈·지침·도구 변경의 검증/제한 평가/승격/rollback과 실제 배치 정보 경계를 검수한다.",
+      "acceptance": [
+        "진행 중 업무의 버전 고정/명시 이행과 긴급 권한 철회 처리",
+        "원문/검색/trace/화면/백업/채널 목적지 정책을 실제 배치 범위로 검증"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    },
+    {
+      "id": "P6-01",
+      "phase": "P6",
+      "title": "운영 복원·용량·장애",
+      "status": "not_started",
+      "outcome": "격리 환경에서 DB/artifact/키/정책·삭제 이력 복원과 중복 효과 대조, 용량/큐/지출 한도를 검증한다.",
+      "acceptance": [
+        "저장소/원본 참조 정합성·unknown 의무·삭제/철회 재적용",
+        "정한 RPO/RTO 측정, backlog/과부하 중 사용자 취소·상태 조회"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    },
+    {
+      "id": "P6-02",
+      "phase": "P6",
+      "title": "제한된 시범과 확대",
+      "status": "not_started",
+      "outcome": "저장 자료 replay→효과 없는 shadow→범위 있는 시범 순으로 운용하고 품질/비용 기준에 따라 확대한다.",
+      "acceptance": [
+        "범위/소유권/롤백 경로가 있는 시범 결과",
+        "완료율·잘못된 완료·개입률·비용/지연·전달/복원 증거 기록"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    },
+    {
+      "id": "P6-03",
+      "phase": "P6",
+      "title": "기존 운영 업무의 선택 이관",
+      "status": "conditional_not_started",
+      "outcome": "기존 진행 업무를 옮기기로 결정한 경우에만 ID/근거/상태 이관과 단일 실행 소유권 전환을 수행한다.",
+      "acceptance": [
+        "in-flight 효과 대조와 신구 중복 배정 방지",
+        "DB 과거 덮어쓰기 없이 상태/근거 보존 후 소유권 rollback"
+      ],
+      "local": null,
+      "record": null,
+      "document": null
+    }
+  ],
+  "verification": {
+    "command": [
+      "npm",
+      "run",
+      "verify"
+    ],
+    "node": "v24.20.0",
+    "startedAt": "2026-09-06T10:36:15.216Z",
+    "finishedAt": "2026-09-06T10:43:26.564Z",
+    "exitCode": 0,
+    "signal": null,
+    "log": "evidence/P4-board-funding-verify1.log",
+    "counts": {
+      "tests": 2460,
+      "pass": 2460,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 425123.970125
+    },
+    "build": {
+      "sourceDigest": "ac8fec235326770e8e93ef6e536ab54da3d402bf828360f7dfadbbe9c1af46f2",
+      "filesDigest": "91aae0f0f50f51725e75574d8b2f32237e23009d06cb603f77fe82479ab5225e",
+      "fileCount": 996
+    },
+    "architecture": {
+      "inspected": 124,
+      "failures": []
+    },
+    "fixtures": {
+      "passed": true,
+      "scenarios": 4,
+      "checkpoints": 22
+    },
+    "latestRecord": "runtime/evidence/P4-board-funding-verify1-exit.json",
+    "targeted": "runtime/evidence/P4-board-funding-new1-exit.json"
+  },
+  "limitations": [
+    "Latest native result is newer than backlog v0.50; this review does not promote project status or run the old finalizer.",
+    "Phase P4 stored status is stale; overview derives phase progress from work items.",
+    "P4 funding exists and has passed local tests despite the old backlog field not_implemented.",
+    "Real model test cancelled; internal MCP, Knox and production not tested."
+  ],
+  "next": "design_alignment_only"
+}

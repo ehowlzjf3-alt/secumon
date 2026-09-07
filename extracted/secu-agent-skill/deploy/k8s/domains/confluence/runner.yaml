@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secu-agent-confluence-runner
+  namespace: secu-agent
+  labels:
+    app.kubernetes.io/name: secu-agent-confluence
+    app.kubernetes.io/component: runner
+    secu-agent.io/domain: confluence
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: secu-agent-confluence
+      app.kubernetes.io/component: runner
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: secu-agent-confluence
+        app.kubernetes.io/component: runner
+        secu-agent.io/domain: confluence
+    spec:
+      serviceAccountName: secu-agent-domain
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: runner
+          image: secu-agent-skill:local
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command: ["python", "-m", "domains.services.confluence.runners.pipeline"]
+          envFrom:
+            - configMapRef:
+                name: secu-agent-runtime
+            - secretRef:
+                name: secu-agent-runtime
+                optional: true
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 3Gi
+          volumeMounts:
+            - name: evidence
+              mountPath: /var/lib/secu-agent/evidence
+      volumes:
+        - name: evidence
+          persistentVolumeClaim:
+            claimName: secu-agent-evidence
