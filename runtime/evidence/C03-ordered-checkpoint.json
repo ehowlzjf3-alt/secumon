@@ -1,5 +1,5 @@
 {
-  "checkpoint": 370,
+  "checkpoint": 371,
   "date": "2026-09-08",
   "status": "local_verification_in_progress",
   "goalComplete": false,
@@ -81,20 +81,116 @@
         "agent-sqlite-recovery.test.js"
       ],
       "command": ".tools/node-v24.20.0-darwin-arm64/bin/node --test --test-concurrency=1 --test-reporter=tap dist/tests/personal-memory-context.test.js dist/tests/agent-document-memory.test.js dist/tests/agent-memory-profile-concurrency.test.js dist/tests/personal-memory-draft-flow.test.js dist/tests/agent-sqlite-recovery.test.js"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-draft-cleanup.log",
+      "exitCode": 0,
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "sourceDigest": "dde5c39c30a7640c209ac7fc33fd825edf3fcba258becd8e5533406bba947a97",
+      "files": [
+        "personal-memory-draft-flow.test.js"
+      ],
+      "filter": "a stale absent-operation observation joins the exact apply completed by another profile",
+      "purpose": "recheck the previously failing cleanup hook; not an additional unique test"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-target6.log",
+      "session": 14128,
+      "exitCode": 0,
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "sourceDigest": "aac4a7b171c5e5e102f2927f50068a9fd26b623373f197d06dcecbc075979321",
+      "files": [
+        "agent-sqlite-recovery.test.js"
+      ],
+      "filter": "apply rejects a different prepared digest|a published pending recovery|status and repeated completed apply",
+      "purpose": "new prepared mismatch, pending gating, and historical receipt boundaries; original happy paths excluded"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-target5.log",
+      "session": 49052,
+      "exitCode": 0,
+      "total": 36,
+      "pass": 36,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "sourceDigest": "aac4a7b171c5e5e102f2927f50068a9fd26b623373f197d06dcecbc075979321",
+      "files": [
+        "personal-memory-presentation.test.js",
+        "document-personal-memory-presentation.test.js",
+        "personal-memory-draft-cli.test.js",
+        "memory-draft-web.test.js",
+        "personal-memory-draft-recovery.test.js",
+        "personal-memory-migration-flow.test.js",
+        "personal-memory-migration-activation-barrier.test.js"
+      ],
+      "command": ".tools/node-v24.20.0-darwin-arm64/bin/node --test --test-concurrency=1 --test-reporter=tap dist/tests/personal-memory-presentation.test.js dist/tests/document-personal-memory-presentation.test.js dist/tests/personal-memory-draft-cli.test.js dist/tests/memory-draft-web.test.js dist/tests/personal-memory-draft-recovery.test.js dist/tests/personal-memory-migration-flow.test.js dist/tests/personal-memory-migration-activation-barrier.test.js"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-target7.log",
+      "exitCode": 0,
+      "total": 14,
+      "pass": 14,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "sourceDigest": "e6ea677ed53f2986942e4c702459c6918b02816afeddea6dd38aa9d75126bc6c",
+      "files": [
+        "agent-sqlite-recovery-process.test.js"
+      ],
+      "scope": "simulated process event contract; no OS/DB recovery in this file"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-target8.log",
+      "session": 87960,
+      "exitCode": 0,
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "sourceDigest": "e6ea677ed53f2986942e4c702459c6918b02816afeddea6dd38aa9d75126bc6c",
+      "files": [
+        "agent-sqlite-recovery.test.js"
+      ],
+      "filter": "prepare rejects a foreign database owner|prepare rejects a missing required state table|prepare rejects WAL or SHM mixed",
+      "scope": "real temporary hot pair and child validation; WAL/SHM names tested as unsupported mixed layout"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-target10.log",
+      "session": 23786,
+      "exitCode": 0,
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "sourceDigest": "e6d6c53682954cdac728d0ca41e792efc53af1a5ee942e710a6b26b5d9343d0c",
+      "files": [
+        "agent-sqlite-recovery.test.js"
+      ],
+      "filter": "actual apply interruption at",
+      "scope": "actual POSIX apply worker SIGKILL after publication; dead maintenance lease recovery preserves pending; same operation resume"
     }
   ],
   "modelApiTests": "stopped",
   "externalServiceConnectionsRun": false,
   "remaining": [
-    "Fix the observed draft-flow fixture cleanup ordering and rerun only the affected test",
-    "Personal memory context and document fixtures",
-    "Memory migration and recovery",
-    "SQLite explicit prepare/apply/status local fixture and interruption cases",
+    "SQLite recovery interrupted prepare and maximum original/candidate attempts; remaining document-fence/super-journal rejection cases",
     "Current Linux/native Windows and final integrated regression",
-    "C04-C10 ordered verification"
+    "C04-C10 remaining ordered verification"
   ],
-  "next": "User requested publishing source and all documentation first; resume from the recorded draft-flow cleanup failure afterward",
-  "uniquePassingTests": 155,
+  "next": "Complete remaining C03 prepare-attempt and validation cases, then continue prepared C04 entry/complex/context/goal-change tests; C04 core51 already passed",
+  "uniquePassingTests": 216,
+  "preparedFixtureSourcesBaselineCheckpoint": 370,
   "preparedFixtureSources": {
     "src/tests/personal-memory-context.test.ts": "e74b39f1e75e2d008fa2a8222b005117cc99b96319687d13155ba6453a1ce004",
     "src/tests/agent-document-memory.test.ts": "8d701ce370217fdcf1c2b5cc7a5845cd87ad8176830c3cc22b88d14fc9d9264d",
@@ -103,7 +199,7 @@
     "src/tests/personal-memory-draft-flow.test.ts": "62fde719fc520cae05edc5f1f33ffc79fe2182686aaab58c4666298d924c62d7",
     "src/tests/helpers/personal-memory-draft-flow.ts": "6c3da67c002ba69842ba19243af691c99e8233bd2c5502c2a21ad3c8bce587cd"
   },
-  "preparedFixturesStatus": "compiled and executed; draft-flow cleanup hook failed in one test",
+  "preparedFixturesStatus": "checkpoint370 compiled and executed with one draft-flow cleanup hook failure; fixed and rechecked after build2 in checkpoint371",
   "builds": [
     {
       "log": "runtime/evidence/C03-ordered-build1.log",
@@ -111,10 +207,38 @@
       "exitCode": 0,
       "manifest": "runtime/evidence/C03-ordered-build1-manifest.json",
       "sourceDigest": "9821f7b95576e6b89b38f3d2f5202c12fc9a8d3c1f534684e1736b84001b9ddd"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-build2.log",
+      "session": 8374,
+      "exitCode": 0,
+      "manifest": "runtime/evidence/C03-ordered-build2-manifest.json",
+      "sourceDigest": "dde5c39c30a7640c209ac7fc33fd825edf3fcba258becd8e5533406bba947a97"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-build3.log",
+      "session": 41840,
+      "exitCode": 0,
+      "manifest": "runtime/evidence/C03-ordered-build3-manifest.json",
+      "sourceDigest": "aac4a7b171c5e5e102f2927f50068a9fd26b623373f197d06dcecbc075979321"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-build4.log",
+      "session": 19819,
+      "exitCode": 0,
+      "manifest": "runtime/evidence/C03-ordered-build4-manifest.json",
+      "sourceDigest": "e6ea677ed53f2986942e4c702459c6918b02816afeddea6dd38aa9d75126bc6c"
+    },
+    {
+      "log": "runtime/evidence/C03-ordered-build5.log",
+      "session": 93374,
+      "exitCode": 0,
+      "manifest": "runtime/evidence/C03-ordered-build5-manifest.json",
+      "sourceDigest": "e6d6c53682954cdac728d0ca41e792efc53af1a5ee942e710a6b26b5d9343d0c"
     }
   ],
-  "uniqueTests": 156,
-  "failingTests": 1,
+  "uniqueTests": 216,
+  "failingTests": 0,
   "activeTest": null,
   "recoveryHappyPaths": {
     "kinds": [
@@ -133,10 +257,23 @@
     "code": "ENOENT",
     "location": "personal-memory-draft-flow.test.ts",
     "observation": "second profile close hook attempts lease removal after the fixture temporary root has been removed",
-    "revisionStatus": "not changed or rerun; user prioritized GitHub push"
+    "revisionStatus": "fixed with try/finally closing the additional profile before fixture cleanup; targeted recheck passed"
   },
   "newTest": {
+    "baselineCheckpoint": 370,
     "path": "src/tests/agent-sqlite-recovery.test.ts",
     "sha256": "0ea8fa1dd903dc39e54e4bfdec9926bf8c8a8de648bf75f661db0d648e17ddfb"
-  }
+  },
+  "previousGoalTurn": "progress: source and 299 design documents published to origin/main at 872fa50c0a868e1a9b3f7c8879004af3cedf3e0d",
+  "excludedRuns": [
+    {
+      "log": "runtime/evidence/C03-ordered-target9.log",
+      "exitCode": 0,
+      "filter": "apply SIGKILL",
+      "matchedCases": 0,
+      "reportedWrapperPass": 1,
+      "reason": "filter matched no case; Node file-wrapper pass is not verification evidence",
+      "sourceDigest": "e6d6c53682954cdac728d0ca41e792efc53af1a5ee942e710a6b26b5d9343d0c"
+    }
+  ]
 }

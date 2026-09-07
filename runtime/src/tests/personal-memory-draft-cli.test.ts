@@ -9,11 +9,11 @@ import { actor, draftFixture, editDraft, edited } from './helpers/personal-memor
 import { getPersonal } from '../presentation/local-personal-memory.js';
 import type { MemoryDraftStatus } from '../application/personal-memory-draft-contracts.js';
 
-const execute = promisify(execFile), cli = fileURLToPath(new URL('../presentation/agent-cli.js', import.meta.url));
+const execute = promisify(execFile), cli = fileURLToPath(new URL('./helpers/agent-cli-isolated-worker.js', import.meta.url));
 test('built CLI exports, applies and resumes one edited document with stable request identity', { timeout: 30000 }, async t => {
   const f = await draftFixture(t); await f.profile.close();
   const run = async <T>(args: string[]) => JSON.parse((await execute(process.execPath, [cli, 'work', ...args, '--directory', f.directory, '--json'],
-    { timeout: 20000, maxBuffer: 2097152 })).stdout) as T;
+    { timeout: 20000, maxBuffer: 2097152, env: { ...process.env, SECUMON_TEST_IDENTITY_REGISTRY: f.hostOptions.identityRegistryDirectory } })).stdout) as T;
   const draftId = randomUUID(), applyId = randomUUID();
   const draft = await run<{ draftId: string; path: string; baseRevision: number }>(['memory-draft-create', '--memory-id', 'writing-style', '--draft-id', draftId]);
   assert.equal(draft.draftId, draftId); assert.equal(draft.baseRevision, 1); editDraft(draft.path);

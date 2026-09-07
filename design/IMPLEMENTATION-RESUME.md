@@ -2,6 +2,16 @@
 
 ## 현재 진행 단위 — C06~C10 구현 정리, 상세 검증 별도
 
+**지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
+
+<!-- CHECKPOINT371-START -->
+### Checkpoint371 — 게시 후 C03 잔여 검증 재개
+
+최초 원격 `main` 게시 체크포인트는 `872fa50`이며, 이 문서의 checkpoint371은 그 이후 진행한 작업을 기록한다. 이후 로컬에서 초안 종료 hook 순서를 교정해 이전 실패 1개를 재확인했고, 남은 CLI/Web·이관36개, 복구 지문/pending/역사성3개, 잘못된 owner/schema/layout3개, worker 이벤트 계약14개를 확인했다. 현재 C03 선택 고유216개가 통과했으며 재시험을 고유 수에 중복하지 않는다. 각 확정 빌드는 exit0이며 마지막 build5 결과는 아래와 같다. [현재 C03 결과](chapters/C03-ordered-verification-result.md) · [실행·소스 증거](../runtime/evidence/C03-ordered-checkpoint.json).
+
+실제 복구 게시4경계의 SIGKILL→죽은 lease 회수→pending 유지→같은 operation 재개까지 통과했고 마지막 확정 build5는 exit0이다. 다음은 준비 중단·시도 상한과 일부 문서 fence/super-journal 거절이다. Linux/native Windows·최종 통합은 미완료다. C04의 기존 핵심5파일51/51은 [별도 결과](chapters/C04-ordered-verification-result.md)에 기록했으며, 나머지 [기존 시험과 chat 호스트 옵션 전달 누락](chapters/C04-ordered-verification-preparation.md)은 준비 상태다. 실제 모델/API·사내 연결 중단과 전체 goal 진행을 유지한다. 이 블록보다 아래의 실패1건·게시 우선 정지 표시는 checkpoint370 당시 이력이다.
+<!-- CHECKPOINT371-END -->
+
 <!-- CHECKPOINT370-START -->
 ### Checkpoint370 — C03 개인 기억·이관·복구 검증 진행
 

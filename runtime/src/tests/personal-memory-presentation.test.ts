@@ -16,7 +16,7 @@ import type { WebAcceptResult, WebConversation } from '../presentation/web-contr
 import { ContextFrameSchema } from '../application/context-contracts.js';
 
 const execute = promisify(execFile);
-const cli = fileURLToPath(new URL('../presentation/agent-cli.js', import.meta.url));
+const cli = fileURLToPath(new URL('./helpers/agent-cli-isolated-worker.js', import.meta.url));
 const actor = { tenantId: 'synthetic', principalId: 'learner' };
 const original = '개인 기억 표면 시험: 보고서는 한국어로 작성하고 원문을 보존해 주세요.';
 const corrected = '개인 기억 정정: 보고서는 한국어로 작성하고 표보다 간결한 문장을 우선해 주세요.';
@@ -24,7 +24,8 @@ function fixture(backend: 'sqlite' | 'file-journal' = 'sqlite') {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'personal-memory-presentation-'))), directory = join(base, 'agent');
   const ready = new FileAgentProfileStore(runtimeRoot).initialize(directory);
   writeFileSync(join(directory, 'config.json'), JSON.stringify({ ...ready.config, storage: { ...ready.config.storage, state: backend } }), { mode: 0o600 });
-  return { base, directory, close: () => rmSync(base, { recursive: true, force: true }) };
+  const hostOptions = { identityRegistryDirectory: join(base, 'registry') };
+  return { base, directory, hostOptions, close: () => rmSync(base, { recursive: true, force: true }) };
 }
 async function login(web: Awaited<ReturnType<typeof startWebServer>>) {
   const response = await fetch(`${web.origin}/api/session`, { method: 'POST', headers: { Origin: web.origin, 'Content-Type': 'application/json' },
@@ -47,7 +48,7 @@ async function prepare(profile: Awaited<ReturnType<typeof openAgentLocalProfile>
 }
 
 for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: Web personal memory crosses a completed work and restart, with explicit current-version recall and forget`, async () => {
-  const f = fixture(backend); let profile = await openAgentLocalProfile(f.directory); let workbench = new LocalWorkbench(profile);
+  const f = fixture(backend); let profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); let workbench = new LocalWorkbench(profile);
   let web = await startWebServer(workbench); let headers = await login(web);
   const request = async <T>(path: string, body?: unknown, expected = 200): Promise<T> => {
     const response = await fetch(`${web.origin}${path}`, { headers, ...(body === undefined ? {} : { method: 'POST', body: JSON.stringify(body) }) });
@@ -67,7 +68,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: Web
     await request(`/api/works/${x.workId}/commands`, { requestId: 'finish-x', expectedGoalRevision: 1, kind: 'run' });
     assert.equal((await profile.runtime.state(x.workId)).status, 'completed');
     await web.close(); await profile.close();
-    profile = await openAgentLocalProfile(f.directory); workbench = new LocalWorkbench(profile, actor, 'web', { newSession: true });
+    profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); workbench = new LocalWorkbench(profile, actor, 'web', { newSession: true });
     web = await startWebServer(workbench); headers = await login(web);
     const y = await request<WebAcceptResult>('/api/works', { requestId: 'next', scenarioId: 'documents-simple', mode: 'auto', rawText: '다른 세션에서 보고서 형식을 확인합니다.' });
     assert.notEqual(y.sessionId, x.sessionId);
@@ -104,7 +105,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: Web
     assert.equal((await prepare(profile, y.workId)).packet.personalMemory?.entries.length, 0);
     assert.deepEqual(await workbench.history(), beforeForget);
     await web.close(); await profile.close();
-    profile = await openAgentLocalProfile(f.directory); workbench = new LocalWorkbench(profile); web = await startWebServer(workbench); headers = await login(web);
+    profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); workbench = new LocalWorkbench(profile); web = await startWebServer(workbench); headers = await login(web);
     assert.deepEqual((await request<Pick<KnowledgeSearch, 'cards' | 'index'>>('/api/memories')).cards, []);
     await request(`/api/memories/${input.id}`, undefined, 403);
     assert.ok((await request<WebConversation>('/api/conversation')).entries.some(entry => entry.text === corrected));
@@ -115,7 +116,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: Web
 test('installed CLI records a real source and uses explicit memory revision, then clears and forgets after restart', async () => {
   const f = fixture();
   const call = async <T>(args: string[]): Promise<T> => {
-    const result = await execute(process.execPath, [cli, 'work', ...args, '--directory', f.directory, '--json'], { timeout: 30000, maxBuffer: 2097152 });
+    const result = await execute(process.execPath, [cli, 'work', ...args, '--directory', f.directory, '--json'], { timeout: 30000, maxBuffer: 2097152, env: { ...process.env, SECUMON_TEST_IDENTITY_REGISTRY: f.hostOptions.identityRegistryDirectory } });
     return JSON.parse(result.stdout) as T;
   };
   try {
@@ -128,7 +129,7 @@ test('installed CLI records a real source and uses explicit memory revision, the
     const found = await call<Pick<KnowledgeSearch, 'cards' | 'index'>>(['memory-search', '--query', '보고서']); assert.equal(found.cards[0]?.id, 'style');
     const basis = await call<{ stateRevision: number }>(['memory-selected', y.workId]);
     await call(['memory-recall', y.workId, '--memory-id', 'style', '--memory-revision', '1', '--request-id', 'select', '--goal-revision', '1', '--state-revision', String(basis.stateRevision)]);
-    let profile = await openAgentLocalProfile(f.directory);
+    let profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions);
     try { assert.equal((await prepare(profile, y.workId)).packet.personalMemory?.entries[0]?.ref.id, 'style'); } finally { await profile.close(); }
     const revised = await call<{ revision: number }>(['memory-revise', y.workId, '--memory-id', 'style', '--memory-revision', '1', '--request-id', 'revise', '--source-message', 'correction', '--text', corrected, '--goal-revision', '1', '--title', '보고서 표현', '--reason', '사용자 정정']);
     assert.equal(revised.revision, 2); assert.equal((await call<{ card: KnowledgeCard }>(['memory-get', '--memory-id', 'style'])).card.body, corrected);
@@ -138,14 +139,14 @@ test('installed CLI records a real source and uses explicit memory revision, the
     assert.deepEqual((await call<Pick<KnowledgeSearch, 'cards' | 'index'>>(['memory-search'])).cards, []);
     await assert.rejects(call(args), /knowledge_unavailable/);
     const history = await call<WebConversation>(['history']); assert.equal(history.entries.filter(entry => entry.sourceId === 'correction' && entry.text === corrected).length, 1);
-    profile = await openAgentLocalProfile(f.directory);
+    profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions);
     try { const state = await profile.runtime.state(y.workId); assert.deepEqual(state.attempts, []); assert.deepEqual(state.modelCalls, []); }
     finally { await profile.close(); }
   } finally { f.close(); }
 });
 
 test('new-input remember retries reuse the applied user message after a memory failure and after response loss', async () => {
-  const f = fixture(); const profile = await openAgentLocalProfile(f.directory); const workbench = new LocalWorkbench(profile);
+  const f = fixture(); const profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); const workbench = new LocalWorkbench(profile);
   const factory = profile.personalKnowledge; let failure: 'before' | 'after' | null = 'before';
   profile.personalKnowledge = async (...args) => {
     const service = await factory(...args), remember = service.remember.bind(service);
@@ -174,7 +175,7 @@ test('new-input remember retries reuse the applied user message after a memory f
 });
 
 test('surface authority rejects other users, labels, destinations and session work selection while same-owner memory remains cross-session', async () => {
-  const f = fixture(); const profile = await openAgentLocalProfile(f.directory); const workbench = new LocalWorkbench(profile);
+  const f = fixture(); const profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); const workbench = new LocalWorkbench(profile);
   let foreign: Awaited<ReturnType<typeof openAgentLocalProfile>> | undefined;
   try {
     const x = await seed(workbench); await workbench.memoryRemember(remember(x.sessionId!));
@@ -194,14 +195,14 @@ test('surface authority rejects other users, labels, destinations and session wo
     await assert.rejects(readonly.memoryForget({ id: 'report-style', requestId: 'read-only-forget', expectedRevision: 1, reason: '읽기 전용 요청' }), /personal_memory_read_only/);
     await assert.rejects(readonly.memoryRemember({ ...remember(x.sessionId!), requestId: 'read-only-remember', id: 'read-only' }), /personal_memory_read_only/);
     await readonly.drain();
-    foreign = await openAgentLocalProfile(join(f.base, 'other-agent')); const otherAgent = new LocalWorkbench(foreign);
+    foreign = await openAgentLocalProfile(join(f.base, 'other-agent'), {}, undefined, f.hostOptions); const otherAgent = new LocalWorkbench(foreign);
     await assert.rejects(otherAgent.memoryGet('report-style')); assert.deepEqual((await otherAgent.memorySearch('')).cards, []);
     await next.drain(); await otherAgent.drain();
   } finally { await foreign?.close(); await workbench.drain(); await profile.close(); f.close(); }
 });
 
 test('Web memory mutations preserve CSRF and strict owner-free schemas, reject stale work input and do not append operation notices', async () => {
-  const f = fixture(); const profile = await openAgentLocalProfile(f.directory); const workbench = new LocalWorkbench(profile);
+  const f = fixture(); const profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); const workbench = new LocalWorkbench(profile);
   const web = await startWebServer(workbench);
   try {
     const x = await seed(workbench), headers = await login(web); const before = await workbench.history();
@@ -235,7 +236,7 @@ test('legacy synthetic directory exposes no personal-memory service and does not
 });
 
 test('memory source controls reject assistant text, invented quotes and unbound new input without creating memory', async () => {
-  const f = fixture(); const profile = await openAgentLocalProfile(f.directory); const workbench = new LocalWorkbench(profile);
+  const f = fixture(); const profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); const workbench = new LocalWorkbench(profile);
   try {
     const x = await seed(workbench), history = await workbench.history(); const assistant = history.entries.find(entry => entry.role === 'assistant'); assert.ok(assistant);
     const input = remember(x.sessionId!);

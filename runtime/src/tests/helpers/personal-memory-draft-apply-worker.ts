@@ -3,9 +3,9 @@ import { applyMemoryDraft } from '../../presentation/local-memory-drafts.js';
 import { actor } from '../session-flow-helpers.js';
 import { MemoryDraftApplySchema } from '../../application/personal-memory-draft-contracts.js';
 
-const [directory, serialized, stage] = process.argv.slice(2);
-if (!directory || !serialized || !['intent', 'source', 'memory', 'run'].includes(stage!)) throw new Error('worker_arguments_required');
-const profile = await openAgentLocalProfile(directory), input = MemoryDraftApplySchema.parse(JSON.parse(serialized));
+const [directory, serialized, stage, identityRegistryDirectory] = process.argv.slice(2);
+if (!directory || !serialized || !identityRegistryDirectory || !['intent', 'source', 'memory', 'run'].includes(stage!)) throw new Error('worker_arguments_required');
+const profile = await openAgentLocalProfile(directory, {}, undefined, { identityRegistryDirectory }), input = MemoryDraftApplySchema.parse(JSON.parse(serialized));
 async function stop() { process.send?.({ reached: stage }); await new Promise<void>(() => { setInterval(() => {}, 1000); }); }
 if (stage === 'intent') {
   const bind = profile.memoryDrafts!.store.bind.bind(profile.memoryDrafts!.store);

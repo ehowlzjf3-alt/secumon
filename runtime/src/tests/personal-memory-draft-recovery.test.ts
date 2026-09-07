@@ -13,7 +13,7 @@ const worker = fileURLToPath(new URL('./helpers/personal-memory-draft-apply-work
 for (const backend of ['sqlite', 'file-journal'] as const) for (const stage of ['intent', 'source', 'memory']) {
   test(`draft SIGKILL ${backend}/${stage}: resume uses fixed intent and the same source and memory receipts`, { timeout: 30000 }, async t => {
     const f = await draftFixture(t, backend); editDraft(f.draft.path); await f.profile.close();
-    const child = fork(worker, [f.directory, JSON.stringify(f.input), stage], { stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
+    const child = fork(worker, [f.directory, JSON.stringify(f.input), stage, f.hostOptions.identityRegistryDirectory], { stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
     let errors = ''; child.stderr!.on('data', bytes => { errors += String(bytes); });
     t.after(() => { if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL'); });
     const stopped = once(child, 'exit');
@@ -35,7 +35,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) for (const stage of [
 test('two actual processes applying the same draft converge on one source and one revision', { timeout: 30000 }, async t => {
   const f = await draftFixture(t); editDraft(f.draft.path); await f.profile.close();
   const results = await Promise.all([1, 2].map(async () => {
-    const child = fork(worker, [f.directory, JSON.stringify(f.input), 'run'], { stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
+    const child = fork(worker, [f.directory, JSON.stringify(f.input), 'run', f.hostOptions.identityRegistryDirectory], { stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
     let errors = '', result: MemoryDraftStatus | undefined;
     child.stderr!.on('data', bytes => { errors += String(bytes); });
     child.on('message', message => { result = (message as { result: MemoryDraftStatus }).result; });

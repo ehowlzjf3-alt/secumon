@@ -1,5 +1,17 @@
 # C03 순차 검증·수정 기록
 
+최종 확인 범위는 **고유216개 통과**로 늘었다. build5(session93374) exit0, 지문 `e6d6c53682954cdac728d0ca41e792efc53af1a5ee942e710a6b26b5d9343d0c`에서 실제 apply 중단4개(session23786)가 통과했다. 후보 정본 링크, 완료 receipt 게시, main 퇴역 링크, journal 퇴역 뒤 각각 IPC를 관측하고 SIGKILL·exit/close를 확인했다. 죽은 maintenance lease를 회수한 후에도 pending과 일반 실행 차단이 유지되며, 같은 operation을 재개해 원본/영수증/업무/기억/세션을 보존했다. [원로그](../../runtime/evidence/C03-ordered-target10.log). 앞선 target9는 잘못된 필터로 사례0개를 선택한 실행이며 파일 wrapper의 pass를 검증 수에 넣지 않았다.
+
+남은 것은 준비 단계 중단·원본/후보 시도 상한, 추가 documents fence/super-journal 거절과 최종 환경/통합 인수다. C04 핵심5파일51/51은 별도 [C04 결과](C04-ordered-verification-result.md)에 저장했다. 실제 모델/API 시험은 계속 중단한다.
+
+checkpoint371의 build4까지 선택 결과는 **고유212개 통과**였다. build4(session19819) exit0, 지문 `e6ea677ed53f2986942e4c702459c6918b02816afeddea6dd38aa9d75126bc6c`에서 worker 이벤트 계약14/14와 실제 임시 hot pair 거절3/3(session87960)을 추가 확인했다. [worker 원로그](../../runtime/evidence/C03-ordered-target7.log) · [owner/schema/layout 원로그](../../runtime/evidence/C03-ordered-target8.log). 이벤트 시험은 응답/exit/close·timeout/abort·출력 한도·원인 보존을 대역 이벤트로 확인하며 실제 운영체제 복구 성공과 구분한다. 실제 프로세스 중단 뒤 관리 복구의 재개·시도 상한과 일부 추가 거절 경계는 아직 남는다.
+
+checkpoint371: GitHub에 보존한 체크포인트에서 이어서 초안 시험의 병행 profile을 `try/finally` 안에서 먼저 닫도록 고쳤다. 제품 코드는 변경하지 않았다. build2(session8374) exit0 뒤 이전 실패 시험 **1/1 재확인 통과**로 관측한 종료 hook 실패는 해결됐다. 원래 156개에 재시험을 중복 가산하지 않는다. [재확인 원로그](../../runtime/evidence/C03-ordered-draft-cleanup.log) · [빌드](../../runtime/evidence/C03-ordered-build2.log). 나머지 CLI/Web·이관 입구 및 복구 경계는 이어서 검증하며 전체 C03 인수는 미완료다.
+
+후속 build3(session41840) exit0, 지문 `aac4a7b171c5e5e102f2927f50068a9fd26b623373f197d06dcecbc075979321`에서 **CLI/Web·초안 중단/재개·이관 7파일36/36**(session49052)과 **추가 복구 경계3/3**(session14128)을 확인했다. [입구·이관 원로그](../../runtime/evidence/C03-ordered-target5.log) · [복구 경계 원로그](../../runtime/evidence/C03-ordered-target6.log). build3 단계에서 선택한 고유 시험은195개였으며 이전 종료 hook 실패의 재확인을 포함해 모두 통과했다. 단일 최종 소스에서195개를 재실행한 결과는 아니다.
+
+새 경계는 준비 지문 불일치 거절, pending 중 일반 실행/다른 복구 차단과 정확한 operation 재개, 완료 이후 정상 DB 변경을 과거 복구 receipt가 덮지 않음을 확인했다. 원본 보존과 현재 DB를 다시 검증했다고 주장하지 않는 역사 status를 함께 확인했다. 남은 새 복구 오류·단계 중단·worker 프로토콜/종료 관측과 환경 인수는 별개다.
+
 2026-09-08 · checkpoint370. 선택한 17파일 **156개 중 155통과·1실패**다. 기존 12파일 120/120 뒤, 추가 5파일에서 35/36을 확인했다. 종료 hook의 실패와 미실행 후속을 보존하며 C03 전체 인수는 미완료다. 사용자의 GitHub 게시 우선 지시에 따라 추가 수정·시험을 멈추고 이 상태를 저장했다. [진행 증거](../../runtime/evidence/C03-ordered-checkpoint.json).
 
 개인 기억은 적용된 사용자 원문을 출처로 삼고, 다른 세션의 대화를 통째로 복제하지 않고도 재조회됐다. 기억의 정정은 이전 참조를 무효화하며, 잊기는 활성 기억의 본문·인용을 제거하되 원래 대화와 처리 영수증을 보존했다. 개인 기억을 업무의 검증된 근거로 승격하지 않았고, 같은 저장소에 같은 ID를 사용해도 담당·사용자·조직의 기록·색인·영수증이 분리됐다. SQLite 저장 중 실패하면 기록·색인·head·영수증이 함께 되돌아갔다. [원로그](../../runtime/evidence/C03-ordered-target1.log).

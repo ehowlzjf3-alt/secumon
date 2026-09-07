@@ -20,11 +20,12 @@ import { migrationActivationPath, migrationOperationPath } from '../infrastructu
 import { readSqlitePersonalMemoryFence } from '../infrastructure/sqlite-personal-memory-migration.js';
 import type { PersonalMemoryMigrationOptions } from '../application/personal-memory-migration-contracts.js';
 
-const execute = promisify(execFile), cli = fileURLToPath(new URL('../presentation/agent-cli.js', import.meta.url));
+const execute = promisify(execFile), cli = fileURLToPath(new URL('./helpers/agent-cli-isolated-worker.js', import.meta.url));
 const actor = { tenantId: 'synthetic', principalId: 'learner' }, original = '[합성 예제] 원문 보존. ' + '이관 전부터 이어 온 대화와 개인 기억. '.repeat(100);
 async function fixture() {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'personal-memory-migration-flow-'))), directory = join(base, 'agent');
-  const profiles = new FileAgentProfileStore(runtimeRoot); let local = await openAgentLocalProfile(directory, { compactProvider: 'synthetic' });
+  const hostOptions = { identityRegistryDirectory: join(base, 'registry') };
+  const profiles = new FileAgentProfileStore(runtimeRoot); let local = await openAgentLocalProfile(directory, { compactProvider: 'synthetic' }, undefined, hostOptions);
   const workbench = new LocalWorkbench(local, actor);
   const accepted = await workbench.accept({ requestId: 'original-input', scenarioId: 'documents-simple', mode: 'auto', rawText: original });
   assert.ok(accepted.sessionId);
@@ -44,8 +45,8 @@ async function fixture() {
     operationId: randomUUID(), targetStoreId: randomUUID(), backupDirectory: join(base, 'backup'), from: 'sqlite', to: 'documents', scope: 'all-personal' };
   const preserved = ['config.json', '.secumon/identity.json', '.secumon/setup.json', '.secumon/setup-operation.json',
     '.secumon/personal-memory-profile.json', '.secumon/channel.sqlite', '.secumon/runtime.sqlite'].map(path => ({ path, bytes: readFileSync(join(directory, path)) }));
-  return { base, directory, profiles, options, before, accepted, remember, saved, state, history, preserved,
-    async reopen() { local = await openAgentLocalProfile(directory, { compactProvider: 'synthetic' }); return local; },
+  return { base, directory, profiles, hostOptions, options, before, accepted, remember, saved, state, history, preserved,
+    async reopen() { local = await openAgentLocalProfile(directory, { compactProvider: 'synthetic' }, undefined, hostOptions); return local; },
     async close() { await local.close(); rmSync(base, { recursive: true, force: true }); } };
 }
 const approved = (snapshotDigest: string) => ({ expectedSnapshotDigest: snapshotDigest, offlineConfirmed: true, effectsReconciled: true });
@@ -99,9 +100,9 @@ test('migration preserves compacted session, profile bytes and receipts; ordinar
     if (clone.effectivePersonalMemory.backend !== 'documents') assert.fail();
     assert.notEqual(clone.effectivePersonalMemory.storeId, f.options.targetStoreId);
     assert.equal(existsSync(migrationOperationPath(clone.root)), false);
-    const cloneStores = await openAgentStores(f.profiles, clone.root); await cloneStores.close();
+    const cloneStores = await openAgentStores(f.profiles, clone.root, undefined, f.hostOptions); await cloneStores.close();
     const moved = join(f.base, 'moved-agent'); renameSync(f.directory, moved);
-    const reopenedMoved = await openAgentLocalProfile(moved, { compactProvider: 'synthetic' });
+    const reopenedMoved = await openAgentLocalProfile(moved, { compactProvider: 'synthetic' }, undefined, f.hostOptions);
     try {
       assert.equal(reopenedMoved.agentId, f.before.identity.agentId);
       const movedWorkbench = new LocalWorkbench(reopenedMoved, actor);
@@ -117,7 +118,8 @@ test('management CLI rejects unconfirmed or stale previews without creating an o
   const f = await fixture();
   const args = ['--directory', f.directory, '--from', 'sqlite', '--source', f.options.source, '--to', 'documents', '--target', f.options.target,
     '--operation-id', f.options.operationId, '--target-store-id', f.options.targetStoreId, '--backup-directory', f.options.backupDirectory, '--scope', 'all-personal', '--json'];
-  const run = (command: string, extra: string[] = []) => execute(process.execPath, [cli, 'memory-migrate', command, ...args, ...extra], { timeout: 30000, maxBuffer: 2 * 1024 * 1024 });
+  const env = { ...process.env, SECUMON_TEST_IDENTITY_REGISTRY: f.hostOptions.identityRegistryDirectory };
+  const run = (command: string, extra: string[] = []) => execute(process.execPath, [cli, 'memory-migrate', command, ...args, ...extra], { timeout: 30000, maxBuffer: 2 * 1024 * 1024, env });
   try {
     const preview = JSON.parse((await run('preview')).stdout) as ReturnType<typeof previewPersonalMemoryMigration>;
     await assert.rejects(run('apply', ['--snapshot-digest', preview.snapshot.snapshotDigest]), /agent_migration_offline_confirmation_required/);
@@ -126,9 +128,9 @@ test('management CLI rejects unconfirmed or stale previews without creating an o
     assert.equal(existsSync(f.options.backupDirectory), false);
     const result = JSON.parse((await run('apply', ['--snapshot-digest', preview.snapshot.snapshotDigest, '--offline-confirmed', '--effects-reconciled'])).stdout) as { phase: string };
     assert.equal(result.phase, 'activated');
-    const status = await execute(process.execPath, [cli, 'status', '--directory', f.directory], { timeout: 15000 });
+    const status = await execute(process.execPath, [cli, 'status', '--directory', f.directory], { timeout: 15000, env });
     assert.match(status.stdout, /개인 기억: 문서/);
-    await assert.rejects(execute(process.execPath, [cli, 'memory-migrate', 'resume', '--directory', f.directory, '--operation-id', randomUUID()], { timeout: 15000 }), /agent_migration_operation_conflict/);
+    await assert.rejects(execute(process.execPath, [cli, 'memory-migrate', 'resume', '--directory', f.directory, '--operation-id', randomUUID()], { timeout: 15000, env }), /agent_migration_operation_conflict/);
   } finally { await f.close(); }
 });
 
@@ -138,12 +140,12 @@ test('activation loss gates ordinary opening; same-operation resume restores rou
     const preview = previewPersonalMemoryMigration(f.profiles, f.options, [runtimeRoot]);
     await applyPersonalMemoryMigration(f.profiles, f.options, approved(preview.snapshot.snapshotDigest), [runtimeRoot]);
     const activation = migrationActivationPath(f.directory), saved = readFileSync(activation); unlinkSync(activation);
-    await assert.rejects(openAgentStores(f.profiles, f.directory), /agent_migration_resume_required/);
+    await assert.rejects(openAgentStores(f.profiles, f.directory, undefined, f.hostOptions), /agent_migration_resume_required/);
     assert.ok(readSqlitePersonalMemoryFence(f.options.source, f.before.identity.agentId));
     assert.equal((await resumePersonalMemoryMigration(f.profiles, f.directory, f.options.operationId, [runtimeRoot])).phase, 'activated');
     assert.deepEqual(readFileSync(activation), saved);
     renameSync(f.options.target, f.options.target + '-held');
-    await assert.rejects(openAgentStores(f.profiles, f.directory)); assert.equal(existsSync(f.options.target), false);
+    await assert.rejects(openAgentStores(f.profiles, f.directory, undefined, f.hostOptions)); assert.equal(existsSync(f.options.target), false);
     renameSync(f.options.target + '-held', f.options.target);
     const configPath = join(f.directory, 'config.json'), config = readFileSync(configPath);
     writeFileSync(configPath, Buffer.concat([config, Buffer.from(' ')]));
@@ -179,7 +181,7 @@ test('lost migration metadata cannot reopen a fenced source or create replacemen
       join(f.directory, '.secumon', 'runtime.sqlite'), join(f.directory, '.secumon', 'channel.sqlite')]) renameSync(path, path + '.held');
     const metadataOnly = f.profiles.inspect(f.directory); assert.equal(metadataOnly.status, 'ready');
     if (metadataOnly.status !== 'ready') assert.fail();
-    await assert.rejects(openAgentStores(f.profiles, f.directory), /agent_migration_operation_missing/);
+    await assert.rejects(openAgentStores(f.profiles, f.directory, undefined, f.hostOptions), /agent_migration_operation_missing/);
     assert.throws(() => bindAgentMemoryProfile(metadataOnly), /agent_migration_operation_missing/);
     for (const name of ['state-profile.json', 'runtime.sqlite', 'channel.sqlite']) assert.equal(existsSync(join(f.directory, '.secumon', name)), false);
     assert.ok(readSqlitePersonalMemoryFence(f.options.source, f.before.identity.agentId));

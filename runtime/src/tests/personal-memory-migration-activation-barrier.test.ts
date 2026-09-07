@@ -24,12 +24,13 @@ function causeChain(error: unknown): unknown[] {
 test('activation publication fsync failure preserves its cause and resume synchronizes the same visible activation before selecting documents', { timeout: 45000 }, async () => {
   const base = fs.realpathSync(fs.mkdtempSync(join(tmpdir(), 'personal-memory-activation-barrier-')));
   const engine = join(base, 'engine'), directory = join(base, 'agent'); fs.mkdirSync(engine, { mode: 0o700 });
+  const hostOptions = { identityRegistryDirectory: join(base, 'registry') };
   const profiles = new FileAgentProfileStore(engine);
   const originalLink = fs.linkSync, originalSync = fs.fsyncSync;
   let hooksInstalled = false;
   try {
     const profile = profiles.initialize(directory);
-    const stores = await openAgentStores(profiles, directory); await stores.close();
+    const stores = await openAgentStores(profiles, directory, undefined, hostOptions); await stores.close();
     const options: PersonalMemoryMigrationOptions = { directory, source: profile.paths.memory, target: join(directory, 'memory', 'documents'),
       operationId: randomUUID(), targetStoreId: randomUUID(), backupDirectory: join(base, 'backup'), from: 'sqlite', to: 'documents', scope: 'all-personal' };
     const preview = previewPersonalMemoryMigration(profiles, options, [engine]);
@@ -70,7 +71,7 @@ test('activation publication fsync failure preserves its cause and resume synchr
     assert.ok(metadataSyncCalls > syncCallsBeforeResume, 'a visible activation alone must not bypass its directory barrier');
     assert.ok(successfulMetadataSyncs > successesBeforeResume, 'resume must perform an actual successful parent fsync');
     assert.equal(failures, 1); assert.deepEqual(fs.readFileSync(activation), savedActivation);
-    const reopened = await openAgentStores(profiles, directory);
+    const reopened = await openAgentStores(profiles, directory, undefined, hostOptions);
     try { assert.deepEqual(reopened.profile.effectivePersonalMemory, result.effectivePersonalMemory); }
     finally { await reopened.close(); }
     assert.deepEqual(fs.readFileSync(activation), savedActivation);

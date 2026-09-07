@@ -2308,3 +2308,15 @@ C02에서는 시험 fixture의 임시 등록표와 기존 trusted host 옵션의
 2026-09-08. C03 기존 저장소·서비스·문서·이관 기반 12파일의 세 묶음은 30+23+67=120개 모두 통과했다. 일반 문맥·담당 documents·동시 개설·초안 helper에 임시 registry를 연결해 후속 시험을 준비하고, checkpoint366 명시 SQLite 복구를 직접 확인할 임시 hot-journal 경로를 추가한다. [현재 결과](chapters/C03-ordered-verification-result.md)와 [실행 체크포인트](../runtime/evidence/C03-ordered-checkpoint.json)에 후속 빌드/실행을 계속 기록한다. 실제 모델/API·사내 연결·원격 플랫폼은 호출하지 않았고 전체 goal은 미완료다.
 
 Checkpoint370 후속: C03 build1(session21634) exit0, 5파일 target4(session31180)는 36개 중35통과·1실패다. SQLite 복구 state/memory/channel의 실제 임시 hot-journal 3경로는 모두 통과했다. 초안 병행 profile 시험 한 개의 종료 hook이 임시 폴더 삭제 뒤 lease를 닫으며 ENOENT로 실패했다. 합계156개 중155통과·1실패를 기록했고 아직 수정·재시험하지 않았다. 사용자가 지정한 git@github.com:ehowlzjf3-alt/secumon.git에 소스와 전체 문서·잔여 작업을 우선 게시하도록 순서를 바꿨다. 원격은 비어 있었고 SSH 계정 인증을 확인한 뒤 이 폴더에 Git을 초기화했다. 이후 검증은 게시 뒤 위 실패 지점에서 이어간다.
+
+
+### Checkpoint371 — 게시 후 C03 검증·종료 순서 교정
+
+이전 goal turn은 진행으로 분류한다. 원격 main 872fa50 게시를 확인한 뒤 C03 종료 hook 한 건을 try/finally로 교정했고 build2와 해당1시험을 확인했다. 이후 build3와 입구/이관36개·복구경계3개, build4와 worker이벤트계약14개·owner/schema/layout거절3개가 모두 통과했다. 현재고유212개이며 재시험을 고유 수에 더하지 않는다. 실제 프로세스 게시 중단/재개를 준비하고 C04는 기존시험·chat trusted host 전달 누락만 읽기 정리했다. 원로그/실행명령/지문은 C03-ordered-checkpoint.json에 보존한다. 모델/API·사내 연결·원격 플랫폼은 실행하지 않았고 전체 goal은 미완료다.
+
+Checkpoint371 최종 저장: build5(session93374) exit0, 실제 apply 게시 중단4개(session23786,target10)통과로 C03고유216개를 확인했다. target9는 필터불일치로 실제사례0개여서파일wrapper통과를집계에서제외했다. C04기존핵심5파일51/51(session87471)도별도증거에저장했다. 현재소스와최종빌드지문일치를확인했고활성시험은없다. 다음은C03준비중단/시도상한/남은거절과C04입구·복합·문맥·목표변경이다. 이번추가분은로컬변경이며원격main의게시체크포인트872fa50은유지된다. 전체goal은진행중이다.
+
+
+### Checkpoint371 후속 게시와 작업 완료 시 푸시 규칙
+
+2026-09-08. 사용자가 작업 완료 때마다 Git에 푸시하도록 요청했다. 저장소 `AGENTS.md`와 인수인계에 코드·문서·검증 결과·잔여 목록을 함께 커밋하고 원격 일치를 확인하는 규칙을 기록했다. 이번 커밋은 checkpoint371의 C03 선택 고유216개·C04 핵심51개 증거, 시험 수정·추가, 전체 진행 문서를 포함한다. README와 NEXT-STEPS는 현재 남은 작업으로 갱신했고 checkpoint370의 실패 및 소스 지문은 이력임을 표시했다. 현재 소스 지문은 C03 build5 기록과 일치한다. 게시 준비 중 제품 코드 변경이나 추가 시험 실행은 하지 않았다. 전체 목표와 실제 환경 검증은 계속 미완료이며 이전 문단의 로컬 상태는 이 후속 게시 이전의 기록이다.

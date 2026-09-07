@@ -94,7 +94,7 @@ test('draft source applied before a competing memory revision remains an explici
 
 test('a stale absent-operation observation joins the exact apply completed by another profile', async t => {
   const f = await draftFixture(t); editDraft(f.draft.path);
-  const other = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); t.after(() => other.close());
+  const other = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions);
   const originalOperation = f.profile.memoryDrafts!.store.operation.bind(f.profile.memoryDrafts!.store);
   let observed = false;
   f.profile.memoryDrafts!.store.operation = async (...args) => {
@@ -102,9 +102,11 @@ test('a stale absent-operation observation joins the exact apply completed by an
     if (!observed && value === null) { observed = true; await applyMemoryDraft(other, actor, f.input); }
     return value;
   };
-  const joined = await applyMemoryDraft(f.profile, actor, f.input);
-  assert.equal(joined.appliedRevision, 2); assert(observed);
-  assert.equal((await f.history()).entries.filter(e => e.role === 'user').length, 2);
+  try {
+    const joined = await applyMemoryDraft(f.profile, actor, f.input);
+    assert.equal(joined.appliedRevision, 2); assert(observed);
+    assert.equal((await f.history()).entries.filter(e => e.role === 'user').length, 2);
+  } finally { await other.close(); }
 });
 
 for (const phase of ['preflight', 'after-intent'] as const) test(`real source snapshot contention at ${phase} converges on the same apply receipt`, async t => {

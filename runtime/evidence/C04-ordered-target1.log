@@ -1,0 +1,316 @@
+TAP version 13
+# Subtest: legacy fact-only goals preserve serialized bytes and the existing completion result
+ok 1 - legacy fact-only goals preserve serialized bytes and the existing completion result
+  ---
+  duration_ms: 4.57375
+  type: 'test'
+  ...
+# Subtest: a response-only goal needs a host-adopted answer, not an empty criterion list or a fabricated fact
+ok 2 - a response-only goal needs a host-adopted answer, not an empty criterion list or a fabricated fact
+  ---
+  duration_ms: 0.824541
+  type: 'test'
+  ...
+# Subtest: only the unique accepted main-turn call with the same input reference can support an answer
+ok 3 - only the unique accepted main-turn call with the same input reference can support an answer
+  ---
+  duration_ms: 1.016167
+  type: 'test'
+  ...
+# Subtest: goal, graph, data generation and each session input identity change invalidate a previously accepted answer
+ok 4 - goal, graph, data generation and each session input identity change invalidate a previously accepted answer
+  ---
+  duration_ms: 1.009875
+  type: 'test'
+  ...
+# Subtest: new, removed, restricted or retracted evidence requires a fresh answer even when it was not cited
+ok 5 - new, removed, restricted or retracted evidence requires a fresh answer even when it was not cited
+  ---
+  duration_ms: 0.423167
+  type: 'test'
+  ...
+# Subtest: model self-review cannot replace independent evidence or dismiss factual counterevidence
+ok 6 - model self-review cannot replace independent evidence or dismiss factual counterevidence
+  ---
+  duration_ms: 0.145667
+  type: 'test'
+  ...
+# Subtest: considered counterarguments are retained while any missing requirement or needs-work verdict blocks completion
+ok 7 - considered counterarguments are retained while any missing requirement or needs-work verdict blocks completion
+  ---
+  duration_ms: 0.0935
+  type: 'test'
+  ...
+# Subtest: result readiness excludes only delivery; response, evidence, effect and budget obligations remain required
+ok 8 - result readiness excludes only delivery; response, evidence, effect and budget obligations remain required
+  ---
+  duration_ms: 0.296542
+  type: 'test'
+  ...
+# Subtest: transient model and tool calls cannot be hidden by an otherwise accepted answer
+ok 9 - transient model and tool calls cannot be hidden by an otherwise accepted answer
+  ---
+  duration_ms: 0.757167
+  type: 'test'
+  ...
+# Subtest: fresh session, memory and hypothesis reviews remain gates before response completion
+ok 10 - fresh session, memory and hypothesis reviews remain gates before response completion
+  ---
+  duration_ms: 0.164458
+  type: 'test'
+  ...
+# Subtest: blocked or no-longer-authorized answer and input artifacts cannot complete a response
+ok 11 - blocked or no-longer-authorized answer and input artifacts cannot complete a response
+  ---
+  duration_ms: 0.109292
+  type: 'test'
+  ...
+# Subtest: fast work progresses from main turn to tool to synthesis without charging a graph replan
+ok 12 - fast work progresses from main turn to tool to synthesis without charging a graph replan
+  ---
+  duration_ms: 0.183
+  type: 'test'
+  ...
+# Subtest: answer synthesis does not bypass a failed task, unmet factual criteria, allocation gate or deadline
+ok 13 - answer synthesis does not bypass a failed task, unmet factual criteria, allocation gate or deadline
+  ---
+  duration_ms: 0.117708
+  type: 'test'
+  ...
+# Subtest: an accepted satisfied answer cannot complete while planned tasks are unstarted, failed or have no current adopted success
+ok 14 - an accepted satisfied answer cannot complete while planned tasks are unstarted, failed or have no current adopted success
+  ---
+  duration_ms: 0.479292
+  type: 'test'
+  ...
+# Subtest: an explicit validated plan removal preserves the failed attempt and permits a fresh answer at the new plan revision
+ok 15 - an explicit validated plan removal preserves the failed attempt and permits a fresh answer at the new plan revision
+  ---
+  duration_ms: 2.070209
+  type: 'test'
+  ...
+# Subtest: waiting for an answer alone does not expand auto investigation, but current factual counterevidence still does
+ok 16 - waiting for an answer alone does not expand auto investigation, but current factual counterevidence still does
+  ---
+  duration_ms: 0.14825
+  type: 'test'
+  ...
+# Subtest: versioned main prompt fingerprints canonical host profile and preserves model self-review boundaries
+ok 17 - versioned main prompt fingerprints canonical host profile and preserves model self-review boundaries
+  ---
+  duration_ms: 3.742917
+  type: 'test'
+  ...
+# Subtest: main-turn transport receives original conversation and frozen prompt/options once, returning a direct answer with measured usage
+ok 18 - main-turn transport receives original conversation and frozen prompt/options once, returning a direct answer with measured usage
+  ---
+  duration_ms: 3.599041
+  type: 'test'
+  ...
+# Subtest: request estimation includes the fixed prompt, original UTF-8 text and exact tool contracts; byte limit is inclusive
+ok 19 - request estimation includes the fixed prompt, original UTF-8 text and exact tool contracts; byte limit is inclusive
+  ---
+  duration_ms: 2.370666
+  type: 'test'
+  ...
+# Subtest: host prompt changes and another agent session cannot be accepted through caller-supplied digests
+ok 20 - host prompt changes and another agent session cannot be accepted through caller-supplied digests
+  ---
+  duration_ms: 0.8425
+  type: 'test'
+  ...
+# Subtest: destination, disclosure and exact tool permissions are checked before any turn invocation
+ok 21 - destination, disclosure and exact tool permissions are checked before any turn invocation
+  ---
+  duration_ms: 0.578542
+  type: 'test'
+  ...
+# Subtest: strict main results preserve question and plan branches without inventing direct-answer tasks
+ok 22 - strict main results preserve question and plan branches without inventing direct-answer tasks
+  ---
+  duration_ms: 0.817625
+  type: 'test'
+  ...
+# Subtest: unknown result fields, invalid JSON and missing assessment are rejected without repair while usage remains known
+ok 23 - unknown result fields, invalid JSON and missing assessment are rejected without repair while usage remains known
+  ---
+  duration_ms: 1.463625
+  type: 'test'
+  ...
+# Subtest: provider identity, finish status and safe partial usage survive invalid or oversized replies without leaking provider details
+ok 24 - provider identity, finish status and safe partial usage survive invalid or oversized replies without leaking provider details
+  ---
+  duration_ms: 1.095875
+  type: 'test'
+  ...
+# Subtest: early and late cancellation differ in usage; thrown transport errors remain unknown and have no hidden retry
+ok 25 - early and late cancellation differ in usage; thrown transport errors remain unknown and have no hidden retry
+  ---
+  duration_ms: 0.451583
+  type: 'test'
+  ...
+# Subtest: invalid configuration or request contracts cannot invoke the model transport
+ok 26 - invalid configuration or request contracts cannot invoke the model transport
+  ---
+  duration_ms: 0.308583
+  type: 'test'
+  ...
+# Subtest: sqlite: original text is durable before normal work and acknowledgement; receipt retry preserves one work
+ok 27 - sqlite: original text is durable before normal work and acknowledgement; receipt retry preserves one work
+  ---
+  duration_ms: 264.590084
+  type: 'test'
+  ...
+# Subtest: sqlite: interruption after receipt publication resumes identical input without a second work or model call
+ok 28 - sqlite: interruption after receipt publication resumes identical input without a second work or model call
+  ---
+  duration_ms: 238.860584
+  type: 'test'
+  ...
+# Subtest: file-journal: original text is durable before normal work and acknowledgement; receipt retry preserves one work
+ok 29 - file-journal: original text is durable before normal work and acknowledgement; receipt retry preserves one work
+  ---
+  duration_ms: 260.195042
+  type: 'test'
+  ...
+# Subtest: file-journal: interruption after receipt publication resumes identical input without a second work or model call
+ok 30 - file-journal: interruption after receipt publication resumes identical input without a second work or model call
+  ---
+  duration_ms: 261.622291
+  type: 'test'
+  ...
+# Subtest: clarifying an actual question advances the applied reply while preserving the original requirement across retry
+ok 31 - clarifying an actual question advances the applied reply while preserving the original requirement across retry
+  ---
+  duration_ms: 238.977375
+  type: 'test'
+  ...
+# Subtest: continue retains work and budget while an explicit accept creates a separate work in the same session
+ok 32 - continue retains work and budget while an explicit accept creates a separate work in the same session
+  ---
+  duration_ms: 175.828916
+  type: 'test'
+  ...
+# Subtest: host authority and explicit input schemas reject injected work, goal and cross-user or cross-session mutations
+ok 33 - host authority and explicit input schemas reject injected work, goal and cross-user or cross-session mutations
+  ---
+  duration_ms: 183.225917
+  type: 'test'
+  ...
+# Subtest: stale or non-resolvable clarification is durably rejected and cannot silently become a new work
+ok 34 - stale or non-resolvable clarification is durably rejected and cannot silently become a new work
+  ---
+  duration_ms: 182.813958
+  type: 'test'
+  ...
+# Subtest: documents-simple: one model plan executes to completion with usage and no extra hypothesis call
+ok 35 - documents-simple: one model plan executes to completion with usage and no extra hypothesis call
+  ---
+  duration_ms: 45.411834
+  type: 'test'
+  ...
+# Subtest: observations-simple: one model plan executes to completion with usage and no extra hypothesis call
+ok 36 - observations-simple: one model plan executes to completion with usage and no extra hypothesis call
+  ---
+  duration_ms: 12.837125
+  type: 'test'
+  ...
+# Subtest: late counterevidence revises the hypothesis and only the changed graph consumes a replan
+ok 37 - late counterevidence revises the hypothesis and only the changed graph consumes a replan
+  ---
+  duration_ms: 52.738417
+  type: 'test'
+  ...
+# Subtest: strict structured transport adapter feeds the same validator and execution loop without a provider SDK
+ok 38 - strict structured transport adapter feeds the same validator and execution loop without a provider SDK
+  ---
+  duration_ms: 10.268166
+  type: 'test'
+  ...
+# Subtest: invalid or truncated responses cannot replace an executable plan or fabricate zero usage
+ok 39 - invalid or truncated responses cannot replace an executable plan or fabricate zero usage
+  ---
+  duration_ms: 7.067334
+  type: 'test'
+  ...
+# Subtest: rejected model plans still charge exactly one call and preserve their raw response for an authorized read
+ok 40 - rejected model plans still charge exactly one call and preserve their raw response for an authorized read
+  ---
+  duration_ms: 6.455584
+  type: 'test'
+  ...
+# Subtest: bookkeeping changes do not stale a response but goal and evidence changes do
+ok 41 - bookkeeping changes do not stale a response but goal and evidence changes do
+  ---
+  duration_ms: 11.706
+  type: 'test'
+  ...
+# Subtest: received model result resumes after SQLite and artifact reopen with no additional model call
+ok 42 - received model result resumes after SQLite and artifact reopen with no additional model call
+  ---
+  duration_ms: 97.041792
+  type: 'test'
+  ...
+# Subtest: a new scope archives the old hypothesis in prior events and permits a fresh plan
+ok 43 - a new scope archives the old hypothesis in prior events and permits a fresh plan
+  ---
+  duration_ms: 12.655708
+  type: 'test'
+  ...
+# Subtest: unsupported hypotheses and erased counterevidence are rejected without changing the current assessment
+ok 44 - unsupported hypotheses and erased counterevidence are rejected without changing the current assessment
+  ---
+  duration_ms: 9.247166
+  type: 'test'
+  ...
+# Subtest: validator feedback reaches the next model proposal and invalid plans never dispatch their tools
+ok 45 - validator feedback reaches the next model proposal and invalid plans never dispatch their tools
+  ---
+  duration_ms: 15.582375
+  type: 'test'
+  ...
+# Subtest: permission revocation during reply storage preserves usage but never downgrades the model body
+ok 46 - permission revocation during reply storage preserves usage but never downgrades the model body
+  ---
+  duration_ms: 5.727208
+  type: 'test'
+  ...
+# Subtest: explicit synthetic correction and clarification create honest answer artifacts without tools or invented evidence
+ok 47 - explicit synthetic correction and clarification create honest answer artifacts without tools or invented evidence
+  ---
+  duration_ms: 5.469666
+  type: 'test'
+  ...
+# Subtest: arbitrary natural language, quoted old requests and mismatched applied receipts are refused
+ok 48 - arbitrary natural language, quoted old requests and mismatched applied receipts are refused
+  ---
+  duration_ms: 1.701334
+  type: 'test'
+  ...
+# Subtest: synthetic read proposal uses exact permitted tool contract and answers from the returned current evidence value
+ok 49 - synthetic read proposal uses exact permitted tool contract and answers from the returned current evidence value
+  ---
+  duration_ms: 1.398417
+  type: 'test'
+  ...
+# Subtest: read requests without the required tool ask for configuration instead of fabricating a plan or a value
+ok 50 - read requests without the required tool ask for configuration instead of fabricating a plan or a value
+  ---
+  duration_ms: 0.327416
+  type: 'test'
+  ...
+# Subtest: follow-up uses an earlier assistant original or cited accepted-summary view and does not infer omitted prior work
+ok 51 - follow-up uses an earlier assistant original or cited accepted-summary view and does not infer omitted prior work
+  ---
+  duration_ms: 1.08425
+  type: 'test'
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2576.874792

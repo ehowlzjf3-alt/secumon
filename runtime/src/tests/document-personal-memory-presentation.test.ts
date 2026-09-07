@@ -15,7 +15,7 @@ import { startWebServer } from '../presentation/web-server.js';
 import type { KnowledgeCard, KnowledgeRecord } from '../domain/knowledge.js';
 import type { WebAcceptResult, WebConversation } from '../presentation/web-contracts.js';
 
-const execute = promisify(execFile), cli = fileURLToPath(new URL('../presentation/agent-cli.js', import.meta.url));
+const execute = promisify(execFile), cli = fileURLToPath(new URL('./helpers/agent-cli-isolated-worker.js', import.meta.url));
 const actor = { tenantId: 'synthetic', principalId: 'learner' };
 const original = '문서형 개인 기억 시험: 보고서는 한국어로 작성하고 원문을 보존한다.';
 const corrected = '문서형 개인 기억 정정: 보고서는 한국어로 쓰고 요약 뒤에 출처를 덧붙인다.';
@@ -24,9 +24,10 @@ type Search = { cards: KnowledgeCard[]; index: { complete: boolean } };
 type Selection = { stateRevision: number; goalRevision: number; available: boolean; refs: { id: string; revision: number }[] };
 function fixture() {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'document-memory-presentation-'))), directory = join(base, 'agent');
-  const run = (args: string[]) => execute(process.execPath, [cli, ...args, '--directory', directory], { timeout: 30000, maxBuffer: 2097152 });
+  const hostOptions = { identityRegistryDirectory: join(base, 'registry') };
+  const run = (args: string[]) => execute(process.execPath, [cli, ...args, '--directory', directory], { timeout: 30000, maxBuffer: 2097152, env: { ...process.env, SECUMON_TEST_IDENTITY_REGISTRY: hostOptions.identityRegistryDirectory } });
   const json = async <T>(args: string[]): Promise<T> => JSON.parse((await run([...args, '--json'])).stdout) as T;
-  return { base, directory, run, json, close: () => rmSync(base, { recursive: true, force: true }) };
+  return { base, directory, hostOptions, run, json, close: () => rmSync(base, { recursive: true, force: true }) };
 }
 function documentTexts(root: string): string[] {
   return readdirSync(root, { withFileTypes: true }).flatMap(entry => {
@@ -72,10 +73,10 @@ test('CLI init explicitly selects documents, preserves ready choices and truthfu
     assert.equal(version.configSchema, 1); assert.equal(version.defaultConfigSchema, 1); assert.deepEqual(version.configSchemas, [1, 2]);
     assert.deepEqual(sqliteContents(f.directory), []);
     const defaultDirectory = join(f.base, 'default-agent');
-    const defaults = JSON.parse((await execute(process.execPath, [cli, 'init', '--directory', defaultDirectory, '--personal-memory', 'sqlite', '--json'], { timeout: 30000, maxBuffer: 2097152 })).stdout) as Ready;
+    const defaults = JSON.parse((await execute(process.execPath, [cli, 'init', '--directory', defaultDirectory, '--personal-memory', 'sqlite', '--json'], { timeout: 30000, maxBuffer: 2097152, env: { ...process.env, SECUMON_TEST_IDENTITY_REGISTRY: f.hostOptions.identityRegistryDirectory } })).stdout) as Ready;
     assert.equal(defaults.config.schemaVersion, 1); assert.equal(defaults.config.storage.memory, 'sqlite');
     const prior = readFileSync(join(defaultDirectory, 'config.json'));
-    await assert.rejects(execute(process.execPath, [cli, 'init', '--directory', defaultDirectory, '--personal-memory', 'documents'], { timeout: 30000, maxBuffer: 2097152 }));
+    await assert.rejects(execute(process.execPath, [cli, 'init', '--directory', defaultDirectory, '--personal-memory', 'documents'], { timeout: 30000, maxBuffer: 2097152, env: { ...process.env, SECUMON_TEST_IDENTITY_REGISTRY: f.hostOptions.identityRegistryDirectory } }));
     assert.deepEqual(readFileSync(join(defaultDirectory, 'config.json')), prior);
   } finally { f.close(); }
 });
@@ -83,7 +84,7 @@ test('CLI init explicitly selects documents, preserves ready choices and truthfu
 for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: existing Web memory lifecycle uses documents while real Evidence memory stays in SQLite`, async () => {
   const f = fixture(); const ready = new FileAgentProfileStore(runtimeRoot).initialize(f.directory, { personalMemory: 'documents' });
   writeFileSync(join(f.directory, 'config.json'), JSON.stringify({ ...ready.config, storage: { ...ready.config.storage, state: backend } }), { mode: 0o600 });
-  let profile = await openAgentLocalProfile(f.directory), workbench = new LocalWorkbench(profile), web = await startWebServer(workbench), headers = await login(web);
+  let profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions), workbench = new LocalWorkbench(profile), web = await startWebServer(workbench), headers = await login(web);
   const request = async <T>(path: string, body?: unknown, expected = 200): Promise<T> => {
     const response = await fetch(`${web.origin}${path}`, { headers, ...(body === undefined ? {} : { method: 'POST', body: JSON.stringify(body) }) });
     const value: unknown = await response.json(); assert.equal(response.status, expected, JSON.stringify(value)); return value as T;
@@ -104,7 +105,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: exi
     const sqliteWork = sqliteContents(f.directory); assert.equal(sqliteWork.length, 1); assert.equal(sqliteWork[0]!.id, 'work-evidence-note');
     assert.notEqual(sqliteWork[0]!.sources[0]?.type, 'session_user_receipt'); assert.equal(sqliteWork[0]!.owner, undefined);
     await web.close(); await profile.close();
-    profile = await openAgentLocalProfile(f.directory); workbench = new LocalWorkbench(profile, actor, 'web', { newSession: true }); web = await startWebServer(workbench); headers = await login(web);
+    profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); workbench = new LocalWorkbench(profile, actor, 'web', { newSession: true }); web = await startWebServer(workbench); headers = await login(web);
     const y = await request<WebAcceptResult>('/api/works', { requestId: 'next-work', scenarioId: 'documents-simple', mode: 'auto', rawText: '새 대화의 업무' }); assert.notEqual(y.sessionId, x.sessionId);
     const search = await request<Search>('/api/memories?query=보고서'); assert.equal(search.index.complete, true); assert.equal(search.cards.length, 1); assert.equal(search.cards[0]!.id, input.id);
     let basis = await request<Selection>(`/api/works/${y.workId}/memories`);
@@ -122,7 +123,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: exi
     await request('/api/memories/remember', input, 403); assert.deepEqual((await request<Search>('/api/memories')).cards, []);
     assert.deepEqual(sqliteContents(f.directory), sqliteWork);
     await web.close(); await profile.close();
-    profile = await openAgentLocalProfile(f.directory); workbench = new LocalWorkbench(profile); web = await startWebServer(workbench); headers = await login(web);
+    profile = await openAgentLocalProfile(f.directory, {}, undefined, f.hostOptions); workbench = new LocalWorkbench(profile); web = await startWebServer(workbench); headers = await login(web);
     await request(`/api/memories/${input.id}`, undefined, 403); assert.deepEqual((await request<Search>('/api/memories')).cards, []);
     const history = await request<WebConversation>('/api/conversation'); assert.equal(history.entries.filter(entry => entry.sourceId === 'correction-source' && entry.text === corrected).length, 1);
     assert.equal((await profile.knowledge!.get('work-evidence-note')).card.body, workMemory.card.body); assert.deepEqual(sqliteContents(f.directory), sqliteWork);

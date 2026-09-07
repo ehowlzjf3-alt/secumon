@@ -24,7 +24,8 @@ async function fixture(t: TestContext, backend: 'sqlite' | 'file-journal' = 'sql
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'memory-draft-web-'))), directory = join(base, 'agent');
   const ready = new FileAgentProfileStore(runtimeRoot).initialize(directory, { personalMemory: documents ? 'documents' : 'sqlite' });
   writeFileSync(join(directory, 'config.json'), JSON.stringify({ ...ready.config, storage: { ...ready.config.storage, state: backend } }), { mode: 0o600 });
-  let profile = await openAgentLocalProfile(directory);
+  const hostOptions = { identityRegistryDirectory: join(base, 'registry') };
+  let profile = await openAgentLocalProfile(directory, {}, undefined, hostOptions);
   const servers = new Set<Awaited<ReturnType<typeof startWebServer>>>();
   async function closeServers() { for (const server of servers) { await server.close(); servers.delete(server); } }
   t.after(async () => { try { await closeServers(); await profile.close(); } finally { rmSync(base, { recursive: true, force: true }); } });
@@ -42,7 +43,7 @@ async function fixture(t: TestContext, backend: 'sqlite' | 'file-journal' = 'sql
     return { web, workbench, headers, config: value.config, request };
   }
   return { base, directory, connect, get profile() { return profile; },
-    async reopen() { await closeServers(); await profile.close(); profile = await openAgentLocalProfile(directory); } };
+    async reopen() { await closeServers(); await profile.close(); profile = await openAgentLocalProfile(directory, {}, undefined, hostOptions); } };
 }
 async function seed(h: Awaited<ReturnType<typeof fixture>>, web: Awaited<ReturnType<typeof h.connect>>) {
   const x = await web.request<WebAcceptResult>('/api/works', { requestId: 'source', scenarioId: 'documents-simple', mode: 'auto', rawText: original });

@@ -2,6 +2,8 @@
 
 ## 현재 실행 방침 — 2026-09-08
 
+최신 checkpoint371: `872fa50` 게시 뒤 로컬 검증을 재개했다. 초안 종료 hook 실패를 교정·재확인했고 C03의 선택 고유216개를 확인했다. [현재 결과](chapters/C03-ordered-verification-result.md) · [체크포인트](../runtime/evidence/C03-ordered-checkpoint.json). 복구 게시 단계의 실제 중단/재개4개도 통과했다. 준비 단계 중단·시도 상한과 남은 경계·환경 인수는 미완료다. 아래 게시 우선 정지와156개 중1실패 표시는 이전 checkpoint370의 기록이다.
+
 사용자 최신 지시로 GitHub 게시를 우선한다. C03 마지막 집계는 156개 중155통과·1실패이며 build1은 통과했다. 실패 수정과 미실행 검증은 [남은 작업](NEXT-STEPS.md)에 저장했다. 다음 기록의 120/120은 뒤36개 실행 전의 부분 결과다.
 
 최신 checkpoint370: C03 개인 기억·문서·이관 기반의 기존 12파일 120/120을 확인하고 나머지 입구·문맥·복구를 검증 중이다. [C03 결과](chapters/C03-ordered-verification-result.md)와 [실행 체크포인트](../runtime/evidence/C03-ordered-checkpoint.json)에 후속 빌드·실패·수정·미실행 범위를 계속 기록한다. C01·C02의 아래 결과와 C06~C10 구현 우선/별도 검증 정책을 유지한다. C03 전체와 전체 goal은 미완료다.
