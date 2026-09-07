@@ -79,10 +79,11 @@ function installWindow(profile: AgentTurnProfile, allowedInputTokens: number, ob
 
 for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: a measured model window drives repeated automatic compact before a general answer and survives reopening`, { timeout: 60000 }, async () => {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'agent-turn-window-'))), directory = join(base, 'agent');
+  const hostOptions = { models: new Map(), identityRegistryDirectory: join(base, 'registry') };
   const initialized = new FileAgentProfileStore(runtimeRoot).initialize(directory);
   if (backend === 'file-journal') writeFileSync(join(directory, 'config.json'), JSON.stringify({ ...initialized.config,
     storage: { ...initialized.config.storage, state: backend } }), { mode: 0o600 });
-  let profile = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic', compactLimits });
+  let profile = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic', compactLimits }, hostOptions);
   const observed: Observations = { compacts: [], turns: [], previews: [] };
   try {
     installWindow(profile, 100000, observed);
@@ -161,7 +162,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: a m
     assert.deepEqual(after.entries.filter(entry => before.entries.some(old => old.sequence === entry.sequence)), before.entries);
     assert.deepEqual((await profile.runtime.state(x.workId)).budget, xBefore.budget);
 
-    await profile.close(); profile = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic', compactLimits });
+    await profile.close(); profile = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic', compactLimits }, hostOptions);
     installWindow(profile, inputLimit, observed);
     const reopened = await profile.sessions.open(profile.actor, { channel: 'test', conversationId: 'automatic-window' });
     assert.deepEqual(reopened.scope, session.scope);

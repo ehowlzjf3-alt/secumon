@@ -4,7 +4,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { existsSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FileAgentProfileStore } from '../infrastructure/file-agent-profile.js';
 import { openAgentTurnProfile } from '../presentation/agent-turn-profile.js';
@@ -12,7 +12,9 @@ import { SYNTHETIC_AGENT_TURN_CORRECTION, SYNTHETIC_AGENT_TURN_REQUESTS as texts
 import type { SessionPage, SessionRecord } from '../domain/session.js';
 
 const execute = promisify(execFile);
-const cli = fileURLToPath(new URL('../presentation/agent-cli.js', import.meta.url));
+const cli = fileURLToPath(new URL('./helpers/agent-cli-isolated-worker.js', import.meta.url));
+function hostOptions(directory: string) { return { models: new Map(), identityRegistryDirectory: join(dirname(directory), 'registry') }; }
+function cliEnvironment(directory: string) { return { ...process.env, SECUMON_TEST_IDENTITY_REGISTRY: hostOptions(directory).identityRegistryDirectory }; }
 const runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
 interface ChatResult {
   sessionId: string; workId: string; created?: boolean;
@@ -31,7 +33,7 @@ function fixture(backend: 'sqlite' | 'file-journal' = 'sqlite') {
 }
 function invoke(directory: string, args: string[], json = true) {
   return execute(process.execPath, [cli, 'chat', ...args, '--directory', directory, '--provider', 'synthetic', ...(json ? ['--json'] : [])],
-    { timeout: 30000, maxBuffer: 2 * 1024 * 1024 });
+    { timeout: 30000, maxBuffer: 2 * 1024 * 1024, env: cliEnvironment(directory) });
 }
 async function call<T = ChatResult>(directory: string, args: string[]): Promise<T> {
   const result = await invoke(directory, args); assert.doesNotMatch(result.stdout, /\u001b/); return JSON.parse(result.stdout) as T;
@@ -47,7 +49,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: cha
     const first = await call(f.directory, ['ask', '--message-id', 'read', '--text', texts.read]);
     assert.equal(first.snapshot.status, 'completed'); assert.equal(first.snapshot.usage.toolCalls, 1);
     assert.equal(first.snapshot.execution.requestedMode, 'auto');
-    const beforeProfile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const beforeProfile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     const before = await beforeProfile.runtime.state(first.workId); await beforeProfile.close();
     const args = goalArgs(first, 'rewrite-goal', texts.rewrite);
     const changed = await call(f.directory, args);
@@ -67,7 +69,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: cha
     assert.equal(later.snapshot.status, 'waiting'); assert.equal(later.snapshot.pendingQuestions.length, 1);
     const oldReplay = await call(f.directory, args);
     assert.equal(oldReplay.created, false); assert.equal(oldReplay.run, undefined); assert.deepEqual(oldReplay.snapshot, later.snapshot);
-    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     try {
       const state = await profile.runtime.state(first.workId);
       assert.deepEqual(state.attempts, before.attempts); assert.deepEqual(state.evidence, before.evidence);
@@ -94,7 +96,7 @@ test('chat goal with omitted mode retains fast and completes within the same wor
     const first = await call(f.directory, ['ask', '--message-id', 'rewrite-fast', '--text', texts.rewrite, '--mode', 'fast']);
     assert.equal(first.snapshot.status, 'completed'); assert.equal(first.snapshot.usage.modelCalls, 1);
     assert.equal(first.snapshot.execution.requestedMode, 'fast');
-    const beforeProfile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const beforeProfile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     const before = await beforeProfile.runtime.state(first.workId); await beforeProfile.close();
     const changed = await call(f.directory, goalArgs(first, 'clarification-fast', texts.clarification));
     assert.equal(changed.created, true); assert.equal(changed.workId, first.workId); assert.equal(changed.sessionId, first.sessionId);
@@ -103,7 +105,7 @@ test('chat goal with omitted mode retains fast and completes within the same wor
     assert.equal(changed.snapshot.usage.modelCalls, 2); assert.equal(changed.snapshot.usage.toolCalls, 0);
     assert.deepEqual(changed.messages.map(message => message.kind), ['result']);
     assert.match(changed.messages[0]!.text, /원문은.*요약은/);
-    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     try {
       const state = await profile.runtime.state(first.workId);
       assert.deepEqual(state.budget.limits, before.budget.limits); assert.equal(state.deadlineAt, before.deadlineAt);
@@ -119,7 +121,7 @@ test('chat goal preserves exhausted fast usage; explicit auto spends only the re
   try {
     const first = await call(f.directory, ['ask', '--message-id', 'read-fast', '--text', texts.read, '--mode', 'fast']);
     assert.equal(first.snapshot.status, 'completed'); assert.equal(first.snapshot.usage.modelCalls, 2);
-    const beforeProfile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const beforeProfile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     const before = await beforeProfile.runtime.state(first.workId); await beforeProfile.close();
     const args = goalArgs(first, 'rewrite-blocked', texts.rewrite);
     const blocked = await call(f.directory, args);
@@ -139,7 +141,7 @@ test('chat goal preserves exhausted fast usage; explicit auto spends only the re
     assert.equal(changed.snapshot.usage.toolCalls, first.snapshot.usage.toolCalls);
     assert.equal(changed.snapshot.usage.replans, first.snapshot.usage.replans);
     assert.ok(changed.messages.some(message => message.kind === 'result' && message.text.includes(SYNTHETIC_AGENT_TURN_CORRECTION)));
-    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     try {
       const state = await profile.runtime.state(first.workId);
       assert.deepEqual(state.budget.limits, before.budget.limits); assert.equal(state.deadlineAt, before.deadlineAt);
@@ -216,7 +218,7 @@ test('chat goal preserves selected session and channel authority and rejects sta
     const changed = await call(f.directory, args); assert.equal(changed.created, true);
     const conflict = [...args]; conflict[conflict.indexOf('--text') + 1] = texts.read;
     await assert.rejects(invoke(f.directory, conflict), /session_input_identity_conflict/);
-    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     try {
       const state = await profile.runtime.state(first.workId);
       const receipt = await profile.sessions.repository.input(state.conversation!.session!.scope, 'stale');
@@ -230,7 +232,7 @@ test('chat goal replays an intake interrupted after receipt without model execut
   const f = fixture();
   try {
     const first = await call(f.directory, ['ask', '--message-id', 'first', '--text', texts.rewrite]);
-    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     const before = await profile.runtime.state(first.workId);
     try {
       const receive = profile.sessions.repository.receive.bind(profile.sessions.repository), interruption = new Error('after_goal_receive');
@@ -251,7 +253,7 @@ test('chat goal replays an intake interrupted after receipt without model execut
     assert.equal(resumed.snapshot.status, 'completed'); assert.equal(resumed.snapshot.usage.toolCalls, 1);
     assert.equal(resumed.snapshot.usage.modelCalls, first.snapshot.usage.modelCalls + 2);
     assert.ok(resumed.messages.some(item => item.kind === 'result' && item.text.includes('doc-current')));
-    const resumedProfile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const resumedProfile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     try {
       const state = await resumedProfile.runtime.state(first.workId);
       assert.deepEqual(state.budget.limits, before.budget.limits); assert.equal(state.deadlineAt, before.deadlineAt);

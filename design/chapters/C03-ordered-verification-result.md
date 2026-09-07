@@ -1,5 +1,15 @@
 # C03 순차 검증·수정 기록
 
+## Checkpoint372 — 준비 중단·시도 상한과 추가 거절6개 확인
+
+신규6개(session5970, target11)는 **6/6 통과**, 실패·취소·건너뜀0이다. C04 build2(session62563)와 동일한 지문 `578542798a5b4edfa21734cdf456c6a1bff7b0546f4d807487e5f33b07d556ca`에서 실행했다. [원로그](../../runtime/evidence/C03-ordered-target11.log) · [실행 기록](../../runtime/evidence/C03-ordered-checkpoint.json).
+
+원본/후보 사본의 실제 첫 청크 쓰기를 관측해 SIGKILL·exit/close를 확인하고, 부분 파일·원 main/journal·기존 영수증을 보존한 채 같은 ID의 다음 시도 폴더로 재개했다. 각각4회 중단 후5번째 시도 거절도 확인했다. 정상 API로 만든 다른 문서 저장소의 유효한 fence와 super-journal 이름/끝 표식은 원본을 보존하며 거절했다. POSIX 임시 파일·프로세스에서 확인했으며 Windows나 운영 데이터 복구를 검증한 결과는 아니다.
+
+선택한 누적 고유 시험은 **222개 통과**다. 이전 시험을 이번 소스로 다시 실행하지 않았고 재시험을 고유 수에 더하지 않는다. 전체 V03-R01~08의 잔여 인수와 현재 Linux/native Windows·최종 통합은 별도로 유지한다. C04는 [선택158개 결과](C04-ordered-verification-result.md)를 기록했다.
+
+## Checkpoint371까지의 이력
+
 최종 확인 범위는 **고유216개 통과**로 늘었다. build5(session93374) exit0, 지문 `e6d6c53682954cdac728d0ca41e792efc53af1a5ee942e710a6b26b5d9343d0c`에서 실제 apply 중단4개(session23786)가 통과했다. 후보 정본 링크, 완료 receipt 게시, main 퇴역 링크, journal 퇴역 뒤 각각 IPC를 관측하고 SIGKILL·exit/close를 확인했다. 죽은 maintenance lease를 회수한 후에도 pending과 일반 실행 차단이 유지되며, 같은 operation을 재개해 원본/영수증/업무/기억/세션을 보존했다. [원로그](../../runtime/evidence/C03-ordered-target10.log). 앞선 target9는 잘못된 필터로 사례0개를 선택한 실행이며 파일 wrapper의 pass를 검증 수에 넣지 않았다.
 
 남은 것은 준비 단계 중단·원본/후보 시도 상한, 추가 documents fence/super-journal 거절과 최종 환경/통합 인수다. C04 핵심5파일51/51은 별도 [C04 결과](C04-ordered-verification-result.md)에 저장했다. 실제 모델/API 시험은 계속 중단한다.

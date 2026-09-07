@@ -32,10 +32,11 @@ async function compact(profile: AgentTurnProfile, workId: string, requestId: str
 
 for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: generic correction survives repeated compact as an exact assistant citation and a later command-backed answer`, { timeout: 60000 }, async () => {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'agent-turn-compact-'))), directory = join(base, 'agent');
+  const hostOptions = { models: new Map(), identityRegistryDirectory: join(base, 'registry') };
   const initialized = new FileAgentProfileStore(runtimeRoot).initialize(directory);
   if (backend === 'file-journal') writeFileSync(join(directory, 'config.json'), JSON.stringify({ ...initialized.config,
     storage: { ...initialized.config.storage, state: backend } }), { mode: 0o600 });
-  let profile = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic' });
+  let profile = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic' }, hostOptions);
   try {
     const session = await profile.sessions.open(profile.actor, { channel: 'test', conversationId: 'compact-main' });
     async function accept(messageId: string, rawText: string) {
@@ -70,7 +71,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: gen
       stateAfterCompact.modelCalls.find(call => call.purpose === 'session_compact')!.id);
     assert.equal((await profile.runtime.state(y.workId)).modelCalls.length, callsBeforeRetry);
 
-    await profile.close(); profile = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic' });
+    await profile.close(); profile = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic' }, hostOptions);
     assert.equal((await profile.workflow.run(y.workId, profile.executionActor)).control.kind, 'complete');
     const yDone = await profile.runtime.state(y.workId);
     assert.equal((await readGeneratedAnswer(profile.services, yDone))!.text, correction);

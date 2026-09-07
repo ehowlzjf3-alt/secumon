@@ -13,7 +13,8 @@ import type { WebAcceptResult, WebCommandResult, WebConversation, WebGoalBasis, 
 
 async function fixture(t: TestContext) {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'agent-turn-web-'))), directory = join(base, 'agent');
-  let profile = await openAgentTurnProfile(directory, { provider: 'synthetic' });
+  const hostOptions = { models: new Map(), identityRegistryDirectory: join(base, 'registry') };
+  let profile = await openAgentTurnProfile(directory, { provider: 'synthetic' }, hostOptions);
   const servers = new Set<Awaited<ReturnType<typeof startWebServer>>>();
   async function closeServers() { for (const server of servers) { await server.close(); servers.delete(server); } }
   t.after(async () => { try { await closeServers(); await profile.close(); } finally { rmSync(base, { recursive: true, force: true }); } });
@@ -32,7 +33,7 @@ async function fixture(t: TestContext) {
     return { web, workbench, headers, config: value.config, request };
   }
   return { connect, get profile() { return profile; }, async reopen() {
-    await closeServers(); await profile.close(); profile = await openAgentTurnProfile(directory, { provider: 'synthetic' });
+    await closeServers(); await profile.close(); profile = await openAgentTurnProfile(directory, { provider: 'synthetic' }, hostOptions);
   } };
 }
 type Client = Awaited<ReturnType<Awaited<ReturnType<typeof fixture>>['connect']>>;

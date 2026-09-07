@@ -72,7 +72,7 @@ async function fixture(t: TestContext) {
   writeFileSync(join(directory, 'config.json'), JSON.stringify({ ...initialized.config, model: { profile: LOCAL_CONTRACT_MODEL_PROFILE } }), { mode: 0o600 });
   const observed: Observations = { turns: [], compacts: [], opened: 0, closed: 0 };
   let window: number | undefined;
-  const host = observedHost(observed, () => window);
+  const host = { ...observedHost(observed, () => window), identityRegistryDirectory: join(base, 'registry') };
   async function open() {
     await current?.close();
     current = await openAgentTurnProfile(directory, { provider: 'registered', compactLimits }, host);

@@ -15,7 +15,8 @@ function fixture(options: { backend?: 'sqlite' | 'file-journal'; personalMemory?
     ...(options.personalMemory ? { personalMemory: options.personalMemory } : {}) });
   writeFileSync(join(profile.root, 'config.json'), JSON.stringify({ ...profile.config,
     storage: { ...profile.config.storage, state: options.backend ?? 'sqlite' }, skills: { mode: options.skills ?? 'off' } }));
-  return { base, profile, close: () => rmSync(base, { recursive: true, force: true }) };
+  const hostOptions = { models: new Map(), identityRegistryDirectory: join(base, 'registry') };
+  return { base, profile, hostOptions, close: () => rmSync(base, { recursive: true, force: true }) };
 }
 
 test('generic profile never silently selects a model provider or initializes an absent directory', async () => {
@@ -28,7 +29,7 @@ test('generic profile never silently selects a model provider or initializes an 
 
 test('skills off bypasses invalid skill files, preserves C01 profile purpose, and keeps runtime authority host-owned', async () => {
   const f = fixture(); writeFileSync(join(f.profile.paths.skills, 'catalog.json'), 'not JSON', { mode: 0o600 });
-  const profile = await openAgentTurnProfile(f.profile.root, { provider: 'synthetic' });
+  const profile = await openAgentTurnProfile(f.profile.root, { provider: 'synthetic' }, f.hostOptions);
   try {
     assert.equal(profile.agentId, f.profile.identity.agentId); assert.equal(profile.services.planner.prompt!.profile.purpose, f.profile.config.purpose);
     assert.equal(profile.services.planner.prompt!.profile.skillsMode, 'off');
@@ -45,7 +46,7 @@ test('skills off bypasses invalid skill files, preserves C01 profile purpose, an
 
 test('file-journal plus document memory uses the same generic intake and reopens the original applied conversation', async () => {
   const f = fixture({ backend: 'file-journal', personalMemory: 'documents', skills: 'on-demand' });
-  const profile = await openAgentTurnProfile(f.profile.root, { provider: 'synthetic' });
+  const profile = await openAgentTurnProfile(f.profile.root, { provider: 'synthetic' }, f.hostOptions);
   try {
     assert.equal(profile.stateBackend, 'file-journal'); assert.equal(profile.personalMemoryBackend, 'documents'); assert.ok(profile.memoryDrafts);
     const session = await profile.sessions.open(profile.actor, { channel: 'test', conversationId: 'generic' });
@@ -56,7 +57,7 @@ test('file-journal plus document memory uses the same generic intake and reopens
     assert.equal(accepted.state.goal.description, rawText); assert.deepEqual(accepted.state.goal.criteria, []);
     assert.equal(accepted.state.goal.responseRequirement?.requestMessageId, 'generic-user-1');
     await profile.close();
-    const reopened = await openAgentTurnProfile(f.profile.root, { provider: 'synthetic' });
+    const reopened = await openAgentTurnProfile(f.profile.root, { provider: 'synthetic' }, f.hostOptions);
     try {
       const state = await reopened.runtime.state(accepted.workId); const context = await reopened.sessions.context(state);
       assert.equal(reopened.agentId, profile.agentId); assert.equal(context?.entries[0]?.text, rawText);
@@ -66,7 +67,7 @@ test('file-journal plus document memory uses the same generic intake and reopens
 });
 
 test('explicit synthetic compact delegates the existing rules under the single combined provider identity', async () => {
-  const f = fixture(); const profile = await openAgentTurnProfile(f.profile.root, { provider: 'synthetic', compactProvider: 'synthetic' });
+  const f = fixture(); const profile = await openAgentTurnProfile(f.profile.root, { provider: 'synthetic', compactProvider: 'synthetic' }, f.hostOptions);
   try {
     const provider = profile.services.planner; assert.ok(provider.compact); assert.ok(profile.compactPlanning);
     const scope = { ...profile.executionActor, agentId: profile.agentId, sessionId: 'compact-session' };

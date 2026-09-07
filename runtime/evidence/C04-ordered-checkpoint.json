@@ -1,9 +1,13 @@
 {
-  "checkpoint": 371,
+  "checkpoint": 372,
   "date": "2026-09-08",
-  "status": "local_verification_in_progress",
+  "status": "local_targeted_verified",
   "goalComplete": false,
-  "environment": { "platform": "darwin", "arch": "arm64", "node": "v24.20.0" },
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.20.0"
+  },
   "tests": [
     {
       "log": "runtime/evidence/C04-ordered-target1.log",
@@ -16,12 +20,79 @@
       "skipped": 0,
       "sourceDigest": "e6ea677ed53f2986942e4c702459c6918b02816afeddea6dd38aa9d75126bc6c",
       "buildManifest": "runtime/evidence/C03-ordered-build4-manifest.json",
-      "files": ["model-runtime.test.js", "agent-response-completion.test.js", "agent-turn-service.test.js", "agent-turn-adapter.test.js", "synthetic-agent-turn.test.js"],
+      "files": [
+        "model-runtime.test.js",
+        "agent-response-completion.test.js",
+        "agent-turn-service.test.js",
+        "agent-turn-adapter.test.js",
+        "synthetic-agent-turn.test.js"
+      ],
       "command": ".tools/node-v24.20.0-darwin-arm64/bin/node --test --test-concurrency=1 --test-reporter=tap dist/tests/model-runtime.test.js dist/tests/agent-response-completion.test.js dist/tests/agent-turn-service.test.js dist/tests/agent-turn-adapter.test.js dist/tests/synthetic-agent-turn.test.js"
+    },
+    {
+      "session": 28003,
+      "log": "runtime/evidence/C04-ordered-target2.log",
+      "sourceDigest": "578542798a5b4edfa21734cdf456c6a1bff7b0546f4d807487e5f33b07d556ca",
+      "buildManifest": "runtime/evidence/C04-ordered-build2-manifest.json",
+      "exitCode": 0,
+      "total": 107,
+      "pass": 107,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 71145.091042,
+      "files": [
+        "agent-turn-profile.test.js",
+        "agent-turn-flow.test.js",
+        "agent-turn-boundaries.test.js",
+        "complex-agent-turn.test.js",
+        "agent-turn-previous.test.js",
+        "agent-turn-compact.test.js",
+        "agent-turn-window-flow.test.js",
+        "model-input-profile-runtime.test.js",
+        "registered-agent-flow.test.js",
+        "agent-goal-change.test.js",
+        "agent-goal-change-compact.test.js",
+        "agent-goal-change-cli.test.js",
+        "agent-turn-cli.test.js",
+        "agent-turn-web.test.js",
+        "web-view-state.test.js"
+      ],
+      "command": ".tools/node-v24.20.0-darwin-arm64/bin/node --test --test-concurrency=1 --test-timeout=60000 --test-reporter=tap dist/tests/agent-turn-profile.test.js dist/tests/agent-turn-flow.test.js dist/tests/agent-turn-boundaries.test.js dist/tests/complex-agent-turn.test.js dist/tests/agent-turn-previous.test.js dist/tests/agent-turn-compact.test.js dist/tests/agent-turn-window-flow.test.js dist/tests/model-input-profile-runtime.test.js dist/tests/registered-agent-flow.test.js dist/tests/agent-goal-change.test.js dist/tests/agent-goal-change-compact.test.js dist/tests/agent-goal-change-cli.test.js dist/tests/agent-turn-cli.test.js dist/tests/agent-turn-web.test.js dist/tests/web-view-state.test.js",
+      "scope": "Existing general/complex/context/goal-change/CLI/HTTP/view-state behavior plus trusted registry/default registered model regression; scripted local transports only"
     }
   ],
   "modelApiTests": "stopped",
   "externalServiceConnectionsRun": false,
-  "remaining": ["General/complex turn, registered model, context and goal-change entry tests", "Trusted registry forwarding through chat CLI while retaining the default host", "Current Linux/native Windows and final integrated regression"],
-  "next": "Reuse the selected C04 fixtures and preserve the C03 recovery remainder separately"
+  "remaining": [
+    "Actual model/API quality, usage, cancellation and tokenizer acceptance remain stopped",
+    "Current Linux/native Windows and final integrated regression"
+  ],
+  "next": "Close recorded C03 residual acceptance, then continue prepared C05 host/tool integration verification; C04 selected158 passed",
+  "previousGoalTurn": "progress: checkpoint371 code and documents pushed to main at 43ff709e91e276c17bd48c28ba7dbc45ee9cab80; completion publishing rule saved",
+  "builds": [
+    {
+      "log": "runtime/evidence/C04-ordered-build1.log",
+      "session": 32504,
+      "exitCode": 2,
+      "reason": "Synthetic test host objects omitted required models registry; corrected without weakening host type"
+    },
+    {
+      "log": "runtime/evidence/C04-ordered-build2.log",
+      "session": 62563,
+      "exitCode": 0,
+      "manifest": "runtime/evidence/C04-ordered-build2-manifest.json",
+      "sourceDigest": "578542798a5b4edfa21734cdf456c6a1bff7b0546f4d807487e5f33b07d556ca"
+    }
+  ],
+  "activeBuild": null,
+  "implementation": {
+    "chatHostRegistry": "forward trusted hostOptions while retaining createLocalContractHost()",
+    "fixtureIsolation": "same temporary registry on create and reopen",
+    "newRegression": "registered chat read uses trusted registry and retains model registration"
+  },
+  "activeTest": null,
+  "uniqueTests": 158,
+  "uniquePassingTests": 158,
+  "failingTests": 0
 }

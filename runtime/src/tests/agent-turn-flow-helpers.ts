@@ -6,14 +6,15 @@ import type { AgentTurnInput, AgentTurnReply } from '../application/agent-turn-t
 
 export async function fixture() {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'agent-turn-flow-')));
-  const profile = await openAgentTurnProfile(join(base, 'agent'), { provider: 'synthetic' });
+  const hostOptions = { models: new Map(), identityRegistryDirectory: join(base, 'registry') };
+  const profile = await openAgentTurnProfile(join(base, 'agent'), { provider: 'synthetic' }, hostOptions);
   const session = await profile.sessions.open(profile.actor, { channel: 'test', conversationId: 'main' });
   async function accept(text: string, messageId = 'request', mode: 'auto' | 'fast' | 'deep' = 'auto') {
     return profile.turns.accept(profile.actor, { sessionId: session.scope.sessionId, messageId, rawText: text, mode,
       binding: { ...profile.executionActor, channel: 'test', conversationId: 'main', recipientId: profile.actor.principalId, destination: 'local' },
       scope: profile.scope, policy: profile.policy, limits: profile.limits });
   }
-  return { profile, session, accept, base, close: async () => { await profile.close(); rmSync(base, { recursive: true, force: true }); } };
+  return { profile, session, accept, base, hostOptions, close: async () => { await profile.close(); rmSync(base, { recursive: true, force: true }); } };
 }
 export function replaceTurn(profile: AgentTurnProfile, turn: (input: AgentTurnInput) => Promise<AgentTurnReply>) {
   const planner = profile.planning!.services.planner;

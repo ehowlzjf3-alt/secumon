@@ -11,7 +11,8 @@ import { executionControl } from '../domain/execution-policy.js';
 
 test('goal command original remains verifiable after compact and reconnect, without accepting ordinary input as a goal receipt', async () => {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'goal-command-compact-'))), directory = join(base, 'agent');
-  let p = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic' });
+  const hostOptions = { models: new Map(), identityRegistryDirectory: join(base, 'registry') };
+  let p = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic' }, hostOptions);
   try {
     const session = await p.sessions.open(p.actor, { channel: 'test', conversationId: 'main' });
     const accepted = await p.turns.accept(p.actor, { sessionId: session.scope.sessionId, messageId: 'initial', rawText: texts.question,
@@ -50,7 +51,7 @@ test('goal command original remains verifiable after compact and reconnect, with
       assert.equal(await agentTurnRequestCurrent(p.services, p.sessions.repository, compacted), false);
     }
     p.sessions.repository.input = originalInput;
-    await p.close(); p = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic' });
+    await p.close(); p = await openAgentTurnProfile(directory, { provider: 'synthetic', compactProvider: 'synthetic' }, hostOptions);
     assert.equal((await p.workflow.run(old.id, p.executionActor, { expectedGoalRevision: 2 })).control.kind, 'complete');
     const done = await p.runtime.state(old.id);
     assert.ok(await readGeneratedAnswer(p.services, done)); assert.equal(done.goal.responseRequirement!.requestMessageId, 'new-goal');

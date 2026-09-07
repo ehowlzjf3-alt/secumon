@@ -80,6 +80,7 @@ function decide(input: AgentTurnInput): AgentTurnResult {
 
 async function fixture(t: TestContext, failAmendment: boolean) {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'complex-agent-turn-'))), directory = join(base, 'agent');
+  const hostOptions = { identityRegistryDirectory: join(base, 'registry') };
   mkdirSync(join(base, 'engine'), { mode: 0o700 });
   const profiles = new FileAgentProfileStore(join(base, 'engine')), initialized = profiles.initialize(directory);
   writeFileSync(join(directory, 'config.json'), JSON.stringify({ ...initialized.config, model: { profile: 'complex-contract-v1' } }));
@@ -97,7 +98,7 @@ async function fixture(t: TestContext, failAmendment: boolean) {
     return { planner, inputLimits: { maxInputBytes: 65536, maxOutputTokens: 2048 }, async close() {} };
   } }]]) };
   async function open() {
-    const stores = await openAgentStores(profiles, directory);
+    const stores = await openAgentStores(profiles, directory, undefined, hostOptions);
     const selected = await openRegisteredHostModel(resolveHostModelRegistration(host, stores.profile.config.model!.profile), {
       agentId: stores.profile.identity.agentId, purpose: '범용 복합 조사 계약 시험', skillsMode: 'off' });
     const underlying = new FixtureReadTool(scenario.evidence);

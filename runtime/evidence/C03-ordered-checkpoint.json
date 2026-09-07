@@ -1,5 +1,5 @@
 {
-  "checkpoint": 371,
+  "checkpoint": 372,
   "date": "2026-09-08",
   "status": "local_verification_in_progress",
   "goalComplete": false,
@@ -179,17 +179,36 @@
       ],
       "filter": "actual apply interruption at",
       "scope": "actual POSIX apply worker SIGKILL after publication; dead maintenance lease recovery preserves pending; same operation resume"
+    },
+    {
+      "session": 5970,
+      "log": "runtime/evidence/C03-ordered-target11.log",
+      "sourceDigest": "578542798a5b4edfa21734cdf456c6a1bff7b0546f4d807487e5f33b07d556ca",
+      "buildManifest": "runtime/evidence/C04-ordered-build2-manifest.json",
+      "exitCode": 0,
+      "total": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 5254.685625,
+      "files": [
+        "agent-sqlite-recovery.test.js"
+      ],
+      "filter": "prepare (original|candidate) copy (interruption|attempt limit)|documents recovery rejects|prepare rejects super-journal",
+      "command": ".tools/node-v24.20.0-darwin-arm64/bin/node --test --test-concurrency=1 --test-name-pattern='prepare (original|candidate) copy (interruption|attempt limit)|documents recovery rejects|prepare rejects super-journal' --test-reporter=tap dist/tests/agent-sqlite-recovery.test.js",
+      "scope": "Actual local POSIX prepare copy interruption/retry and 4-attempt exhaustion; valid documents-fence mismatch and unsupported super-journal refusal"
     }
   ],
   "modelApiTests": "stopped",
   "externalServiceConnectionsRun": false,
   "remaining": [
-    "SQLite recovery interrupted prepare and maximum original/candidate attempts; remaining document-fence/super-journal rejection cases",
-    "Current Linux/native Windows and final integrated regression",
-    "C04-C10 remaining ordered verification"
+    "R02 missing owner and unsupported active storage selection; R03 original identity/content changes and same-operation kind conflict",
+    "R04 remaining phase/platform cases; R06 late reply and managed worker/close/unobserved propagation; R07 external tool receipts; R08 recovery CLI",
+    "Current Linux/native Windows and final integrated regression"
   ],
-  "next": "Complete remaining C03 prepare-attempt and validation cases, then continue prepared C04 entry/complex/context/goal-change tests; C04 core51 already passed",
-  "uniquePassingTests": 216,
+  "next": "Reuse current recovery fixture for remaining R02/R03 selection and original-currentness rejection; C04 selected158 passed and C05 preparation saved",
+  "uniquePassingTests": 222,
   "preparedFixtureSourcesBaselineCheckpoint": 370,
   "preparedFixtureSources": {
     "src/tests/personal-memory-context.test.ts": "e74b39f1e75e2d008fa2a8222b005117cc99b96319687d13155ba6453a1ce004",
@@ -237,7 +256,7 @@
       "sourceDigest": "e6d6c53682954cdac728d0ca41e792efc53af1a5ee942e710a6b26b5d9343d0c"
     }
   ],
-  "uniqueTests": 216,
+  "uniqueTests": 222,
   "failingTests": 0,
   "activeTest": null,
   "recoveryHappyPaths": {
@@ -275,5 +294,6 @@
       "reason": "filter matched no case; Node file-wrapper pass is not verification evidence",
       "sourceDigest": "e6d6c53682954cdac728d0ca41e792efc53af1a5ee942e710a6b26b5d9343d0c"
     }
-  ]
+  ],
+  "remainingAcceptance": "design/chapters/C03-remaining-acceptance.md"
 }

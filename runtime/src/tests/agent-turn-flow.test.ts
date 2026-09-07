@@ -81,7 +81,7 @@ test('reopening after stored response adopts the original charged call and sends
     const call = await f.profile.planning!.reserve(accepted.workId);
     await f.profile.planning!.execute(accepted.workId, call.id);
     assert.equal((await f.profile.runtime.state(accepted.workId)).modelCalls[0]!.status, 'received');
-    await f.profile.close(); reopened = await openAgentTurnProfile(join(f.base, 'agent'), { provider: 'synthetic' });
+    await f.profile.close(); reopened = await openAgentTurnProfile(join(f.base, 'agent'), { provider: 'synthetic' }, f.hostOptions);
     const result = await reopened.workflow.run(accepted.workId, reopened.executionActor);
     assert.equal(result.control.kind, 'complete', JSON.stringify(result));
     const state = await reopened.runtime.state(accepted.workId); assert.equal(state.modelCalls.length, 1); assert.equal(state.modelCalls[0]!.id, call.id);

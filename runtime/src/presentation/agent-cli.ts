@@ -32,7 +32,7 @@ documents는 개인 기억의 정본을 문서로 저장합니다. 업무 근거
 --resume은 중단된 복제를 같은 ID로 이어갑니다. 원본과 대상 변경은 검증합니다.
 기본 경로는 현재 디렉터리입니다. 설정 명령은 작업을 실행하지 않습니다. 실제 모델은 연결하지 않습니다.
 `;
-/** Trusted setup/lifecycle/work host configuration; normal bin startup uses the default host registry. */
+/** Trusted setup/lifecycle/work/chat host configuration; normal bin startup uses the default host registry. */
 export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOptions = {}) {
   if (args[0] === 'lifecycle') {
     const { runAgentLifecycleCli } = await import('./agent-lifecycle-cli.js');
@@ -40,8 +40,9 @@ export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOpt
   }
   if (args[0] === 'chat') {
     const { runAgentTurnCli, reportAgentTurnCliFailure } = await import('./agent-turn-cli.js');
+    const { createLocalContractHost } = await import('./local-contract-model.js');
     const chatArgs = args.slice(1);
-    await runAgentTurnCli(chatArgs).catch(error => reportAgentTurnCliFailure(error, chatArgs.includes('--json'))); return;
+    await runAgentTurnCli(chatArgs, { ...createLocalContractHost(), ...hostOptions }).catch(error => reportAgentTurnCliFailure(error, chatArgs.includes('--json'))); return;
   }
   if (args[0] === 'memory-migrate') {
     const { runMemoryMigrationCli } = await import('./memory-migration-cli.js');

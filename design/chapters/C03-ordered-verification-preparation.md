@@ -1,5 +1,13 @@
 # C03 순차 검증 준비
 
+## Checkpoint372 남은 복구 검증
+
+후속 결과: 준비한6개는 target11에서6/6 통과했다. 아래는 작성 당시 계획이며 현재 잔여는 [명시 인수 목록](C03-remaining-acceptance.md)을 따른다.
+
+복구 준비 중 끊긴 사본은 다음 시도에서 덮어쓰지 않아야 한다. 기존 실제 hot-journal fixture를 재사용해 원본 보관 사본과 후보 사본의 첫 쓰기 뒤 프로세스를 종료하고, 같은 operation ID로 재개할 때 다음 빈 시도 폴더를 쓰는지 확인한다. 각 단계의 4회 시도 상한도 실제 중단으로 소진한 뒤 확인한다. 문서 기억 선택과 DB의 이관 fence 불일치, super-journal 참조는 원본을 보존하면서 거절하는지 확인한다.
+
+제품 장애 주입 API는 추가하지 않고 시험 전용 자식 프로세스에서 실제 파일 쓰기를 관찰한다. 준비한6개 시험만 후속 빌드에서 실행하고 결과를 별도 기록한다. 이미 통과한 복구 게시4경계와 전체 C03 묶음은 재실행하지 않는다. 이 문단은 실행 계획이며 아직 통과 결과가 아니다.
+
 2026-09-08. 기존 계획·결과와 해당 시험의 호출부를 읽어 선정한 메모다. 이 작업에서는 제품·시험을 수정하거나 빌드·시험·DB·SSH를 실행하지 않았다. 기준은 [순차 검증](C01-C10-ordered-verification.md), [개인 기억](C03-personal-memory-result.md), [문서 기억](C03-document-memory-result.md), [문서 초안](C03-document-draft-result.md), [개인 기억 이관](C03-personal-memory-migration-result.md), [checkpoint366 SQLite 복구](C03-sqlite-recovery-implementation.md)다. 과거 결과의 pass 수와 PostgreSQL/Windows 미구현 표현을 현재 소스의 판정으로 옮기지 않는다.
 
 ## 실행 순서와 기존 시험

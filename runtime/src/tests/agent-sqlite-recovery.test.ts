@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { fork } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { once } from 'node:events';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { fileURLToPath } from 'node:url';
 import { SQLITE_RECOVERY_PENDING, SqliteRecoveryPendingSchema, type SqliteRecoveryFilePin, type SqliteRecoveryKind } from '../application/agent-sqlite-recovery-contracts.js';
@@ -14,15 +14,18 @@ import { FileAgentProfileStore } from '../infrastructure/file-agent-profile.js';
 import { openAgentStores } from '../infrastructure/agent-stores.js';
 import { applyAgentSqliteRecovery, prepareAgentSqliteRecovery, readAgentSqliteRecovery } from '../infrastructure/agent-sqlite-recovery.js';
 import { SqliteRecoveryWorkerFault } from '../infrastructure/agent-sqlite-recovery-process.js';
+import { fenceSqlitePersonalMemory, inspectPersonalMemorySnapshot, sqlitePersonalMemoryFence } from '../infrastructure/sqlite-personal-memory-migration.js';
 import { acquireAgentMaintenance, recoverAgentLifecycleLeases } from '../infrastructure/agent-lifecycle-lease.js';
 import { openProfileMutationScope, publishProfileJson, syncProfileDirectory } from '../infrastructure/agent-profile-files.js';
 import { sha256 } from '../infrastructure/digest.js';
 import { advance, command, delivery, initial, snapshot } from './state-conformance-helpers.js';
 import type { ApplyCrashPhase } from './helpers/agent-sqlite-recovery-apply-worker.js';
+import type { PrepareCopyPhase } from './helpers/agent-sqlite-recovery-prepare-worker.js';
 
 type Stores = Awaited<ReturnType<typeof openAgentStores>>;
 const worker = fileURLToPath(new URL('./helpers/agent-database-owner-worker.js', import.meta.url));
 const applyWorker = fileURLToPath(new URL('./helpers/agent-sqlite-recovery-apply-worker.js', import.meta.url));
+const prepareWorker = fileURLToPath(new URL('./helpers/agent-sqlite-recovery-prepare-worker.js', import.meta.url));
 const rawText = '복구 이전 요청 원문입니다.\n기존 업무와 메모, 세션을 유지합니다.\n';
 const payload = 'a'.repeat(8192);
 
@@ -58,7 +61,9 @@ async function hotRollback(path: string, agentId: string): Promise<void> {
     await bounded(closed, 5000, 'hot_rollback_child_cleanup_unconfirmed');
   }
 }
-async function fixture(t: TestContext, kind: SqliteRecoveryKind, beforeHot?: (db: DatabaseSync) => void) {
+async function fixture(t: TestContext, kind: SqliteRecoveryKind,
+  beforeHot?: (db: DatabaseSync, context: { path: string; agentId: string; documentStoreId: string | null }) => void,
+  personalMemory: 'sqlite' | 'documents' = 'sqlite') {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'agent-sqlite-recovery-'))), engine = join(base, 'engine');
   mkdirSync(engine, { mode: 0o700 });
   const profiles = new FileAgentProfileStore(engine), active = new Set<Stores>();
@@ -68,7 +73,8 @@ async function fixture(t: TestContext, kind: SqliteRecoveryKind, beforeHot?: (db
     finally { rmSync(base, { recursive: true, force: true }); }
     if (errors.length) throw new AggregateError(errors, 'sqlite_recovery_fixture_cleanup_failed');
   });
-  const profile = profiles.initialize(join(base, 'agent'), { stateBackend: 'sqlite', name: '복구 담당' });
+  const profile = profiles.initialize(join(base, 'agent'), { stateBackend: 'sqlite', name: '복구 담당',
+    ...(personalMemory === 'documents' ? { personalMemory } : {}) });
   const host = { identityRegistryDirectory: join(base, 'registry') };
   async function open() { const stores = await openAgentStores(profiles, profile.root, undefined, host); active.add(stores); return stores; }
   async function close(stores: Stores) { await stores.close(); active.delete(stores); }
@@ -104,7 +110,8 @@ async function fixture(t: TestContext, kind: SqliteRecoveryKind, beforeHot?: (db
     const insert = db.prepare('INSERT INTO crash_fixture VALUES(?,?)');
     for (let id = 1; id <= 128; id++) insert.run(id, payload);
     db.exec('COMMIT;');
-    beforeHot?.(db);
+    beforeHot?.(db, { path, agentId: profile.identity.agentId,
+      documentStoreId: profile.config.schemaVersion === 2 ? profile.config.storage.personalMemory.storeId : null });
     assert.equal(db.isTransaction, false, 'fixture changes must be committed before the separate hot transaction');
   } finally { db.close(); }
   const committed = readFileSync(path);
@@ -470,3 +477,135 @@ for (const phase of ['candidate-published-link', 'complete-published', 'main-ret
     originalRecovery();
   });
 }
+
+async function interruptPrepare(f: Awaited<ReturnType<typeof fixture>>, operationId: string, phase: PrepareCopyPhase, attempt: number) {
+  const engine = f.profiles.engineDirectories[0]; assert.ok(engine);
+  const folder = join(f.profile.paths.metadata, 'sqlite-recovery', operationId);
+  const target = join(folder, `${phase}-${String(attempt).padStart(4, '0')}`, basename(f.path));
+  const child = fork(prepareWorker, [engine, f.profile.root, f.host.identityRegistryDirectory, operationId, phase, String(attempt)],
+    { execArgv: [], stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
+  let stderr = ''; child.stderr!.on('data', chunk => { stderr = (stderr + String(chunk)).slice(-8000); });
+  const exit: { observed: boolean; code: number | null; signal: NodeJS.Signals | null } = { observed: false, code: null, signal: null };
+  child.once('exit', (code, signal) => { exit.observed = true; exit.code = code; exit.signal = signal; });
+  const closed = new Promise<void>(resolve => child.once('close', () => resolve()));
+  const emergency = setTimeout(() => child.kill('SIGKILL'), 30000);
+  try {
+    const [message] = await once(child, 'message', { signal: AbortSignal.timeout(25000) });
+    assert.ok(message && Number.isSafeInteger(message.written) && message.written > 0 && message.written < f.main.length);
+    assert.deepEqual(message, { type: 'prepare-copy', phase, attempt, operationId, target, pid: child.pid,
+      written: message.written, bytes: message.written }, stderr);
+    assert.equal(child.kill('SIGKILL'), true);
+    await bounded(closed, 5000, 'sqlite_recovery_prepare_child_close_timeout');
+    assert.deepEqual(exit, { observed: true, code: null, signal: 'SIGKILL' }, stderr);
+    assert.equal(pin(target).bytes, message.written);
+    assert.deepEqual(readFileSync(target), f.main.subarray(0, message.written), 'the retained partial file contains the actual original prefix');
+  } finally {
+    clearTimeout(emergency);
+    if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+    await bounded(closed, 5000, 'sqlite_recovery_prepare_child_cleanup_unconfirmed');
+  }
+  assert.equal(existsSync(target + '-journal'), false);
+  const status = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+  assert.equal(status.stage, phase === 'original' ? 'preparing' : 'preserved');
+  assert.ok('intent' in status && status.intent); assert.deepEqual(status.intent.source, f.source);
+  assert.equal(status.prepared, null); assert.equal(status.complete, null); assert.equal(status.pending, null);
+  const paths = [f.path, f.path + '-journal', target, join(folder, 'intent.json')];
+  if (phase === 'candidate') {
+    assert.ok(status.preserved);
+    const original = join(folder, status.preserved.directory, basename(f.path));
+    assert.deepEqual(readFileSync(original), f.main); assert.deepEqual(readFileSync(original + '-journal'), f.journal);
+    paths.push(original, original + '-journal', join(folder, 'original.json'));
+  } else assert.equal(status.preserved, null);
+  const unchanged = unchangedFiles(paths), leasePath = join(f.profile.paths.metadata, 'lifecycle-maintenance.json');
+  assert.equal((JSON.parse(readFileSync(leasePath, 'utf8')) as { pid?: number }).pid, child.pid);
+  assert.deepEqual(recoverAgentLifecycleLeases(f.profile.root, true), { recovered: 1 });
+  assert.equal(existsSync(leasePath), false); unchanged();
+  return { target, folder, intentDigest: status.intent.digest, unchanged };
+}
+
+for (const phase of ['original', 'candidate'] as const) {
+  test(`prepare ${phase} copy interruption preserves the partial attempt and retries the same ID in a new directory`, options, async t => {
+    const f = await fixture(t, 'state'), operationId = randomUUID();
+    const interrupted = await interruptPrepare(f, operationId, phase, 1);
+    const prepared = await prepareAgentSqliteRecovery(f.profiles, f.profile.root, { operationId, kind: 'state', offline: true }, f.host);
+    assert.equal(prepared.stage, 'prepared'); assert.ok('preparedDigest' in prepared);
+    interrupted.unchanged();
+    const status = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+    assert.ok('preserved' in status && status.preserved && status.intent);
+    assert.equal(status.intent.digest, interrupted.intentDigest);
+    assert.equal(status.preserved.directory, phase === 'original' ? 'original-0002' : 'original-0001');
+    assert.equal(prepared.prepared.directory, phase === 'candidate' ? 'candidate-0002' : 'candidate-0001');
+    assertRecovered(prepared.candidatePath, f.profile.identity.agentId, 'state');
+    const names = readdirSync(interrupted.folder).sort();
+    assert.deepEqual(await prepareAgentSqliteRecovery(f.profiles, f.profile.root,
+      { operationId, kind: 'state', offline: true }, f.host), prepared);
+    assert.deepEqual(readdirSync(interrupted.folder).sort(), names); interrupted.unchanged();
+  });
+
+  test(`prepare ${phase} copy attempt limit preserves all four interrupted directories and refuses a fifth`, options, async t => {
+    const f = await fixture(t, 'state'), operationId = randomUUID(), retained: Array<() => void> = [];
+    let last: Awaited<ReturnType<typeof interruptPrepare>> | undefined;
+    for (let attempt = 1; attempt <= 4; attempt++) {
+      last = await interruptPrepare(f, operationId, phase, attempt); retained.push(last.unchanged);
+      for (const unchanged of retained) unchanged();
+    }
+    assert.ok(last);
+    const names = readdirSync(last.folder).sort();
+    assert.deepEqual(names.filter(name => name.startsWith(phase + '-')), [1, 2, 3, 4].map(n => `${phase}-000${n}`));
+    const before = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+    await assert.rejects(prepareAgentSqliteRecovery(f.profiles, f.profile.root,
+      { operationId, kind: 'state', offline: true }, f.host), { message: 'sqlite_recovery_attempt_limit' });
+    for (const unchanged of retained) unchanged();
+    assert.deepEqual(readdirSync(last.folder).sort(), names);
+    assert.deepEqual(readAgentSqliteRecovery(f.profiles, f.profile.root, operationId), before);
+    assert.equal(existsSync(join(last.folder, `${phase}-0005`)), false);
+    assert.equal(existsSync(join(f.profile.paths.metadata, 'lifecycle-maintenance.json')), false);
+    assert.equal(existsSync(join(f.profile.paths.metadata, SQLITE_RECOVERY_PENDING)), false);
+  });
+}
+
+test('documents recovery rejects a valid personal-memory fence belonging to another document store', options, async t => {
+  let expectedFence: ReturnType<typeof fenceSqlitePersonalMemory> | undefined;
+  const f = await fixture(t, 'memory', (db, context) => {
+    assert.ok(context.documentStoreId);
+    db.exec('BEGIN;'); const source = inspectPersonalMemorySnapshot(db, context.agentId); db.exec('COMMIT;');
+    const targetStoreId = randomUUID(); assert.notEqual(targetStoreId, context.documentStoreId);
+    expectedFence = { schemaVersion: 1, operationId: randomUUID(), agentId: context.agentId, targetStoreId,
+      snapshotDigest: source.snapshotDigest, ownerDigest: source.ownerDigest, workDigest: source.workDigest };
+    assert.deepEqual(fenceSqlitePersonalMemory(context.path, expectedFence), expectedFence);
+    assert.deepEqual(sqlitePersonalMemoryFence(db, context.agentId), expectedFence, 'the fixture fence itself is valid before the hot transaction');
+  }, 'documents');
+  assert.ok(expectedFence); assert.equal(f.profile.config.schemaVersion, 2);
+  const unchanged = unchangedFiles([f.path, f.path + '-journal']), operationId = randomUUID();
+  await assert.rejects(prepareAgentSqliteRecovery(f.profiles, f.profile.root,
+    { operationId, kind: 'memory', offline: true }, f.host), validatorRejected('agent_sqlite_recovery_memory_fence_mismatch'));
+  unchanged(); assertPreservedRejection(f, operationId);
+  const status = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+  assert.ok('intent' in status && status.intent);
+  assert.equal(status.intent.validation.personalMemory?.backend, 'documents');
+});
+
+test('prepare rejects super-journal names and rollback trailers while preserving the original files', options, async t => {
+  for (const form of ['name', 'trailer'] as const) {
+    const f = await fixture(t, 'state'), operationId = randomUUID();
+    const dependency = form === 'name' ? f.path + '-mj-fixture' : join(dirname(f.profile.root), 'external-super-journal');
+    writeFileSync(dependency, 'preserve the external journal dependency\n', { flag: 'wx', mode: 0o600 });
+    if (form === 'trailer') {
+      const filename = Buffer.from(dependency), footer = Buffer.alloc(16), pageMarker = Buffer.alloc(4);
+      const encodedPageSize = f.main.readUInt16BE(16), pageSize = encodedPageSize === 1 ? 65536 : encodedPageSize;
+      pageMarker.writeUInt32BE(0x40000000 / pageSize + 1);
+      footer.writeUInt32BE(filename.length, 0); footer.writeUInt32BE(filename.reduce((sum, byte) => (sum + byte) >>> 0, 0), 4);
+      Buffer.from('d9d505f920a163d7', 'hex').copy(footer, 8);
+      appendFileSync(f.path + '-journal', Buffer.concat([pageMarker, filename, footer]));
+    }
+    const unchanged = unchangedFiles([f.path, f.path + '-journal', dependency]);
+    await assert.rejects(prepareAgentSqliteRecovery(f.profiles, f.profile.root, { operationId, kind: 'state', offline: true }, f.host),
+      { message: form === 'name' ? 'sqlite_recovery_journal_mode_unsupported' : 'sqlite_recovery_super_journal_unsupported' });
+    unchanged();
+    const status = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+    assert.equal(status.stage, 'preparing'); assert.ok('intent' in status);
+    assert.equal(status.intent, null); assert.equal(status.preserved, null); assert.equal(status.prepared, null); assert.equal(status.complete, null);
+    assert.deepEqual(readdirSync(status.directory), []);
+    assert.equal(existsSync(join(f.profile.paths.metadata, 'lifecycle-maintenance.json')), false);
+  }
+});

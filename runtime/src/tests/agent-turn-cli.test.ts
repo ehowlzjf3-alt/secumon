@@ -2,17 +2,20 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { existsSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FileAgentProfileStore } from '../infrastructure/file-agent-profile.js';
 import { openAgentTurnProfile } from '../presentation/agent-turn-profile.js';
+import { LOCAL_CONTRACT_MODEL_PROFILE } from '../presentation/local-contract-model.js';
 import { SYNTHETIC_AGENT_TURN_CORRECTION, SYNTHETIC_AGENT_TURN_REQUESTS as texts } from '../infrastructure/synthetic-agent-turn.js';
 import type { SessionPage, SessionRecord } from '../domain/session.js';
 
 const execute = promisify(execFile);
-const cli = fileURLToPath(new URL('../presentation/agent-cli.js', import.meta.url));
+const cli = fileURLToPath(new URL('./helpers/agent-cli-isolated-worker.js', import.meta.url));
+function hostOptions(directory: string) { return { models: new Map(), identityRegistryDirectory: join(dirname(directory), 'registry') }; }
+function cliEnvironment(directory: string) { return { ...process.env, SECUMON_TEST_IDENTITY_REGISTRY: hostOptions(directory).identityRegistryDirectory }; }
 const runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
 interface ChatResult {
   provider: string; notice: string; sessionId: string; workId: string; accepted?: boolean;
@@ -28,9 +31,32 @@ function fixture(backend: 'sqlite' | 'file-journal' = 'sqlite') {
   return { base, directory, agentId: profile.identity.agentId, close: () => rmSync(base, { recursive: true, force: true }) };
 }
 async function call<T = ChatResult>(directory: string, args: string[]): Promise<T> {
-  const result = await execute(process.execPath, [cli, 'chat', ...args, '--directory', directory, '--provider', 'synthetic', '--json'], { timeout: 30000, maxBuffer: 2 * 1024 * 1024 });
+  const result = await execute(process.execPath, [cli, 'chat', ...args, '--directory', directory, '--provider', 'synthetic', '--json'], { timeout: 30000, maxBuffer: 2 * 1024 * 1024, env: cliEnvironment(directory) });
   assert.doesNotMatch(result.stdout, /\u001b/); return JSON.parse(result.stdout) as T;
 }
+
+test('chat uses the trusted identity registry and retains the default registered model', async () => {
+  const f = fixture();
+  try {
+    const configPath = join(f.directory, 'config.json');
+    const config = JSON.parse(readFileSync(configPath, 'utf8'));
+    writeFileSync(configPath, JSON.stringify({ ...config, model: { profile: LOCAL_CONTRACT_MODEL_PROFILE } }), { mode: 0o600 });
+    const registry = hostOptions(f.directory).identityRegistryDirectory;
+    assert.equal(existsSync(registry), false);
+    const result = await execute(process.execPath, [cli, 'chat', 'ask', '--directory', f.directory, '--provider', 'registered',
+      '--message-id', 'registered-read', '--text', texts.read, '--json'],
+    { timeout: 30000, maxBuffer: 2 * 1024 * 1024, env: cliEnvironment(f.directory) });
+    const answer = JSON.parse(result.stdout) as ChatResult;
+    assert.equal(answer.provider, 'registered');
+    assert.equal(answer.snapshot.status, 'completed');
+    assert.equal(answer.snapshot.usage.toolCalls, 1);
+    assert.ok(answer.messages.some(message => message.kind === 'result' && message.text.includes('doc-current')));
+    assert.equal(existsSync(registry), true);
+    const reopened = await call(f.directory, ['status', '--work', answer.workId, '--session', answer.sessionId]);
+    assert.equal(reopened.snapshot.status, 'completed');
+    assert.deepEqual(reopened.snapshot.usage, answer.snapshot.usage);
+  } finally { f.close(); }
+});
 
 for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: installed chat CLI accepts a plain request, resumes its session and carries actual X replies into Y`, async () => {
   const f = fixture(backend);
@@ -52,7 +78,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) test(`${backend}: ins
     const history = await call<SessionPage>(f.directory, ['history']);
     assert.deepEqual(history.entries.filter(entry => entry.role === 'user').map(entry => entry.text), [texts.rewrite, texts.followup]);
     assert.equal(history.entries.filter(entry => entry.kind === 'result').length, 2);
-    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     try {
       const state = await profile.runtime.state(second.workId);
       assert.deepEqual(state.goal.criteria, []); assert.equal(state.goal.scope, profile.scope);
@@ -72,7 +98,7 @@ test('chat fast path plans one real fixture read and synthesizes a sourced answe
     const message = result.messages.find(value => value.kind === 'result')!; assert.match(message.text, /doc-current/); assert.match(message.text, /30일/);
     const resumed = await call(f.directory, ['resume', '--work', result.workId, '--session', result.sessionId]);
     assert.equal(resumed.snapshot.status, 'completed'); assert.deepEqual(resumed.snapshot.usage, result.snapshot.usage);
-    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     try {
       const state = await profile.runtime.state(result.workId);
       assert.equal(state.attempts.length, 1); assert.equal(state.attempts[0]!.status, 'succeeded');
@@ -96,7 +122,7 @@ test('chat followup distinguishes more input from resolving a question and prese
     assert.deepEqual(answered.snapshot.pendingQuestions, []); assert.equal(answered.snapshot.usage.modelCalls, 2);
     assert(answered.messages.some(message => message.kind === 'result' && message.text.includes('원문')));
     const retry = await call(f.directory, args); assert.equal(retry.snapshot.status, 'completed'); assert.equal(retry.snapshot.usage.modelCalls, 2);
-    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     try {
       const state = await profile.runtime.state(first.workId);
       assert.equal(state.goal.responseRequirement!.requestMessageId, 'question');
@@ -114,7 +140,7 @@ test('chat step-limited execution resumes in another process without accepting a
     // Two steps leave a stored model response, which another owner can adopt without waiting for its lease.
     const first = await call(f.directory, ['ask', '--message-id', 'bounded', '--text', texts.read, '--steps', '2']);
     assert.notEqual(first.snapshot.status, 'completed'); assert.equal(first.run!.reason, 'step_limit');
-    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' });
+    const profile = await openAgentTurnProfile(f.directory, { provider: 'synthetic' }, hostOptions(f.directory));
     try {
       const state = await profile.runtime.state(first.workId);
       assert.equal(state.modelCalls.length, 1); assert.equal(state.modelCalls[0]!.status, 'received');
@@ -149,12 +175,12 @@ test('chat requires an explicit provider before creating a profile and prints on
   const f = fixture(), unused = join(f.base, 'uninitialized');
   try {
     await assert.rejects(execute(process.execPath, [cli, 'chat', 'ask', '--directory', unused, '--message-id', 'missing', '--text', texts.rewrite, '--json'],
-      { timeout: 30000 }), /agent_turn_provider_unavailable/);
+      { timeout: 30000, env: cliEnvironment(unused) }), /agent_turn_provider_unavailable/);
     assert.equal(existsSync(unused), false);
     await assert.rejects(call(unused, ['ask', '--message-id', 'scenario', '--text', texts.rewrite, '--scenario', 'documents-simple']), /chat_request_failed/);
     assert.equal(existsSync(unused), false);
     const result = await execute(process.execPath, [cli, 'chat', 'ask', '--directory', f.directory, '--provider', 'synthetic', '--message-id', 'plain', '--text', texts.rewrite],
-      { timeout: 30000, maxBuffer: 2 * 1024 * 1024 });
+      { timeout: 30000, maxBuffer: 2 * 1024 * 1024, env: cliEnvironment(f.directory) });
     assert.match(result.stdout, /합성 규칙 시험/); assert.match(result.stdout, /요청을 접수했습니다/); assert.match(result.stdout, /오늘 회의는 세 시에 시작됩니다/);
     assert(result.stdout.indexOf('요청을 접수했습니다') < result.stdout.indexOf(SYNTHETIC_AGENT_TURN_CORRECTION));
     assert.equal(result.stdout.split('요청을 접수했습니다').length - 1, 1);

@@ -4,6 +4,14 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT372-START -->
+### Checkpoint372 — chat 호스트 연결·C04 선택 검증, C03 복구6개 추가
+
+이전 작업은 `43ff709`에 코드와 문서·잔여 목록을 게시한 진행이다. 이번에는 기본 registered 모델을 유지하면서 chat 입구의 trusted registry 전달을 연결했다. 시험 host의 필수 models 필드를 교정한 C04 build2(session62563)는 exit0이며 sourceDigest는 `578542798a5b4edfa21734cdf456c6a1bff7b0546f4d807487e5f33b07d556ca`다. C03 준비 중단·각4회 시도 상한·문서 fence/super-journal6개(session5970)는6/6, C04 후속15파일(session28003)은107/107 통과했다. C03 선택 고유222개, C04 선택 고유158개이며 이전 소스의 통과를 같은 최종 소스의 재실행으로 표시하지 않는다.
+
+[현재 C03 결과](chapters/C03-ordered-verification-result.md) · [C04 결과](chapters/C04-ordered-verification-result.md). 다음은 [C03 명시 인수 잔여](chapters/C03-remaining-acceptance.md)의 R02/R03 선택·원본 현재성 거절이다. 이어갈 [C05 기존 시험·연결 공백](chapters/C05-ordered-verification-preparation.md)을 저장했다. 실제 모델/API·사내 연결·현재 Linux/native Windows·최종 통합과 전체 goal은 미완료다. 활성 빌드·시험은 없으며 작업 완료 시 커밋·푸시 규칙을 유지한다. 아래 checkpoint371 이하의 당시 다음 작업은 이력이다.
+<!-- CHECKPOINT372-END -->
+
 <!-- CHECKPOINT371-START -->
 ### Checkpoint371 — 게시 후 C03 잔여 검증 재개
 
