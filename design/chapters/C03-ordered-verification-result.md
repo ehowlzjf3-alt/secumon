@@ -1,5 +1,15 @@
 # C03 순차 검증·수정 기록
 
+## Checkpoint375 — 명시 중단 지점과 실제 로컬 도구 실행 기록 보존
+
+신규 **5/5 통과**로 누적 고유 선택은 **243개(238+5)**다. target15의4개는 C05 build6, target16의1개는 C05 build8에서 실행했다. [target15](../../runtime/evidence/C03-ordered-target15.log) · [target16](../../runtime/evidence/C03-ordered-target16.log) · [명령/소스 지문](../../runtime/evidence/C03-ordered-checkpoint.json). 이전243개 전체를 최신 소스로 다시 실행한 결과는 아니다.
+
+R04는 main 퇴역 전·main 경로 제거 직후·완료 기록 게시 전의 실제 SIGKILL3개를 추가했다. 기존 main 링크2개 상태·journal 퇴역·후보 링크2개 상태·완료 기록 게시 뒤4개와 합쳐 명시된 POSIX 지점을 확인했다. 특히 링크 생성 직후와 원 main 경로 제거 직후를 구분했다. pending과 원본/후보를 보존하고, 관리자 lease를 명시 회수한 뒤 같은 operation/digest로 재개했다.
+
+R07은 실제 `ExecutionRuntime`을 통해 임시 파일을1회 쓰고, 결과를 수신했지만 아직 채택하지 않은 상태와 실제 쓰기 후 응답 손실을 주입한 unknown 상태를 만들었다. SQLite hot-journal 복구·일반 stores 재열기2회·과거 apply 반복 뒤에도 원 attempt·owner·lease·dispatch/receive/effect 기록·정산·artifact·outbox가 유지됐다. 복구가 도구 실행이나 효과 검사를 다시 호출하지 않았고, 원 업무를 자동 완료하지 않았다. unknown은 주입한 응답 손실이며 외부 서비스나 OS 오류를 재현한 증거는 아니다.
+
+명시된 로컬 복구 인수 공백은 채웠다. 현재 Linux/native Windows·최종 통합, 실제 OS 오류와 실서비스 효과 확인·운영 데이터 복구는 별도다. [남은 인수](C03-remaining-acceptance.md). 아래 checkpoint374 이하는 당시 기록이다.
+
 ## Checkpoint374 — 관리 오류 전파·실제 복구 CLI5개 확인
 
 신규 **5/5 통과**(target14, session76306, exit0, 14,450.828958ms)로 누적 고유 선택은 **238개(233+5) 통과**다. C05 build5(session51406, exit0)의 Node v24.20.0과 소스 지문 `4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c`에서 실행했다. 이전 실행별 지문과 target13의 재실행2개·고유 증가0을 보존한다. 238개를 같은 최종 소스로 일괄 재실행한 결과는 아니다. [원로그](../../runtime/evidence/C03-ordered-target14.log) · [빌드 지문](../../runtime/evidence/C05-ordered-build5-manifest.json) · [체크포인트](../../runtime/evidence/C03-ordered-checkpoint.json).

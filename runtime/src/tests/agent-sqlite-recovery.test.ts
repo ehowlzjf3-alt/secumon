@@ -12,6 +12,11 @@ import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { SQLITE_RECOVERY_PENDING, SqliteRecoveryPendingSchema, type SqliteRecoveryFilePin, type SqliteRecoveryKind } from '../application/agent-sqlite-recovery-contracts.js';
 import type { AgentSetupOptions } from '../application/agent-profile-contracts.js';
+import type { Tool } from '../application/ports.js';
+import type { ToolResult, WorkState } from '../domain/model.js';
+import { ExecutionRuntime } from '../application/execution-runtime.js';
+import { ToolContracts } from '../application/tool-contracts.js';
+import { ToolResultSchema } from '../application/contracts.js';
 import type { KnowledgeRecord } from '../domain/knowledge.js';
 import { FileAgentProfileStore } from '../infrastructure/file-agent-profile.js';
 import { openAgentStores } from '../infrastructure/agent-stores.js';
@@ -20,7 +25,9 @@ import { SqliteRecoveryWorkerFault } from '../infrastructure/agent-sqlite-recove
 import { fenceSqlitePersonalMemory, inspectPersonalMemorySnapshot, sqlitePersonalMemoryFence } from '../infrastructure/sqlite-personal-memory-migration.js';
 import { acquireAgentMaintenance, recoverAgentLifecycleLeases } from '../infrastructure/agent-lifecycle-lease.js';
 import { openProfileMutationScope, publishProfileJson, syncProfileDirectory } from '../infrastructure/agent-profile-files.js';
-import { sha256 } from '../infrastructure/digest.js';
+import { sha256, Sha256Digester } from '../infrastructure/digest.js';
+import { AjvSchemas } from '../infrastructure/ajv-schemas.js';
+import { FakeClock, FakeSink, ScriptedPlanner, SequenceIds } from '../infrastructure/fakes.js';
 import { advance, command, delivery, initial, snapshot } from './state-conformance-helpers.js';
 import type { ApplyCrashPhase } from './helpers/agent-sqlite-recovery-apply-worker.js';
 import type { PrepareCopyPhase } from './helpers/agent-sqlite-recovery-prepare-worker.js';
@@ -69,7 +76,7 @@ async function hotRollback(path: string, agentId: string): Promise<void> {
 }
 async function fixture(t: TestContext, kind: SqliteRecoveryKind,
   beforeHot?: (db: DatabaseSync, context: { path: string; agentId: string; documentStoreId: string | null }) => void,
-  personalMemory: 'sqlite' | 'documents' = 'sqlite') {
+  personalMemory: 'sqlite' | 'documents' = 'sqlite', beforeClose?: (stores: Stores, base: string) => Promise<void>) {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'agent-sqlite-recovery-'))), engine = join(base, 'engine');
   mkdirSync(engine, { mode: 0o700 });
   const profiles = new FileAgentProfileStore(engine), active = new Set<Stores>();
@@ -108,6 +115,7 @@ async function fixture(t: TestContext, kind: SqliteRecoveryKind,
   const originalSession = await stores.sessions.get(session.scope);
   const originalHistory = await stores.sessions.history(session.scope, state.policy, { limit: 10 });
   assert.equal(originalInput?.text, rawText); assert.deepEqual(originalHistory.entries.map(entry => entry.text), [rawText]);
+  await beforeClose?.(stores, base);
   await close(stores);
   const path = kind === 'state' ? profile.paths.state : kind === 'memory' ? profile.paths.memory : join(profile.paths.metadata, 'channel.sqlite');
   const db = new DatabaseSync(path);
@@ -233,6 +241,127 @@ function unchangedFiles(paths: readonly string[]) {
     assert.deepEqual(pin(file.path), file.pin, file.path);
     assert.deepEqual(readFileSync(file.path), file.bytes, file.path);
   } };
+}
+
+async function recordLocalWrite(stores: Stores, base: string, outcome: 'received' | 'unknown') {
+  const work = initial('local-effect-work'); work.policy.allowWrites = true; work.policy.allowedTools = ['fixture.write'];
+  assert.equal((await stores.state.commit(command(work, 'effect-accept'))).kind, 'committed');
+  const effectPath = join(base, 'local-effect.json'), clock = new FakeClock(1100);
+  const observed = { calls: 0, validations: 0, effectChecks: 0, refreshes: 0 };
+  const validate = async (state: WorkState, result: ToolResult) => {
+    observed.validations++;
+    if (outcome === 'unknown') return result.attemptId === state.attempts[0]?.id && result.status === 'error' &&
+      result.effectState === 'unknown' && result.error?.code === 'tool_execution_failed' && !result.effectReceipt;
+    const receipt = result.effectReceipt;
+    if (!receipt || receipt.provider !== 'fixture' || receipt.operationId !== result.attemptId || receipt.origin !== 'execution' ||
+      receipt.outcome !== 'applied' || result.status !== 'success' || result.effectState !== 'confirmed') return false;
+    const bytes = await stores.artifacts.get(receipt.artifact, state.policy);
+    const saved = JSON.parse(Buffer.from(bytes).toString('utf8')) as { workId?: string; attemptId?: string; text?: string };
+    return Buffer.from(bytes).equals(readFileSync(effectPath)) && saved.workId === state.id &&
+      saved.attemptId === result.attemptId && saved.text === 'saved once';
+  };
+  const tool: Tool = { definition: { provider: 'fixture', id: 'fixture.write', version: '1', description: 'Write one isolated local file.',
+    effect: 'write', destination: 'local', labels: ['synthetic'], resultValidation: 'artifact-proof-v1',
+    inputSchema: { type: 'object', properties: { text: { const: 'saved once' } }, required: ['text'], additionalProperties: false },
+    outputSchema: { type: 'object', properties: { saved: { const: true } }, required: ['saved'], additionalProperties: false } },
+    async execute(task, invocation) {
+      assert.ok(invocation.authorize); await invocation.authorize(); observed.calls++;
+      const bytes = Buffer.from(JSON.stringify({ workId: invocation.workId, attemptId: invocation.attemptId, text: task.input['text'] }));
+      writeFileSync(effectPath, bytes, { flag: 'wx', mode: 0o600 });
+      // The write is real. This injected reply loss does not claim an external-service or OS failure.
+      if (outcome === 'unknown') throw new Error('TEST_REPLY_LOST_AFTER_LOCAL_WRITE');
+      const artifact = await stores.artifacts.put(bytes, { tenantId: work.policy.tenantId, labels: ['synthetic'], mediaType: 'application/json' });
+      return { resultId: `${invocation.attemptId}:result`, attemptId: invocation.attemptId, status: 'success', effectState: 'confirmed',
+        evidence: [], artifacts: [artifact], output: { saved: true }, error: null, cursor: null, coverage: 'complete',
+        effectReceipt: { provider: 'fixture', operationId: invocation.attemptId, outcome: 'applied', origin: 'execution', artifact, observedAt: clock.now() },
+        usage: { transportCalls: 0, internalOperations: 1, imageBytes: 0, waitMs: 0 } };
+    }, validateResult: validate };
+  const planner = new ScriptedPlanner([]), sink = new FakeSink();
+  const services = { state: stores.state, artifacts: stores.artifacts, tools: [tool], clock, planner, sink,
+    ids: new SequenceIds(), digester: new Sha256Digester(), effects: {
+      async current(state: WorkState) {
+        observed.effectChecks++;
+        for (const attempt of state.attempts.filter(value => value.effectReceipt)) {
+          if (!attempt.resultArtifact) return false;
+          const result = ToolResultSchema.parse(JSON.parse(Buffer.from(await stores.artifacts.get(attempt.resultArtifact, state.policy)).toString('utf8')));
+          if (!(await validate(state, result))) return false;
+        }
+        return true;
+      }, async refresh(workId: string) { observed.refreshes++; const state = await stores.state.get(workId); assert.ok(state); return state; },
+    } };
+  const runtime = new ExecutionRuntime(services, new ToolContracts([tool], new AjvSchemas()), 'local-write-owner');
+  try {
+    await runtime.submitPlan(work.id, 'effect-plan', { baseStateRevision: work.revision, baseGoalRevision: 1, basePlanRevision: 0,
+      reason: 'Create one real local effect before SQLite recovery.', hypotheses: [], tasks: [{ id: 'write', description: 'Save once',
+        toolId: tool.definition.id, toolVersion: '1', input: { text: 'saved once' }, effect: 'write', dependsOn: [], maxAttempts: 1, satisfies: [] }] });
+    const attempt = await runtime.reserve(work.id, 'write'); await runtime.execute(work.id, attempt.id); await runtime.settlePending(attempt.id);
+    if (outcome === 'unknown') await runtime.adopt(work.id, attempt.id);
+    const commandIds = ['effect-accept', 'effect-plan', `reserve:${attempt.id}`, `dispatch:${attempt.id}`, `receive:${attempt.id}`, `adopt:${attempt.id}`];
+    const saved = await snapshot(stores.state, work.id, commandIds); assert.ok(saved.state);
+    const stored = saved.state.attempts[0]!; assert.equal(saved.state.attempts.length, 1);
+    assert.equal(stored.status, outcome); assert.equal(stored.adopted, false);
+    assert.equal(stored.owner, attempt.owner); assert.equal(stored.leaseUntil, attempt.leaseUntil);
+    assert.equal(stored.effectState, outcome === 'received' ? 'confirmed' : 'unknown');
+    assert.ok(stored.execution); assert.equal(stored.execution.mode, 'invoked'); assert.equal(stored.execution.implementationCalls, 1);
+    assert.equal(saved.state.budget.used.toolCalls, 1); assert.equal(saved.state.budget.used.modelCalls, 0);
+    assert.equal(saved.state.budget.reservedToolCalls, 0); assert.notEqual(saved.state.status, 'completed');
+    assert.deepEqual(saved.state.evidence, []); assert.ok(stored.resultArtifact);
+    assert.ok(saved.receipts[`dispatch:${attempt.id}`]); assert.ok(saved.receipts[`receive:${attempt.id}`]);
+    if (outcome === 'received') {
+      assert.ok(stored.effectReceipt); assert.equal(stored.effectReceipt.outcome, 'applied'); assert.equal(stored.effectReceipt.origin, 'execution');
+      assert.equal(saved.receipts[`adopt:${attempt.id}`], null);
+    } else {
+      assert.equal(stored.effectReceipt, undefined); assert.equal(stored.error?.code, 'tool_execution_failed');
+      assert.ok(saved.receipts[`adopt:${attempt.id}`]);
+      assert.ok(saved.state.obligations.some(value => value.id === `effect:${attempt.id}` && value.kind === 'effect_reconciliation' && value.status === 'pending'));
+    }
+    const refs = [stored.resultArtifact, ...(stored.effectReceipt ? [stored.effectReceipt.artifact] : [])];
+    const originals = await Promise.all(refs.map(async ref => ({ ref, bytes: Buffer.from(await stores.artifacts.get(ref, work.policy)) })));
+    assert.equal(observed.calls, 1); assert.equal(planner.inputs.length, 0); assert.equal(sink.delivered.size, 0);
+    return { workId: work.id, commandIds, saved, originals, effectPath, observed, planner, sink };
+  } finally { runtime.beginClose(); await runtime.finishClose(5000); }
+}
+
+for (const outcome of ['received', 'unknown'] as const) {
+  test(`SQLite recovery preserves a real local write's ${outcome} attempt and receipts without new execution`, options, async t => {
+    let original: Awaited<ReturnType<typeof recordLocalWrite>> | undefined;
+    const f = await fixture(t, 'state', undefined, 'sqlite', async (stores, base) => { original = await recordLocalWrite(stores, base, outcome); });
+    assert.ok(original); const saved = original, activity = structuredClone(saved.observed), effectUnchanged = unchangedFiles([saved.effectPath]);
+    const effectBytes = readFileSync(saved.effectPath), effect = JSON.parse(effectBytes.toString('utf8'));
+    assert.deepEqual(effect, { workId: saved.workId, attemptId: saved.saved.state!.attempts[0]!.id, text: 'saved once' });
+    const operationId = randomUUID();
+    const prepared = await prepareAgentSqliteRecovery(f.profiles, f.profile.root, { operationId, kind: 'state', offline: true }, f.host);
+    assert.equal(prepared.stage, 'prepared'); assert.ok('preparedDigest' in prepared);
+    assert.deepEqual(pin(f.path), f.source.main); assert.deepEqual(pin(f.path + '-journal'), f.source.journal);
+    const originalsUnchanged = unchangedFiles([prepared.originalPath, prepared.originalPath + '-journal']);
+    const applied = await applyAgentSqliteRecovery(f.profiles, f.profile.root,
+      { operationId, expectedPreparedDigest: prepared.preparedDigest, offline: true }, f.host);
+    assert.equal(applied.currentDatabaseVerified, true); assert.equal(applied.historical, false);
+    assert.equal(applied.externalEffects, 'preserved; reconcile existing runtime receipts before new execution');
+    assertRecovered(f.path, f.profile.identity.agentId, 'state'); effectUnchanged(); originalsUnchanged();
+    assert.deepEqual(pin(f.path + `.retired-${operationId}`), f.source.main);
+    assert.deepEqual(pin(f.path + `-journal.retired-${operationId}`), f.source.journal);
+    const recoveryReceiptUnchanged = unchangedFiles([join(prepared.directory, 'complete.json')]);
+    for (let reopen = 0; reopen < 2; reopen++) {
+      const stores = await f.open();
+      try {
+        assert.deepEqual(await snapshot(stores.state, saved.workId, saved.commandIds), saved.saved,
+          'normal store reopen must not settle, adopt, retry, or rewrite the original local effect');
+        for (const source of saved.originals) assert.deepEqual(Buffer.from(await stores.artifacts.get(source.ref, saved.saved.state!.policy)), source.bytes);
+        assert.deepEqual(await snapshot(stores.state, f.state.id, [f.accepted.commandId]), f.originalWork);
+        assert.deepEqual(await stores.sessions.input(f.session.scope, 'original-input'), f.originalInput);
+      } finally { await f.close(stores); }
+      const status = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+      assert.equal(status.stage, 'complete'); assert.ok('complete' in status); assert.deepEqual(status.complete, applied.receipt);
+      const repeated = await applyAgentSqliteRecovery(f.profiles, f.profile.root,
+        { operationId, expectedPreparedDigest: prepared.preparedDigest, offline: true }, f.host);
+      assert.equal(repeated.historical, true); assert.equal(repeated.currentDatabaseVerified, false);
+      assert.deepEqual(repeated.receipt, applied.receipt);
+      effectUnchanged(); originalsUnchanged(); recoveryReceiptUnchanged();
+      assert.deepEqual(saved.observed, activity, 'recovery and reopen invoke neither the write implementation nor its effect validator');
+      assert.equal(saved.observed.calls, 1); assert.equal(saved.planner.inputs.length, 0); assert.equal(saved.sink.delivered.size, 0);
+    }
+  });
 }
 
 test('apply rejects a different prepared digest before changing the hot pair, candidate, or recovery receipts', options, async t => {
@@ -407,9 +536,9 @@ async function interruptApply(f: Awaited<ReturnType<typeof preparedFixture>>, ph
   const emergency = setTimeout(() => child.kill('SIGKILL'), 30000);
   try {
     const [message] = await once(child, 'message', { signal: AbortSignal.timeout(25000) });
-    const source = phase === 'main-retired-link' ? f.path : phase === 'journal-retired' ? f.path + '-journal' :
+    const source = phase === 'before-main-retire' || phase === 'main-retired-link' || phase === 'after-main-retire' ? f.path : phase === 'journal-retired' ? f.path + '-journal' :
       phase === 'candidate-published-link' ? f.prepared.candidatePath : null;
-    const target = phase === 'main-retired-link' ? f.path + `.retired-${f.operationId}` : phase === 'journal-retired' ?
+    const target = phase === 'before-main-retire' || phase === 'main-retired-link' || phase === 'after-main-retire' ? f.path + `.retired-${f.operationId}` : phase === 'journal-retired' ?
       f.path + `-journal.retired-${f.operationId}` : phase === 'candidate-published-link' ? f.path : join(f.prepared.directory, 'complete.json');
     assert.deepEqual(message, { type: 'apply-boundary', phase, operationId: f.operationId,
       preparedDigest: f.prepared.preparedDigest, pid: child.pid, source, target,
@@ -426,7 +555,7 @@ async function interruptApply(f: Awaited<ReturnType<typeof preparedFixture>>, ph
   }
 }
 
-for (const phase of ['candidate-published-link', 'complete-published', 'main-retired-link', 'journal-retired'] as const) {
+for (const phase of ['candidate-published-link', 'complete-published', 'main-retired-link', 'journal-retired', 'before-main-retire', 'before-complete-publish', 'after-main-retire'] as const) {
   test(`actual apply interruption at ${phase} retains pending and resumes the same candidate after dead-lease recovery`, options, async t => {
     const f = await preparedFixture(t), originalRecovery = unchangedFiles(f.preservedPaths);
     const childPid = await interruptApply(f, phase);
@@ -438,16 +567,23 @@ for (const phase of ['candidate-published-link', 'complete-published', 'main-ret
     const maintenancePath = join(f.profile.paths.metadata, 'lifecycle-maintenance.json');
     assert.equal((JSON.parse(readFileSync(maintenancePath, 'utf8')) as { pid?: number }).pid, childPid);
     const assertInterruptedFiles = () => {
-      assert.deepEqual(pin(retiredMain, phase === 'main-retired-link' ? 2n : 1n), f.source.main);
-      if (phase === 'main-retired-link') {
+      if (phase === 'before-main-retire') {
+        assert.equal(existsSync(retiredMain), false); assert.equal(existsSync(retiredJournal), false);
+        assert.deepEqual(pin(f.path), f.source.main); assert.deepEqual(pin(f.path + '-journal'), f.source.journal);
+      } else if (phase === 'main-retired-link') {
+        assert.deepEqual(pin(retiredMain, 2n), f.source.main);
         assert.deepEqual(pin(f.path, 2n), f.source.main);
         assert.deepEqual(pin(f.path + '-journal'), f.source.journal); assert.equal(existsSync(retiredJournal), false);
+      } else if (phase === 'after-main-retire') {
+        assert.equal(existsSync(f.path), false); assert.deepEqual(pin(retiredMain), f.source.main);
+        assert.deepEqual(pin(f.path + '-journal'), f.source.journal); assert.equal(existsSync(retiredJournal), false);
       } else {
+        assert.deepEqual(pin(retiredMain), f.source.main);
         assert.equal(existsSync(f.path + '-journal'), false); assert.deepEqual(pin(retiredJournal), f.source.journal);
         if (phase === 'journal-retired') assert.equal(existsSync(f.path), false);
         else assert.deepEqual(pin(f.path, phase === 'candidate-published-link' ? 2n : 1n), f.prepared.prepared.candidate);
       }
-      if (phase === 'complete-published') assert.equal(existsSync(f.prepared.candidatePath), false);
+      if (phase === 'before-complete-publish' || phase === 'complete-published') assert.equal(existsSync(f.prepared.candidatePath), false);
       else assert.deepEqual(pin(f.prepared.candidatePath, phase === 'candidate-published-link' ? 2n : 1n), f.prepared.prepared.candidate);
       originalRecovery(); assert.deepEqual(readFileSync(pendingPath), pendingBytes);
     };

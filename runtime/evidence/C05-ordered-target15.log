@@ -1,0 +1,254 @@
+TAP version 13
+# Subtest: sqlite: collection custody CLI resume blocks denied body access with a valid checkpoint and accounts once without retransmission
+not ok 1 - sqlite: collection custody CLI resume blocks denied body access with a valid checkpoint and accounts once without retransmission
+  ---
+  duration_ms: 2232.761916
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-custody-entry.test.js:64:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      {
+        entries: [
+          {
+            artifact: null,
+            kind: 'work',
+    ...
+          },
+    +     {
+    +       artifact: null,
+    +       kind: 'failure',
+    +       labels: [],
+    +       role: 'assistant',
+    +       sequence: 3,
+    +       sourceId: 'failure-96dc875cab80db6b88b3a4dcdcf5228da104f6a0716ec1e4ac15755cd3c2c0d8',
+    +       status: 'delivered',
+    +       text: '[work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.',
+    +       workId: 'work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27'
+    +     }
+        ],
+        nextCursor: null
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    entries:
+      0:
+        sequence: 1
+        role: 'user'
+        sourceId: 'original-request'
+        workId: 'work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27'
+        text: '[합성 collection] 지정한 자료의 모든 항목을 읽고 항목별 값과 합계를 알려 줘. 원문 보존.'
+        labels:
+        artifact: ~
+        status: 'received'
+        kind: 'work'
+      1:
+        sequence: 2
+        role: 'assistant'
+        sourceId: 'ack'
+        workId: 'work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27'
+        text: '[work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27] 요청을 접수했습니다.'
+        labels:
+        artifact: ~
+        status: 'delivered'
+        kind: 'ack'
+    nextCursor: ~
+  actual:
+    entries:
+      0:
+        sequence: 1
+        role: 'user'
+        sourceId: 'original-request'
+        workId: 'work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27'
+        text: '[합성 collection] 지정한 자료의 모든 항목을 읽고 항목별 값과 합계를 알려 줘. 원문 보존.'
+        labels:
+        artifact: ~
+        status: 'received'
+        kind: 'work'
+      1:
+        sequence: 2
+        role: 'assistant'
+        sourceId: 'ack'
+        workId: 'work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27'
+        text: '[work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27] 요청을 접수했습니다.'
+        labels:
+        artifact: ~
+        status: 'delivered'
+        kind: 'ack'
+      2:
+        sequence: 3
+        role: 'assistant'
+        sourceId: 'failure-96dc875cab80db6b88b3a4dcdcf5228da104f6a0716ec1e4ac15755cd3c2c0d8'
+        workId: 'work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27'
+        text: '[work-9723a692301f9f20f5b628eccd4e0a13b50fb780e2f24ec75a14b1ec939a9e27] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.'
+        labels:
+        artifact: ~
+        status: 'delivered'
+        kind: 'failure'
+    nextCursor: ~
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-custody-entry.test.js:112:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: sqlite: collection custody HTTP view is read-only and cancel keeps known usage and cancellation across reopen
+ok 2 - sqlite: collection custody HTTP view is read-only and cancel keeps known usage and cancellation across reopen
+  ---
+  duration_ms: 1028.523083
+  type: 'test'
+  ...
+# Subtest: file-journal: collection custody CLI resume blocks denied body access with a valid checkpoint and accounts once without retransmission
+not ok 3 - file-journal: collection custody CLI resume blocks denied body access with a valid checkpoint and accounts once without retransmission
+  ---
+  duration_ms: 3042.176833
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-custody-entry.test.js:64:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      {
+        entries: [
+          {
+            artifact: null,
+            kind: 'work',
+    ...
+          },
+    +     {
+    +       artifact: null,
+    +       kind: 'failure',
+    +       labels: [],
+    +       role: 'assistant',
+    +       sequence: 3,
+    +       sourceId: 'failure-96dc875cab80db6b88b3a4dcdcf5228da104f6a0716ec1e4ac15755cd3c2c0d8',
+    +       status: 'delivered',
+    +       text: '[work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.',
+    +       workId: 'work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346'
+    +     }
+        ],
+        nextCursor: null
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    entries:
+      0:
+        sequence: 1
+        role: 'user'
+        sourceId: 'original-request'
+        workId: 'work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346'
+        text: '[합성 collection] 지정한 자료의 모든 항목을 읽고 항목별 값과 합계를 알려 줘. 원문 보존.'
+        labels:
+        artifact: ~
+        status: 'received'
+        kind: 'work'
+      1:
+        sequence: 2
+        role: 'assistant'
+        sourceId: 'ack'
+        workId: 'work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346'
+        text: '[work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346] 요청을 접수했습니다.'
+        labels:
+        artifact: ~
+        status: 'delivered'
+        kind: 'ack'
+    nextCursor: ~
+  actual:
+    entries:
+      0:
+        sequence: 1
+        role: 'user'
+        sourceId: 'original-request'
+        workId: 'work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346'
+        text: '[합성 collection] 지정한 자료의 모든 항목을 읽고 항목별 값과 합계를 알려 줘. 원문 보존.'
+        labels:
+        artifact: ~
+        status: 'received'
+        kind: 'work'
+      1:
+        sequence: 2
+        role: 'assistant'
+        sourceId: 'ack'
+        workId: 'work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346'
+        text: '[work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346] 요청을 접수했습니다.'
+        labels:
+        artifact: ~
+        status: 'delivered'
+        kind: 'ack'
+      2:
+        sequence: 3
+        role: 'assistant'
+        sourceId: 'failure-96dc875cab80db6b88b3a4dcdcf5228da104f6a0716ec1e4ac15755cd3c2c0d8'
+        workId: 'work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346'
+        text: '[work-83eb83876b7554bcce8b5e1fbfc62c506428802fbe8f06af85c675b9f3dae346] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.'
+        labels:
+        artifact: ~
+        status: 'delivered'
+        kind: 'failure'
+    nextCursor: ~
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-custody-entry.test.js:112:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: file-journal: collection custody HTTP view is read-only and cancel keeps known usage and cancellation across reopen
+ok 4 - file-journal: collection custody HTTP view is read-only and cancel keeps known usage and cancellation across reopen
+  ---
+  duration_ms: 1433.338459
+  type: 'test'
+  ...
+# Subtest: stored collection permission gate blocks the denied terminal tip once without changing custody or accounting
+ok 5 - stored collection permission gate blocks the denied terminal tip once without changing custody or accounting
+  ---
+  duration_ms: 199.965708
+  type: 'test'
+  ...
+# Subtest: stored collection permission gate ignores an old plan, goal, scope or different current task input
+ok 6 - stored collection permission gate ignores an old plan, goal, scope or different current task input
+  ---
+  duration_ms: 583.280583
+  type: 'test'
+  ...
+# Subtest: stored collection permission gate does not block a superseded parent after its explicit successor has settled
+ok 7 - stored collection permission gate does not block a superseded parent after its explicit successor has settled
+  ---
+  duration_ms: 306.17625
+  type: 'test'
+  ...
+# Subtest: stored collection permission gate leaves an independent permitted task runnable
+ok 8 - stored collection permission gate leaves an independent permitted task runnable
+  ---
+  duration_ms: 201.1745
+  type: 'test'
+  ...
+# Subtest: stored collection permission gate preserves explicit cancelled and paused work states
+ok 9 - stored collection permission gate preserves explicit cancelled and paused work states
+  ---
+  duration_ms: 397.235375
+  type: 'test'
+  ...
+# Subtest: stored collection permission gate rechecks restored policy and replaced registration before publication
+ok 10 - stored collection permission gate rechecks restored policy and replaced registration before publication
+  ---
+  duration_ms: 367.095
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 8
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10069.168417

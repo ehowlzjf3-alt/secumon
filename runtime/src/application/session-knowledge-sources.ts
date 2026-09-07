@@ -5,7 +5,7 @@ import { dataGeneration } from '../domain/data-lifecycle.js';
 import type { KnowledgeUserSources } from './knowledge-ports.js';
 import type { SessionRepository } from './session-ports.js';
 import type { RuntimeServices } from './services.js';
-import { SessionOriginals } from './session-originals.js';
+import { sessionOriginalEligible, validateSessionUserOriginal } from './session-original-validation.js';
 import { asJson } from './plan-validator.js';
 
 type Services = Pick<RuntimeServices, 'state' | 'artifacts' | 'digester' | 'planner'>;
@@ -24,10 +24,7 @@ function originalGeneration(work: WorkState): number {
 
 /** User originals do not inherit the model/tool dependencies of the work that received them. */
 export class SessionKnowledgeSources implements KnowledgeUserSources {
-  readonly #originals: SessionOriginals;
-  constructor(readonly services: Services, readonly repository: SessionRepository, readonly agentId: string) {
-    this.#originals = new SessionOriginals(services, repository);
-  }
+  constructor(readonly services: Services, readonly repository: SessionRepository, readonly agentId: string) {}
   #digest(value: unknown) { return this.services.digester.digest(asJson(value)); }
   async #inspect(actor: TrustedKnowledgeActor, ref: { sessionId: string; messageId: string; quote: string }) {
     if (actor.agentId !== this.agentId || !ref.quote.length || ref.quote.length > 16384 ||
@@ -40,11 +37,18 @@ export class SessionKnowledgeSources implements KnowledgeUserSources {
       this.#digest(basis.scope) !== this.#digest(scope) || basis.input.sequence < receipt.sequence ||
       !actor.allowedScopes.includes(work.goal.scope) || !receipt.labels.every(label => actor.allowedLabels.includes(label))) throw unavailable();
     let found = false;
-    for await (const original of this.#originals.read(work, basis, receipt.sequence - 1, receipt.sequence)) {
-      if (found || !original.eligible || original.pending || original.entry.role !== 'user' || original.entry.sourceId !== ref.messageId ||
-        original.entry.sequence !== receipt.sequence || original.entry.text !== receipt.text) throw unavailable();
-      found = true;
-    }
+    let cursor: string | undefined;
+    do {
+      const page = await this.repository.history(scope, work.policy, { limit: 64, afterSequence: receipt.sequence - 1,
+        throughSequence: receipt.sequence, ...(cursor ? { cursor } : {}) });
+      for (const entry of page.entries) {
+        if (found || entry.role !== 'user' || entry.sourceId !== ref.messageId) throw unavailable();
+        validateSessionUserOriginal(entry, receipt, scope, value => this.#digest(value));
+        if (!sessionOriginalEligible(work, basis, entry, work, this.services.planner.destination, value => this.#digest(value))) throw unavailable();
+        found = true;
+      }
+      cursor = page.nextCursor ?? undefined;
+    } while (cursor);
     if (!found) throw unavailable();
     const stableWork = await this.services.state.get(work.id), stableReceipt = await this.repository.input(scope, ref.messageId);
     if (!stableWork || this.#digest({ policy: stableWork.policy, generation: originalGeneration(stableWork), scope: stableWork.goal.scope,

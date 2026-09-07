@@ -11,6 +11,7 @@ import { openAgentTurnProfile } from '../presentation/agent-turn-profile.js';
 import { LOCAL_CONTRACT_MODEL_PROFILE } from '../presentation/local-contract-model.js';
 import { SYNTHETIC_AGENT_TURN_CORRECTION, SYNTHETIC_AGENT_TURN_REQUESTS as texts } from '../infrastructure/synthetic-agent-turn.js';
 import type { SessionPage, SessionRecord } from '../domain/session.js';
+import { transact } from '../application/work-transactions.js';
 
 const execute = promisify(execFile);
 const cli = fileURLToPath(new URL('./helpers/agent-cli-isolated-worker.js', import.meta.url));
@@ -34,6 +35,115 @@ async function call<T = ChatResult>(directory: string, args: string[]): Promise<
   const result = await execute(process.execPath, [cli, 'chat', ...args, '--directory', directory, '--provider', 'synthetic', '--json'], { timeout: 30000, maxBuffer: 2 * 1024 * 1024, env: cliEnvironment(directory) });
   assert.doesNotMatch(result.stdout, /\u001b/); return JSON.parse(result.stdout) as T;
 }
+
+async function withProfile<T>(directory: string, action: (profile: Awaited<ReturnType<typeof openAgentTurnProfile>>) => Promise<T>): Promise<T> {
+  const profile = await openAgentTurnProfile(directory, { provider: 'synthetic' }, hostOptions(directory));
+  try { return await action(profile); } finally { await profile.close(); }
+}
+async function seedFailure(directory: string, status: 'blocked' | 'failed') {
+  return withProfile(directory, async profile => {
+    const session = await profile.sessions.open(profile.actor, { channel: 'cli', conversationId: 'terminal' });
+    const accepted = await profile.turns.accept(profile.actor, { sessionId: session.scope.sessionId, messageId: 'failure-request', rawText: texts.read,
+      binding: { ...profile.executionActor, channel: 'cli', conversationId: 'terminal', destination: 'local', recipientId: profile.actor.principalId },
+      scope: profile.scope, mode: 'auto', policy: profile.policy, limits: profile.limits });
+    await profile.outbox.flush(accepted.workId, profile.actor);
+    await transact(profile.services, accepted.workId, 'fixture-restriction', 'fixture_restriction', {}, state => {
+      state.status = status; state.statusReason = 'fixture_original_restriction';
+    });
+    const delivery = await profile.conversation.prepare(accepted.workId, profile.actor);
+    assert.equal(delivery?.kind, 'failure'); assert.equal(delivery?.status, 'pending');
+    return { workId: accepted.workId, sessionId: session.scope.sessionId, failureId: delivery!.id };
+  });
+}
+async function failureImage(directory: string, workId: string, sessionId: string) {
+  return withProfile(directory, async profile => ({ state: await profile.services.state.get(workId),
+    deliveries: await profile.services.state.deliveries(workId), events: await profile.services.state.events(workId, 0),
+    history: await profile.sessions.history(profile.actor, sessionId, profile.policy, { limit: 100 }) }));
+}
+
+test('chat failure status shows only delivered current restrictions without executing or changing stored work', { timeout: 60000 }, async () => {
+  for (const status of ['blocked', 'failed'] as const) {
+    const f = fixture();
+    try {
+      const seeded = await seedFailure(f.directory, status), args = ['status', '--work', seeded.workId, '--session', seeded.sessionId];
+      const pending = await failureImage(f.directory, seeded.workId, seeded.sessionId);
+      assert.deepEqual((await call(f.directory, args)).messages.filter(message => message.kind === 'failure'), []);
+      assert.deepEqual(await failureImage(f.directory, seeded.workId, seeded.sessionId), pending);
+      await withProfile(f.directory, profile => profile.outbox.flush(seeded.workId, profile.actor));
+      const delivered = await failureImage(f.directory, seeded.workId, seeded.sessionId);
+      assert.equal(delivered.deliveries.find(delivery => delivery.id === seeded.failureId)?.status, 'delivered');
+      for (let repeat = 0; repeat < 2; repeat++) {
+        const current = await call(f.directory, args);
+        assert.equal(current.snapshot.status, status); assert.equal(current.snapshot.resultReady, false);
+        assert.deepEqual(current.messages.filter(message => message.kind !== 'ack'), [{ id: seeded.failureId, kind: 'failure',
+          text: `[${seeded.workId}] 작업을 진행할 수 없습니다. 상태 조회에서 제한 사유를 확인해 주세요.` }]);
+        assert.equal(current.snapshot.usage.modelCalls, 0); assert.equal(current.snapshot.usage.toolCalls, 0);
+      }
+      assert.deepEqual(await failureImage(f.directory, seeded.workId, seeded.sessionId), delivered);
+    } finally { f.close(); }
+  }
+});
+
+test('chat failure status withholds earlier reason and generation deliveries until a current failure is delivered', { timeout: 60000 }, async () => {
+  const f = fixture();
+  try {
+    const seeded = await seedFailure(f.directory, 'blocked'), args = ['status', '--work', seeded.workId, '--session', seeded.sessionId];
+    await withProfile(f.directory, profile => profile.outbox.flush(seeded.workId, profile.actor));
+    let previousId = seeded.failureId;
+    for (const change of ['reason', 'generation'] as const) {
+      await withProfile(f.directory, profile => transact(profile.services, seeded.workId, `fixture-${change}`, 'fixture_restriction_changed', { change }, state => {
+        if (change === 'reason') state.statusReason = 'fixture_replacement_restriction';
+        else if (state.dataLifecycle) state.dataLifecycle.generation++;
+        else state.dataLifecycle = { generation: 1, blockedArtifactIds: [], changes: [] };
+      }));
+      const before = await failureImage(f.directory, seeded.workId, seeded.sessionId);
+      assert.equal(before.deliveries.find(delivery => delivery.id === previousId)?.status, 'delivered');
+      const stale = await call(f.directory, args);
+      assert.equal(stale.snapshot.status, 'blocked'); assert.deepEqual(stale.messages.filter(message => message.kind === 'failure'), []);
+      assert.deepEqual(await failureImage(f.directory, seeded.workId, seeded.sessionId), before);
+      const currentId = await withProfile(f.directory, async profile => {
+        const current = await profile.conversation.prepare(seeded.workId, profile.actor);
+        assert.equal(current?.kind, 'failure'); assert.notEqual(current!.id, previousId);
+        await profile.outbox.flush(seeded.workId, profile.actor); return current!.id;
+      });
+      assert.deepEqual((await call(f.directory, args)).messages.filter(message => message.kind === 'failure').map(message => message.id), [currentId]);
+      previousId = currentId;
+    }
+  } finally { f.close(); }
+});
+
+test('chat failure status retains its snapshot only for a knowledge projection change and propagates access denial', { timeout: 60000 }, async () => {
+  const f = fixture();
+  try {
+    const seeded = await seedFailure(f.directory, 'blocked');
+    await withProfile(f.directory, profile => profile.outbox.flush(seeded.workId, profile.actor));
+    const before = await failureImage(f.directory, seeded.workId, seeded.sessionId);
+    // This injects the projection boundary outcome after real authorization/current-message checks;
+    // source deletion and knowledge-validator races remain covered by the WorkView service tests.
+    const invoke = async (code: string) => {
+      const program = `import assert from 'node:assert/strict';
+import {mock} from 'node:test';
+import {runAgentTurnCli} from ${JSON.stringify(new URL('../presentation/agent-turn-cli.js', import.meta.url).href)};
+import {WorkViewService} from ${JSON.stringify(new URL('../application/work-view-service.js', import.meta.url).href)};
+const read=WorkViewService.prototype.read; let checks=0;
+mock.method(WorkViewService.prototype,'read',async function(...args) {
+  const result=await read.apply(this,args);
+  assert.equal(result.kind,'snapshot'); assert.ok(result.view.messages.some(message=>message.kind==='failure'&&message.deliveryStatus==='delivered'));
+  checks++; throw new Error(${JSON.stringify(code)});
+});
+try { await runAgentTurnCli(process.argv.slice(1),{models:new Map(),identityRegistryDirectory:${JSON.stringify(hostOptions(f.directory).identityRegistryDirectory)}}); }
+finally { mock.restoreAll(); assert.equal(checks,1); }`;
+      return execute(process.execPath, ['--input-type=module', '-e', program, 'status', '--directory', f.directory, '--provider', 'synthetic',
+        '--work', seeded.workId, '--session', seeded.sessionId, '--json'], { timeout: 30000, maxBuffer: 2 * 1024 * 1024 });
+    };
+    const result = JSON.parse((await invoke('work_view_knowledge_changed')).stdout) as ChatResult;
+    assert.equal(result.snapshot.status, 'blocked'); assert.equal(result.snapshot.resultReady, false);
+    assert.deepEqual(result.messages.filter(message => message.kind === 'failure'), []);
+    assert.equal(result.snapshot.usage.modelCalls, 0); assert.equal(result.snapshot.usage.toolCalls, 0);
+    await assert.rejects(invoke('work_view_denied'), /work_view_denied/);
+    assert.deepEqual(await failureImage(f.directory, seeded.workId, seeded.sessionId), before);
+  } finally { f.close(); }
+});
 
 test('chat uses the trusted identity registry and retains the default registered model', async () => {
   const f = fixture();

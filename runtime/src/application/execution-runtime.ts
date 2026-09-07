@@ -41,6 +41,7 @@ import type { AppliedSessionInput } from '../domain/session.js';
 import { AppliedSessionInputSchema } from './session-contracts.js';
 import { SessionInputBasisSchema } from './session-base-contracts.js';
 import { sessionInputsCurrent } from './session-context.js';
+import { currentAttempts, isEndedToolReservation, taskSucceeded } from '../domain/task-status.js';
 
 export const UserCommandSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('mode'), mode: z.enum(['auto', 'fast', 'deep']), reason: z.string().min(1).max(10000), expectedControlRevision: z.number().int().positive().max(Number.MAX_SAFE_INTEGER) }),
@@ -805,6 +806,37 @@ export class ExecutionRuntime {
     await this.restoreStoredResult(workId, stored.id);
     return { kind: 'continue', action: 'recover', id: stored.id, reason: 'stored_result_checked' };
   }
+  private deniedCollectionTip(state: WorkState): Attempt | undefined {
+    if (state.plan?.goalRevision !== state.goal.revision) return;
+    for (const task of state.plan.tasks) {
+      if (taskSucceeded(state, task)) continue;
+      const attempt = currentAttempts(state, task).filter(value => !isEndedToolReservation(value)).at(-1);
+      if (!attempt || !['failed', 'partial', 'cancelled', 'succeeded'].includes(attempt.status) || attempt.effect !== 'read' ||
+        !attempt.readProgress || attempt.readProgress.successorAttemptId || !this.currentTask(state, attempt) ||
+        !this.tools.get(attempt.toolId, attempt.toolVersion)?.tool.definition.collection ||
+        this.tools.check(task, state.policy) !== 'tool_permission_denied') continue;
+      const control = this.control(state);
+      return control.kind === 'replan' && control.reason === 'plan_cannot_complete_goal' ? attempt : undefined;
+    }
+  }
+  /** A denied current collection cannot supply the mandatory planning contract. Preserve its custody and block before model context. */
+  private async blockDeniedCollection(state: WorkState): Promise<Control | null> {
+    const attempt = this.deniedCollectionTip(state); if (!attempt) return null;
+    const registration = this.tools.get(attempt.toolId, attempt.toolVersion), revision = this.tools.revision;
+    const current = (next: WorkState) => {
+      if (this.#closing) throw new Error('executor_closed');
+      assertExecutionAuthority(this.services, next);
+      if (next.revision !== state.revision || this.tools.revision !== revision ||
+        this.tools.get(attempt.toolId, attempt.toolVersion) !== registration || this.deniedCollectionTip(next)?.id !== attempt.id)
+        throw new Error('control_stale');
+    };
+    const code = 'tool_permission_denied';
+    await this.change(state.id, `collection-permission:${attempt.id}:${state.revision}`, { attemptId: attempt.id, code }, 'execution_gate_rejected', next => {
+      current(next); next.status = 'blocked'; next.statusReason = code; next.retryWakeAt = null;
+    }, async () => { current(await this.state(state.id)); });
+    // Finish the normal workflow settlement pass so it can deliver the block notice on this entry.
+    return { kind: 'continue', action: 'recover', id: attempt.id, reason: 'stored_collection_permission_checked' };
+  }
   /** Settles one stored collection change without a model packet, new dispatch or effect recovery. */
   async settleStoredCollection(workId: string): Promise<Control | null> {
     if (this.#closing) throw new Error('executor_closed');
@@ -828,6 +860,7 @@ export class ExecutionRuntime {
         (!progress || visibleReadProgress(state, progress))) await this.readReconciliation.reconcile(workId, expired.id);
       return { kind: 'continue', action: 'recover', id: expired.id, reason: 'stored_collection_expired' };
     }
+    const denied = await this.blockDeniedCollection(state); if (denied) return denied;
     for (const attempt of state.attempts) {
       if (!['failed', 'partial', 'cancelled', 'succeeded'].includes(attempt.status) || attempt.goalRevision !== state.goal.revision ||
         attempt.scope !== state.goal.scope || !attempt.readProgress || !visibleReadProgress(state, attempt.readProgress) || !attempt.readProgress.unknownCalls ||

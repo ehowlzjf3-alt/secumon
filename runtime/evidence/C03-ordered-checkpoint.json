@@ -1,7 +1,7 @@
 {
-  "checkpoint": 374,
+  "checkpoint": 375,
   "date": "2026-09-08",
-  "status": "local_verification_in_progress",
+  "status": "local_named_recovery_acceptance_verified_environment_integration_remaining",
   "goalComplete": false,
   "environment": {
     "platform": "darwin",
@@ -283,17 +283,43 @@
         "The retained marker prevents the next worker; the existing management order can prepare another candidate copy before that guard",
         "No current Linux/native Windows or real external service validation"
       ]
+    },
+    {
+      "session": 50515,
+      "log": "runtime/evidence/C03-ordered-target15.log",
+      "scope": "R04 before phases2 and R07 real local effects2",
+      "exitCode": 0,
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "durationMs": 6641.134083,
+      "sourceDigest": "3c39b6c0150c38ca48480d62e5d46f2a992d2cef9d101e17e4f01b09b2f2ebd9",
+      "uniqueIncrement": 4,
+      "command": ".tools/node-v24.20.0-darwin-arm64/bin/node --test --test-concurrency=1 --test-timeout=90000 --test-reporter=tap --test-name-pattern=\"before-main-retire|before-complete-publish|SQLite recovery preserves a real local write\" dist/tests/agent-sqlite-recovery.test.js"
+    },
+    {
+      "session": 85459,
+      "log": "runtime/evidence/C03-ordered-target16.log",
+      "exitCode": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "durationMs": 1268.464,
+      "sourceDigest": "8b85b9834afe4fbc4c5c0f24c0169864383881cb513a37fcdbb359636927d32d",
+      "scope": "after-main-retire exact SIGKILL boundary",
+      "uniqueIncrement": 1,
+      "command": ".tools/node-v24.20.0-darwin-arm64/bin/node --test --test-concurrency=1 --test-timeout=90000 --test-reporter=tap --test-name-pattern=\"after-main-retire\" dist/tests/agent-sqlite-recovery.test.js"
     }
   ],
   "modelApiTests": "stopped",
   "externalServiceConnectionsRun": false,
   "remaining": [
-    "Local R04: explicitly unobserved interruption boundaries outside the four verified POSIX phases",
-    "Local R07: preserve existing external-tool attempt/effect receipts without automatic success or replay; can use isolated local fixtures",
-    "Separate environment acceptance: current Linux/native Windows no-replace resume and final integration; not a blocker for remaining local cases"
+    "Current Linux/native Windows no-replace and final integrated regression",
+    "OS close failure and unobserved real validator termination were not reproduced; prior tests inject errors/terminal events",
+    "Actual external-service effect reconciliation and production SQLite recovery are not proved by temporary local files"
   ],
-  "next": "Continue bounded local R04/R07 acceptance; preserve verified R06 injected/simulated error propagation and R08 actual CLI paths without treating missing external environments as a local blocker",
-  "uniquePassingTests": 238,
+  "next": "Proceed C05 permission-resume fix, then C06; preserve local recovery evidence without repeating the completed matrix",
+  "uniquePassingTests": 243,
   "preparedFixtureSourcesBaselineCheckpoint": 370,
   "preparedFixtureSources": {
     "src/tests/personal-memory-context.test.ts": "e74b39f1e75e2d008fa2a8222b005117cc99b96319687d13155ba6453a1ce004",
@@ -355,7 +381,7 @@
       "sourceDigest": "4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c"
     }
   ],
-  "uniqueTests": 238,
+  "uniqueTests": 243,
   "failingTests": 0,
   "activeTest": null,
   "recoveryHappyPaths": {
@@ -434,5 +460,12 @@
       "log": "runtime/evidence/C03-ordered-target14.log",
       "scope": "Actual agent CLI using isolated host registry and state hot-journal fixture: explicit prepare/apply/status, same-operation repeats, no implicit repair recovery, actual interrupted-apply pending gate and lease recovery"
     }
+  },
+  "latestAcceptance": {
+    "checkpoint": 375,
+    "R04": "before main link; main link nlink2; after main unlink; journal retired; candidate link nlink2; before complete publication; after complete publication. New3 plus retained prior4, POSIX actual SIGKILL only.",
+    "R07": "Actual local file write received and unknown outcomes retain original state/receipts/artifacts/budget through recovery, two reopens and historical apply. Unknown is injected reply loss after a real write.",
+    "newPassingTests": 5,
+    "totalMeaning": "243 unique selected cases across their recorded source builds; no latest-source full rerun"
   }
 }

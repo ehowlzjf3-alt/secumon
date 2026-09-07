@@ -2,7 +2,7 @@
 
 ## 현재 실행 방침 — 2026-09-08
 
-최신 Checkpoint374: C03 복구 관리 전파·실제 CLI5개 추가로 고유238개, C05 도구/문맥·MCP의 추가461개로 선택 고유662개를 확인했다. 실제 중단과 주입 오류의 범위, 각 실행의 소스 지문을 구분해 보존한다. [현재 인수인계](IMPLEMENTATION-RESUME.md)와 [다음 작업](NEXT-STEPS.md)을 따른다. C03 R04/R07, C05 collection custody-only 입구·비용 최적화, C06 이후 및 실제 환경 인수가 남아 있다.
+최신 Checkpoint375: C03의 명시 복구 중단·실제 로컬 도구 기록5개를 추가해 선택 고유243개, C05의 원문 조회 재사용·수집 권한 차단·CLI 안내20개를 추가해 선택 고유682개를 확인했다. 각 실행의 소스 지문과 실패 후 교정을 구분하며 전체를 최종 소스에서 재실행한 것으로 표시하지 않는다. [현재 인수인계](IMPLEMENTATION-RESUME.md)와 [다음 작업](NEXT-STEPS.md)을 따른다. C06 직접 입구·설치·두 담당 배치부터 이어가며, 정책 재허용 후 전체 재개·최종 통합·현재 Linux/native Windows 및 실제 환경 인수는 별도다. 아래 checkpoint374 이전의 상태·다음 작업은 이력이다.
 
 최신 checkpoint371: `872fa50` 게시 뒤 로컬 검증을 재개했다. 초안 종료 hook 실패를 교정·재확인했고 C03의 선택 고유216개를 확인했다. [현재 결과](chapters/C03-ordered-verification-result.md) · [체크포인트](../runtime/evidence/C03-ordered-checkpoint.json). 복구 게시 단계의 실제 중단/재개4개도 통과했다. 준비 단계 중단·시도 상한과 남은 경계·환경 인수는 미완료다. 아래 게시 우선 정지와156개 중1실패 표시는 이전 checkpoint370의 기록이다.
 

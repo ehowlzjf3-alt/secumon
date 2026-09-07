@@ -4,6 +4,18 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT375-START -->
+### Checkpoint375 — 원문 조회 재사용·수집 권한 차단·CLI 안내, 복구 인수
+
+Checkpoint375: C03의 명시 복구 중단·실제 로컬 도구 기록5개를 추가해 선택 고유243개, C05의 원문 조회 재사용·수집 권한 차단·CLI 안내20개를 추가해 선택 고유682개를 확인했다. 각 실행의 소스 지문과 실패 후 교정을 구분하며 전체를 최종 소스에서 재실행한 것으로 표시하지 않는다. 이전 완료 단위는 `0a57d20`으로 게시했다.
+
+개인 기억 조회는 한 원문 검사 안의 중복 업무/입력 조회만 제거했고 마지막 전체 입력 기록·정책·원문 현재성 확인은 유지했다. 같은 스크립트의 새 기준선/수정 후 관측에서 업무/입력 포트는 각각12→8회이며 원문 이력4회는 유지됐다. [측정과 한계](chapters/C05-source-read-reuse-result.md). 수집의 권한 철회 뒤에는 현재 tip만 차단하고 원응답·실행 owner/lease·원 입력을 보존하며 정산과 제한 안내를 정상 단계에서 마친다. CLI는 현재 세션의 유효한 안내만 표시한다. [수집 결과](chapters/C05-collection-permission-resume-result.md).
+
+최종 build12 exit0, sourceDigest `043b09e3878214c4731f5e9c5c4b5168bfb02599ae11246e817648f111c0a5c9`; 같은 빌드의 target18 10/10·target19 39/39 통과다. 앞선 기억62/62·관련 수집39/39·C03 신규5개의 다른 실행 지문, fixture 교정과 제품 누락의 실패 원로그를 [체크포인트](../runtime/evidence/checkpoint375.json)에 보존했다. 기억 제품3파일의 컴파일 지문은 측정 때와 같다.
+
+다음은 [C06 직접 Knox 입구·격리 설치·두 담당 배치](chapters/C06-ordered-verification-preparation.md)다. C03 R04/R07 명시 로컬 잔여는 이번에 확인했다. C05의 정책 재허용 후 명시 재개 전체 인수, 현재 Linux/native Windows·최종 통합·실제 연동은 [다음 작업](NEXT-STEPS.md)에 남긴다. 실제 모델/API 중단과 전체 goal 진행 상태를 유지한다. 활성 빌드·시험은 없다. 아래 checkpoint374 이하는 당시 이력이다.
+<!-- CHECKPOINT375-END -->
+
 <!-- CHECKPOINT374-START -->
 ### Checkpoint374 — 도구·문맥과 MCP 재개/종료, 복구 관리·CLI 검증
 

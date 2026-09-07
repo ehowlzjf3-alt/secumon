@@ -54,12 +54,29 @@ async function view(profile: AgentTurnProfile, workId: string, scope: SessionSco
     const state = await selectedWork(profile, workId, scope, conversationId);
     const [snapshot, deliveries] = await Promise.all([profile.conversation.snapshot(workId, profile.actor), profile.services.state.deliveries(workId)]);
     if (snapshot.revision !== state.revision || (await selectedWork(profile, workId, scope, conversationId)).revision !== state.revision) continue;
-    const messages = deliveries.filter(delivery => delivery.status === 'delivered' && delivery.goalRevision === state.goal.revision &&
-      delivery.context?.binding.channel === 'cli' && delivery.context.binding.conversationId === conversationId && delivery.context.binding.session?.sessionId === scope.sessionId &&
-      (delivery.kind === 'ack' || delivery.kind === 'result' && snapshot.resultReady && state.conversation?.result?.id === delivery.id ||
+    const scoped = deliveries.filter(delivery => delivery.status === 'delivered' && delivery.goalRevision === state.goal.revision &&
+      delivery.context?.binding.channel === 'cli' && delivery.context.binding.conversationId === conversationId && delivery.context.binding.session?.sessionId === scope.sessionId);
+    const failures = new Map<string, string>();
+    if (['blocked', 'failed'].includes(state.status) && scoped.some(delivery => delivery.kind === 'failure')) {
+      const binding = state.conversation!.bindings.find(binding => binding.channel === 'cli' && binding.conversationId === conversationId &&
+        binding.session?.sessionId === scope.sessionId)!;
+      // Reuse the current disclosure projection; stored failure text can belong to an earlier restriction.
+      const projected = await profile.workView.read(workId, profile.actor, { channel: 'cli', conversationId,
+        destination: binding.destination, recipientId: binding.recipientId, allowDiagnostics: false }, { level: 'conversation' }).catch((error: unknown) => {
+        // A changed memory source withholds the optional notice without hiding the status snapshot.
+        if (error instanceof Error && error.message === 'work_view_knowledge_changed') return null;
+        throw error;
+      });
+      if (projected && (projected.kind !== 'snapshot' || projected.view.revision !== state.revision) ||
+          (await selectedWork(profile, workId, scope, conversationId)).revision !== state.revision) continue;
+      for (const message of projected?.kind === 'snapshot' ? projected.view.messages : [])
+        if (message.kind === 'failure' && message.deliveryStatus === 'delivered') failures.set(message.id, message.text);
+    }
+    const messages = scoped.filter(delivery =>
+      (delivery.kind === 'failure' && failures.has(delivery.id) || delivery.kind === 'ack' || delivery.kind === 'result' && snapshot.resultReady && state.conversation?.result?.id === delivery.id ||
         delivery.kind === 'question' && !['cancelled', 'paused', 'failed'].includes(state.status) &&
-          delivery.context.obligationIds.some(id => snapshot.pendingQuestions.some(question => question.id === id))))
-      .map(delivery => ({ id: delivery.id, kind: delivery.kind, text: delivery.text }));
+          delivery.context!.obligationIds.some(id => snapshot.pendingQuestions.some(question => question.id === id))))
+      .map(delivery => ({ id: delivery.id, kind: delivery.kind, text: failures.get(delivery.id) ?? delivery.text }));
     return { snapshot, messages };
   }
   throw new Error('conversation_view_contention');

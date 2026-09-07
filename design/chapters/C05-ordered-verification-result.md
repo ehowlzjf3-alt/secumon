@@ -1,5 +1,17 @@
 # C05 도구·문맥·MCP 순차 검증
 
+## Checkpoint375 — 원문 검사 재사용과 collection 권한 차단 입구
+
+이번 신규 고유 20개가 통과해 C05 선택은 **682개(662+7+6+4+3)**다. 원문 검사 재사용 7개, collection 권한 차단 6개, 일반 CLI/HTTP custody 입구 4개, CLI 현재 제한 안내 3개를 더했고 관련 재실행은 중복 합산하지 않았다. 실제 모델/API 시험 중단을 유지한다. [실행 기록](../../runtime/evidence/checkpoint375.json) · [collection 결과·실패 이력](C05-collection-permission-resume-result.md).
+
+원문 검사 재사용은 build6에서 신규 7 + 기존 개인 기억/세션 회귀 55 = **62/62** 통과했다. 단회 실제 SQLite `KnowledgeService.get` 계측에서 `state.get`과 `session.input`은 각각 12→8회로 줄고, 이력 조회 4회·마지막 현재성 검사를 유지했고, 기록한 결과 요약(본문 해시·revision·owner·size)이 같았다. 전체 반환 객체의 bytes 동일성을 주장하지 않는다. 반환 JSON bytes·공개 포트 호출 수만 측정했으며 물리 I/O·시간·모델 토큰 개선율로 확대하지 않는다. [원로그](../../runtime/evidence/C05-ordered-target11.log) · [전후 비교](../../runtime/evidence/C05-source-read-comparison2.json).
+
+collection은 현재 권한이 철회된 마지막 작업을 `blocked/tool_permission_denied`로 명시하고 원 응답·head·정산을 보존한다. 일반 CLI 재개는 정상 checkpoint와 같은 첫 재개의 제한 안내를 반환하며, HTTP cancel은 취소 상태를 유지한다. 실제 stdio 호출 총 1회 뒤 재전송·본문 투영·모델 호출은 0, 알려진 사용량은 한 번만 정산한다. CLI는 WorkView의 현재 공개 범위에 맞는 전달 완료 제한 안내만 표시한다. 기존 fixture 오류, 권한 없는 frontier 검사 오류, 지연 안내·CLI 안내 누락의 실패 로그도 보존했다.
+
+최종 build12 source는 `043b09e3878214c4731f5e9c5c4b5168bfb02599ae11246e817648f111c0a5c9`다. target18(session91839, exit0)은 입구 4 + 차단 6 = **10/10**, target19(session53136, exit0)는 신규 CLI 3 + 기존 CLI 8 + WorkView 28 = **39/39**다. 앞선 build9 관련 39/39와 build10·11의 빌드/실패 범위는 별도로 유지한다. 현재 관련 실패는 0이며 **682개 전체를 build12에서 일괄 실행한 결과는 아니다.** [최종 manifest](../../runtime/evidence/C05-ordered-build12-manifest.json) · [target18](../../runtime/evidence/C05-ordered-target18.log) · [target19](../../runtime/evidence/C05-ordered-target19.log).
+
+C03는 별도 복구 신규 5개를 더해 고유 **243개**이며 C05 수에 섞지 않는다. 권한 재부여 뒤 일반 CLI에서 명시 재개해 끝까지 완료하는 흐름과 현재 Linux/native Windows·최종 통합·실서비스 인수는 미검증이다. 비용 검토의 두 번째 후보는 미채택이며 C06 진행을 막는 필수 잔여가 아니다. 다음은 [C06 직접 Knox 입구·격리 설치·두 담당 배치](C06-ordered-verification-preparation.md)다. 아래 checkpoint374·373과 당시 남은 목록은 과거 기록으로 보존한다.
+
 ## Checkpoint374 — 선택·정리, MCP 보관·재개·중단 검증
 
 이전 게시 `0ceef23` 뒤 checkpoint373 build3의 고정 산출물을 재사용해 도구·기억·스킬/문맥 8파일 **163/163**, MCP 읽기·수집·대기 7파일 **99/99**, custody A/B 5파일 **54/54**를 확인했다. 이어 새 build5에서 MCP profile/CLI/Web·중단 재개 **46/46**, 단순 응답 보관·정산·조회 **89/89**, 신규 collection 실제 중단/종료 **10/10**을 확인했다. 이전 201개에 별도 461개를 더한 선택 고유 **662개**다. [실행별 원로그·명령·지문](../../runtime/evidence/C05-ordered-checkpoint.json).

@@ -1,0 +1,120 @@
+TAP version 13
+# Subtest: sqlite: collection custody CLI resume accounts once and asks for missing authorized data without retransmission or completion
+not ok 1 - sqlite: collection custody CLI resume accounts once and asks for missing authorized data without retransmission or completion
+  ---
+  duration_ms: 1331.082542
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-custody-entry.test.js:64:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node --input-type=module -e import {mock} from 'node:test';
+    import {runAgentTurnCli} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js";
+    import {McpStdioClient} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-stdio-client.js";
+    import {createCollectionEntryHost} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-entry-fixture.js";
+    const realNow=Date.now,started=realNow(); mock.method(Date,'now',()=>131392+realNow()-started);
+    for(const method of ['discover','call','close']) mock.method(McpStdioClient.prototype,method,()=>{throw new Error('custody_entry_offline_client_'+method)});
+    try { await runAgentTurnCli(process.argv.slice(1),createCollectionEntryHost({"directory":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/collection-custody-entry-Y5WYKY/agent","backend":"sqlite","scenario":"complete","now":131392,"auditFile":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/collection-custody-entry-Y5WYKY/peer.jsonl","hostAuditFile":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/collection-custody-entry-Y5WYKY/host.jsonl"},'stored_only')); }
+    finally { mock.restoreAll(); } resume --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/collection-custody-entry-Y5WYKY/agent --provider registered --session 7de0c55a-9ceb-4921-8611-51e52065c115 --conversation terminal --work work-976b7acb3b303f7c6dd1533a83823ce939412edcba6395819461ee2f235f112d --json --goal-revision 1 --steps 20
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:583
+                    throw new Error('context_tool_unavailable');
+                          ^
+    
+    Error: context_tool_unavailable
+        at ContextCompiler.compile (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:583:23)
+        at async ContextCompiler.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:258:16)
+        at async AgentTurnCalls.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/agent-turn-runtime.js:55:28)
+        at async PlanningRuntime.inspectNext (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:256:40)
+        at async PlanningRuntime.compactStep (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:1015:40)
+        at async WorkflowRuntime.run (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/workflow-runtime.js:119:17)
+        at async runAgentTurnCli (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js:196:19)
+        at async file:///Users/seunghanee/Documents/secumon/runtime/[eval1]:7:7
+    
+    Node.js v24.20.0
+    
+  code: 1
+  stack: |-
+    ContextCompiler.compile (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:583:23)
+    async ContextCompiler.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:258:16)
+    async AgentTurnCalls.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/agent-turn-runtime.js:55:28)
+    async PlanningRuntime.inspectNext (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:256:40)
+    async PlanningRuntime.compactStep (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:1015:40)
+    async WorkflowRuntime.run (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/workflow-runtime.js:119:17)
+    async runAgentTurnCli (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js:196:19)
+    async file:///Users/seunghanee/Documents/secumon/runtime/[eval1]:7:7
+    genericNodeError (node:internal/errors:986:15)
+    wrappedFn (node:internal/errors:540:14)
+    ChildProcess.exithandler (node:child_process:417:12)
+    ChildProcess.emit (node:events:514:28)
+    maybeClose (node:internal/child_process:1141:16)
+    ChildProcess._handle.onexit (node:internal/child_process:306:5)
+  ...
+# Subtest: sqlite: collection custody HTTP view is read-only and cancel keeps known usage and cancellation across reopen
+ok 2 - sqlite: collection custody HTTP view is read-only and cancel keeps known usage and cancellation across reopen
+  ---
+  duration_ms: 687.071666
+  type: 'test'
+  ...
+# Subtest: file-journal: collection custody CLI resume accounts once and asks for missing authorized data without retransmission or completion
+not ok 3 - file-journal: collection custody CLI resume accounts once and asks for missing authorized data without retransmission or completion
+  ---
+  duration_ms: 1473.674958
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-custody-entry.test.js:64:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: /Users/seunghanee/Documents/secumon/runtime/.tools/node-v24.20.0-darwin-arm64/bin/node --input-type=module -e import {mock} from 'node:test';
+    import {runAgentTurnCli} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js";
+    import {McpStdioClient} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/mcp-stdio-client.js";
+    import {createCollectionEntryHost} from "file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mcp-collection-entry-fixture.js";
+    const realNow=Date.now,started=realNow(); mock.method(Date,'now',()=>131411+realNow()-started);
+    for(const method of ['discover','call','close']) mock.method(McpStdioClient.prototype,method,()=>{throw new Error('custody_entry_offline_client_'+method)});
+    try { await runAgentTurnCli(process.argv.slice(1),createCollectionEntryHost({"directory":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/collection-custody-entry-2zNvSM/agent","backend":"file-journal","scenario":"complete","now":131411,"auditFile":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/collection-custody-entry-2zNvSM/peer.jsonl","hostAuditFile":"/private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/collection-custody-entry-2zNvSM/host.jsonl"},'stored_only')); }
+    finally { mock.restoreAll(); } resume --directory /private/var/folders/g3/7w545kd128j1s0jbb6dcv4b80000gn/T/collection-custody-entry-2zNvSM/agent --provider registered --session 75b88384-113c-4712-a3a8-5ad68269f163 --conversation terminal --work work-508f337259a63039d1fdea086567c51a7dc017039f794da3f57ff9ac7e2d8273 --json --goal-revision 1 --steps 20
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:583
+                    throw new Error('context_tool_unavailable');
+                          ^
+    
+    Error: context_tool_unavailable
+        at ContextCompiler.compile (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:583:23)
+        at async ContextCompiler.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:258:16)
+        at async AgentTurnCalls.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/agent-turn-runtime.js:55:28)
+        at async PlanningRuntime.inspectNext (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:256:40)
+        at async PlanningRuntime.compactStep (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:1015:40)
+        at async WorkflowRuntime.run (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/workflow-runtime.js:119:17)
+        at async runAgentTurnCli (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js:196:19)
+        at async file:///Users/seunghanee/Documents/secumon/runtime/[eval1]:7:7
+    
+    Node.js v24.20.0
+    
+  code: 1
+  stack: |-
+    ContextCompiler.compile (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:583:23)
+    async ContextCompiler.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/context-compiler.js:258:16)
+    async AgentTurnCalls.inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/agent-turn-runtime.js:55:28)
+    async PlanningRuntime.inspectNext (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:256:40)
+    async PlanningRuntime.compactStep (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/planning-runtime.js:1015:40)
+    async WorkflowRuntime.run (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/workflow-runtime.js:119:17)
+    async runAgentTurnCli (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-turn-cli.js:196:19)
+    async file:///Users/seunghanee/Documents/secumon/runtime/[eval1]:7:7
+    genericNodeError (node:internal/errors:986:15)
+    wrappedFn (node:internal/errors:540:14)
+    ChildProcess.exithandler (node:child_process:417:12)
+    ChildProcess.emit (node:events:514:28)
+    maybeClose (node:internal/child_process:1141:16)
+    ChildProcess._handle.onexit (node:internal/child_process:306:5)
+  ...
+# Subtest: file-journal: collection custody HTTP view is read-only and cancel keeps known usage and cancellation across reopen
+ok 4 - file-journal: collection custody HTTP view is read-only and cancel keeps known usage and cancellation across reopen
+  ---
+  duration_ms: 945.528541
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4592.271875
