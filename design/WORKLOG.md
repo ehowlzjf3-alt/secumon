@@ -2332,3 +2332,8 @@ C03 명시 V03-R01~08과 실제 증거를 대조한 남은 인수, C05 기존 �
 ### Checkpoint373 — 관찰의 준비 진전·C05 호스트 입구와 C03 추가 인수
 
 Checkpoint373: 컴퓨터 관찰의 준비 진전 누락을 교정하고 C05 선택 고유201개를 확인했다. C03은 owner/저장 선택·원본 현재성 거절11개 추가로 고유233개이며 late 응답2개 재실행은 중복 합산하지 않는다. 각 실행의 소스 지문과 실패 원로그를 보존한다. 원관찰 검증 후 내용 기반 준비 진전을 인정하고 같은 화면/빈 화면 반복의 기본3 차단을 유지했다. 등록 충돌 namespace, 완료 HTTP 새 run 기대, 기존 reconciliation의 무진전 전제, 임시 HTTP 종료 순서 등 시험 경계를 교정했다. 최종 build3 exit0 및 교정18/18, 이전 build2 신규25/25·관련167/175와 실패8 원로그·코어 타입/구조 결과를 구분해 보존했다. [결과](chapters/C05-ordered-verification-result.md) · [잔여](NEXT-STEPS.md). 실제 모델/API·외부 서비스 미실행, 전체 goal 미완료. 코드·문서·원로그를 이번 작업 단위로 커밋·푸시한다.
+
+
+### Checkpoint374 — 호출/문맥 수명과 MCP 보관·재개 인수
+
+Checkpoint374: C03 복구 관리 전파·실제 CLI5개 추가로 고유238개, C05 도구/문맥·MCP의 추가461개로 선택 고유662개를 확인했다. 실제 중단과 주입 오류의 범위, 각 실행의 소스 지문을 구분해 보존한다. 기존 MCP fixture7파일의 임시 registry를 연결하고 보존한 crash6/drain4를 제품 사본 없이 통합했다. build4의 입력 타입 narrowing 오류 뒤 build5 exit0을 확인했다. C03의5개는 실제 worker close 후 오류 주입2·관리 프로세스 내 terminal 이벤트 대역1·실제 CLI2이며 원문/오류/차단·재개를 검증했다. 실제 OS close 실패나 실제 validator 종료 미관측으로 확대하지 않는다. [C03 결과](chapters/C03-ordered-verification-result.md) · [C05 결과](chapters/C05-ordered-verification-result.md) · [다음 작업](NEXT-STEPS.md). 모든 실행 handle은 종료됐고 실제 모델/API·사내 연결은 실행하지 않았다. 전체 goal을 유지하며 이번 단위도 코드·문서·원로그 동반 커밋/푸시한다.

@@ -1,13 +1,15 @@
 import test, { type TestContext } from 'node:test';
 import assert from 'node:assert/strict';
-import { fork } from 'node:child_process';
+import childProcess, { execFile, fork, type ChildProcess, type ForkOptions } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { once } from 'node:events';
 import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { syncBuiltinESMExports } from 'node:module';
 import { basename, dirname, join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 import { SQLITE_RECOVERY_PENDING, SqliteRecoveryPendingSchema, type SqliteRecoveryFilePin, type SqliteRecoveryKind } from '../application/agent-sqlite-recovery-contracts.js';
 import type { AgentSetupOptions } from '../application/agent-profile-contracts.js';
 import type { KnowledgeRecord } from '../domain/knowledge.js';
@@ -27,6 +29,9 @@ type Stores = Awaited<ReturnType<typeof openAgentStores>>;
 const worker = fileURLToPath(new URL('./helpers/agent-database-owner-worker.js', import.meta.url));
 const applyWorker = fileURLToPath(new URL('./helpers/agent-sqlite-recovery-apply-worker.js', import.meta.url));
 const prepareWorker = fileURLToPath(new URL('./helpers/agent-sqlite-recovery-prepare-worker.js', import.meta.url));
+const faultWorker = fileURLToPath(new URL('./helpers/agent-sqlite-recovery-fault-worker.js', import.meta.url));
+const isolatedCli = fileURLToPath(new URL('./helpers/agent-cli-isolated-worker.js', import.meta.url));
+const executeFile = promisify(execFile);
 const rawText = '복구 이전 요청 원문입니다.\n기존 업무와 메모, 세션을 유지합니다.\n';
 const payload = 'a'.repeat(8192);
 
@@ -720,4 +725,202 @@ test('same-operation prepare rejects a different kind while preserving both data
   assert.equal(existsSync(join(f.profile.paths.metadata, 'lifecycle-maintenance.json')), false);
   assert.equal(existsSync(f.path + `.retired-${f.operationId}`), false);
   assert.equal(existsSync(f.path + `-journal.retired-${f.operationId}`), false);
+});
+
+for (const mode of ['candidate-close', 'validation-close'] as const) {
+  test(`recovery management preserves originals and ${mode} faults from a real worker with an injected post-close error`, options, async t => {
+    const f = await fixture(t, 'state', mode === 'validation-close' ? db => { db.exec('DROP TABLE deliveries;'); } : undefined);
+    const unchanged = unchangedFiles([f.path, f.path + '-journal']), operationId = randomUUID();
+    const originalFork = childProcess.fork;
+    const observed: { child?: ChildProcess; closed?: Promise<void>; exit?: { code: number | null; signal: NodeJS.Signals | null } } = {};
+    let calls = 0, fault: SqliteRecoveryWorkerFault | undefined;
+    Reflect.set(childProcess, 'fork', (path: unknown, args: unknown, settings: ForkOptions) => {
+      assert.equal(String(path), new URL('../infrastructure/agent-sqlite-recovery-worker.js', import.meta.url).href);
+      assert.deepEqual(args, []); assert.equal(++calls, 1);
+      const child = originalFork(faultWorker, [mode], settings); observed.child = child;
+      child.once('exit', (code, signal) => { observed.exit = { code, signal }; });
+      observed.closed = new Promise<void>(resolve => child.once('close', () => resolve()));
+      return child;
+    });
+    syncBuiltinESMExports();
+    try {
+      await assert.rejects(prepareAgentSqliteRecovery(f.profiles, f.profile.root,
+        { operationId, kind: 'state', offline: true }, f.host), error => {
+        assert.ok(error instanceof SqliteRecoveryWorkerFault); fault = error;
+        assert.equal(error.workerExit.observed, true); assert.equal(error.workerExit.closed, true);
+        assert.equal(error.workerExit.code, 1); assert.equal(error.workerExit.signal, null);
+        const remote = error.failures.find(item => item.stage === 'worker')?.error;
+        assert.ok(remote instanceof Error); assert.equal(error.cause, remote);
+        if (mode === 'candidate-close') {
+          assert.equal(remote.message, 'fixture_candidate-close_after_release');
+          assert.equal((remote as Error & { code?: string }).code, 'TEST_SQLITE_CLOSE_AFTER_RELEASE');
+        } else {
+          assert.equal(remote.name, 'AggregateError'); assert.equal(remote.message, 'agent_sqlite_recovery_validation_close_failed');
+          assert.ok(remote.cause instanceof Error); assert.equal(remote.cause.message, 'agent_sqlite_recovery_schema_invalid');
+          const errors = (remote as Error & { errors: Array<{ stage: string; error: Error & { code?: string } }> }).errors;
+          assert.equal(errors.length, 2);
+          assert.equal(errors[0]?.error.message, 'agent_sqlite_recovery_schema_invalid');
+          assert.equal(errors[1]?.error.message, 'fixture_validation-close_after_release');
+          assert.equal(errors[1]?.error.code, 'TEST_SQLITE_CLOSE_AFTER_RELEASE');
+        }
+        return true;
+      });
+    } finally {
+      Reflect.set(childProcess, 'fork', originalFork); syncBuiltinESMExports();
+      if (observed.child && observed.child.exitCode === null && observed.child.signalCode === null) observed.child.kill('SIGKILL');
+      if (observed.closed) await bounded(observed.closed, 5000, 'recovery_fault_worker_close_unconfirmed');
+    }
+    assert.equal(calls, 1); assert.ok(fault); assert.deepEqual(observed.exit, { code: 1, signal: null });
+    assert.equal(fault.workerExit.pid, observed.child?.pid);
+    unchanged(); assertPreservedRejection(f, operationId);
+    const status = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+    assert.ok('preserved' in status && status.preserved);
+    assert.equal(existsSync(join(status.directory, 'worker-unobserved.json')), false);
+    assert.equal(existsSync(join(status.directory, 'candidate-0001', basename(f.path) + '-journal')), false,
+      'the actual worker completed rollback before the injected close-reporting failure');
+  });
+}
+
+test('recovery management retains an unobserved-worker fence after simulated missing terminal events and dead-manager lease recovery', options, async t => {
+  const f = await fixture(t, 'state'), operationId = randomUUID(), unchanged = unchangedFiles([f.path, f.path + '-journal']);
+  const engine = f.profiles.engineDirectories[0]; assert.ok(engine);
+  // execFile resolves after this real manager exits/closes. Its missing validator events are a declared test double, not an OS failure.
+  const execution = await executeFile(process.execPath, [faultWorker, 'unobserved-management', engine, f.profile.root,
+    f.host.identityRegistryDirectory, operationId], { encoding: 'utf8', timeout: 15000, killSignal: 'SIGKILL', maxBuffer: 128 * 1024 });
+  const report = JSON.parse(execution.stdout);
+  assert.equal(report.mode, 'unobserved-management'); assert.equal(report.simulatedChild, true);
+  assert.ok(Number.isSafeInteger(report.managerPid) && report.managerPid > 0 && report.managerPid !== process.pid);
+  assert.deepEqual(report.workerExit, { observed: false, code: null, signal: null, pid: null, closed: false });
+  assert.equal(report.failure.cause.message, 'fixture_worker_observation_fault');
+  assert.equal(report.failure.cause.code, 'TEST_WORKER_OBSERVATION');
+  assert.deepEqual(report.failures.map((item: { stage: string }) => item.stage), ['process', 'exit_observation']);
+  unchanged();
+  const status = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+  assert.equal(status.stage, 'preserved'); assert.ok('preserved' in status && status.preserved && status.intent);
+  assert.equal(status.prepared, null); assert.equal(status.complete, null); assert.equal(status.pending, null);
+  const original = join(status.directory, status.preserved.directory, basename(f.path));
+  const candidate = join(status.directory, 'candidate-0001', basename(f.path));
+  assert.deepEqual(readFileSync(original), f.main); assert.deepEqual(readFileSync(original + '-journal'), f.journal);
+  assert.deepEqual(readFileSync(candidate), f.main); assert.deepEqual(readFileSync(candidate + '-journal'), f.journal);
+  const marker = join(status.directory, 'worker-unobserved.json'), maintenance = join(f.profile.paths.metadata, 'lifecycle-maintenance.json');
+  const markerData = JSON.parse(readFileSync(marker, 'utf8'));
+  assert.equal(markerData.operationId, operationId); assert.equal(markerData.mode, 'recover'); assert.equal(markerData.path, candidate);
+  assert.deepEqual(markerData.workerExit, report.workerExit);
+  assert.equal(JSON.parse(readFileSync(maintenance, 'utf8')).pid, report.managerPid);
+  const retained = unchangedFiles([marker, original, original + '-journal', candidate, candidate + '-journal',
+    join(status.directory, 'intent.json'), join(status.directory, 'original.json')]);
+  await assert.rejects(f.open(), { message: 'agent_maintenance_active' });
+  await assert.rejects(prepareAgentSqliteRecovery(f.profiles, f.profile.root,
+    { operationId, kind: 'state', offline: true }, f.host), { message: 'agent_maintenance_active' });
+  retained(); unchanged();
+  assert.deepEqual(recoverAgentLifecycleLeases(f.profile.root, true), { recovered: 1 });
+  assert.equal(existsSync(maintenance), false); retained();
+  const originalFork = childProcess.fork; let calls = 0;
+  Reflect.set(childProcess, 'fork', () => { calls++; throw new Error('unobserved_fence_must_prevent_new_worker'); });
+  syncBuiltinESMExports();
+  try {
+    await assert.rejects(prepareAgentSqliteRecovery(f.profiles, f.profile.root,
+      { operationId, kind: 'state', offline: true }, f.host), { message: 'sqlite_recovery_worker_cleanup_required' });
+  } finally { Reflect.set(childProcess, 'fork', originalFork); syncBuiltinESMExports(); }
+  assert.equal(calls, 0); retained(); unchanged();
+  assert.deepEqual(readAgentSqliteRecovery(f.profiles, f.profile.root, operationId), status);
+  assert.equal(existsSync(maintenance), false);
+  assert.equal(existsSync(join(f.profile.paths.metadata, SQLITE_RECOVERY_PENDING)), false);
+});
+
+function recoveryCli(f: Awaited<ReturnType<typeof fixture>>, args: string[]) {
+  return executeFile(process.execPath, [isolatedCli, ...args, '--directory', f.profile.root, '--json'], {
+    encoding: 'utf8', timeout: 15000, killSignal: 'SIGKILL', maxBuffer: 256 * 1024,
+    env: { ...process.env, SECUMON_TEST_IDENTITY_REGISTRY: f.host.identityRegistryDirectory, SECUMON_TEST_CLI_DEBUG_ERRORS: '0' },
+  });
+}
+async function recoveryCliJson(f: Awaited<ReturnType<typeof fixture>>, args: string[]): Promise<Record<string, unknown>> {
+  const value: unknown = JSON.parse((await recoveryCli(f, args)).stdout);
+  assert.ok(value !== null && typeof value === 'object' && !Array.isArray(value));
+  return value as Record<string, unknown>;
+}
+async function recoveryCliRefuses(f: Awaited<ReturnType<typeof fixture>>, args: string[], code: string) {
+  await assert.rejects(recoveryCli(f, args), (error: unknown) => {
+    assert.ok(error instanceof Error);
+    const processError = error as Error & { code: number; signal: string | null; killed: boolean; stdout: string; stderr: string };
+    assert.equal(processError.code, 1); assert.equal(processError.signal, null); assert.equal(processError.killed, false);
+    assert.equal(processError.stdout, ''); assert.ok(processError.stderr.split('\n').includes(code), processError.stderr);
+    return true;
+  });
+}
+
+test('recovery CLI explicitly prepares and applies one operation while status, repair, and repeated commands preserve originals', options, async t => {
+  const f = await fixture(t, 'state'), operationId = randomUUID();
+  const unchanged = unchangedFiles([f.path, f.path + '-journal']);
+  const commandArgs = ['--operation', operationId], prepareArgs = ['lifecycle', 'sqlite-recovery-prepare', ...commandArgs, '--kind', 'state'];
+  const statusArgs = ['lifecycle', 'sqlite-recovery-status', ...commandArgs];
+  assert.deepEqual(await recoveryCliJson(f, statusArgs), { operationId, stage: 'not_started', pending: null });
+  await recoveryCliRefuses(f, ['repair'], 'agent_storage_recovery_required');
+  await recoveryCliRefuses(f, prepareArgs, 'sqlite_recovery_offline_confirmation_required');
+  unchanged(); assert.equal(existsSync(join(f.profile.paths.metadata, 'sqlite-recovery')), false);
+  const prepared = await recoveryCliJson(f, [...prepareArgs, '--offline']);
+  assert.equal(prepared['stage'], 'prepared'); assert.equal(prepared['operationId'], operationId);
+  const status = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+  assert.ok('prepared' in status && status.prepared && status.preserved && status.intent);
+  const digest = status.prepared.digest, candidate = join(status.directory, status.prepared.directory, basename(f.path));
+  assert.equal(prepared['preparedDigest'], digest); assert.deepEqual(prepared['prepared'], status.prepared);
+  assert.deepEqual(status.intent.identity, f.profile.identity); assertRecovered(candidate, f.profile.identity.agentId, 'state');
+  const original = join(status.directory, status.preserved.directory, basename(f.path));
+  const records = unchangedFiles([original, original + '-journal', ...['intent.json', 'original.json', 'prepared.json'].map(name => join(status.directory, name))]);
+  const names = readdirSync(status.directory).sort();
+  assert.deepEqual(await recoveryCliJson(f, [...prepareArgs, '--offline']), prepared);
+  assert.deepEqual(await recoveryCliJson(f, statusArgs), status);
+  assert.deepEqual(readdirSync(status.directory).sort(), names); unchanged(); records();
+  const applyArgs = ['lifecycle', 'sqlite-recovery-apply', ...commandArgs, '--digest', digest, '--offline'];
+  const applied = await recoveryCliJson(f, applyArgs);
+  assert.equal(applied['historical'], false); assert.equal(applied['currentDatabaseVerified'], true);
+  assert.deepEqual(pin(f.path), status.prepared.candidate); assertRecovered(f.path, f.profile.identity.agentId, 'state');
+  assert.deepEqual(pin(f.path + `.retired-${operationId}`), f.source.main);
+  assert.deepEqual(pin(f.path + `-journal.retired-${operationId}`), f.source.journal); records();
+  const complete = readAgentSqliteRecovery(f.profiles, f.profile.root, operationId);
+  assert.equal(complete.stage, 'complete'); assert.ok('complete' in complete && complete.complete);
+  const completedFiles = unchangedFiles([f.path, join(status.directory, 'complete.json')]);
+  assert.deepEqual(await recoveryCliJson(f, statusArgs), complete);
+  assert.deepEqual(await recoveryCliJson(f, applyArgs), { stage: 'complete', historical: true, receipt: complete.complete, currentDatabaseVerified: false });
+  completedFiles(); records();
+  assert.equal(existsSync(join(f.profile.paths.metadata, SQLITE_RECOVERY_PENDING)), false);
+  const stores = await f.open();
+  try { assert.deepEqual(await snapshot(stores.state, f.state.id, [f.accepted.commandId]), f.originalWork); }
+  finally { await f.close(stores); }
+});
+
+test('recovery CLI preserves a real interrupted apply pending gate until lease recovery and exact-operation resume', options, async t => {
+  const f = await preparedFixture(t);
+  await interruptApply(f, 'journal-retired');
+  const pendingPath = join(f.profile.paths.metadata, SQLITE_RECOVERY_PENDING);
+  const unchanged = unchangedFiles([pendingPath, ...f.preservedPaths, f.prepared.candidatePath,
+    f.path + `.retired-${f.operationId}`, f.path + `-journal.retired-${f.operationId}`]);
+  const pendingStatus = readAgentSqliteRecovery(f.profiles, f.profile.root, f.operationId);
+  assert.equal(pendingStatus.stage, 'pending'); assert.equal(existsSync(f.path), false);
+  const statusArgs = ['lifecycle', 'sqlite-recovery-status', '--operation', f.operationId];
+  assert.deepEqual(await recoveryCliJson(f, statusArgs), pendingStatus);
+  await recoveryCliRefuses(f, ['repair'], 'agent_sqlite_recovery_resume_required');
+  assert.deepEqual(await recoveryCliJson(f, ['lifecycle', 'recover-leases', '--offline']), { recovered: 1 });
+  unchanged(); assert.equal(existsSync(f.path), false);
+  await recoveryCliRefuses(f, ['repair'], 'agent_sqlite_recovery_resume_required');
+  const otherOperation = randomUUID();
+  await recoveryCliRefuses(f, ['lifecycle', 'sqlite-recovery-prepare', '--operation', otherOperation, '--kind', 'state', '--offline'],
+    'agent_sqlite_recovery_resume_required');
+  await recoveryCliRefuses(f, ['lifecycle', 'sqlite-recovery-apply', '--operation', otherOperation,
+    '--digest', f.prepared.preparedDigest, '--offline'], 'agent_sqlite_recovery_resume_required');
+  unchanged(); assert.equal(existsSync(f.path), false);
+  assert.equal(existsSync(join(f.profile.paths.metadata, 'sqlite-recovery', otherOperation)), false);
+  const applyArgs = ['lifecycle', 'sqlite-recovery-apply', '--operation', f.operationId, '--digest', f.prepared.preparedDigest, '--offline'];
+  const applied = await recoveryCliJson(f, applyArgs);
+  assert.equal(applied['historical'], false); assert.equal(applied['currentDatabaseVerified'], true);
+  assert.equal(existsSync(pendingPath), false); assert.deepEqual(pin(f.path), f.prepared.prepared.candidate);
+  assert.deepEqual(pin(f.path + `.retired-${f.operationId}`), f.source.main);
+  assert.deepEqual(pin(f.path + `-journal.retired-${f.operationId}`), f.source.journal);
+  const complete = readAgentSqliteRecovery(f.profiles, f.profile.root, f.operationId);
+  assert.ok('complete' in complete && complete.complete);
+  assert.deepEqual(await recoveryCliJson(f, statusArgs), complete);
+  assert.deepEqual(await recoveryCliJson(f, applyArgs), { stage: 'complete', historical: true, receipt: complete.complete, currentDatabaseVerified: false });
+  const stores = await f.open();
+  try { assert.deepEqual(await snapshot(stores.state, f.state.id, [f.accepted.commandId]), f.originalWork); }
+  finally { await f.close(stores); }
 });

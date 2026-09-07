@@ -1,0 +1,991 @@
+TAP version 13
+# Subtest: context guidance: trusted required rules, exact version and hash survive published body eviction
+ok 1 - context guidance: trusted required rules, exact version and hash survive published body eviction
+  ---
+  duration_ms: 59.029625
+  type: 'test'
+  ...
+# Subtest: context guidance: a manifest without required rules keeps the full original and fails a smaller input budget
+ok 2 - context guidance: a manifest without required rules keeps the full original and fails a smaller input budget
+  ---
+  duration_ms: 19.706583
+  type: 'test'
+  ...
+# Subtest: context guidance: result-provided rules cannot replace an absent trusted manifest rule set
+ok 3 - context guidance: result-provided rules cannot replace an absent trusted manifest rule set
+  ---
+  duration_ms: 8.888958
+  type: 'test'
+  ...
+# Subtest: context guidance: current label revocation prevents a previously published original from reappearing
+ok 4 - context guidance: current label revocation prevents a previously published original from reappearing
+  ---
+  duration_ms: 14.183583
+  type: 'test'
+  ...
+# Subtest: context guidance: a missing original cannot be recovered from its copied tool result or prior frame
+ok 5 - context guidance: a missing original cannot be recovered from its copied tool result or prior frame
+  ---
+  duration_ms: 13.787333
+  type: 'test'
+  ...
+# Subtest: context guidance: replacing the catalog version does not expose the superseded loaded body
+ok 6 - context guidance: replacing the catalog version does not expose the superseded loaded body
+  ---
+  duration_ms: 14.912334
+  type: 'test'
+  ...
+# Subtest: context guidance: replacing trusted bytes under the same version rejects the old manifest and body
+ok 7 - context guidance: replacing trusted bytes under the same version rejects the old manifest and body
+  ---
+  duration_ms: 8.287875
+  type: 'test'
+  ...
+# Subtest: context guidance: a stored result with a mismatched attemptId is rejected
+ok 8 - context guidance: a stored result with a mismatched attemptId is rejected
+  ---
+  duration_ms: 7.588875
+  type: 'test'
+  ...
+# Subtest: context guidance: a stored result with a mismatched resultId is rejected
+ok 9 - context guidance: a stored result with a mismatched resultId is rejected
+  ---
+  duration_ms: 7.76375
+  type: 'test'
+  ...
+# Subtest: context guidance: the actual dispatch receipt must match the adopted attempt task digest
+ok 10 - context guidance: the actual dispatch receipt must match the adopted attempt task digest
+  ---
+  duration_ms: 8.053
+  type: 'test'
+  ...
+# Subtest: required full and reference information survives optional content pressure
+ok 11 - required full and reference information survives optional content pressure
+  ---
+  duration_ms: 2.195916
+  type: 'test'
+  ...
+# Subtest: a full value cheaper than its required reference satisfies the minimum without overflow
+ok 12 - a full value cheaper than its required reference satisfies the minimum without overflow
+  ---
+  duration_ms: 0.207459
+  type: 'test'
+  ...
+# Subtest: a required reference cap rejects contradictory bounds and never substitutes a cheaper full payload
+ok 13 - a required reference cap rejects contradictory bounds and never substitutes a cheaper full payload
+  ---
+  duration_ms: 0.308291
+  type: 'test'
+  ...
+# Subtest: optional reference caps consume only reference bytes and remain omitted when that representation does not fit
+ok 14 - optional reference caps consume only reference bytes and remain omitted when that representation does not fit
+  ---
+  duration_ms: 0.182708
+  type: 'test'
+  ...
+# Subtest: a reference cap overrides full residency and new use without counting references as full reloads
+ok 15 - a reference cap overrides full residency and new use without counting references as full reloads
+  ---
+  duration_ms: 0.514958
+  type: 'test'
+  ...
+# Subtest: high and low watermarks retain compact mode until the lower boundary is crossed
+ok 16 - high and low watermarks retain compact mode until the lower boundary is crossed
+  ---
+  duration_ms: 0.136916
+  type: 'test'
+  ...
+# Subtest: mere inclusion is not actual use and an idle full value does not automatically reload
+ok 17 - mere inclusion is not actual use and an idle full value does not automatically reload
+  ---
+  duration_ms: 0.290583
+  type: 'test'
+  ...
+# Subtest: a new actual use marker refreshes usage and reloads the same digest once
+ok 18 - a new actual use marker refreshes usage and reloads the same digest once
+  ---
+  duration_ms: 0.212667
+  type: 'test'
+  ...
+# Subtest: minimum residency delays idle eviction for two cycles while the hard budget still wins
+ok 19 - minimum residency delays idle eviction for two cycles while the hard budget still wins
+  ---
+  duration_ms: 0.194042
+  type: 'test'
+  ...
+# Subtest: five changing working sets preserve old counterevidence, pending and unknown references
+ok 20 - five changing working sets preserve old counterevidence, pending and unknown references
+  ---
+  duration_ms: 0.736458
+  type: 'test'
+  ...
+# Subtest: removed authority and changed digests cannot be revived by resident or use history
+ok 21 - removed authority and changed digests cannot be revived by resident or use history
+  ---
+  duration_ms: 0.401625
+  type: 'test'
+  ...
+# Subtest: decisions are stable by minimum, priority, real use, recency, residence and key
+ok 22 - decisions are stable by minimum, priority, real use, recency, residence and key
+  ---
+  duration_ms: 0.1815
+  type: 'test'
+  ...
+# Subtest: recently evicted content waits through cooldown unless actual use or a minimum requires it
+ok 23 - recently evicted content waits through cooldown unless actual use or a minimum requires it
+  ---
+  duration_ms: 0.105541
+  type: 'test'
+  ...
+# Subtest: memo storage is bounded and prioritizes selected residents without changing decisions
+ok 24 - memo storage is bounded and prioritizes selected residents without changing decisions
+  ---
+  duration_ms: 0.562083
+  type: 'test'
+  ...
+# Subtest: inputs and previous memo stay immutable and byte sums match selected representations
+ok 25 - inputs and previous memo stay immutable and byte sums match selected representations
+  ---
+  duration_ms: 0.163708
+  type: 'test'
+  ...
+# Subtest: duplicate keys, malformed items, invalid budgets and inconsistent memo are rejected
+ok 26 - duplicate keys, malformed items, invalid budgets and inconsistent memo are rejected
+  ---
+  duration_ms: 0.699959
+  type: 'test'
+  ...
+# Subtest: forgotten evidence is rediscovered by ID, source, locator or facts without returning fact bodies
+ok 27 - forgotten evidence is rediscovered by ID, source, locator or facts without returning fact bodies
+  ---
+  duration_ms: 27.43975
+  type: 'test'
+  ...
+# Subtest: hidden, retracted, superseded and parent-retracted evidence never contributes cards or hasMore
+ok 28 - hidden, retracted, superseded and parent-retracted evidence never contributes cards or hasMore
+  ---
+  duration_ms: 9.934042
+  type: 'test'
+  ...
+# Subtest: Korean NFC and NFD clues and English case variants find the same current evidence
+ok 29 - Korean NFC and NFD clues and English case variants find the same current evidence
+  ---
+  duration_ms: 7.201542
+  type: 'test'
+  ...
+# Subtest: the evidence discovery tool preserves bounded current-card and partial-call semantics
+ok 30 - the evidence discovery tool preserves bounded current-card and partial-call semantics
+  ---
+  duration_ms: 5.784458
+  type: 'test'
+  ...
+# Subtest: locator truncation preserves the exact evidence ID and reports partial coverage without inventing more matches
+ok 31 - locator truncation preserves the exact evidence ID and reports partial coverage without inventing more matches
+  ---
+  duration_ms: 5.885708
+  type: 'test'
+  ...
+# Subtest: different owners, tenants and narrower caller labels cannot inspect evidence discovery cards
+ok 32 - different owners, tenants and narrower caller labels cannot inspect evidence discovery cards
+  ---
+  duration_ms: 6.124958
+  type: 'test'
+  ...
+# Subtest: retained knowledge failure at validation 1 blocks cards before return
+ok 33 - retained knowledge failure at validation 1 blocks cards before return
+  ---
+  duration_ms: 6.324458
+  type: 'test'
+  ...
+# Subtest: retained knowledge failure at validation 2 blocks cards before return
+ok 34 - retained knowledge failure at validation 2 blocks cards before return
+  ---
+  duration_ms: 5.115708
+  type: 'test'
+  ...
+# Subtest: a work retaining knowledge cannot discover derived evidence without its current validator
+ok 35 - a work retaining knowledge cannot discover derived evidence without its current validator
+  ---
+  duration_ms: 4.940292
+  type: 'test'
+  ...
+# Subtest: a goal change while the final source-state read waits prevents returning earlier-scope cards
+ok 36 - a goal change while the final source-state read waits prevents returning earlier-scope cards
+  ---
+  duration_ms: 5.413584
+  type: 'test'
+  ...
+# Subtest: caller permission narrowing during the knowledge gate is detected even without a work revision change
+ok 37 - caller permission narrowing during the knowledge gate is detected even without a work revision change
+  ---
+  duration_ms: 4.410875
+  type: 'test'
+  ...
+# Subtest: strict discovery arguments reject extra authority, excessive query length and invalid limits
+ok 38 - strict discovery arguments reject extra authority, excessive query length and invalid limits
+  ---
+  duration_ms: 4.920292
+  type: 'test'
+  ...
+# Subtest: instructions in source facts remain data and discovery changes no facts, goal, plan or authority
+ok 39 - instructions in source facts remain data and discovery changes no facts, goal, plan or authority
+  ---
+  duration_ms: 4.814083
+  type: 'test'
+  ...
+# Subtest: pre-aborted discovery uses the common read wrapper without reading the work
+ok 40 - pre-aborted discovery uses the common read wrapper without reading the work
+  ---
+  duration_ms: 4.777958
+  type: 'test'
+  ...
+# Subtest: guidance refresh stages every provider page and only then replaces the complete snapshot
+ok 41 - guidance refresh stages every provider page and only then replaces the complete snapshot
+  ---
+  duration_ms: 12.202042
+  type: 'test'
+  ...
+# Subtest: guidance failure listing leaves the previous snapshot usable
+ok 42 - guidance failure listing leaves the previous snapshot usable
+  ---
+  duration_ms: 0.933541
+  type: 'test'
+  ...
+# Subtest: guidance mixed listing leaves the previous snapshot usable
+ok 43 - guidance mixed listing leaves the previous snapshot usable
+  ---
+  duration_ms: 0.775791
+  type: 'test'
+  ...
+# Subtest: guidance duplicate listing leaves the previous snapshot usable
+ok 44 - guidance duplicate listing leaves the previous snapshot usable
+  ---
+  duration_ms: 0.597917
+  type: 'test'
+  ...
+# Subtest: guidance cycle listing leaves the previous snapshot usable
+ok 45 - guidance cycle listing leaves the previous snapshot usable
+  ---
+  duration_ms: 0.389
+  type: 'test'
+  ...
+# Subtest: guidance page-bound listing leaves the previous snapshot usable
+ok 46 - guidance page-bound listing leaves the previous snapshot usable
+  ---
+  duration_ms: 0.288708
+  type: 'test'
+  ...
+# Subtest: guidance entry-bound listing leaves the previous snapshot usable
+ok 47 - guidance entry-bound listing leaves the previous snapshot usable
+  ---
+  duration_ms: 0.265167
+  type: 'test'
+  ...
+# Subtest: guidance byte-bound listing leaves the previous snapshot usable
+ok 48 - guidance byte-bound listing leaves the previous snapshot usable
+  ---
+  duration_ms: 0.24325
+  type: 'test'
+  ...
+# Subtest: guidance abort and late completion cannot replace a published listing
+ok 49 - guidance abort and late completion cannot replace a published listing
+  ---
+  duration_ms: 0.519333
+  type: 'test'
+  ...
+# Subtest: guidance concurrent refresh rejects an earlier listing and a complete empty snapshot retires entries
+ok 50 - guidance concurrent refresh rejects an earlier listing and a complete empty snapshot retires entries
+  ---
+  duration_ms: 1.518916
+  type: 'test'
+  ...
+# Subtest: legacy list/load remains compatible and missing source validation disables body reuse
+ok 51 - legacy list/load remains compatible and missing source validation disables body reuse
+  ---
+  duration_ms: 1.658792
+  type: 'test'
+  ...
+# Subtest: guidance pages reach beyond 20 and preserve item and whole UTF-8 page bounds
+ok 52 - guidance pages reach beyond 20 and preserve item and whole UTF-8 page bounds
+  ---
+  duration_ms: 6.03475
+  type: 'test'
+  ...
+# Subtest: guidance cursor binds kind, owner, permission and snapshot and hides unauthorized counts
+ok 53 - guidance cursor binds kind, owner, permission and snapshot and hides unauthorized counts
+  ---
+  duration_ms: 1.640333
+  type: 'test'
+  ...
+# Subtest: hot guidance reuses only body/artifact while rules, selection reason and method are current
+ok 54 - hot guidance reuses only body/artifact while rules, selection reason and method are current
+  ---
+  duration_ms: 0.690333
+  type: 'test'
+  ...
+# Subtest: guidance body cache cannot bypass current tenant, label or work-kind restrictions
+ok 55 - guidance body cache cannot bypass current tenant, label or work-kind restrictions
+  ---
+  duration_ms: 0.436542
+  type: 'test'
+  ...
+# Subtest: guidance cache obeys entry/byte bounds, evicts unused bodies and isolates artifact stores
+ok 56 - guidance cache obeys entry/byte bounds, evicts unused bodies and isolates artifact stores
+  ---
+  duration_ms: 0.878708
+  type: 'test'
+  ...
+# Subtest: a body larger than the cache byte budget is read and decoded on every load
+ok 57 - a body larger than the cache byte budget is read and decoded on every load
+  ---
+  duration_ms: 0.544917
+  type: 'test'
+  ...
+# Subtest: a pending hot load cannot exceed cache bounds when another body evicts its old entry
+ok 58 - a pending hot load cannot exceed cache bounds when another body evicts its old entry
+  ---
+  duration_ms: 0.487959
+  type: 'test'
+  ...
+# Subtest: a cold legacy-source load rechecks its manifest after artifact persistence
+ok 59 - a cold legacy-source load rechecks its manifest after artifact persistence
+  ---
+  duration_ms: 0.258958
+  type: 'test'
+  ...
+# Subtest: source changes during an artifact check are caught by the final probe
+ok 60 - source changes during an artifact check are caught by the final probe
+  ---
+  duration_ms: 0.290709
+  type: 'test'
+  ...
+# Subtest: manifest refresh during final validation rejects a hot result from the previous rules
+ok 61 - manifest refresh during final validation rejects a hot result from the previous rules
+  ---
+  duration_ms: 0.336333
+  type: 'test'
+  ...
+# Subtest: load cancellation cannot publish a cache entry after an ignored-signal provider returns
+ok 62 - load cancellation cannot publish a cache entry after an ignored-signal provider returns
+  ---
+  duration_ms: 0.633917
+  type: 'test'
+  ...
+# Subtest: file guidance reports actual cold/hot original I/O separately from put/decode reuse
+ok 63 - file guidance reports actual cold/hot original I/O separately from put/decode reuse
+  ---
+  duration_ms: 7.998792
+  type: 'test'
+  ...
+# {"coldOriginalReads":2,"hotOriginalReads":1,"coldOriginalBytes":48,"hotOriginalBytes":24,"source":{"catalogReads":7,"catalogBytes":2702,"bodyReads":3,"bodyBytes":72,"readCalls":1,"validateCalls":2},"catalog":{"sourceReadCalls":1,"sourceReadBytes":24,"sourceValidateCalls":2,"artifactPutCalls":1,"artifactCheckCalls":1,"bodyDecodes":1,"cacheHits":1,"cacheMisses":1,"cachedBodies":1,"cachedBytes":24},"artifactPuts":1,"artifactChecks":1}
+# Subtest: file guidance cache never bypasses a deleted original source
+ok 64 - file guidance cache never bypasses a deleted original source
+  ---
+  duration_ms: 2.3405
+  type: 'test'
+  ...
+# Subtest: file guidance cache never bypasses a modified original source
+ok 65 - file guidance cache never bypasses a modified original source
+  ---
+  duration_ms: 2.247042
+  type: 'test'
+  ...
+# Subtest: file guidance cache never bypasses a manifest original source
+ok 66 - file guidance cache never bypasses a manifest original source
+  ---
+  duration_ms: 2.314333
+  type: 'test'
+  ...
+# Subtest: file guidance refresh observes a new catalog, preserves same-body cache and rejects invalid replacements
+ok 67 - file guidance refresh observes a new catalog, preserves same-body cache and rejects invalid replacements
+  ---
+  duration_ms: 2.731292
+  type: 'test'
+  ...
+# Subtest: guidance resources documents-simple: cold and hot runtime loads retain provenance and report original I/O separately
+ok 68 - guidance resources documents-simple: cold and hot runtime loads retain provenance and report original I/O separately
+  ---
+  duration_ms: 38.117875
+  type: 'test'
+  ...
+# {"family":"documents-simple","coldOriginalBytes":58,"hotOriginalBytes":29,"coldMetrics":{"sourceReadCalls":1,"sourceReadBytes":29,"sourceValidateCalls":1,"artifactPutCalls":1,"artifactCheckCalls":0,"bodyDecodes":1,"cacheHits":0,"cacheMisses":1,"cachedBodies":1,"cachedBytes":29},"hotMetrics":{"sourceReadCalls":1,"sourceReadBytes":29,"sourceValidateCalls":2,"artifactPutCalls":1,"artifactCheckCalls":1,"bodyDecodes":1,"cacheHits":1,"cacheMisses":1,"cachedBodies":1,"cachedBytes":29}}
+# Subtest: guidance resources documents-simple: policy revocation during a hot validation suppresses the cached body
+ok 69 - guidance resources documents-simple: policy revocation during a hot validation suppresses the cached body
+  ---
+  duration_ms: 9.491875
+  type: 'test'
+  ...
+# Subtest: guidance resources documents-simple: a goal change while the source read waits cannot return the previous selection
+ok 70 - guidance resources documents-simple: a goal change while the source read waits cannot return the previous selection
+  ---
+  duration_ms: 6.764666
+  type: 'test'
+  ...
+# Subtest: guidance resources documents-simple: a refreshed version cannot be replaced by an in-flight older load
+ok 71 - guidance resources documents-simple: a refreshed version cannot be replaced by an in-flight older load
+  ---
+  duration_ms: 7.110917
+  type: 'test'
+  ...
+# Subtest: guidance resources documents-simple: cancellation reaches a pending source and returns no late body
+ok 72 - guidance resources documents-simple: cancellation reaches a pending source and returns no late body
+  ---
+  duration_ms: 5.171959
+  type: 'test'
+  ...
+# Subtest: guidance resources observations-simple: cold and hot runtime loads retain provenance and report original I/O separately
+ok 73 - guidance resources observations-simple: cold and hot runtime loads retain provenance and report original I/O separately
+  ---
+  duration_ms: 10.633375
+  type: 'test'
+  ...
+# {"family":"observations-simple","coldOriginalBytes":58,"hotOriginalBytes":29,"coldMetrics":{"sourceReadCalls":1,"sourceReadBytes":29,"sourceValidateCalls":1,"artifactPutCalls":1,"artifactCheckCalls":0,"bodyDecodes":1,"cacheHits":0,"cacheMisses":1,"cachedBodies":1,"cachedBytes":29},"hotMetrics":{"sourceReadCalls":1,"sourceReadBytes":29,"sourceValidateCalls":2,"artifactPutCalls":1,"artifactCheckCalls":1,"bodyDecodes":1,"cacheHits":1,"cacheMisses":1,"cachedBodies":1,"cachedBytes":29}}
+# Subtest: guidance resources observations-simple: policy revocation during a hot validation suppresses the cached body
+ok 74 - guidance resources observations-simple: policy revocation during a hot validation suppresses the cached body
+  ---
+  duration_ms: 5.1955
+  type: 'test'
+  ...
+# Subtest: guidance resources observations-simple: a goal change while the source read waits cannot return the previous selection
+ok 75 - guidance resources observations-simple: a goal change while the source read waits cannot return the previous selection
+  ---
+  duration_ms: 5.914
+  type: 'test'
+  ...
+# Subtest: guidance resources observations-simple: a refreshed version cannot be replaced by an in-flight older load
+ok 76 - guidance resources observations-simple: a refreshed version cannot be replaced by an in-flight older load
+  ---
+  duration_ms: 5.20075
+  type: 'test'
+  ...
+# Subtest: guidance resources observations-simple: cancellation reaches a pending source and returns no late body
+ok 77 - guidance resources observations-simple: cancellation reaches a pending source and returns no late body
+  ---
+  duration_ms: 6.813
+  type: 'test'
+  ...
+# Subtest: guidance resources: paginated cards respect the complete output byte budget and never read guidance bodies
+ok 78 - guidance resources: paginated cards respect the complete output byte budget and never read guidance bodies
+  ---
+  duration_ms: 10.580167
+  type: 'test'
+  ...
+# Subtest: guidance resources: cursors cannot cross kind, caller labels, owner or a refreshed listing
+ok 79 - guidance resources: cursors cannot cross kind, caller labels, owner or a refreshed listing
+  ---
+  duration_ms: 5.831834
+  type: 'test'
+  ...
+# Subtest: guidance resources: legacy discovery keeps its original shape and current method in both work families
+ok 80 - guidance resources: legacy discovery keeps its original shape and current method in both work families
+  ---
+  duration_ms: 10.104583
+  type: 'test'
+  ...
+# Subtest: guidance resources: optional paging fields are strict and pre-aborted discovery performs no original reads
+ok 81 - guidance resources: optional paging fields are strict and pre-aborted discovery performs no original reads
+  ---
+  duration_ms: 5.613042
+  type: 'test'
+  ...
+# Subtest: memory tools expose read cards, internal dependencies and schema-valid results (sqlite)
+ok 82 - memory tools expose read cards, internal dependencies and schema-valid results (sqlite)
+  ---
+  duration_ms: 55.175542
+  type: 'test'
+  ...
+# Subtest: memory tool authority intersects destination, caller and fresh trusted identity (sqlite)
+ok 83 - memory tool authority intersects destination, caller and fresh trusted identity (sqlite)
+  ---
+  duration_ms: 9.223167
+  type: 'test'
+  ...
+# Subtest: memory reads constrain IDs and searches to the current goal scope (sqlite)
+ok 84 - memory reads constrain IDs and searches to the current goal scope (sqlite)
+  ---
+  duration_ms: 14.761916
+  type: 'test'
+  ...
+# Subtest: memory tools expose read cards, internal dependencies and schema-valid results (file-journal)
+ok 85 - memory tools expose read cards, internal dependencies and schema-valid results (file-journal)
+  ---
+  duration_ms: 124.71525
+  type: 'test'
+  ...
+# Subtest: memory tool authority intersects destination, caller and fresh trusted identity (file-journal)
+ok 86 - memory tool authority intersects destination, caller and fresh trusted identity (file-journal)
+  ---
+  duration_ms: 86.195458
+  type: 'test'
+  ...
+# Subtest: memory reads constrain IDs and searches to the current goal scope (file-journal)
+ok 87 - memory reads constrain IDs and searches to the current goal scope (file-journal)
+  ---
+  duration_ms: 73.897167
+  type: 'test'
+  ...
+# Subtest: memory tools report bounded references without bodies, including multibyte oversized references
+ok 88 - memory tools report bounded references without bodies, including multibyte oversized references
+  ---
+  duration_ms: 21.442708
+  type: 'test'
+  ...
+# Subtest: memory search distinguishes result truncation and index errors from complete absence
+ok 89 - memory search distinguishes result truncation and index errors from complete absence
+  ---
+  duration_ms: 13.394166
+  type: 'test'
+  ...
+# Subtest: memory tools discard a copied card when trusted-owner changes during a repository wait
+ok 90 - memory tools discard a copied card when trusted-owner changes during a repository wait
+  ---
+  duration_ms: 6.291417
+  type: 'test'
+  ...
+# Subtest: memory tools discard a copied card when work-owner changes during a repository wait
+ok 91 - memory tools discard a copied card when work-owner changes during a repository wait
+  ---
+  duration_ms: 5.420584
+  type: 'test'
+  ...
+# Subtest: memory tools discard a copied card when caller-labels changes during a repository wait
+ok 92 - memory tools discard a copied card when caller-labels changes during a repository wait
+  ---
+  duration_ms: 4.557334
+  type: 'test'
+  ...
+# Subtest: memory tools discard a copied card when work-labels changes during a repository wait
+ok 93 - memory tools discard a copied card when work-labels changes during a repository wait
+  ---
+  duration_ms: 5.031708
+  type: 'test'
+  ...
+# Subtest: memory tools discard a copied card when goal changes during a repository wait
+ok 94 - memory tools discard a copied card when goal changes during a repository wait
+  ---
+  duration_ms: 4.7985
+  type: 'test'
+  ...
+# Subtest: memory tools discard a copied card when generation changes during a repository wait
+ok 95 - memory tools discard a copied card when generation changes during a repository wait
+  ---
+  duration_ms: 5.637959
+  type: 'test'
+  ...
+# Subtest: memory tools discard a copied card when cancel changes during a repository wait
+ok 96 - memory tools discard a copied card when cancel changes during a repository wait
+  ---
+  duration_ms: 4.9035
+  type: 'test'
+  ...
+# Subtest: each fresh trusted actor lookup must match the work owner, including the final return check
+ok 97 - each fresh trusted actor lookup must match the work owner, including the final return check
+  ---
+  duration_ms: 4.477833
+  type: 'test'
+  ...
+# Subtest: dependency validation uses current source, record and caller permissions without a stale service cache
+ok 98 - dependency validation uses current source, record and caller permissions without a stale service cache
+  ---
+  duration_ms: 11.065416
+  type: 'test'
+  ...
+# Subtest: memory adapters do not mutate the caller policy and normalize invalid input and pre-abort
+ok 99 - memory adapters do not mutate the caller policy and normalize invalid input and pre-abort
+  ---
+  duration_ms: 7.653
+  type: 'test'
+  ...
+# Subtest: provider pages become visible in one publication and keep unrelated providers
+ok 100 - provider pages become visible in one publication and keep unrelated providers
+  ---
+  duration_ms: 14.274917
+  type: 'test'
+  ...
+# Subtest: only a complete empty provider listing retires that provider
+ok 101 - only a complete empty provider listing retires that provider
+  ---
+  duration_ms: 4.7845
+  type: 'test'
+  ...
+# Subtest: provider partial transport failure preserves the previously published snapshot
+ok 102 - provider partial transport failure preserves the previously published snapshot
+  ---
+  duration_ms: 3.888458
+  type: 'test'
+  ...
+# Subtest: provider mixed provider revisions preserves the previously published snapshot
+ok 103 - provider mixed provider revisions preserves the previously published snapshot
+  ---
+  duration_ms: 3.149458
+  type: 'test'
+  ...
+# Subtest: provider cross-page duplicate preserves the previously published snapshot
+ok 104 - provider cross-page duplicate preserves the previously published snapshot
+  ---
+  duration_ms: 2.963625
+  type: 'test'
+  ...
+# Subtest: provider pagination cycle preserves the previously published snapshot
+ok 105 - provider pagination cycle preserves the previously published snapshot
+  ---
+  duration_ms: 2.694459
+  type: 'test'
+  ...
+# Subtest: provider wrong provider namespace preserves the previously published snapshot
+ok 106 - provider wrong provider namespace preserves the previously published snapshot
+  ---
+  duration_ms: 2.50025
+  type: 'test'
+  ...
+# Subtest: provider invalid namespace definition preserves the previously published snapshot
+ok 107 - provider invalid namespace definition preserves the previously published snapshot
+  ---
+  duration_ms: 2.905833
+  type: 'test'
+  ...
+# Subtest: provider invalid JSON schema preserves the previously published snapshot
+ok 108 - provider invalid JSON schema preserves the previously published snapshot
+  ---
+  duration_ms: 2.561792
+  type: 'test'
+  ...
+# Subtest: provider invalid availability preserves the previously published snapshot
+ok 109 - provider invalid availability preserves the previously published snapshot
+  ---
+  duration_ms: 2.775542
+  type: 'test'
+  ...
+# Subtest: provider missing completeness cursor preserves the previously published snapshot
+ok 110 - provider missing completeness cursor preserves the previously published snapshot
+  ---
+  duration_ms: 2.454875
+  type: 'test'
+  ...
+# Subtest: provider undeclared partial flag preserves the previously published snapshot
+ok 111 - provider undeclared partial flag preserves the previously published snapshot
+  ---
+  duration_ms: 2.339
+  type: 'test'
+  ...
+# Subtest: provider page bound preserves the previously published snapshot
+ok 112 - provider page bound preserves the previously published snapshot
+  ---
+  duration_ms: 2.61125
+  type: 'test'
+  ...
+# Subtest: provider tool bound preserves the previously published snapshot
+ok 113 - provider tool bound preserves the previously published snapshot
+  ---
+  duration_ms: 2.101542
+  type: 'test'
+  ...
+# Subtest: provider definition byte bound preserves the previously published snapshot
+ok 114 - provider definition byte bound preserves the previously published snapshot
+  ---
+  duration_ms: 2.416292
+  type: 'test'
+  ...
+# Subtest: provider pre-cancellation makes no listing call
+ok 115 - provider pre-cancellation makes no listing call
+  ---
+  duration_ms: 5.871084
+  type: 'test'
+  ...
+# Subtest: provider abort ends an ignored-signal wait and late listing cannot publish
+ok 116 - provider abort ends an ignored-signal wait and late listing cannot publish
+  ---
+  duration_ms: 2.390292
+  type: 'test'
+  ...
+# Subtest: provider abort during schema compilation still prevents publication
+ok 117 - provider abort during schema compilation still prevents publication
+  ---
+  duration_ms: 3.236208
+  type: 'test'
+  ...
+# Subtest: concurrent same-provider refresh refuses an older listing after a newer publication
+ok 118 - concurrent same-provider refresh refuses an older listing after a newer publication
+  ---
+  duration_ms: 2.596625
+  type: 'test'
+  ...
+# Subtest: concurrent unrelated provider refreshes both publish without reverting each other
+ok 119 - concurrent unrelated provider refreshes both publish without reverting each other
+  ---
+  duration_ms: 2.551625
+  type: 'test'
+  ...
+# Subtest: provider staging snapshots metadata and callbacks before awaiting another page
+ok 120 - provider staging snapshots metadata and callbacks before awaiting another page
+  ---
+  duration_ms: 2.545959
+  type: 'test'
+  ...
+# Subtest: availability is optional captured host metadata, with contract and permission errors preserved
+ok 121 - availability is optional captured host metadata, with contract and permission errors preserved
+  ---
+  duration_ms: 5.291541
+  type: 'test'
+  ...
+# Subtest: stored-only provider publication changes callable discovery and cursors without changing proof contracts
+ok 122 - stored-only provider publication changes callable discovery and cursors without changing proof contracts
+  ---
+  duration_ms: 10.291875
+  type: 'test'
+  ...
+# Subtest: catalog cursor pages reach every permitted result after 20 without duplicate or missing cards
+ok 123 - catalog cursor pages reach every permitted result after 20 without duplicate or missing cards
+  ---
+  duration_ms: 9.935416
+  type: 'test'
+  ...
+# Subtest: catalog cursor replay returns the same cards while allowing a smaller per-page item limit
+ok 124 - catalog cursor replay returns the same cards while allowing a smaller per-page item limit
+  ---
+  duration_ms: 7.95475
+  type: 'test'
+  ...
+# Subtest: catalog cursor is bound to current query
+ok 125 - catalog cursor is bound to current query
+  ---
+  duration_ms: 6.980417
+  type: 'test'
+  ...
+# Subtest: catalog cursor is bound to current tenant
+ok 126 - catalog cursor is bound to current tenant
+  ---
+  duration_ms: 6.890875
+  type: 'test'
+  ...
+# Subtest: catalog cursor is bound to current principal
+ok 127 - catalog cursor is bound to current principal
+  ---
+  duration_ms: 6.343166
+  type: 'test'
+  ...
+# Subtest: catalog cursor is bound to current tools
+ok 128 - catalog cursor is bound to current tools
+  ---
+  duration_ms: 5.953291
+  type: 'test'
+  ...
+# Subtest: catalog cursor is bound to current labels
+ok 129 - catalog cursor is bound to current labels
+  ---
+  duration_ms: 5.471
+  type: 'test'
+  ...
+# Subtest: catalog cursor is bound to current destinations
+ok 130 - catalog cursor is bound to current destinations
+  ---
+  duration_ms: 5.717042
+  type: 'test'
+  ...
+# Subtest: catalog cursor is bound to current writes
+ok 131 - catalog cursor is bound to current writes
+  ---
+  duration_ms: 5.382875
+  type: 'test'
+  ...
+# Subtest: catalog cursor rejects unpublished, stale, and restarted lookup state
+ok 132 - catalog cursor rejects unpublished, stale, and restarted lookup state
+  ---
+  duration_ms: 9.700708
+  type: 'test'
+  ...
+# Subtest: catalog cursor expires by injected clock and bounded index eviction requires a fresh search
+ok 133 - catalog cursor expires by injected clock and bounded index eviction requires a fresh search
+  ---
+  duration_ms: 7.007792
+  type: 'test'
+  ...
+# Subtest: catalog applies permissions before rank, total page size, and hasMore
+ok 134 - catalog applies permissions before rank, total page size, and hasMore
+  ---
+  duration_ms: 5.621333
+  type: 'test'
+  ...
+# Subtest: catalog page budgets count Unicode and the entire response envelope
+ok 135 - catalog page budgets count Unicode and the entire response envelope
+  ---
+  duration_ms: 3.345375
+  type: 'test'
+  ...
+# Subtest: catalog rejects invalid bounds and keeps punctuation-only search bounded and empty
+ok 136 - catalog rejects invalid bounds and keeps punctuation-only search bounded and empty
+  ---
+  duration_ms: 4.200666
+  type: 'test'
+  ...
+# Subtest: catalog reuses immutable definition digests across cursor pages and refreshes after registry replacement
+ok 137 - catalog reuses immutable definition digests across cursor pages and refreshes after registry replacement
+  ---
+  duration_ms: 8.8765
+  type: 'test'
+  ...
+# Subtest: sqlite/documents-simple: durable reuse keeps evidence identity and charges source costs once after reopen
+ok 138 - sqlite/documents-simple: durable reuse keeps evidence identity and charges source costs once after reopen
+  ---
+  duration_ms: 180.250125
+  type: 'test'
+  ...
+# Subtest: sqlite/observations-simple: durable reuse keeps evidence identity and charges source costs once after reopen
+ok 139 - sqlite/observations-simple: durable reuse keeps evidence identity and charges source costs once after reopen
+  ---
+  duration_ms: 122.979792
+  type: 'test'
+  ...
+# Subtest: file-journal/documents-simple: durable reuse keeps evidence identity and charges source costs once after reopen
+ok 140 - file-journal/documents-simple: durable reuse keeps evidence identity and charges source costs once after reopen
+  ---
+  duration_ms: 398.996208
+  type: 'test'
+  ...
+# Subtest: file-journal/observations-simple: durable reuse keeps evidence identity and charges source costs once after reopen
+ok 141 - file-journal/observations-simple: durable reuse keeps evidence identity and charges source costs once after reopen
+  ---
+  duration_ms: 396.267417
+  type: 'test'
+  ...
+# Subtest: sqlite: default deny and fresh request perform actual reads, unreported adapter costs stay unknown
+ok 142 - sqlite: default deny and fresh request perform actual reads, unreported adapter costs stay unknown
+  ---
+  duration_ms: 93.79375
+  type: 'test'
+  ...
+# Subtest: sqlite: TTL boundary makes a new read and adoption after expiry rejects an already-stored hit
+ok 143 - sqlite: TTL boundary makes a new read and adoption after expiry rejects an already-stored hit
+  ---
+  duration_ms: 107.305583
+  type: 'test'
+  ...
+# Subtest: sqlite: a changed principal cannot reuse a result obtained under the old policy
+ok 144 - sqlite: a changed principal cannot reuse a result obtained under the old policy
+  ---
+  duration_ms: 47.703209
+  type: 'test'
+  ...
+# Subtest: sqlite: contract changes before dispatch fail without invoking; unrelated registry changes keep a selected contract usable
+ok 145 - sqlite: contract changes before dispatch fail without invoking; unrelated registry changes keep a selected contract usable
+  ---
+  duration_ms: 39.695125
+  type: 'test'
+  ...
+# Subtest: sqlite: a reuse clone cannot survive source custody removal in history, copies, or context
+ok 146 - sqlite: a reuse clone cannot survive source custody removal in history, copies, or context
+  ---
+  duration_ms: 57.83825
+  type: 'test'
+  ...
+# Subtest: sqlite: original artifact is rechecked at the adoption commit boundary
+ok 147 - sqlite: original artifact is rechecked at the adoption commit boundary
+  ---
+  duration_ms: 62.154625
+  type: 'test'
+  ...
+# Subtest: sqlite: a dispatched call without a received measurement remains unknown after reopen
+ok 148 - sqlite: a dispatched call without a received measurement remains unknown after reopen
+  ---
+  duration_ms: 14.437083
+  type: 'test'
+  ...
+# Subtest: sqlite: unsent cancellation and legacy reservation expiry do not create unknown execution costs
+ok 149 - sqlite: unsent cancellation and legacy reservation expiry do not create unknown execution costs
+  ---
+  duration_ms: 8.982167
+  type: 'test'
+  ...
+# Subtest: sqlite: emitted observation source contracts are checked even when that tool schema is not selected
+ok 150 - sqlite: emitted observation source contracts are checked even when that tool schema is not selected
+  ---
+  duration_ms: 78.365
+  type: 'test'
+  ...
+# Subtest: sqlite: registry removal while a context frame is staged prevents returning the prepared input
+ok 151 - sqlite: registry removal while a context frame is staged prevents returning the prepared input
+  ---
+  duration_ms: 53.198834
+  type: 'test'
+  ...
+# Subtest: file-journal: default deny and fresh request perform actual reads, unreported adapter costs stay unknown
+ok 152 - file-journal: default deny and fresh request perform actual reads, unreported adapter costs stay unknown
+  ---
+  duration_ms: 404.500375
+  type: 'test'
+  ...
+# Subtest: file-journal: TTL boundary makes a new read and adoption after expiry rejects an already-stored hit
+ok 153 - file-journal: TTL boundary makes a new read and adoption after expiry rejects an already-stored hit
+  ---
+  duration_ms: 416.498625
+  type: 'test'
+  ...
+# Subtest: file-journal: a changed principal cannot reuse a result obtained under the old policy
+ok 154 - file-journal: a changed principal cannot reuse a result obtained under the old policy
+  ---
+  duration_ms: 235.331459
+  type: 'test'
+  ...
+# Subtest: file-journal: contract changes before dispatch fail without invoking; unrelated registry changes keep a selected contract usable
+ok 155 - file-journal: contract changes before dispatch fail without invoking; unrelated registry changes keep a selected contract usable
+  ---
+  duration_ms: 165.544625
+  type: 'test'
+  ...
+# Subtest: file-journal: a reuse clone cannot survive source custody removal in history, copies, or context
+ok 156 - file-journal: a reuse clone cannot survive source custody removal in history, copies, or context
+  ---
+  duration_ms: 267.708375
+  type: 'test'
+  ...
+# Subtest: file-journal: original artifact is rechecked at the adoption commit boundary
+ok 157 - file-journal: original artifact is rechecked at the adoption commit boundary
+  ---
+  duration_ms: 219.639
+  type: 'test'
+  ...
+# Subtest: file-journal: a dispatched call without a received measurement remains unknown after reopen
+ok 158 - file-journal: a dispatched call without a received measurement remains unknown after reopen
+  ---
+  duration_ms: 79.704625
+  type: 'test'
+  ...
+# Subtest: file-journal: unsent cancellation and legacy reservation expiry do not create unknown execution costs
+ok 159 - file-journal: unsent cancellation and legacy reservation expiry do not create unknown execution costs
+  ---
+  duration_ms: 68.188375
+  type: 'test'
+  ...
+# Subtest: file-journal: emitted observation source contracts are checked even when that tool schema is not selected
+ok 160 - file-journal: emitted observation source contracts are checked even when that tool schema is not selected
+  ---
+  duration_ms: 265.641541
+  type: 'test'
+  ...
+# Subtest: file-journal: registry removal while a context frame is staged prevents returning the prepared input
+ok 161 - file-journal: registry removal while a context frame is staged prevents returning the prepared input
+  ---
+  duration_ms: 141.2165
+  type: 'test'
+  ...
+# Subtest: adapter-supplied reuse metadata cannot claim an invocation was avoided
+ok 162 - adapter-supplied reuse metadata cannot claim an invocation was avoided
+  ---
+  duration_ms: 29.415833
+  type: 'test'
+  ...
+# Subtest: a write tool cannot declare reuse and changing freshness changes the immutable task digest
+ok 163 - a write tool cannot declare reuse and changing freshness changes the immutable task digest
+  ---
+  duration_ms: 0.806333
+  type: 'test'
+  ...
+1..163
+# tests 163
+# suites 0
+# pass 163
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5730.11675

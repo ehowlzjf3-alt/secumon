@@ -1,5 +1,5 @@
 {
-  "checkpoint": 373,
+  "checkpoint": 374,
   "date": "2026-09-08",
   "status": "local_verification_in_progress",
   "goalComplete": false,
@@ -251,18 +251,49 @@
       "uniqueIncrement": 0,
       "scope": "Existing deadline/abort ChildStub cases strengthened with late successful replies and rerun; no actual worker/SQLite close fault or additional unique tests",
       "executionObservation": "inline terminal completion; no live session handle"
+    },
+    {
+      "session": 76306,
+      "log": "runtime/evidence/C03-ordered-target14.log",
+      "sourceDigest": "4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c",
+      "buildManifest": "runtime/evidence/C05-ordered-build5-manifest.json",
+      "exitCode": 0,
+      "total": 5,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 14450.828958,
+      "files": [
+        "agent-sqlite-recovery.test.js"
+      ],
+      "filter": "recovery management|recovery CLI",
+      "selectedTestNames": [
+        "recovery management preserves originals and candidate-close faults from a real worker with an injected post-close error",
+        "recovery management preserves originals and validation-close faults from a real worker with an injected post-close error",
+        "recovery management retains an unobserved-worker fence after simulated missing terminal events and dead-manager lease recovery",
+        "recovery CLI explicitly prepares and applies one operation while status, repair, and repeated commands preserve originals",
+        "recovery CLI preserves a real interrupted apply pending gate until lease recovery and exact-operation resume"
+      ],
+      "uniqueIncrement": 5,
+      "scope": "Local management error propagation: actual candidate workers with injected errors after real DB.close, simulated missing child terminal events inside an actual manager; actual agent CLI prepare/apply/status/repeat/pending/lease-recovery paths",
+      "limits": [
+        "Close reporting faults are injected after real SQLite release, not actual OS close failures",
+        "Unobserved validator terminal events are simulated; only the manager is a real process in that case",
+        "The retained marker prevents the next worker; the existing management order can prepare another candidate copy before that guard",
+        "No current Linux/native Windows or real external service validation"
+      ]
     }
   ],
   "modelApiTests": "stopped",
   "externalServiceConnectionsRun": false,
   "remaining": [
-    "R04 remaining explicitly unobserved interruption boundaries and native Windows no-replace resume",
-    "R06 actual candidate-worker/DB-close fault propagation, worker-unobserved receipt and maintenance retention; late-response event cases are verified reruns",
-    "R07 existing external-tool attempt/effect receipts without automatic success or replay; R08 general sqlite-recovery CLI prepare/apply/status",
-    "Current Linux/native Windows and final integrated regression"
+    "Local R04: explicitly unobserved interruption boundaries outside the four verified POSIX phases",
+    "Local R07: preserve existing external-tool attempt/effect receipts without automatic success or replay; can use isolated local fixtures",
+    "Separate environment acceptance: current Linux/native Windows no-replace resume and final integration; not a blocker for remaining local cases"
   ],
-  "next": "Preserve locally proven R02/R03 and event-only late-reply reruns; continue the named R04/R06/R07/R08 acceptance gaps without rerunning historical selections solely to increase totals",
-  "uniquePassingTests": 233,
+  "next": "Continue bounded local R04/R07 acceptance; preserve verified R06 injected/simulated error propagation and R08 actual CLI paths without treating missing external environments as a local blocker",
+  "uniquePassingTests": 238,
   "preparedFixtureSourcesBaselineCheckpoint": 370,
   "preparedFixtureSources": {
     "src/tests/personal-memory-context.test.ts": "e74b39f1e75e2d008fa2a8222b005117cc99b96319687d13155ba6453a1ce004",
@@ -315,9 +346,16 @@
       "exitCode": 0,
       "manifest": "runtime/evidence/C05-ordered-build1-manifest.json",
       "sourceDigest": "8f3ec0f6e0946a3a015a0ca1486701d23ab832eff891bd449bffb385061cd8fd"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-build5.log",
+      "session": 51406,
+      "exitCode": 0,
+      "manifest": "runtime/evidence/C05-ordered-build5-manifest.json",
+      "sourceDigest": "4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c"
     }
   ],
-  "uniqueTests": 233,
+  "uniqueTests": 238,
   "failingTests": 0,
   "activeTest": null,
   "recoveryHappyPaths": {
@@ -358,7 +396,7 @@
   ],
   "remainingAcceptance": "design/chapters/C03-remaining-acceptance.md",
   "acceptanceUpdates": {
-    "checkpoint": 373,
+    "checkpoint": 374,
     "R02": {
       "status": "local_selected_verified",
       "logs": [
@@ -381,6 +419,20 @@
       "log": "runtime/evidence/C03-ordered-target13.log",
       "uniqueIncrement": 0
     },
-    "totalMeaning": "233 unique selected cases across the retained per-run source digests; not a 233-case run against the latest source"
+    "totalMeaning": "238 unique selected cases across retained per-run source digests; target13 is a rerun with zero unique increment, not a 238-case run against the latest source",
+    "R06Management": {
+      "status": "local_error_propagation_verified_with_injection",
+      "log": "runtime/evidence/C03-ordered-target14.log",
+      "scope": "Original errors/files preserved, worker-unobserved marker and maintenance retained, dead-manager lease recovery and next-worker fence",
+      "limits": [
+        "Injected close error after actual DB.close succeeds",
+        "Simulated validator terminal-event absence in an actual manager; no real OS unobserved-validator claim"
+      ]
+    },
+    "R08Cli": {
+      "status": "local_cli_verified",
+      "log": "runtime/evidence/C03-ordered-target14.log",
+      "scope": "Actual agent CLI using isolated host registry and state hot-journal fixture: explicit prepare/apply/status, same-operation repeats, no implicit repair recovery, actual interrupted-apply pending gate and lease recovery"
+    }
   }
 }

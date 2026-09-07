@@ -2,7 +2,7 @@
 
 ## 현재 실행 방침 — 2026-09-08
 
-최신 Checkpoint373: 컴퓨터 관찰의 준비 진전 누락을 교정하고 C05 선택 고유201개를 확인했다. C03은 owner/저장 선택·원본 현재성 거절11개 추가로 고유233개이며 late 응답2개 재실행은 중복 합산하지 않는다. 각 실행의 소스 지문과 실패 원로그를 보존한다. [현재 인수인계](IMPLEMENTATION-RESUME.md)와 [다음 작업](NEXT-STEPS.md)을 따른다. C03 R02/R03과 이번 host/computer 묶음은 완료한 범위이므로 반복하지 않는다. 전체 목표·최종 통합·실제 환경 인수는 미완료다.
+최신 Checkpoint374: C03 복구 관리 전파·실제 CLI5개 추가로 고유238개, C05 도구/문맥·MCP의 추가461개로 선택 고유662개를 확인했다. 실제 중단과 주입 오류의 범위, 각 실행의 소스 지문을 구분해 보존한다. [현재 인수인계](IMPLEMENTATION-RESUME.md)와 [다음 작업](NEXT-STEPS.md)을 따른다. C03 R04/R07, C05 collection custody-only 입구·비용 최적화, C06 이후 및 실제 환경 인수가 남아 있다.
 
 최신 checkpoint371: `872fa50` 게시 뒤 로컬 검증을 재개했다. 초안 종료 hook 실패를 교정·재확인했고 C03의 선택 고유216개를 확인했다. [현재 결과](chapters/C03-ordered-verification-result.md) · [체크포인트](../runtime/evidence/C03-ordered-checkpoint.json). 복구 게시 단계의 실제 중단/재개4개도 통과했다. 준비 단계 중단·시도 상한과 남은 경계·환경 인수는 미완료다. 아래 게시 우선 정지와156개 중1실패 표시는 이전 checkpoint370의 기록이다.
 

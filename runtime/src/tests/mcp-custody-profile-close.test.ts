@@ -12,7 +12,7 @@ import { openAgentStores } from '../infrastructure/agent-stores.js';
 import { openAgentTurnProfile, type AgentTurnProfile } from '../presentation/agent-turn-profile.js';
 import type { AgentExecutionHost, HostToolAssembly } from '../presentation/host-tools.js';
 import { acceptMcpRequest, assertMcpPeersStopped, createMcpFixtureHost, initializeMcpAgent,
-  MCP_AGENT_PROFILE, MCP_AGENT_TOOL, readMcpAudit } from './mcp-agent-profile-helper.js';
+  MCP_AGENT_PROFILE, MCP_AGENT_TOOL, mcpFixtureIdentityOptions, readMcpAudit } from './mcp-agent-profile-helper.js';
 
 const runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
 function gate() { let resolve!: () => void; const promise = new Promise<void>(done => { resolve = done; }); return { promise, resolve }; }
@@ -43,7 +43,7 @@ async function fixture(t: TestContext, backend: 'sqlite' | 'file-journal', failu
   const ready = initializeMcpAgent(join(base, 'agent'), backend), auditFile = join(base, 'audit.jsonl');
   const configured = createMcpFixtureHost({ auditFile, ...(failures ? { closeError: errors.cleanup } : {}) });
   const model = configured.host.models.get(MCP_AGENT_PROFILE)!;
-  const host: AgentExecutionHost = { models: new Map([[MCP_AGENT_PROFILE, { execution: model.execution, async open(input) {
+  const host: AgentExecutionHost = { ...configured.host, models: new Map([[MCP_AGENT_PROFILE, { execution: model.execution, async open(input) {
     const opened = await model.open(input);
     return { ...opened, async close() {
       trace.push('model-close'); assert.equal(assembly!.signal.aborted, true);
@@ -109,7 +109,7 @@ async function fixture(t: TestContext, backend: 'sqlite' | 'file-journal', failu
   };
   const inspectStored = async () => {
     assert.ok(workId && attemptId && rawRef);
-    const reopened = await openAgentStores(new FileAgentProfileStore(runtimeRoot), ready.root);
+    const reopened = await openAgentStores(new FileAgentProfileStore(runtimeRoot), ready.root, undefined, mcpFixtureIdentityOptions({ auditFile }));
     try {
       const state = await reopened.state.get(workId); assert.ok(state);
       const response = await reopened.state.receipt(workId, `mcp-response:${attemptId}`);

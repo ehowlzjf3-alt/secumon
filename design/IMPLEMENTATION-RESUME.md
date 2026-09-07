@@ -4,6 +4,16 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT374-START -->
+### Checkpoint374 — 도구·문맥과 MCP 재개/종료, 복구 관리·CLI 검증
+
+Checkpoint374: C03 복구 관리 전파·실제 CLI5개 추가로 고유238개, C05 도구/문맥·MCP의 추가461개로 선택 고유662개를 확인했다. 실제 중단과 주입 오류의 범위, 각 실행의 소스 지문을 구분해 보존한다. 이전 완료 단위는 `0ceef23`으로 게시했다.
+
+C05 target5~7의163+99+54개는 이전 build3에서 통과했다. 새 profile fixture와 staged crash/drain 통합 뒤 build4 타입 오류를 교정한 build5(session51406)는 exit0이며 sourceDigest `4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c`다. 같은 build5에서 C03 target14의5/5, C05 일반입구46/46·단순custody89/89·새중단/종료10/10을 확인했다. 이번에는 제품 코드 변경 없이 기존 기능 인수와 시험 격리를 보완했다. 이전 소스의 통과를 최종 소스 재실행으로 합치지 않는다.
+
+[현재 C03 잔여](chapters/C03-remaining-acceptance.md)는 R04 명시 전후 중단·R07 외부도구 영수증이며 로컬 fixture로 계속 확인할 수 있다. C05는 collection custody-only 일반 CLI/HTTP와 비용 측정/최적화가 남는다. [C05 결과](chapters/C05-ordered-verification-result.md) · [C06 준비](chapters/C06-ordered-verification-preparation.md) · [다음 작업](NEXT-STEPS.md). 실제 모델/API 중단, 현재 Linux/native Windows·실제 연동·최종 통합 미완료를 유지한다. 활성 빌드·시험 없음. 전체 goal은 진행 중이며 이번 단위도 문서·원로그와 함께 커밋·푸시한다. 아래 checkpoint373 이하는 당시 이력이다.
+<!-- CHECKPOINT374-END -->
+
 <!-- CHECKPOINT373-START -->
 ### Checkpoint373 — 컴퓨터 관찰 진행 교정·일반 쓰기/컴퓨터 입구 검증
 

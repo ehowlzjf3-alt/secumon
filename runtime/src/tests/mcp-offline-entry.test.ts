@@ -20,7 +20,7 @@ import type { AgentExecutionHost } from '../presentation/host-tools.js';
 import type { WebCommandResult } from '../presentation/web-contracts.js';
 import { MCP_FIXTURE_DOCUMENTS_TOOL } from './helpers/mcp-fixture-contracts.js';
 import { assertMcpPeersStopped, createMcpFixtureHost, initializeMcpAgent, MCP_AGENT_PROFILE, MCP_AGENT_PROVIDER,
-  MCP_AGENT_TEXT, MCP_AGENT_TOOL, mcpFixtureAnswer, readMcpAudit } from './mcp-agent-profile-helper.js';
+  MCP_AGENT_TEXT, MCP_AGENT_TOOL, mcpFixtureAnswer, mcpFixtureIdentityOptions, readMcpAudit } from './mcp-agent-profile-helper.js';
 
 const execute = promisify(execFile), runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
 interface Options { auditFile: string; hostAuditFile: string; documentValue: number; now: number }
@@ -48,7 +48,7 @@ export function createOfflineEntryHost(options: Options) {
     } };
   const tools = createMcpHostTools({ mode: 'stored_only', origin: { endpointId: 'mcp-agent-local', protocolVersion: MCP_PROTOCOL_VERSION },
     bindings: [binding], policy, limits });
-  const host: AgentExecutionHost = { models: new Map([[MCP_AGENT_PROFILE, { execution: model.execution, async open(profile) {
+  const host: AgentExecutionHost = { ...configured.host, models: new Map([[MCP_AGENT_PROFILE, { execution: model.execution, async open(profile) {
     const opened = await model.open(profile);
     return { ...opened, async close() {
       record({ kind: 'model-close', calls: configured.observed.modelInputs.length }); await opened.close();
@@ -108,7 +108,7 @@ async function seed(t: TestContext, backend: 'sqlite' | 'file-journal', received
   assert.equal(originalCalls, received ? 1 : 0);
   if (attempt) options.now = attempt.leaseUntil + 1;
   const inspect = async () => {
-    const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), directory);
+    const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), directory, undefined, mcpFixtureIdentityOptions(options));
     try {
       const current = await stores.state.get(workId); assert.ok(current);
       const receipts = attempt ? await Promise.all(['dispatch', 'mcp-intent', 'mcp-response'].map(prefix => stores.state.receipt(workId, `${prefix}:${attempt!.id}`))) : [];

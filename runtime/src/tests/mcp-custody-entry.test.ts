@@ -21,7 +21,7 @@ import { createMcpHostTools } from '../presentation/mcp-host-tools.js';
 import type { WebCommandResult } from '../presentation/web-contracts.js';
 import { MCP_FIXTURE_DOCUMENTS_TOOL } from './helpers/mcp-fixture-contracts.js';
 import { assertMcpPeersStopped, createMcpFixtureHost, initializeMcpAgent, MCP_AGENT_PROFILE,
-  MCP_AGENT_PROVIDER, MCP_AGENT_TEXT, MCP_AGENT_TOOL, readMcpAudit } from './mcp-agent-profile-helper.js';
+  MCP_AGENT_PROVIDER, MCP_AGENT_TEXT, MCP_AGENT_TOOL, mcpFixtureIdentityOptions, readMcpAudit } from './mcp-agent-profile-helper.js';
 
 const execute = promisify(execFile), runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
 interface HostOptions { auditFile: string; hostAuditFile: string; now: number; documentValue: number }
@@ -57,7 +57,7 @@ export function createCustodyEntryHost(options: HostOptions) {
     args: [fileURLToPath(new URL('./helpers/mcp-fixture-server.js', import.meta.url)), '--audit-file', options.auditFile,
       '--audit-process', '--document-value', String(options.documentValue), '--mode', 'normal'],
     cwd: runtimeRoot, env: { TMPDIR: tmpdir(), TMP: tmpdir(), TEMP: tmpdir() }, timeoutMs: 5000 }, bindings: [binding], policy, limits });
-  const host: AgentExecutionHost = { models: new Map([[MCP_AGENT_PROFILE, { execution: model.execution, async open(profile) {
+  const host: AgentExecutionHost = { ...configured.host, models: new Map([[MCP_AGENT_PROFILE, { execution: model.execution, async open(profile) {
     const opened = await model.open(profile);
     return { ...opened, async close() {
       record({ kind: 'model-close', calls: configured.observed.modelInputs.length }); await opened.close();
@@ -150,7 +150,7 @@ async function seed(t: TestContext, backend: 'sqlite' | 'file-journal', channel:
   const originalPolicy = p.policy;
   await p.close(); profile = undefined; assertMcpPeersStopped(options.auditFile); assertNoExtraExecution(options);
   const inspect = async () => {
-    const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), directory);
+    const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), directory, undefined, mcpFixtureIdentityOptions(options));
     try {
       const current = await stores.state.get(workId); assert.ok(current);
       const selected = current.attempts.find(value => value.id === attempt.id)!;
@@ -240,7 +240,7 @@ if (process.env['SECUMON_CUSTODY_ENTRY_HELPER'] !== '1') for (const backend of [
     assert.equal(after.attempt.execution?.usage.transportCalls, 1);
     assert.equal(after.events.filter(event => event.type === 'tool_execution_usage_recorded').length, 1);
     assert.deepEqual(after.state.conversation?.session, f.before.state.conversation?.session);
-    const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), f.directory);
+    const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), f.directory, undefined, mcpFixtureIdentityOptions(f.options));
     try {
       const bytes = await stores.artifacts.get(resumed.run.checkpoint, after.state.policy);
       const packet = ResumePacketSchema.parse(JSON.parse(new TextDecoder().decode(bytes)));

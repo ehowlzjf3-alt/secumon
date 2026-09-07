@@ -1,5 +1,15 @@
 # C03 순차 검증·수정 기록
 
+## Checkpoint374 — 관리 오류 전파·실제 복구 CLI5개 확인
+
+신규 **5/5 통과**(target14, session76306, exit0, 14,450.828958ms)로 누적 고유 선택은 **238개(233+5) 통과**다. C05 build5(session51406, exit0)의 Node v24.20.0과 소스 지문 `4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c`에서 실행했다. 이전 실행별 지문과 target13의 재실행2개·고유 증가0을 보존한다. 238개를 같은 최종 소스로 일괄 재실행한 결과는 아니다. [원로그](../../runtime/evidence/C03-ordered-target14.log) · [빌드 지문](../../runtime/evidence/C05-ordered-build5-manifest.json) · [체크포인트](../../runtime/evidence/C03-ordered-checkpoint.json).
+
+R06의 관리 전파3개는 실제 제품 후보 worker가 SQLite 연결을 닫은 뒤 시험 오류를 주입해 후보 close 단독 오류와 실제 schema 검증 오류+close 오류를 원인과 함께 유지하는지 확인했다. 원 main/journal과 보존본을 유지하고 준비 완료로 게시하지 않았다. 별도 실제 관리 프로세스에서는 child 종료 이벤트 부재를 대역으로 주입해 `worker-unobserved.json`·maintenance 유지, 관리자 종료 뒤 명시 lease 회수와 다음 worker 차단을 확인했다. **로컬 관리 오류 전파는 검증됐지만 실제 OS close 실패·validator 종료 미관측을 재현한 결과는 아니다.** 다음 worker 차단 전에 후보 사본을 준비할 수 있는 기존 순서도 유지하며, 새 사본까지0개라고 주장하지 않는다.
+
+R08은 실제 agent CLI와 격리 host registry를 사용한2개로 확인했다. state hot-journal에서 명시 `prepare → apply → status`, 동일 operation 반복, 과거 receipt의 현재 DB 검증 아님, `repair`의 암묵 복구 거절을 검사했다. 실제 apply 중단 후 pending은 일반 repair와 다른 operation을 막았고, CLI `recover-leases` 뒤에도 유지됐다. 정확한 operation/digest로 재개한 뒤 원 자료·영수증·업무를 보존했다. 이는 CLI 상태 복구 경로의 로컬 인수이며 실제 모델이나 PostgreSQL 연결을 사용하지 않았다.
+
+남은 **로컬** 인수는 R04의 현재4지점 밖 명시 중단 경계와 R07의 기존 외부 도구 시도/효과 영수증 보존이다. 후자는 격리된 로컬 fixture로 검증할 수 있으며 실서비스 접속 대기를 로컬 차단으로 취급하지 않는다. 현재 Linux/native Windows·최종 통합은 별도 환경 인수로 남긴다. [현재 잔여 목록](C03-remaining-acceptance.md). 아래 checkpoint373 이전 문구는 당시의 확인 범위와 잔여 이력이다.
+
 ## Checkpoint373 — 소유·저장 선택과 원본 변경 거절11개 확인
 
 신규 **11/11 통과**(target12, session57177, exit0)로 선택한 누적 고유 시험은 **233개(222+11) 통과**다. C05 build1(session40906, exit0)의 Node v24.20.0 및 소스 지문 `8f3ec0f6e0946a3a015a0ca1486701d23ab832eff891bd449bffb385061cd8fd`에서 확인했다. 이전 선택은 당시 소스 범위를 유지하며, 233개를 이번 최종 소스로 한 번에 실행한 결과는 아니다. [신규 원로그](../../runtime/evidence/C03-ordered-target12.log) · [빌드 지문](../../runtime/evidence/C05-ordered-build1-manifest.json) · [실행 기록](../../runtime/evidence/C03-ordered-checkpoint.json).

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { AgentTurnInput } from '../application/agent-turn-types.js';
 import type { ModelCallOptions } from '../application/ports.js';
@@ -24,7 +24,10 @@ export const MCP_AGENT_PROVIDER = 'company';
 export const mcpFixtureAnswer = (value: number) => `[합성 MCP 결과] 원자료 값은 ${value}입니다.`;
 export interface McpFixtureHostOptions {
   auditFile: string; documentValue?: number; mode?: McpFixtureMode; projectorVersion?: string; endpointId?: string;
-  sourceError?: Error; closeError?: Error;
+  sourceError?: Error; closeError?: Error; identityRegistryDirectory?: string;
+}
+export function mcpFixtureIdentityOptions(options: Pick<McpFixtureHostOptions, 'auditFile' | 'identityRegistryDirectory'>) {
+  return { identityRegistryDirectory: options.identityRegistryDirectory ?? join(dirname(options.auditFile), 'registry') };
 }
 export function initializeMcpAgent(directory: string, backend: 'sqlite' | 'file-journal' = 'sqlite') {
   const ready = new FileAgentProfileStore(runtimeRoot).initialize(directory, { purpose: '로컬 MCP 원문을 검증하는 합성 범용 담당' });
@@ -73,6 +76,7 @@ export function createMcpFixtureHost(options: McpFixtureHostOptions) {
       '--document-value', String(options.documentValue ?? 30), '--mode', options.mode ?? 'normal'],
     cwd: runtimeRoot, env: { TMPDIR: tmpdir(), TMP: tmpdir(), TEMP: tmpdir() }, timeoutMs: 5000 }, bindings: [binding], policy, limits });
   const host: AgentExecutionHost = {
+    ...mcpFixtureIdentityOptions(options),
     models: new Map([[MCP_AGENT_PROFILE, { execution: 'deterministic_fixture', async open(profile) {
       const planner = new StructuredAgentTurnAdapter({ identity, profile, destination: 'local', maxRequestBytes: 65536,
         capabilities: { structuredOutput: true, toolCalling: false, images: false, cancellation: true, maxInputTokens: 100000, maxOutputTokens: 2048 } }, {

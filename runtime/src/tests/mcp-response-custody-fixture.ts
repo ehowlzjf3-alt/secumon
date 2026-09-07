@@ -32,13 +32,14 @@ export interface CustodyControls {
 /** Real C01 state, artifacts, transactions and broker; only the decoded SDK client is a fixed local substitute. */
 export async function createMcpResponseCustodyFixture(t: TestContext, backend: Adapter = 'sqlite', options: { legacyReceipt?: boolean } = {}) {
   const directory = realpathSync(mkdtempSync(join(tmpdir(), 'secumon-mcp-response-custody-')));
+  const hostOptions = { identityRegistryDirectory: join(directory, 'registry') };
   const engine = join(directory, 'engine'); mkdirSync(engine, { mode: 0o700 });
   const profiles = new FileAgentProfileStore(engine), profile = profiles.initialize(join(directory, 'agent'));
   writeFileSync(join(profile.root, 'config.json'), JSON.stringify({ ...profile.config,
     storage: { ...profile.config.storage, state: backend } }), { mode: 0o600 });
   let stores: Awaited<ReturnType<typeof openAgentStores>> | undefined;
   t.after(async () => { try { await stores?.close(); } finally { rmSync(directory, { recursive: true, force: true }); } });
-  stores = await openAgentStores(profiles, profile.root);
+  stores = await openAgentStores(profiles, profile.root, undefined, hostOptions);
   let now = 1000, mutation = 0, rawRef: ArtifactRef | undefined;
   const controls: CustodyControls = { callMode: 'returned', denyAuthorization: false };
   const counters = { calls: 0, discoveries: 0, projections: 0, captures: 0, rawPuts: 0, responseCommits: 0, responseConflicts: 0 };
@@ -143,7 +144,7 @@ export async function createMcpResponseCustodyFixture(t: TestContext, backend: A
     async call() { counters.calls++; assert.fail('offline usage restoration must not call'); },
   }, services, schemas);
   const reopen = async () => {
-    await stores!.close(); stores = undefined; stores = await openAgentStores(profiles, profile.root);
+    await stores!.close(); stores = undefined; stores = await openAgentStores(profiles, profile.root, undefined, hostOptions);
     services.state = stores.state; services.artifacts = stores.artifacts; installStoreHooks();
   };
   const expectedBody = (attemptId: string, ref: ArtifactRef): ToolResult => ({ resultId: `mcp:${attemptId}`, attemptId,

@@ -20,17 +20,17 @@ node dist/presentation/agent-cli.js chat help
 
 ## 현재 확인한 범위
 
-현재 진행은 [인수인계](design/IMPLEMENTATION-RESUME.md)의 checkpoint373을 따른다. C03 선택 고유233개, C04 선택 고유158개, C05 호스트·컴퓨터 관찰 선택 고유201개를 확인했다. 실행별 소스 지문과 실패 후 교정을 구분해 보존한다.
+현재 진행은 [인수인계](design/IMPLEMENTATION-RESUME.md)의 checkpoint374를 따른다. C03 선택 고유238개, C04 선택 고유158개, C05 도구·문맥·MCP 선택 고유662개를 확인했다. 실행별 소스 지문과 실패 후 교정을 구분해 보존한다.
 
-2026-09-08, checkpoint373 기준이다. 아래 수치는 macOS arm64·Node v24.20.0의 선택한 로컬 시험 결과이며 전체 환경의 통과 수가 아니다.
+2026-09-08, checkpoint374 기준이다. 아래 수치는 macOS arm64·Node v24.20.0의 선택한 로컬 시험 결과이며 전체 환경의 통과 수가 아니다.
 
 | 범위 | 상태와 근거 |
 | --- | --- |
 | C01 담당·저장소·호스트 식별 | 7파일 **80/80 통과**, build5 성공, 구조 검사 188개·위반 0. 별도 동시 CLI 8개씩 20회 확인은 고유 시험 수에 합산하지 않는다. [결과](design/chapters/C01-ordered-verification-result.md) |
 | C02 지속 세션·compact·다음 작업 분리 | 기존 4파일 30개와 CLI·Web 1파일 5개, **고유 35개 통과**. 두 실행의 소스 지문은 다르며 각각 기록했다. [결과](design/chapters/C02-ordered-verification-result.md) |
-| C03 개인 기억·이관·복구 | 선택한 **고유233개 통과**. owner 부재·저장 선택·원본 객체/내용 변경·같은 복구 ID의 다른 종류 거절11개를 추가 확인했다. 실제 worker 오류 전파·복구 CLI 등은 남아 있다. [결과](design/chapters/C03-ordered-verification-result.md) · [남은 인수](design/chapters/C03-remaining-acceptance.md) |
+| C03 개인 기억·이관·복구 | 선택한 **고유238개 통과**. 관리 오류 전파와 실제 복구 CLI5개를 추가 확인했다. 주입한 오류와 실제 프로세스 관측을 구분한다. 남은 명시 중단 지점·도구 영수증 인수는 별도다. [결과](design/chapters/C03-ordered-verification-result.md) · [남은 인수](design/chapters/C03-remaining-acceptance.md) |
 | C04 모델·에이전트 실행 | 선택한20파일 **고유158개 통과**. chat의 호스트 등록 경로 전달을 보완하고 문맥·재접속·목표 변경·CLI/Web 흐름을 확인했다. 실제 모델 품질 검증은 아니다. [결과](design/chapters/C04-ordered-verification-result.md) |
-| C05 도구·컴퓨터 입구와 진행 | 선택한 **고유201개 통과**. 정상 관찰 뒤 행동 전에 멈추던 진행 계수를 수정했다. CLI/Web의 한 번 실행·재접속과 같은 화면 반복 차단을 확인했다. 도구/기억/스킬·MCP 후속은 남아 있다. [결과](design/chapters/C05-ordered-verification-result.md) |
+| C05 도구·문맥·MCP | 선택한 **고유662개 통과**. 호출·재사용·문맥 정리, 원응답 보관·재개·정산, 실제 중단/종료 경계를 확인했다. collection custody-only 일반 입구와 비용 개선 측정은 남아 있다. [결과](design/chapters/C05-ordered-verification-result.md) |
 | C06~C10 기능 연결 | 채택한 지원 범위의 구현과 통합 빌드를 마쳤다. 상세 검증과 실제 연동은 별도다. [구현 결과](design/chapters/C06-C10-implementation-result.md) · [검증 목록](design/chapters/C06-C10-verification-plan.md) |
 
 C06~C10에는 CLI/Web·전달 채널, 선택 게시판·아카이브, 동료·반론·자원 배정, A2A 지원 부분·사건별 상시 임무, 설치·버전 고정·업데이트·백업·복원이 포함된다. 구현되어 있다는 설명을 모든 조건에서 검증되었다는 의미로 사용하지 않는다. 과거 단위별 Linux 결과도 해당 소스 지문의 이력으로 보존한다.
@@ -39,9 +39,9 @@ C06~C10에는 CLI/Web·전달 채널, 선택 게시판·아카이브, 동료·�
 
 [다음 작업](design/NEXT-STEPS.md)에 바로 이어갈 수정과 미실행 검증을 모았다.
 
-- C03의 실제 worker 오류/종료 미관측 전파·남은 단계 중단·외부 도구 영수증·복구 CLI와 플랫폼 인수를 확인한다. [구체적인 잔여 목록](design/chapters/C03-remaining-acceptance.md)을 사용한다.
-- C05의 도구·기억·스킬 발견/퇴출, MCP 보관·collection·wait 및 미통합 crash/drain 후보를 이어간다. 완료한 선택 묶음은 근거 없이 반복하지 않는다.
-- 이후 C06~C10 순차 검증과 필요한 수정을 진행하고, 현재 소스의 Linux·native Windows·최종 통합 인수를 별도로 완료한다.
+- C03의 남은 명시 중단 지점·외부 도구 영수증을 로컬 fixture로 확인한다. [구체적인 잔여 목록](design/chapters/C03-remaining-acceptance.md)을 사용한다.
+- C05 collection custody-only 일반 CLI/HTTP 인수와 문맥 비용 측정·개선을 이어간다. 완료한 선택 묶음은 근거 없이 반복하지 않는다.
+- [C06 준비](design/chapters/C06-ordered-verification-preparation.md)의 Knox 입구·격리 설치·담당 배치부터 C06~C10 검증을 진행하고, 현재 Linux·native Windows·최종 통합은 별도 완료한다.
 
 실제 모델/API 시험은 **중단 상태**다. 실제 모델의 판단 품질·사용량·취소·tokenizer 적합성, 사내 MCP·Knox, A2A 상호운용, 실제 PostgreSQL·Windows 환경, 운영 설치·배포는 별도 검증이 필요하다. 미실행 항목은 통과 처리하지 않는다.
 

@@ -51,6 +51,7 @@ async function main() {
   // All waits, including the deliberately suspended post-commit boundary, have a process deadline.
   const watchdog = setTimeout(() => { console.error('custody_crash_worker_deadline'); process.exit(124); }, 30000);
   const engine = join(base, 'engine'), directory = join(base, 'agent'), auditFile = join(base, 'peer.jsonl');
+  const hostOptions = { identityRegistryDirectory: join(base, 'registry') };
   if (mode === 'crash') mkdirSync(engine, { mode: 0o700 });
   const profiles = new FileAgentProfileStore(engine);
   if (mode === 'crash') {
@@ -58,7 +59,7 @@ async function main() {
     writeFileSync(join(ready.root, 'config.json'), JSON.stringify({ ...ready.config,
       storage: { ...ready.config.storage, state: backend } }), { mode: 0o600 });
   }
-  const stores = await openAgentStores(profiles, directory), schemas = new AjvSchemas();
+  const stores = await openAgentStores(profiles, directory, undefined, hostOptions), schemas = new AjvSchemas();
   const counters: CustodyCrashObservation['counters'] = { calls: 0, discoveries: 0, projections: 0, executes: 0, rawPuts: 0, accountingRawReads: 0 };
   let now = mode === 'crash' ? 1000 : 10000, attemptId = selectedAttempt ?? '';
   const services: RuntimeServices = { state: stores.state, artifacts: stores.artifacts, clock: { now: () => now },
@@ -170,7 +171,7 @@ async function main() {
       }
       await runtime.finishClose(); await stores.close();
       // Reopen once more in this new process to establish that the accounting receipt is durable.
-      const reopened = await openAgentStores(profiles, directory);
+      const reopened = await openAgentStores(profiles, directory, undefined, hostOptions);
       try {
         assert.deepEqual(await reopened.state.get(workId), once);
         services.state = reopened.state;

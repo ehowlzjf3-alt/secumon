@@ -1,9 +1,9 @@
 {
-  "checkpoint": 373,
+  "checkpoint": 374,
   "date": "2026-09-08",
-  "status": "selected_host_computer_verified_remaining_C05_acceptance",
+  "status": "selected_lifecycle_MCP_entries_crash_drain_verified_remaining_C05_acceptance",
   "goalComplete": false,
-  "previousGoalTurn": "progress: chat host fix and C03/C04 verification pushed to main at b40d68d3a7415ac280418f240b249fe1120dea31",
+  "previousGoalTurn": "progress: product observation fix, C03/C05 targeted verification, docs and push0ceef23cd4c7c76ea3ea9ca65e47fc3c5fea0850",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -32,6 +32,20 @@
       "exitCode": 0,
       "manifest": "runtime/evidence/C05-ordered-build3-manifest.json",
       "sourceDigest": "0f6dc7c8aecebc952a940cc23e279fa58b29cf1a39f730cbd38d76f79bd89341"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-build4.log",
+      "session": 50523,
+      "exitCode": 2,
+      "manifest": null,
+      "reason": "Staged crash-worker CLI args need validated stage/backend narrowing before writing typed marker"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-build5.log",
+      "session": 51406,
+      "exitCode": 0,
+      "manifest": "runtime/evidence/C05-ordered-build5-manifest.json",
+      "sourceDigest": "4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c"
     }
   ],
   "tests": [
@@ -92,14 +106,98 @@
       "uniqueIncrement": 1,
       "previousFailuresResolved": 8,
       "command": "node --test --test-concurrency=1 --test-timeout=60000 --test-reporter=tap dist/tests/computer-observation-progress.test.js dist/tests/computer-reconciliation-progress.test.js dist/tests/host-tool-entry.test.js"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-target5.log",
+      "session": 68905,
+      "exitCode": 0,
+      "passed": 163,
+      "failed": 0,
+      "total": 163,
+      "durationMs": 5730.11675,
+      "build": "C05-ordered-build3",
+      "sourceDigest": "0f6dc7c8aecebc952a940cc23e279fa58b29cf1a39f730cbd38d76f79bd89341",
+      "uniqueIncrement": 163,
+      "scope": "8 existing lifecycle/selection files",
+      "command": "node --test --test-concurrency=1 --test-timeout=60000 --test-reporter=tap dist/tests/tool-catalog-lifecycle.test.js dist/tests/tool-efficiency-runtime.test.js dist/tests/knowledge-tools.test.js dist/tests/evidence-discovery.test.js dist/tests/guidance-lifecycle.test.js dist/tests/guidance-resource-lifecycle.test.js dist/tests/context-guidance.test.js dist/tests/context-selection.test.js"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-target6.log",
+      "session": 7126,
+      "exitCode": 0,
+      "passed": 99,
+      "failed": 0,
+      "total": 99,
+      "durationMs": 45128.654625,
+      "build": "C05-ordered-build3",
+      "sourceDigest": "0f6dc7c8aecebc952a940cc23e279fa58b29cf1a39f730cbd38d76f79bd89341",
+      "uniqueIncrement": 99,
+      "scope": "mcp-read-tools, mcp-response-capture, mcp-collection-host-tools, mcp-stored-read-collections, mcp-read-waits, mcp-read-waits-recovery, mcp-read-settlement-recovery",
+      "command": "node --test --test-concurrency=1 --test-timeout=60000 --test-reporter=tap dist/tests/mcp-read-tools.test.js dist/tests/mcp-response-capture.test.js dist/tests/mcp-collection-host-tools.test.js dist/tests/mcp-stored-read-collections.test.js dist/tests/mcp-read-waits.test.js dist/tests/mcp-read-waits-recovery.test.js dist/tests/mcp-read-settlement-recovery.test.js"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-target7.log",
+      "session": 81378,
+      "exitCode": 0,
+      "passed": 54,
+      "failed": 0,
+      "total": 54,
+      "durationMs": 16522.352667,
+      "build": "C05-ordered-build3",
+      "sourceDigest": "0f6dc7c8aecebc952a940cc23e279fa58b29cf1a39f730cbd38d76f79bd89341",
+      "uniqueIncrement": 54,
+      "scope": "mcp-collection-custody, stored-read-usage, mcp-collection-accounting, mcp-collection-custody-context, mcp-collection-custody-resume",
+      "command": "node --test --test-concurrency=1 --test-timeout=60000 --test-reporter=tap dist/tests/mcp-collection-custody.test.js dist/tests/stored-read-usage.test.js dist/tests/mcp-collection-accounting.test.js dist/tests/mcp-collection-custody-context.test.js dist/tests/mcp-collection-custody-resume.test.js"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-target9.log",
+      "session": 20953,
+      "exitCode": 0,
+      "passed": 89,
+      "failed": 0,
+      "total": 89,
+      "durationMs": 41834.586042,
+      "build": "C05-ordered-build5",
+      "sourceDigest": "4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c",
+      "uniqueIncrement": 89,
+      "scope": "mcp-response-custody, mcp-custody-runtime, mcp-custody-context, mcp-custody-workflow, mcp-stored-host-tools, mcp-stored-only, tool-availability-runtime, stored-result-after-usage",
+      "command": "node --test --test-concurrency=1 --test-timeout=90000 --test-reporter=tap dist/tests/mcp-response-custody.test.js dist/tests/mcp-custody-runtime.test.js dist/tests/mcp-custody-context.test.js dist/tests/mcp-custody-workflow.test.js dist/tests/mcp-stored-host-tools.test.js dist/tests/mcp-stored-only.test.js dist/tests/tool-availability-runtime.test.js dist/tests/stored-result-after-usage.test.js"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-target10.log",
+      "session": 69066,
+      "exitCode": 0,
+      "passed": 10,
+      "failed": 0,
+      "total": 10,
+      "durationMs": 30900.172208,
+      "build": "C05-ordered-build5",
+      "sourceDigest": "4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c",
+      "uniqueIncrement": 10,
+      "scope": "mcp-collection-custody-crash, mcp-collection-custody-profile-close",
+      "command": "node --test --test-concurrency=1 --test-timeout=90000 --test-reporter=tap dist/tests/mcp-collection-custody-crash.test.js dist/tests/mcp-collection-custody-profile-close.test.js"
+    },
+    {
+      "log": "runtime/evidence/C05-ordered-target8.log",
+      "session": 21720,
+      "exitCode": 0,
+      "passed": 46,
+      "failed": 0,
+      "total": 46,
+      "durationMs": 113955.138917,
+      "build": "C05-ordered-build5",
+      "sourceDigest": "4a6dbaed0f90f4a8fa251fb60e7296fafc8217376690ae7b6f1e467170506f6c",
+      "uniqueIncrement": 46,
+      "scope": "mcp-agent-profile, mcp-agent-entry, mcp-stored-result-recovery, mcp-custody-crash, mcp-custody-entry, mcp-offline-entry, mcp-collection-entry, mcp-custody-profile-close",
+      "command": "node --test --test-concurrency=1 --test-timeout=90000 --test-reporter=tap dist/tests/mcp-agent-profile.test.js dist/tests/mcp-agent-entry.test.js dist/tests/mcp-stored-result-recovery.test.js dist/tests/mcp-custody-crash.test.js dist/tests/mcp-custody-entry.test.js dist/tests/mcp-offline-entry.test.js dist/tests/mcp-collection-entry.test.js dist/tests/mcp-custody-profile-close.test.js"
     }
   ],
   "modelApiTests": "stopped",
   "externalServiceConnectionsRun": false,
   "remaining": [
-    "Tool-memory-skill selection/eviction lifecycle and MCP custody/collection/wait acceptance",
-    "Staged crash6/drain4 candidates and general CLI/HTTP custody acceptance; reuse existing integrated body-resume tests",
-    "Measured context-cost optimization, real drivers/services and current Linux/native Windows/final integration"
+    "Collection custody-only general CLI/HTTP acceptance beyond prior complete/nonfinal collection entry and profile crash/drain coverage",
+    "Measured context-cost optimization with currentness/race preservation; retain existing scoped caches and collect an explicit before/after baseline",
+    "Current Linux/native Windows/final integration and actual models/services/Knox/A2A/PostgreSQL acceptance; actual model/API tests remain stopped"
   ],
   "correctionsInProgress": [],
   "diagnostic": "runtime/evidence/C05-computer-entry-diagnostic1.log",
@@ -117,8 +215,8 @@
     }
   ],
   "result": "design/chapters/C05-ordered-verification-result.md",
-  "uniqueTests": 201,
-  "uniquePassingTests": 201,
+  "uniqueTests": 662,
+  "uniquePassingTests": 662,
   "unresolvedFailingTests": 0,
-  "uniqueCounting": "26 new plus 175 related; repeated passes and initial failures are not extra unique cases"
+  "uniqueCounting": "201 checkpoint373 +163 lifecycle +99 MCP core +54 collection custody +46 entries +89 simple custody +10 new crash/drain; reruns excluded"
 }

@@ -22,7 +22,7 @@ import type { AgentExecutionHost, HostToolAssembly } from '../presentation/host-
 import { SyntheticSessionCompactPlanner } from '../presentation/synthetic-session-compact.js';
 import { collectionBinding } from './helpers/mcp-collection-binding.js';
 import type { McpCollectionAudit } from './helpers/mcp-collection-fixture-contracts.js';
-import { MCP_AGENT_PROFILE } from './mcp-agent-profile-helper.js';
+import { MCP_AGENT_PROFILE, mcpFixtureIdentityOptions } from './mcp-agent-profile-helper.js';
 
 export const runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
 export type EntryScenario = 'complete' | 'nonfinal' | 'adopted_partial';
@@ -74,7 +74,7 @@ export function createCollectionEntryHost(options: CollectionEntryOptions, mode:
       args: [fileURLToPath(new URL('./helpers/mcp-collection-fixture-server.js', import.meta.url)), '--audit-file', options.auditFile,
         '--mode', options.scenario === 'adopted_partial' ? 'item-error' : 'normal', '--delay-ms', '100'],
       cwd: runtimeRoot, env: { TMPDIR: tmpdir(), TMP: tmpdir(), TEMP: tmpdir() }, timeoutMs: 5000 } });
-  return { models: new Map([[MCP_AGENT_PROFILE, { execution: 'deterministic_fixture', async open(profile) {
+  return { ...mcpFixtureIdentityOptions(options), models: new Map([[MCP_AGENT_PROFILE, { execution: 'deterministic_fixture', async open(profile) {
     const configuration = { identity, destination: 'local', maxRequestBytes: 131072,
       capabilities: { structuredOutput: true, toolCalling: false, images: false, cancellation: true,
         maxInputTokens: 200000, maxInputBytes: 131072, maxOutputTokens: 2048,
@@ -200,7 +200,7 @@ export interface CollectionEntryMarker {
   original: WorkState; calibration: { requiredTokens: number; selectedTokens: number; inputLimit: number; window: number } | null;
 }
 export async function readEntry(marker: CollectionEntryMarker) {
-  const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), marker.options.directory);
+  const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), marker.options.directory, undefined, mcpFixtureIdentityOptions(marker.options));
   try {
     const state = await stores.state.get(marker.workId); assert.ok(state);
     const receipts = await Promise.all([`dispatch:${marker.attemptId}`, marker.responseCommandId,
