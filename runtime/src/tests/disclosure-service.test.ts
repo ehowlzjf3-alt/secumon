@@ -34,7 +34,7 @@ async function setup(adapter: Adapter) {
   let raw = openRepository(adapter, directory);
   const state = { get: (id: string) => raw.get(id), receipt: (...args: Parameters<typeof raw.receipt>) => raw.receipt(...args),
     commit: (...args: Parameters<typeof raw.commit>) => raw.commit(...args), events: (...args: Parameters<typeof raw.events>) => raw.events(...args),
-    recentEventMetadata: (...args: Parameters<typeof raw.recentEventMetadata>) => raw.recentEventMetadata(...args), conversationWorkPage: (...args: Parameters<typeof raw.conversationWorkPage>) => raw.conversationWorkPage(...args),
+    eventPage: (...args: Parameters<typeof raw.eventPage>) => raw.eventPage(...args), recentEventMetadata: (...args: Parameters<typeof raw.recentEventMetadata>) => raw.recentEventMetadata(...args), conversationWorkPage: (...args: Parameters<typeof raw.conversationWorkPage>) => raw.conversationWorkPage(...args),
     deliveries: (...args: Parameters<typeof raw.deliveries>) => raw.deliveries(...args), runnable: (...args: Parameters<typeof raw.runnable>) => raw.runnable(...args),
     workIdsForConversation: (...args: Parameters<typeof raw.workIdsForConversation>) => raw.workIdsForConversation(...args), close: () => raw.close() };
   const backing = new FileArtifactStore(join(directory, 'artifacts')); let afterGet: (() => Promise<void>) | null = null;

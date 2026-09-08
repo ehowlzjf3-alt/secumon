@@ -113,7 +113,7 @@ export async function runLocalEvaluation(input: LocalEvaluationCase, directory: 
         return result;
       },
       events: (id, cursor) => repository.events(id, cursor), deliveries: id => repository.deliveries(id),
-      recentEventMetadata: (...args) => repository.recentEventMetadata(...args), conversationWorkPage: query => repository.conversationWorkPage(query),
+      eventPage: (...args) => repository.eventPage(...args), recentEventMetadata: (...args) => repository.recentEventMetadata(...args), conversationWorkPage: query => repository.conversationWorkPage(query),
       workIdsForConversation: (...args) => repository.workIdsForConversation(...args), runnable: at => repository.runnable(at), close: () => repository.close(),
     };
     const basePlanner = new ScriptedPlanner([]);
@@ -256,7 +256,7 @@ export async function replayLocalEvaluation(directory: string, pins: EvaluationP
   const forbidden = (key: keyof typeof counts) => { counts[key]++; throw new Error(`evaluation_replay_forbidden:${key}`); };
   const readonlyState: StateRepository = { get: id => state.get(id), receipt: (id, command) => state.receipt(id, command),
     commit: async () => forbidden('commits'), events: (id, sequence) => state.events(id, sequence), deliveries: id => state.deliveries(id),
-    recentEventMetadata: (...args) => state.recentEventMetadata(...args), conversationWorkPage: query => state.conversationWorkPage(query),
+    eventPage: (...args) => state.eventPage(...args), recentEventMetadata: (...args) => state.recentEventMetadata(...args), conversationWorkPage: query => state.conversationWorkPage(query),
     workIdsForConversation: (...args) => state.workIdsForConversation(...args), runnable: at => state.runnable(at), close: () => state.close() };
   const wallStart = performance.now();
   try {

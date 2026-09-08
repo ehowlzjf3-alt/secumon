@@ -2,10 +2,10 @@ import { closeSync, constants, existsSync, fsyncSync, fstatSync, linkSync, lstat
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
-import type { CommitRequest, CommitResult, ConversationWorkQuery, RecentEventMetadataQuery, StateRepository } from '../application/ports.js';
+import type { CommitRequest, CommitResult, ConversationWorkQuery, EventPageQuery, RecentEventMetadataQuery, StateRepository } from '../application/ports.js';
 import { parseContract } from '../application/contracts.js';
 import { validateCommit, validateStateTransition } from '../application/store-contract.js';
-import { matchesConversation, selectRecentEventMetadata, validateConversationQuery, validateRecentEventQuery } from '../application/state-query.js';
+import { matchesConversation, selectEventPage, selectRecentEventMetadata, validateConversationQuery, validateEventPageQuery, validateRecentEventQuery } from '../application/state-query.js';
 import type { Delivery, StoredEvent, WorkState } from '../domain/model.js';
 import { sha256 } from './digest.js';
 import { decodeStateQueryCursor, encodeStateQueryCursor } from './state-query-cursor.js';
@@ -359,6 +359,10 @@ export class FileJournalStateRepository implements StateRepository {
   async get(workId: string) { return structuredClone(this.#replay(workId).state); }
   async receipt(workId: string, commandId: string) { return structuredClone(this.#replay(workId).receipts.get(commandId) ?? null); }
   async events(workId: string, afterSequence: number) { return structuredClone(this.#replay(workId).events.filter(e => e.sequence > afterSequence)); }
+  async eventPage(workId: string, input: EventPageQuery) {
+    const query = validateEventPageQuery(workId, input);
+    return structuredClone(selectEventPage(this.#replay(workId).events, query));
+  }
   async recentEventMetadata(workId: string, input: RecentEventMetadataQuery) {
     const query = validateRecentEventQuery(workId, input); return selectRecentEventMetadata(this.#replay(workId).events, query);
   }

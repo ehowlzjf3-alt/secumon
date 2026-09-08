@@ -21,6 +21,7 @@ async function fixture(t: TestContext, backend: ComputerBackend) {
       get: id => repository.get(id), receipt: (id, commandId) => repository.receipt(id, commandId),
       async commit(request) { calls.commit++; return repository.commit(request); },
       events: (id, after) => repository.events(id, after), deliveries: id => repository.deliveries(id),
+      eventPage: (id, query) => repository.eventPage(id, query),
       async recentEventMetadata(id, query) { await metadataHook?.(); return repository.recentEventMetadata(id, query); },
       conversationWorkPage: query => repository.conversationWorkPage(query),
       workIdsForConversation: (...args) => repository.workIdsForConversation(...args), runnable: now => repository.runnable(now), close: () => repository.close(),

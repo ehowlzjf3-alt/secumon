@@ -1,6 +1,6 @@
-import type { CommitRequest, CommitResult, ConversationWorkQuery, RecentEventMetadataQuery, StateRepository } from '../application/ports.js';
+import type { CommitRequest, CommitResult, ConversationWorkQuery, EventPageQuery, RecentEventMetadataQuery, StateRepository } from '../application/ports.js';
 import { validateCommit, validateStateTransition } from '../application/store-contract.js';
-import { matchesConversation, selectRecentEventMetadata, validateConversationQuery, validateRecentEventQuery } from '../application/state-query.js';
+import { matchesConversation, selectEventPage, selectRecentEventMetadata, validateConversationQuery, validateEventPageQuery, validateRecentEventQuery } from '../application/state-query.js';
 import type { Delivery, StoredEvent, WorkState } from '../domain/model.js';
 import { decodeStateQueryCursor, encodeStateQueryCursor } from './state-query-cursor.js';
 
@@ -34,6 +34,10 @@ export class MemoryStateRepository implements StateRepository {
     return { kind: 'committed', state: structuredClone(input.next) };
   }
   async events(workId: string, afterSequence: number) { this.#check(); return structuredClone((this.#events.get(workId) ?? []).filter(e => e.sequence > afterSequence)); }
+  async eventPage(workId: string, input: EventPageQuery) {
+    this.#check(); const query = validateEventPageQuery(workId, input);
+    return structuredClone(selectEventPage(this.#events.get(workId) ?? [], query));
+  }
   async recentEventMetadata(workId: string, query: RecentEventMetadataQuery) {
     this.#check(); return selectRecentEventMetadata(this.#events.get(workId) ?? [], validateRecentEventQuery(workId, query));
   }

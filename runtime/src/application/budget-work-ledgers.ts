@@ -87,7 +87,7 @@ export class HostBudgetLedgerRouter implements BudgetWorkLedgers {
         if (result.kind === 'committed' || result.kind === 'duplicate') owned(result.state, request.workId);
         return result;
       },
-      events: denied, recentEventMetadata: denied, deliveries: denied, workIdsForConversation: denied,
+      events: denied, eventPage: denied, recentEventMetadata: denied, deliveries: denied, workIdsForConversation: denied,
       conversationWorkPage: denied, runnable: denied, close: denied,
     };
     const ledger: BudgetWorkLedger = Object.freeze({ owner, state: Object.freeze(state),

@@ -24,7 +24,7 @@ async function fixture(t: TestContext, adapter: Adapter, legacy = false) {
   const directory = await mkdtemp(join(tmpdir(), 'work-view-')); let repository = openRepository(adapter, directory);
   t.after(async () => { await repository.close(); await rm(directory, { recursive: true, force: true }); });
   const storage: StateRepository = { get: id => repository.get(id), receipt: (id, commandId) => repository.receipt(id, commandId), commit: request => repository.commit(request),
-    recentEventMetadata: (...args) => repository.recentEventMetadata(...args), conversationWorkPage: query => repository.conversationWorkPage(query),
+    eventPage: (...args) => repository.eventPage(...args), recentEventMetadata: (...args) => repository.recentEventMetadata(...args), conversationWorkPage: query => repository.conversationWorkPage(query),
     events: (id, after) => repository.events(id, after), deliveries: id => repository.deliveries(id), workIdsForConversation: (...args) => repository.workIdsForConversation(...args),
     runnable: now => repository.runnable(now), close: () => repository.close() };
   const objects = new MemoryArtifactStore(); const sink = new FakeSink(); const planner = new ScriptedPlanner([]); const tool = new FixtureReadTool([]);

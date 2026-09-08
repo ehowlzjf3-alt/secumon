@@ -1,9 +1,40 @@
 import { z } from 'zod';
-import type { ConversationWorkQuery, RecentEventMetadata, RecentEventMetadataQuery } from './ports.js';
+import type { ConversationWorkQuery, EventPage, EventPageQuery, RecentEventMetadata, RecentEventMetadataQuery } from './ports.js';
 import type { StoredEvent, WorkState } from '../domain/model.js';
 
 const id = z.string().min(1).max(256);
 const recentSchema = z.strictObject({ throughRevision: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER), limit: z.number().int().min(1).max(50) });
+const revision = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
+const eventPageSchema = z.strictObject({ afterRevision: revision, throughRevision: revision,
+  beforeSequence: revision.positive().optional(), limit: z.number().int().min(1).max(128), type: id.optional() })
+  .refine(value => value.afterRevision <= value.throughRevision);
+export function validateEventPageQuery(workId: string, query: EventPageQuery): EventPageQuery {
+  const parsed = eventPageSchema.safeParse(query);
+  if (!id.safeParse(workId).success || !parsed.success) throw new Error('invalid_state_query');
+  const { beforeSequence, type, ...required } = parsed.data;
+  return { ...required, ...(beforeSequence === undefined ? {} : { beforeSequence }), ...(type === undefined ? {} : { type }) };
+}
+/** Rows are already ordered newest first and contain at most one lookahead beyond the requested page. */
+export function eventPageFromRows(rows: readonly StoredEvent[], limit: number): EventPage {
+  const items = rows.slice(0, limit);
+  return { items, nextBeforeSequence: rows.length > limit ? items.at(-1)!.sequence : null };
+}
+/** The immutable projection remains intact; callers clone only the selected original page. */
+export function selectEventPage(events: readonly StoredEvent[], query: EventPageQuery): EventPage {
+  let low = 0; let high = events.length;
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2), event = events[middle]!;
+    if (event.revision <= query.throughRevision && (query.beforeSequence === undefined || event.sequence < query.beforeSequence)) low = middle + 1;
+    else high = middle;
+  }
+  const selected: StoredEvent[] = [];
+  for (let index = low - 1; index >= 0; index--) {
+    const event = events[index]!; if (event.revision <= query.afterRevision) break;
+    if (query.type !== undefined && event.type !== query.type) continue;
+    selected.push(event); if (selected.length > query.limit) break;
+  }
+  return eventPageFromRows(selected, query.limit);
+}
 const pageSchema = z.strictObject({ tenantId: id, principalId: id, channel: id, conversationId: id, cursor: z.string().min(1).max(4096).optional(), limit: z.number().int().min(1).max(20) });
 export function validateRecentEventQuery(workId: string, query: RecentEventMetadataQuery): RecentEventMetadataQuery {
   const parsed = recentSchema.safeParse(query);

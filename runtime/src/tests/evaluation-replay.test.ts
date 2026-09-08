@@ -109,7 +109,7 @@ async function fixture(adapter: Adapter, responseText?: string) {
     async deliveries(id) { const value = await repository.deliveries(id); await storeHook?.('deliveries'); return value; },
     async receipt(id, commandId) { const value = await repository.receipt(id, commandId); await storeHook?.('receipt', commandId); return receiptEdit ? receiptEdit(commandId, value) : value; },
     async commit() { return writesForbidden('commit'); },
-    recentEventMetadata: (...args) => repository.recentEventMetadata(...args), conversationWorkPage: query => repository.conversationWorkPage(query),
+    eventPage: (...args) => repository.eventPage(...args), recentEventMetadata: (...args) => repository.recentEventMetadata(...args), conversationWorkPage: query => repository.conversationWorkPage(query),
     workIdsForConversation: (...args) => repository.workIdsForConversation(...args), runnable: now => repository.runnable(now), close: () => repository.close(),
   };
   const readonlyArtifacts: ArtifactStore = { async put() { return writesForbidden('put'); },

@@ -28,7 +28,7 @@ function task(id: string, toolId: string, input: TaskSpec['input'], toolVersion 
 }
 function statePort(backing: StateRepository, overrides: Partial<StateRepository>): StateRepository {
   return { get: backing.get.bind(backing), receipt: backing.receipt.bind(backing), commit: backing.commit.bind(backing), events: backing.events.bind(backing),
-    recentEventMetadata: backing.recentEventMetadata.bind(backing), conversationWorkPage: backing.conversationWorkPage.bind(backing),
+    eventPage: backing.eventPage.bind(backing), recentEventMetadata: backing.recentEventMetadata.bind(backing), conversationWorkPage: backing.conversationWorkPage.bind(backing),
     deliveries: backing.deliveries.bind(backing), workIdsForConversation: backing.workIdsForConversation.bind(backing), runnable: backing.runnable.bind(backing), close: backing.close.bind(backing), ...overrides };
 }
 async function fixture(t: TestContext, adapter: Adapter) {

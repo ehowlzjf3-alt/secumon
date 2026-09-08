@@ -80,7 +80,7 @@ async function harness(adapter: Adapter, options: { parentLimits?: Partial<Limit
   const repository: StateRepository = {
     get: id => raw.get(id), receipt: (id, commandId) => raw.receipt(id, commandId), events: (id, after) => raw.events(id, after),
     deliveries: id => raw.deliveries(id), runnable: now => raw.runnable(now), close: () => raw.close(),
-    recentEventMetadata: (...args) => raw.recentEventMetadata(...args), conversationWorkPage: query => raw.conversationWorkPage(query),
+    eventPage: (...args) => raw.eventPage(...args), recentEventMetadata: (...args) => raw.recentEventMetadata(...args), conversationWorkPage: query => raw.conversationWorkPage(query),
     workIdsForConversation: (...args) => raw.workIdsForConversation(...args), async commit(request) {
       await hooks.beforeCommit?.(request); const result = await raw.commit(request);
       if (result.kind === 'committed') await hooks.afterCommit?.(request); return result;

@@ -54,7 +54,7 @@ const repository: StateRepository = {
   get: id => raw.get(id), receipt: (id, commandId) => raw.receipt(id, commandId), events: (id, after) => raw.events(id, after),
   deliveries: id => raw.deliveries(id), runnable: now => raw.runnable(now), close: () => raw.close(),
   workIdsForConversation: (...args) => raw.workIdsForConversation(...args),
-  recentEventMetadata: (...args) => raw.recentEventMetadata(...args), conversationWorkPage: query => raw.conversationWorkPage(query),
+  eventPage: (...args) => raw.eventPage(...args), recentEventMetadata: (...args) => raw.recentEventMetadata(...args), conversationWorkPage: query => raw.conversationWorkPage(query),
   async commit(request) {
     const result = await raw.commit(request);
     // The process dies after the selected backend's durable commit, before its caller observes success.

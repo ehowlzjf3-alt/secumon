@@ -1,0 +1,169 @@
+TAP version 13
+# Subtest: mission history sqlite: bounded control pages preserve originals and recheck publication
+ok 1 - mission history sqlite: bounded control pages preserve originals and recheck publication
+  ---
+  duration_ms: 242.228292
+  type: 'test'
+  ...
+# {"stateBackend":"sqlite","historyEvents":185,"fullHistoryBytes":513942,"proofPages":6,"proofReturnedEvents":132,"proofReturnedBytes":27522,"publicationReads":2,"journalRecordReads":null,"journalRawHashBytes":null,"measurement":"Node repository reads and returned bytes; not physical disk I/O or model usage"}
+# Subtest: mission history file-journal: bounded control pages preserve originals and recheck publication
+ok 2 - mission history file-journal: bounded control pages preserve originals and recheck publication
+  ---
+  duration_ms: 729.595833
+  type: 'test'
+  ...
+# {"stateBackend":"file-journal","historyEvents":185,"fullHistoryBytes":513942,"proofPages":6,"proofReturnedEvents":132,"proofReturnedBytes":27522,"publicationReads":2,"journalRecordReads":90,"journalRawHashBytes":7632300,"measurement":"Node repository reads and returned bytes; not physical disk I/O or model usage"}
+# Subtest: mission history rereads the control receipt before publishing retirement
+ok 3 - mission history rereads the control receipt before publishing retirement
+  ---
+  duration_ms: 180.852458
+  type: 'test'
+  ...
+# Subtest: mission history completion recovery uses bounded original pages with unchanged work results
+ok 4 - mission history completion recovery uses bounded original pages with unchanged work results
+  ---
+  duration_ms: 2741.232333
+  type: 'test'
+  ...
+# Subtest: mission rule lifecycle: the same ID starts a fresh goal directly after its real goal command (sqlite)
+ok 5 - mission rule lifecycle: the same ID starts a fresh goal directly after its real goal command (sqlite)
+  ---
+  duration_ms: 215.2585
+  type: 'test'
+  ...
+# Subtest: mission rule lifecycle: the same ID starts a fresh goal directly after its real goal command (file-journal)
+ok 6 - mission rule lifecycle: the same ID starts a fresh goal directly after its real goal command (file-journal)
+  ---
+  duration_ms: 551.818917
+  type: 'test'
+  ...
+# Subtest: mission rule lifecycle: current-goal retries preserve host closure and reject definition or generation changes
+not ok 7 - mission rule lifecycle: current-goal retries preserve host closure and reject definition or generation changes
+  ---
+  duration_ms: 813.835625
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-rule-lifecycle.test.js:86:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /mission_state_changed|mission_checkpoint_unavailable/. Input:
+    
+    'Error: mission_work_closed'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'mission_work_closed'
+  stack: |-
+    MissionRuntime.register (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:546:19)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-rule-lifecycle.test.js:109:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-rule-lifecycle.test.js:109:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: mission rule lifecycle: more than sixteen historical IDs retain their originals without consuming the new goal slots
+ok 8 - mission rule lifecycle: more than sixteen historical IDs retain their originals without consuming the new goal slots
+  ---
+  duration_ms: 969.171959
+  type: 'test'
+  ...
+# Subtest: mission rule lifecycle: a new goal can register after its historical source is removed
+ok 9 - mission rule lifecycle: a new goal can register after its historical source is removed
+  ---
+  duration_ms: 173.448042
+  type: 'test'
+  ...
+# Subtest: mission rule lifecycle: current-goal capacity remains sixteen and foreign closed subscriptions are not pruned
+ok 10 - mission rule lifecycle: current-goal capacity remains sixteen and foreign closed subscriptions are not pruned
+  ---
+  duration_ms: 1393.479583
+  type: 'test'
+  ...
+# Subtest: memory: original event pages cross same-revision boundaries and remain pinned while new history arrives
+ok 11 - memory: original event pages cross same-revision boundaries and remain pinned while new history arrives
+  ---
+  duration_ms: 7.510458
+  type: 'test'
+  ...
+# Subtest: memory: exact type and work boundaries preserve original bodies with correct final and empty pages
+ok 12 - memory: exact type and work boundaries preserve original bodies with correct final and empty pages
+  ---
+  duration_ms: 7.127291
+  type: 'test'
+  ...
+# Subtest: memory: event page validation rejects invalid bounds before reading history
+ok 13 - memory: event page validation rejects invalid bounds before reading history
+  ---
+  duration_ms: 3.179792
+  type: 'test'
+  ...
+# Subtest: sqlite: original event pages cross same-revision boundaries and remain pinned while new history arrives
+ok 14 - sqlite: original event pages cross same-revision boundaries and remain pinned while new history arrives
+  ---
+  duration_ms: 66.263792
+  type: 'test'
+  ...
+# Subtest: sqlite: exact type and work boundaries preserve original bodies with correct final and empty pages
+ok 15 - sqlite: exact type and work boundaries preserve original bodies with correct final and empty pages
+  ---
+  duration_ms: 66.7665
+  type: 'test'
+  ...
+# Subtest: sqlite: event page validation rejects invalid bounds before reading history
+ok 16 - sqlite: event page validation rejects invalid bounds before reading history
+  ---
+  duration_ms: 19.981833
+  type: 'test'
+  ...
+# Subtest: file-journal: original event pages cross same-revision boundaries and remain pinned while new history arrives
+ok 17 - file-journal: original event pages cross same-revision boundaries and remain pinned while new history arrives
+  ---
+  duration_ms: 316.085667
+  type: 'test'
+  ...
+# Subtest: file-journal: exact type and work boundaries preserve original bodies with correct final and empty pages
+ok 18 - file-journal: exact type and work boundaries preserve original bodies with correct final and empty pages
+  ---
+  duration_ms: 291.887375
+  type: 'test'
+  ...
+# Subtest: file-journal: event page validation rejects invalid bounds before reading history
+ok 19 - file-journal: event page validation rejects invalid bounds before reading history
+  ---
+  duration_ms: 44.89625
+  type: 'test'
+  ...
+# Subtest: sqlite: event page binds exact type and bounds and limits the original-body SQL query
+ok 20 - sqlite: event page binds exact type and bounds and limits the original-body SQL query
+  ---
+  duration_ms: 118.91675
+  type: 'test'
+  ...
+# Subtest: journal: bounded returned bodies retain full raw-history validation and report its separate read cost
+ok 21 - journal: bounded returned bodies retain full raw-history validation and report its separate read cost
+  ---
+  duration_ms: 318.585459
+  type: 'test'
+  ...
+# {"allReturnedBytes":410032,"pageReturnedBytes":8548,"allRecordReads":12,"pageRecordReads":12,"allRawHashBytes":422489,"pageRawHashBytes":422489,"meaning":"Node reads and hashes; not physical disk I/O or reduced integrity coverage"}
+# Subtest: postgres recording transport: event page preserves scope and binds snapshot, cursor, exact type and lookahead
+ok 22 - postgres recording transport: event page preserves scope and binds snapshot, cursor, exact type and lookahead
+  ---
+  duration_ms: 1.881542
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 21
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9635.90525

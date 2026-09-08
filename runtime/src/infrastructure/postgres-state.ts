@@ -1,7 +1,7 @@
-import type { CommitRequest, CommitResult, ConversationWorkQuery, RecentEventMetadataQuery, StateRepository } from '../application/ports.js';
+import type { CommitRequest, CommitResult, ConversationWorkQuery, EventPageQuery, RecentEventMetadataQuery, StateRepository } from '../application/ports.js';
 import { WorkStateSchema, parseContract } from '../application/contracts.js';
 import { DeliverySchema, StoredEventSchema, validateCommit, validateStateTransition } from '../application/store-contract.js';
-import { validateConversationQuery, validateRecentEventQuery } from '../application/state-query.js';
+import { eventPageFromRows, validateConversationQuery, validateEventPageQuery, validateRecentEventQuery } from '../application/state-query.js';
 import type { StoredEvent } from '../domain/model.js';
 import { decodeStateQueryCursor, encodeStateQueryCursor } from './state-query-cursor.js';
 import { PostgresStore, postgresInteger, postgresJson } from './postgres-store.js';
@@ -80,6 +80,15 @@ export class PostgresStateRepository implements StateRepository {
     postgresInteger(afterSequence);
     return this.store.read(async c => (await c.query(`SELECT body FROM secumon_pg.events WHERE ${where} AND sequence>$4 ORDER BY sequence`, [...this.store.key, workId, afterSequence])).rows
       .map(row => parseContract(StoredEventSchema, postgresJson(row['body']))));
+  }
+  async eventPage(workId: string, input: EventPageQuery) {
+    const query = validateEventPageQuery(workId, input);
+    return this.store.read(async c => {
+      const rows = (await c.query(`SELECT body FROM secumon_pg.events WHERE ${where} AND revision>$4 AND revision<=$5
+        AND ($6::bigint IS NULL OR sequence<$6) AND ($7::text IS NULL OR type=$7) ORDER BY sequence DESC LIMIT $8`,
+        [...this.store.key, workId, query.afterRevision, query.throughRevision, query.beforeSequence ?? null, query.type ?? null, query.limit + 1])).rows;
+      return eventPageFromRows(rows.map(row => parseContract(StoredEventSchema, postgresJson(row['body']))), query.limit);
+    });
   }
   async recentEventMetadata(workId: string, raw: RecentEventMetadataQuery) {
     const query = validateRecentEventQuery(workId, raw), key = [...this.store.key, workId];

@@ -21,7 +21,7 @@ function fixture(scope = 'agent-a') {
     get: async id => id === work.id ? structuredClone(work) : null,
     receipt: async () => ({ digest: 'receipt', state: structuredClone(work) }),
     commit: async request => ({ kind: 'committed', state: structuredClone(request.next) }),
-    events: deny, recentEventMetadata: deny, deliveries: deny, workIdsForConversation: deny,
+    events: deny, eventPage: deny, recentEventMetadata: deny, deliveries: deny, workIdsForConversation: deny,
     conversationWorkPage: deny, runnable: deny, close: deny,
   };
   const artifacts: ArtifactStore = { get: deny, put: deny, exists: async () => true };
@@ -74,6 +74,7 @@ test('budget ledgers: a faulty store cannot substitute a foreign tenant, princip
 test('budget ledgers: discovery, content, non-budget commits and deliveries stay inaccessible', async () => {
   const f = fixture(); f.register(); const ledger = f.ledger();
   const denied = [() => ledger.state.events(f.work.id, 0), () => ledger.state.deliveries(f.work.id),
+    () => ledger.state.eventPage(f.work.id, { afterRevision: 0, throughRevision: 1, limit: 1 }),
     () => ledger.state.recentEventMetadata(f.work.id, { throughRevision: 1, limit: 1 }),
     () => ledger.state.runnable(1000), () => ledger.state.close(),
     () => ledger.state.workIdsForConversation('tenant-a', 'person-a', 'peer', 'conversation'),

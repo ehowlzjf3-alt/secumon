@@ -37,7 +37,7 @@ async function fixture(t: TestContext, backend: ComputerBackend) {
       },
       async commit(request) { calls.commit++; return repository.commit(request); },
       events: (id, after) => repository.events(id, after), deliveries: id => repository.deliveries(id),
-      recentEventMetadata: (id, query) => repository.recentEventMetadata(id, query),
+      eventPage: (id, query) => repository.eventPage(id, query), recentEventMetadata: (id, query) => repository.recentEventMetadata(id, query),
       conversationWorkPage: query => repository.conversationWorkPage(query), workIdsForConversation: (...args) => repository.workIdsForConversation(...args),
       runnable: now => repository.runnable(now), close: () => repository.close(),
     }),

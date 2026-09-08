@@ -26,7 +26,7 @@ async function fixture(t: TestContext, adapter: Adapter, options: { channelDenie
   let receiptHook: ((commandId: string) => Promise<void>) | null = null;
   const state: StateRepository = { get: id => raw.get(id), async receipt(workId, commandId) { await receiptHook?.(commandId); return raw.receipt(workId, commandId); },
     commit: request => raw.commit(request), events: (id, after) => raw.events(id, after), deliveries: id => raw.deliveries(id),
-    recentEventMetadata: (...args) => raw.recentEventMetadata(...args), conversationWorkPage: query => raw.conversationWorkPage(query),
+    eventPage: (...args) => raw.eventPage(...args), recentEventMetadata: (...args) => raw.recentEventMetadata(...args), conversationWorkPage: query => raw.conversationWorkPage(query),
     workIdsForConversation: (...args) => raw.workIdsForConversation(...args), runnable: now => raw.runnable(now), close: () => raw.close() };
   const seed = initial(); const policy: Policy = { ...seed.policy, allowedLabels: ['synthetic', 'secret'], allowedDestinations: ['local', 'channel'],
     disclosure: { revision: 'v1', maxReleasesPerWork: 5, maxReleasedBytesPerWork: 4096, destinations: [

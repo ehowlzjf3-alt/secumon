@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { ArtifactRef, WorkState } from '../domain/model.js';
+import type { ArtifactRef, StoredEvent, WorkState } from '../domain/model.js';
 import type { ExternalSubscription } from '../domain/external-events.js';
 import { dataGeneration, visibleArtifact } from '../domain/data-lifecycle.js';
 import { MissionEventSchema, MissionPageSchema, MissionRuleSchema, type MissionEventSource, type MissionRule } from './mission-contracts.js';
@@ -25,6 +25,7 @@ const CheckpointSchema = z.strictObject({ schemaVersion: z.literal(1), workId: z
   status: z.enum(['active', 'closed']), reason: z.string().max(256).nullable(),
   seen: z.array(z.strictObject({ id: z.string(), digest: hash })).max(512), events: z.array(MissionEventSchema).max(32) });
 type Checkpoint = z.infer<typeof CheckpointSchema>;
+type Publication = NonNullable<Awaited<ReturnType<RuntimeServices['state']['receipt']>>>;
 type CompletionPin = { commandId: string; receiptDigest: string };
 const ClosurePayloadSchema = z.strictObject({ subscriptionId: z.string(), artifact: ArtifactSchema });
 const ControlPayloadSchema = z.object({ actor: z.object({ tenantId: z.string(), principalId: z.string() }),
@@ -88,11 +89,11 @@ export class MissionRuntime {
       hypotheses: state.hypotheses.map(value => ({ id: value.id, status: value.status, supportIds: value.supportIds, counterIds: value.counterIds })) });
   }
   /** Validate the original publication under today's visibility, without treating an old goal as current input. */
-  private async readPublication(state: WorkState, subscription: ExternalSubscription): Promise<Checkpoint> {
+  private async readPublication(state: WorkState, subscription: ExternalSubscription, publication?: Publication): Promise<Checkpoint> {
     if (subscription.provider !== 'mission' || !subscription.checkpointId.startsWith('mission:')) changed();
     const artifact = state.artifacts.find(value => value.sha256 === subscription.checkpointId.slice(8));
     if (!artifact || !visibleArtifact(state, artifact) || artifact.byteLength > 512 * 1024) throw new Error('mission_checkpoint_unavailable');
-    const receipt = await this.deps.services.state.receipt(state.id, subscription.checkpointId);
+    const receipt = publication ?? await this.deps.services.state.receipt(state.id, subscription.checkpointId);
     if (!receipt || receipt.state.id !== state.id || receipt.state.createdAt !== state.createdAt ||
       receipt.state.policy.tenantId !== state.policy.tenantId || receipt.state.policy.principalId !== state.policy.principalId ||
       receipt.state.goal.scope !== state.goal.scope || receipt.state.conversation?.session?.scope.agentId !== this.deps.agentId ||
@@ -108,26 +109,45 @@ export class MissionRuntime {
       checkpoint.cursor !== subscription.cursor || checkpoint.status !== subscription.status) changed();
     return checkpoint;
   }
-  private async read(state: WorkState, subscription: ExternalSubscription): Promise<Checkpoint> {
-    const checkpoint = await this.readPublication(state, subscription);
+  private async read(state: WorkState, subscription: ExternalSubscription, publication?: Publication): Promise<Checkpoint> {
+    const checkpoint = await this.readPublication(state, subscription, publication);
     if (checkpoint.goalRevision !== state.goal.revision || checkpoint.generation !== dataGeneration(state)) changed();
     return checkpoint;
   }
+  /** A fixed revision boundary keeps concurrent appends out of this proof; each page retains original event bodies. */
+  private async *history(state: WorkState, afterRevision: number, signal: AbortSignal, type?: string): AsyncGenerator<StoredEvent> {
+    let beforeSequence: number | undefined;
+    while (true) {
+      signal.throwIfAborted();
+      const page = await this.deps.services.state.eventPage(state.id,
+        { afterRevision, throughRevision: state.revision, limit: 32, ...(beforeSequence === undefined ? {} : { beforeSequence }), ...(type ? { type } : {}) });
+      signal.throwIfAborted();
+      let prior = beforeSequence;
+      if (page.items.length > 32) changed();
+      for (const event of page.items) {
+        if (event.workId !== state.id || event.revision <= afterRevision || event.revision > state.revision ||
+          type && event.type !== type || !Number.isSafeInteger(event.sequence) || event.sequence < 1 || prior !== undefined && event.sequence >= prior) changed();
+        prior = event.sequence;
+        yield event;
+      }
+      if (page.nextBeforeSequence === null) return;
+      if (!page.items.length || page.nextBeforeSequence !== prior) changed();
+      beforeSequence = page.nextBeforeSequence;
+    }
+  }
   /** A control receipt may retire its exact prior head; it does not authorize importing that body into a new goal. */
-  private async controlProof(state: WorkState, subscription: ExternalSubscription, signal: AbortSignal) {
+  private async controlProof(state: WorkState, subscription: ExternalSubscription, signal: AbortSignal, observedPublication?: Publication) {
     signal.throwIfAborted(); this.access(state);
-    const publication = await this.deps.services.state.receipt(state.id, subscription.checkpointId);
+    const publication = observedPublication ?? await this.deps.services.state.receipt(state.id, subscription.checkpointId);
     const original = publication?.state.subscriptions?.find(value => value.id === subscription.id);
     if (!publication || !original || original.status !== 'active' ||
       this.digest({ ...original, status: subscription.status }) !== this.digest(subscription)) changed();
-    const checkpoint = await this.readPublication(state, original);
+    const checkpoint = await this.readPublication(state, original, publication);
     if (checkpoint.generation !== dataGeneration(state) || dataGeneration(publication.state) !== dataGeneration(state) ||
       this.digest(publication.state.policy) !== this.digest(state.policy) ||
       this.digest(publication.state.conversation?.session?.scope ?? null) !== this.digest(state.conversation?.session?.scope ?? null)) changed();
     this.source(state, checkpoint.rule.sourceId);
-    const events = await this.deps.services.state.events(state.id, 0);
-    for (const event of events.toReversed()) {
-      if (event.type !== 'user_command' || event.revision <= publication.state.revision) continue;
+    for await (const event of this.history(state, publication.state.revision, signal, 'user_command')) {
       const parsed = ControlPayloadSchema.safeParse(event.data.payload); if (!parsed.success) continue;
       const { actor, expectedGoalRevision, command } = parsed.data;
       if (expectedGoalRevision !== checkpoint.goalRevision ||
@@ -169,11 +189,11 @@ export class MissionRuntime {
       const subscription = state.subscriptions!.find(value => value.id === id)!;
       const publication = await this.deps.services.state.receipt(state.id, subscription.checkpointId);
       const original = publication?.state.subscriptions?.find(value => value.id === id);
-      if (!original) changed();
+      if (!publication || !original) changed();
       // A host-closed or already retired head remains byte-for-byte historical.
       if (original.status === 'closed') continue;
-      if (state.status === 'paused' && !(await this.read(state, subscription)).claim) continue;
-      const basis = state, proof = await this.controlProof(basis, subscription, signal);
+      if (state.status === 'paused' && !(await this.read(state, subscription, publication)).claim) continue;
+      const basis = state, proof = await this.controlProof(basis, subscription, signal, publication);
       const checkpoint = { ...proof.checkpoint, claim: null };
       if (proof.reason !== 'paused') { checkpoint.status = 'closed'; checkpoint.reason = proof.reason; checkpoint.pendingRun = false; }
       state = await this.save(basis, checkpoint, signal, async () => {
@@ -205,10 +225,16 @@ export class MissionRuntime {
   private async completedProof(state: WorkState, signal: AbortSignal, pin?: CompletionPin) {
     signal.throwIfAborted(); this.access(state);
     if (state.status !== 'completed' || state.statusReason !== 'criteria_verified') changed();
-    const events = await this.deps.services.state.events(state.id, 0);
-    const index = events.findLastIndex(value => value.type === 'control_selected' &&
-      (pin ? value.commandId === pin.commandId : this.digest(value.data) === this.digest({ payload: { kind: 'complete', reason: 'criteria_verified' } })));
-    const event = events[index]; if (!event) changed();
+    let event: StoredEvent | undefined;
+    const closures: StoredEvent[] = [];
+    for await (const candidate of this.history(state, 0, signal)) {
+      if (candidate.type === 'control_selected' && (pin ? candidate.commandId === pin.commandId :
+        this.digest(candidate.data) === this.digest({ payload: { kind: 'complete', reason: 'criteria_verified' } }))) { event = candidate; break; }
+      // Completion permits one closure for each of the at most 16 mission subscriptions, and nothing else.
+      if (candidate.type !== 'mission_checkpoint' || closures.length >= 16) changed();
+      closures.push(candidate);
+    }
+    if (!event) changed();
     const commandId = event.commandId;
     const receipt = await this.deps.services.state.receipt(state.id, commandId);
     if (!receipt || commandId !== `control:${receipt.state.revision - 1}` || receipt.state.revision > state.revision ||
@@ -232,7 +258,7 @@ export class MissionRuntime {
       if (!prior || original!.state.revision >= receipt.state.revision ||
         this.digest({ ...prior, status: 'closed' }) !== this.digest(subscription)) changed();
       // The exact original subscription permits reading the pre-completion body privately. Public reads stay strict.
-      const checkpoint = await this.read(state, prior);
+      const checkpoint = await this.read(state, prior, original!);
       if (prior.status === 'closed') continue;
       if (checkpoint.events.length && !checkpoint.acknowledgedRead) changed();
       this.source(state, checkpoint.rule.sourceId);
@@ -240,7 +266,7 @@ export class MissionRuntime {
       entries.set(subscription.id, { original: checkpoint, closed: false });
     }
     let reconstructed = structuredClone(receipt.state), sequence = event.sequence;
-    for (const closure of events.slice(index + 1)) {
+    for (const closure of closures.toReversed()) {
       const parsed = ClosurePayloadSchema.safeParse(closure.data.payload);
       if (closure.type !== 'mission_checkpoint' || !parsed.success || closure.workId !== state.id ||
         closure.sequence !== sequence + 1 || closure.revision !== reconstructed.revision + 1 ||
@@ -300,7 +326,7 @@ export class MissionRuntime {
     }
     throw new Error('mission_state_changed');
   }
-  private async save(state: WorkState, input: Checkpoint, signal = this.deps.signal, validate?: () => Promise<void>) {
+  private async save(state: WorkState, input: Checkpoint, signal = this.deps.signal, validate?: () => Promise<void>, options: { prunePriorGoals?: boolean } = {}) {
     signal.throwIfAborted(); this.access(state);
     const checkpoint = CheckpointSchema.parse(input), subscriptionId = this.identity(checkpoint.rule.id);
     let processing = checkpoint.status === 'active' && checkpoint.pendingRun;
@@ -314,6 +340,13 @@ export class MissionRuntime {
       goalRevision: checkpoint.goalRevision, generation: checkpoint.generation, cursor: checkpoint.cursor, status: checkpoint.status, checkpointId: `mission:${artifact.sha256}` };
     return (await transact(this.deps.services, state.id, subscription.checkpointId, 'mission_checkpoint', asJson({ subscriptionId, artifact }), next => {
       signal.throwIfAborted(); if (this.digest(next) !== this.digest(state)) changed(); this.access(next);
+      if (options.prunePriorGoals) {
+        // Only the current projection releases these slots. Original publications, receipts and event history remain intact.
+        const retired = new Set((next.subscriptions ?? []).filter(value => value.provider === 'mission' &&
+          value.status === 'closed' && value.goalRevision < next.goal.revision).map(value => value.id));
+        next.subscriptions = (next.subscriptions ?? []).filter(value => !retired.has(value.id));
+        next.notifications = (next.notifications ?? []).filter(value => value.provider !== 'mission' || !retired.has(value.subscriptionId));
+      }
       if (!(next.subscriptions ?? []).some(value => value.id === subscriptionId) && (next.subscriptions?.length ?? 0) >= 16) throw new Error('subscription_capacity');
       next.subscriptions = [...(next.subscriptions ?? []).filter(value => value.id !== subscriptionId), subscription];
       if (!next.artifacts.some(value => value.id === artifact.id)) next.artifacts.push(artifact);
@@ -395,13 +428,17 @@ export class MissionRuntime {
       }, async () => { signal.throwIfAborted(); const latest = await this.state(state.id); signal.throwIfAborted(); if (this.digest(latest) !== this.digest(state)) changed(); })).state;
   }
   async register(workId: string, input: MissionRule) {
-    const rule = MissionRuleSchema.parse(structuredClone(input)), state = await this.state(workId);
+    const rule = MissionRuleSchema.parse(structuredClone(input)), signal = this.signal();
+    const state = await this.state(workId);
     if (terminal(state)) throw new Error('mission_work_closed'); this.source(state, rule.sourceId);
     const prior = state.subscriptions?.find(value => value.id === this.identity(rule.id));
-    if (prior) { if (this.digest((await this.read(state, prior)).rule) !== this.digest(rule)) throw new Error('mission_idempotency_conflict'); return state; }
+    if (prior && (prior.goalRevision >= state.goal.revision || prior.status !== 'closed')) {
+      if (this.digest((await this.read(state, prior)).rule) !== this.digest(rule)) throw new Error('mission_idempotency_conflict'); return state;
+    }
     return this.save(state, { schemaVersion: 1, workId, createdAt: state.createdAt, rule, goalRevision: state.goal.revision, generation: dataGeneration(state),
       cursor: 0, snapshotDigest: null, nextPollAt: this.deps.services.clock.now(), idlePolls: 0, noProgress: 0, resumes: 0,
-      pendingRun: false, resumeAt: 0, observedPlanRevision: state.plan?.revision ?? 0, claim: null, progress: this.progress(state), status: 'active', reason: null, seen: [], events: [] });
+      pendingRun: false, resumeAt: 0, observedPlanRevision: state.plan?.revision ?? 0, claim: null, progress: this.progress(state), status: 'active', reason: null, seen: [], events: [] },
+    signal, undefined, { prunePriorGoals: true });
   }
   async current(state: WorkState): Promise<boolean> {
     try {

@@ -1,10 +1,10 @@
 import type { DatabaseSync } from 'node:sqlite';
 import { openHostSqliteDatabase, closeSqliteAfterFailure } from './windows-sqlite.js';
-import type { CommitRequest, CommitResult, ConversationWorkQuery, RecentEventMetadata, RecentEventMetadataQuery, StateRepository } from '../application/ports.js';
+import type { CommitRequest, CommitResult, ConversationWorkQuery, EventPageQuery, RecentEventMetadata, RecentEventMetadataQuery, StateRepository } from '../application/ports.js';
 import { WorkStateSchema, parseContract } from '../application/contracts.js';
 import { DeliverySchema, StoredEventSchema, validateCommit, validateStateTransition } from '../application/store-contract.js';
 import type { Delivery, StoredEvent, WorkState } from '../domain/model.js';
-import { validateConversationQuery, validateRecentEventQuery } from '../application/state-query.js';
+import { eventPageFromRows, validateConversationQuery, validateEventPageQuery, validateRecentEventQuery } from '../application/state-query.js';
 import { decodeStateQueryCursor, encodeStateQueryCursor } from './state-query-cursor.js';
 
 function jsonCell(value: unknown): unknown {
@@ -128,6 +128,14 @@ export class SqliteStateRepository implements StateRepository {
   }
   async events(workId: string, afterSequence: number): Promise<StoredEvent[]> {
     return this.#db.prepare('SELECT body FROM events WHERE work_id=? AND sequence>? ORDER BY sequence').all(workId, afterSequence).map(row => parseContract(StoredEventSchema, jsonCell(row['body'])));
+  }
+  async eventPage(workId: string, input: EventPageQuery) {
+    const query = validateEventPageQuery(workId, input);
+    const rows = this.#db.prepare(`SELECT e.body FROM events e JOIN event_metadata m ON m.work_id=e.work_id AND m.sequence=e.sequence
+      WHERE e.work_id=? AND e.revision>? AND e.revision<=? AND (? IS NULL OR e.sequence<?) AND (? IS NULL OR m.type=?)
+      ORDER BY e.sequence DESC LIMIT ?`).all(workId, query.afterRevision, query.throughRevision,
+      query.beforeSequence ?? null, query.beforeSequence ?? null, query.type ?? null, query.type ?? null, query.limit + 1);
+    return eventPageFromRows(rows.map(row => parseContract(StoredEventSchema, jsonCell(row['body']))), query.limit);
   }
   async recentEventMetadata(workId: string, input: RecentEventMetadataQuery): Promise<RecentEventMetadata> {
     const query = validateRecentEventQuery(workId, input);

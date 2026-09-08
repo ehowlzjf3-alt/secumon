@@ -21,6 +21,10 @@ export type CommitResult =
 export interface EventMetadata { sequence: number; revision: number; type: string; at: number }
 export interface RecentEventMetadataQuery { throughRevision: number; limit: number }
 export interface RecentEventMetadata { items: EventMetadata[]; omittedCount: number }
+export interface EventPageQuery {
+  afterRevision: number; throughRevision: number; beforeSequence?: number; limit: number; type?: string;
+}
+export interface EventPage { items: StoredEvent[]; nextBeforeSequence: number | null }
 export interface ConversationWorkQuery {
   tenantId: string; principalId: string; channel: string; conversationId: string;
   cursor?: string; limit: number;
@@ -31,6 +35,8 @@ export interface StateRepository {
   receipt(workId: string, commandId: string): Promise<{ digest: string; state: WorkState } | null>;
   commit(request: CommitRequest): Promise<CommitResult>;
   events(workId: string, afterSequence: number): Promise<StoredEvent[]>;
+  /** Original events in descending sequence order; keep throughRevision fixed when continuing a page. */
+  eventPage(workId: string, query: EventPageQuery): Promise<EventPage>;
   recentEventMetadata(workId: string, query: RecentEventMetadataQuery): Promise<RecentEventMetadata>;
   deliveries(workId: string): Promise<Delivery[]>;
   workIdsForConversation(tenantId: string, principalId: string, channel: string, conversationId: string): Promise<string[]>;
