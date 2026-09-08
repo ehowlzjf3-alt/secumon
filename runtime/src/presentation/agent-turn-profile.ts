@@ -234,7 +234,7 @@ export async function openAgentTurnProfile(directory: string, options: AgentTurn
     if (!composed.sessions || !composed.personalKnowledge) throw new Error('agent_turn_services_unavailable');
     if (missionRegistration) {
       openedMissions = await openHostMissions(missionRegistration, { agentId, root: stores.profile.root, scope, actor, signal: lifetime.signal },
-        { services: composed.services }, openedA2a?.sources ?? []);
+        { services: composed.services, contracts: composed.contracts }, openedA2a?.sources ?? []);
       if (!openedMissions || composed.contracts.providerEpoch('mission') !== 0) throw new Error('mission_provider_conflict');
       composed.contracts.replaceProvider('mission', [...openedMissions.tools], { expectedEpoch: 0, sourceRevision: '1', signal: lifetime.signal });
       composed.services.tools.push(...openedMissions.tools);

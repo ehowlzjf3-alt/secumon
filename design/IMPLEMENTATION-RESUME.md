@@ -4,6 +4,18 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT381-START -->
+### Checkpoint381 — 사건 원문·상시 담당과 읽기 확인·종료 저장
+
+C09 사건/상시 담당 로컬 단위의 신규 고유44개와 직접 관련 회귀91개, 합계135개를 확인했다. 일반 입구의 임무 목록→원 사건 조회→답변이 기본 무진전 한도3을 유지하며 도구2회·로컬 시험 모델3회로 완료됐다. 실제 채택한 원문 조회만 알림을 확인 처리하고, 실제 완료 영수증을 확인한 뒤 종료 체크포인트와 점유 해제를 저장한다. 원문과 다른 알림을 보존하며 reopen 뒤에도 조회할 수 있다. [결과](chapters/C09-missions-ordered-result.md) · [체크포인트](../runtime/evidence/checkpoint381.json). 게시 전 기준선은 c8ffdfc7f5a03fab80adb8463409a60ee52e8821이다.
+
+신규44개는 원천5개가 build2, 협업 집계6개·임무 진전6개·접수 직후 실제 SIGKILL 복구1개가 build3, 호스트 등록6개가 build4, 임무 runtime9개·일반/상시 입구6개·읽기 확인/완료5개가 build6에서 통과했다. 직접 관련91개는 build3 기록이다. 최종 build6·코어 타입 core3 exit0, 구조 architecture3은196개/위반0이며 최종 target5는20/20이다. sourceDigest 5b49e467fc9dd617a01d5f6d005524aa7e6f6c974e21148d33a4706e8ebfd064, [소스/산출물 대조](../runtime/evidence/checkpoint381-final-source.json) 2,295파일 일치다. **135개를 최종 소스에서 모두 재실행한 결과는 아니다.** 앞선 실패와 각 교정의 원로그를 보존한다.
+
+같은 세션의 사건별 업무와 담당별 저장소 분리, 재전달·접수 후 중단 복구, 등록 권한·취소·늦은 관측, 원문 읽기 확인과 완료 영수증 변조 거절을 확인했다. 협업 집계는 기록된 fixture 원장에 한정하며 같은 문제를 실제 독립 프로필로 실행한 비교는 아직 하지 않았다. 다른 provider 알림 보존은 sentinel 시험으로, 실제 게시판과 임무의 결합을 검증한 것은 아니다.
+
+다음은 **같은 문제의 단독/협업 독립 프로필 비교→게시판/임무 결합→C10**이다. 다중 임무 rule의 종료 정리와 업무 완료 후 종료 체크포인트 게시 전 프로세스 중단 복구는 미검증이며 접수 직후 SIGKILL 시험과 구분한다. 일반 응답의 responseRequirement와 기존 평가기의 criteria:[] 관계는 다음 비교의 정적 검토 후보로, 실행 전 결함으로 확정하지 않는다. C05 정책 재허용 후 완주, C06 기억 HTTP 지연·권한 사용성과 브라우저, 현재 Linux/native Windows·PostgreSQL·사내 서비스/외부 A2A·최종 통합은 남아 있다. [공통 메인 프롬프트](../runtime/src/infrastructure/agent-turn-prompt.ts)는 [등록 모델 어댑터](../runtime/src/infrastructure/structured-agent-turn.ts)에 연결돼 있으나 실제 모델 품질은 미검증이다. 실제 모델/API 시험은 중단 상태이고 이번 외부 서비스 연결은0회다. C09와 전체 goal은 진행 중이며 활성 빌드·시험은 없다. 아래 checkpoint380 이하는 당시 이력이다.
+<!-- CHECKPOINT381-END -->
+
 <!-- CHECKPOINT380-START -->
 ### Checkpoint380 — A2A 접수·왕복·격리와 도구 진전
 

@@ -1,0 +1,210 @@
+TAP version 13
+# Subtest: mission registration: off never selects the host and on requires explicit registration without starting work
+ok 1 - mission registration: off never selects the host and on requires explicit registration without starting work
+  ---
+  duration_ms: 419.933667
+  type: 'test'
+  ...
+# Subtest: mission registration: enabled read-only events tool checks the current invocation identity policy and authority
+ok 2 - mission registration: enabled read-only events tool checks the current invocation identity policy and authority
+  ---
+  duration_ms: 308.104833
+  type: 'test'
+  ...
+# Subtest: mission registration: source metadata callback receivers assembly and scheduled options are captured without merging stores
+ok 3 - mission registration: source metadata callback receivers assembly and scheduled options are captured without merging stores
+  ---
+  duration_ms: 315.42675
+  type: 'test'
+  ...
+# Subtest: mission registration: raw exported sources enforce current authorization and caller cancellation before invoking the host
+ok 4 - mission registration: raw exported sources enforce current authorization and caller cancellation before invoking the host
+  ---
+  duration_ms: 308.168542
+  type: 'test'
+  ...
+# Subtest: mission registration: closing rejects retained raw sources and tools plus late in-flight results and closes one lease
+ok 5 - mission registration: closing rejects retained raw sources and tools plus late in-flight results and closes one lease
+  ---
+  duration_ms: 338.201291
+  type: 'test'
+  ...
+# Subtest: mission registration: duplicate sources failed opens and interrupted registration preserve errors and clean acquired leases
+ok 6 - mission registration: duplicate sources failed opens and interrupted registration preserve errors and clean acquired leases
+  ---
+  duration_ms: 315.346666
+  type: 'test'
+  ...
+# Subtest: full native mission reads acknowledge only their exact rule and retain original pages across reopen
+not ok 7 - full native mission reads acknowledge only their exact rule and retain original pages across reopen
+  ---
+  duration_ms: 788.036917
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-read-ack.test.js:41:1'
+  failureType: 'testCodeFailure'
+  error: 'invalid_contract'
+  code: 'invalid_contract'
+  stack: |-
+    parseContract (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/contracts.js:236:15)
+    WorkResources.resultWithDependencies (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-resources.js:150:9)
+    MissionRuntime.readAcknowledgement (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:181:68)
+    async MissionRuntime.acknowledgeReads (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:214:31)
+    async MissionRuntime.refresh (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:289:17)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-read-ack.test.js:50:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: partial mission output and an old-goal read cannot acknowledge unread current input
+ok 8 - partial mission output and an old-goal read cannot acknowledge unread current input
+  ---
+  duration_ms: 848.281042
+  type: 'test'
+  ...
+# Subtest: copied mission descriptors and a provider withdrawn during result reading cannot issue an acknowledgment
+not ok 9 - copied mission descriptors and a provider withdrawn during result reading cannot issue an acknowledgment
+  ---
+  duration_ms: 603.720458
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-read-ack.test.js:101:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /invocation_unavailable|mission_state_changed/. Input:
+    
+    'Error: invalid_contract'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'invalid_contract'
+  stack: |-
+    parseContract (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/contracts.js:236:15)
+    WorkResources.resultWithDependencies (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-resources.js:150:9)
+    MissionRuntime.readAcknowledgement (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:181:68)
+    async MissionRuntime.acknowledgeReads (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:214:31)
+    async MissionRuntime.refresh (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:289:17)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-read-ack.test.js:126:9)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-read-ack.test.js:126:9)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: mission registration is durable and requires the original checkpoint receipt and bytes after reopen
+ok 10 - mission registration is durable and requires the original checkpoint receipt and bytes after reopen
+  ---
+  duration_ms: 110.010042
+  type: 'test'
+  ...
+# Subtest: empty mission polls respect the fake clock and finite drive without model or tool activity
+ok 11 - empty mission polls respect the fake clock and finite drive without model or tool activity
+  ---
+  duration_ms: 219.243708
+  type: 'test'
+  ...
+# Subtest: a mission event wakes the actual workflow for an explicit original read without promoting the event body to evidence
+ok 12 - a mission event wakes the actual workflow for an explicit original read without promoting the event body to evidence
+  ---
+  duration_ms: 306.610917
+  type: 'test'
+  ...
+# Subtest: source failure preserves the cursor and original events, exact redelivery is deduplicated, and changed event bytes conflict
+ok 13 - source failure preserves the cursor and original events, exact redelivery is deduplicated, and changed event bytes conflict
+  ---
+  duration_ms: 277.110916
+  type: 'test'
+  ...
+# Subtest: an empty second mission rule does not suppress another rule event or its actual workflow read
+ok 14 - an empty second mission rule does not suppress another rule event or its actual workflow read
+  ---
+  duration_ms: 263.926584
+  type: 'test'
+  ...
+# Subtest: mission owner, narrowed source access and revoked host authority remain enforced across asynchronous reads
+ok 15 - mission owner, narrowed source access and revoked host authority remain enforced across asynchronous reads
+  ---
+  duration_ms: 152.033292
+  type: 'test'
+  ...
+# Subtest: goal and data generation changes retire mission input while retaining its historical originals
+ok 16 - goal and data generation changes retire mission input while retaining its historical originals
+  ---
+  duration_ms: 314.704667
+  type: 'test'
+  ...
+# Subtest: a durable mission claim excludes a second driver and caller abort reaches an in-flight source poll
+ok 17 - a durable mission claim excludes a second driver and caller abort reaches an in-flight source poll
+  ---
+  duration_ms: 309.230292
+  type: 'test'
+  ...
+# Subtest: tick and drive cancel noncooperative polls without a late event or failure checkpoint
+ok 18 - tick and drive cancel noncooperative polls without a late event or failure checkpoint
+  ---
+  duration_ms: 129.339042
+  type: 'test'
+  ...
+# Subtest: mission entry: the ordinary model tool loop reads a newly observed event and reports it without creating personal memory or evidence
+not ok 19 - mission entry: the ordinary model tool loop reads a newly observed event and reports it without creating personal memory or evidence
+  ---
+  duration_ms: 971.622209
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/resident-missions-entry.test.js:4:1'
+  failureType: 'testCodeFailure'
+  error: 'invalid_contract'
+  code: 'invalid_contract'
+  stack: |-
+    parseContract (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/contracts.js:236:15)
+    WorkResources.resultWithDependencies (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-resources.js:150:9)
+    MissionRuntime.readAcknowledgement (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:181:68)
+    async MissionRuntime.acknowledgeReads (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:214:31)
+    async Object.onStep (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:439:36)
+    async WorkflowRuntime.run (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/workflow-runtime.js:170:13)
+    async MissionRuntime.tick (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/mission-runtime.js:449:32)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/resident-missions-entry.test.js:14:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: resident entry: event tasks share only their persistent conversation while the controller never executes
+ok 20 - resident entry: event tasks share only their persistent conversation while the controller never executes
+  ---
+  duration_ms: 1353.299292
+  type: 'test'
+  ...
+# Subtest: resident entry: independent directories and original event receipts survive reopen and reject changed redelivery
+ok 21 - resident entry: independent directories and original event receipts survive reopen and reject changed redelivery
+  ---
+  duration_ms: 2459.421209
+  type: 'test'
+  ...
+# Subtest: resident entry: accepted intake interrupted before its controller receipt reuses the same work after real compact and reopen
+ok 22 - resident entry: accepted intake interrupted before its controller receipt reuses the same work after real compact and reopen
+  ---
+  duration_ms: 4020.6955
+  type: 'test'
+  ...
+# Subtest: resident entry: a question remains explicitly resumable without repeated inference on an empty poll
+ok 23 - resident entry: a question remains explicitly resumable without repeated inference on an empty poll
+  ---
+  duration_ms: 2782.707209
+  type: 'test'
+  ...
+# Subtest: resident entry: stopping a gated poll preserves its controller and prevents late event intake or inference
+ok 24 - resident entry: stopping a gated poll preserves its controller and prevents late event intake or inference
+  ---
+  duration_ms: 421.736708
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 21
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14497.87125

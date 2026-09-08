@@ -1,6 +1,7 @@
 import type { EvaluationSample } from '../domain/execution-evaluation.js';
-import type { WorkState } from '../domain/model.js';
+import type { Json, WorkState } from '../domain/model.js';
 import { scoreEvaluation } from './execution-evaluation.js';
+import { asJson } from './plan-validator.js';
 
 export interface CollaborationTrial {
   /** Same fixture, mode and oracle in both arms; each runner owns its isolated stores. */
@@ -11,15 +12,20 @@ export interface CollaborationTrial {
 }
 const dimensions = ['toolCalls', 'modelCalls', 'tokens', 'replans'] as const;
 function identity(state: WorkState) { return JSON.stringify([state.policy.tenantId, state.policy.principalId, state.goal.scope, state.id]); }
+function canonicalSnapshot(state: WorkState) {
+  // Stored JSON object key order is not evidence; execution history and every snapshot value remain part of the comparison.
+  return JSON.stringify(asJson(state), (_key, value: Json) => value !== null && typeof value === 'object' && !Array.isArray(value)
+    ? Object.fromEntries(Object.keys(value).sort().map(key => [key, value[key]])) : value);
+}
 function trialMetrics(trial: CollaborationTrial) {
   const score = scoreEvaluation(trial.primary), final = trial.primary.observations.at(-1)?.state;
   if (!final) throw new Error('collaboration_evaluation_missing_observation');
   const works = new Map<string, WorkState>();
   for (const state of [final, ...trial.participants]) {
     const key = identity(state), previous = works.get(key);
-    if (previous && (previous.revision !== state.revision || JSON.stringify(previous.budget) !== JSON.stringify(state.budget)))
+    if (previous && (previous.revision !== state.revision || canonicalSnapshot(previous) !== canonicalSnapshot(state)))
       throw new Error('collaboration_evaluation_conflicting_snapshot');
-    works.set(key, state);
+    if (!previous) works.set(key, state);
   }
   const usage = { toolCalls: 0, modelCalls: 0, tokens: 0, replans: 0, unmeasuredModelCalls: 0 };
   let pending = false;
