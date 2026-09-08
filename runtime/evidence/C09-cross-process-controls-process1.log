@@ -1,0 +1,70 @@
+TAP version 13
+# {"measurement":"mission_cross_process_pause","stateBackend":"sqlite","commandProcessMs":115.27437499999999,"responseToObservedStopMs":136.167708,"meaning":"Local measured elapsed time, not a real-time bound"}
+# Subtest: mission sqlite: a separate process pauses a pending source without recording a failed observation
+ok 1 - mission sqlite: a separate process pauses a pending source without recording a failed observation
+  ---
+  duration_ms: 399.296375
+  type: 'test'
+  ...
+# {"measurement":"mission_cross_process_pause","stateBackend":"file-journal","commandProcessMs":276.3726250000001,"responseToObservedStopMs":227.383417,"meaning":"Local measured elapsed time, not a real-time bound"}
+# Subtest: mission file-journal: a separate process pauses a pending source without recording a failed observation
+ok 2 - mission file-journal: a separate process pauses a pending source without recording a failed observation
+  ---
+  duration_ms: 943.158458
+  type: 'test'
+  ...
+# {"kind":"resident_cross_process_observation","backend":"sqlite","phase":"pause","childDurationMs":290.3433749999999,"abortAfterChildCloseMs":213.6874170000001,"observationCompletedAfterChildCloseMs":214.9597920000001,"rawReleased":false}
+# {"kind":"resident_cross_process_observation","backend":"sqlite","phase":"stop","childDurationMs":321.1233750000001,"abortAfterChildCloseMs":179.75570900000002,"observationCompletedAfterChildCloseMs":181.61524999999983,"rawReleased":false}
+# Subtest: resident cross-process sqlite: actual CLI pause stops the parent and an old replay preserves its new poll
+ok 3 - resident cross-process sqlite: actual CLI pause stops the parent and an old replay preserves its new poll
+  ---
+  duration_ms: 2916.598292
+  type: 'test'
+  ...
+# {"kind":"resident_cross_process_observation","backend":"sqlite","phase":"pause-resume-after-child-exit","childDurationMs":300.9919579999996,"abortAfterChildCloseMs":1.3638750000000073,"observationCompletedAfterChildCloseMs":3.124166999999943,"rawReleased":false}
+# {"kind":"resident_cross_process_hint_release","backend":"sqlite","releaseToAbortMs":0.1961249999994834,"childClosedBeforeRelease":true,"hintReads":1}
+# Subtest: resident cross-process sqlite: pause and resume finish in children before the parent reads their durable change
+ok 4 - resident cross-process sqlite: pause and resume finish in children before the parent reads their durable change
+  ---
+  duration_ms: 1421.497916
+  type: 'test'
+  ...
+# {"kind":"resident_cross_process_observation","backend":"sqlite","phase":"isolated-pause","childDurationMs":232.85762499999964,"abortAfterChildCloseMs":5.7977499999997235,"observationCompletedAfterChildCloseMs":503.1755000000003,"rawReleased":false}
+# Subtest: resident cross-process sqlite: child control and wrong selection leave other sessions and agents observing
+ok 5 - resident cross-process sqlite: child control and wrong selection leave other sessions and agents observing
+  ---
+  duration_ms: 2397.758167
+  type: 'test'
+  ...
+# {"kind":"resident_cross_process_observation","backend":"file-journal","phase":"pause","childDurationMs":336.2162500000004,"abortAfterChildCloseMs":160.61633299999994,"observationCompletedAfterChildCloseMs":179.59458299999915,"rawReleased":false}
+# {"kind":"resident_cross_process_observation","backend":"file-journal","phase":"stop","childDurationMs":492.38095799999974,"abortAfterChildCloseMs":-31.810999999999694,"observationCompletedAfterChildCloseMs":0.035332999999809545,"rawReleased":false}
+# Subtest: resident cross-process file-journal: actual CLI pause stops the parent and an old replay preserves its new poll
+ok 6 - resident cross-process file-journal: actual CLI pause stops the parent and an old replay preserves its new poll
+  ---
+  duration_ms: 3553.713584
+  type: 'test'
+  ...
+# {"kind":"resident_cross_process_observation","backend":"file-journal","phase":"pause-resume-after-child-exit","childDurationMs":504.23170799999934,"abortAfterChildCloseMs":24.77533300000141,"observationCompletedAfterChildCloseMs":79.53449999999975,"rawReleased":false}
+# {"kind":"resident_cross_process_hint_release","backend":"file-journal","releaseToAbortMs":2.694708000000901,"childClosedBeforeRelease":true,"hintReads":1}
+# Subtest: resident cross-process file-journal: pause and resume finish in children before the parent reads their durable change
+ok 7 - resident cross-process file-journal: pause and resume finish in children before the parent reads their durable change
+  ---
+  duration_ms: 1951.729958
+  type: 'test'
+  ...
+# {"kind":"resident_cross_process_observation","backend":"file-journal","phase":"isolated-pause","childDurationMs":460.3192909999998,"abortAfterChildCloseMs":192.39095899999847,"observationCompletedAfterChildCloseMs":649.9624999999996,"rawReleased":false}
+# Subtest: resident cross-process file-journal: child control and wrong selection leave other sessions and agents observing
+ok 8 - resident cross-process file-journal: child control and wrong selection leave other sessions and agents observing
+  ---
+  duration_ms: 3694.763
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17519.64525

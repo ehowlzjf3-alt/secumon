@@ -12,6 +12,11 @@ export class MemoryStateRepository implements StateRepository {
   #closed = false;
   #check() { if (this.#closed) throw new Error('store_closed'); }
   async get(workId: string) { this.#check(); return structuredClone(this.#states.get(workId) ?? null); }
+  async revisionHint(workId: string): Promise<number | null> {
+    this.#check();
+    if (typeof workId !== 'string' || !workId.length || workId.length > 256) throw new Error('invalid_state_query');
+    return this.#states.get(workId)?.revision ?? null;
+  }
   async receipt(workId: string, commandId: string) { this.#check(); return structuredClone(this.#receipts.get(workId)?.get(commandId) ?? null); }
   async commit(request: CommitRequest): Promise<CommitResult> {
     this.#check();

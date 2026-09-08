@@ -39,6 +39,16 @@ export class PostgresStateRepository implements StateRepository {
       return value;
     });
   }
+  async revisionHint(workId: string): Promise<number | null> {
+    if (typeof workId !== 'string' || !workId.length || workId.length > 256) throw new Error('invalid_state_query');
+    return this.store.read(async c => {
+      const row = (await c.query('SELECT revision FROM secumon_pg.works WHERE store_id=$1 AND agent_id=$2 AND id=$3', [...this.store.key, workId])).rows[0];
+      if (!row) return null;
+      const revision = postgresInteger(row['revision']);
+      if (revision < 1) throw new Error('invalid_stored_record');
+      return revision;
+    });
+  }
   async receipt(workId: string, commandId: string) {
     return this.store.read(async c => {
       const row = (await c.query(`SELECT digest,body FROM secumon_pg.state_receipts WHERE ${where} AND command_id=$4`, [...this.store.key, workId, commandId])).rows[0];

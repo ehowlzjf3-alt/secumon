@@ -85,6 +85,14 @@ export class SqliteStateRepository implements StateRepository {
     const row = this.#db.prepare('SELECT body FROM works WHERE id=?').get(workId);
     return row ? parseContract(WorkStateSchema, jsonCell(row['body'])) : null;
   }
+  async revisionHint(workId: string): Promise<number | null> {
+    if (typeof workId !== 'string' || !workId.length || workId.length > 256) throw new Error('invalid_state_query');
+    const row = this.#db.prepare('SELECT revision FROM works WHERE id=?').get(workId);
+    if (!row) return null;
+    const revision = row['revision'];
+    if (typeof revision !== 'number' || !Number.isSafeInteger(revision) || revision < 1) throw new Error('invalid_stored_record');
+    return revision;
+  }
   async receipt(workId: string, commandId: string) {
     const row = this.#db.prepare('SELECT digest, body FROM receipts WHERE work_id=? AND command_id=?').get(workId, commandId);
     if (!row) return null;

@@ -14,6 +14,7 @@ import type { ToolContracts } from './tool-contracts.js';
 import { collaborationToolKind } from './collaboration-tool-identity.js';
 import { ArtifactSchema } from './contracts.js';
 import { UserCommandSchema } from './execution-runtime.js';
+import { observePendingPoll } from './observation-control-watch.js';
 
 const count = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER), hash = z.string().regex(/^[a-f0-9]{64}$/);
 const CheckpointSchema = z.strictObject({ schemaVersion: z.literal(1), workId: z.string(), createdAt: count,
@@ -34,21 +35,6 @@ type Dependencies = { services: RuntimeServices; actor: WorkActor; agentId: stri
   sources: readonly MissionEventSource[]; contracts?: ToolContracts };
 const terminal = (state: WorkState) => ['cancelled', 'paused', 'failed', 'completed', 'blocked'].includes(state.status);
 function changed(): never { throw new Error('mission_state_changed'); }
-
-/** Stop observing a poll on cancellation while retaining handlers for its eventual result or error. */
-function pollUntilAborted<T>(pending: Promise<T>, signal: AbortSignal): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    let settled = false;
-    const finish = (done: () => void) => {
-      if (settled) return;
-      settled = true; signal.removeEventListener('abort', abort); done();
-    };
-    const abort = () => finish(() => reject(signal.reason));
-    signal.addEventListener('abort', abort, { once: true });
-    void pending.then(value => finish(() => resolve(value)), error => finish(() => reject(error)));
-    if (signal.aborted) abort();
-  });
-}
 
 /** Durable observation/wake loop over the existing work repository. Waiting and polling never call a model. */
 export class MissionRuntime {
@@ -480,18 +466,21 @@ export class MissionRuntime {
       const checkpoint = await this.read(state, subscription), now = this.deps.services.clock.now();
       signal.throwIfAborted();
       if (checkpoint.pendingRun || checkpoint.nextPollAt > now) continue;
-      const source = this.source(state, checkpoint.rule.sourceId);
+      const source = this.source(state, checkpoint.rule.sourceId), control = new AbortController();
+      const pollSignal = AbortSignal.any([signal, control.signal]);
       const authorize = async () => { signal.throwIfAborted(); const latest = await this.state(workId); signal.throwIfAborted(); this.source(latest, checkpoint.rule.sourceId); if (this.digest(latest) !== this.digest(state)) changed(); };
       await authorize();
       let page;
       try {
         signal.throwIfAborted();
-        const observed = await pollUntilAborted(source.poll({ resourceId: checkpoint.rule.resourceId, cursor: checkpoint.cursor,
-          snapshotDigest: checkpoint.snapshotDigest, now, signal, authorize }), signal);
+        const observed = await observePendingPoll({ state: this.deps.services.state, workId, basisRevision: state.revision,
+          signal: pollSignal, controller: control, authorize }, watchedSignal => source.poll({ resourceId: checkpoint.rule.resourceId, cursor: checkpoint.cursor,
+          snapshotDigest: checkpoint.snapshotDigest, now, signal: watchedSignal,
+          authorize: async () => { watchedSignal.throwIfAborted(); await authorize(); watchedSignal.throwIfAborted(); } }));
         signal.throwIfAborted(); page = MissionPageSchema.parse(observed);
       } catch (error) {
         // An interrupted observation is not a completed failed poll and must not advance its checkpoint.
-        if (signal.aborted) throw error;
+        if (pollSignal.aborted) throw error;
         try {
           await authorize(); checkpoint.idlePolls++; checkpoint.nextPollAt = now + checkpoint.rule.pollIntervalMs;
           checkpoint.reason = 'source_poll_failed';

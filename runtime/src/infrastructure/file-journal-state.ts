@@ -357,6 +357,19 @@ export class FileJournalStateRepository implements StateRepository {
     finally { try { unlinkSync(candidate); } catch {} }
   }
   async get(workId: string) { return structuredClone(this.#replay(workId).state); }
+  async revisionHint(workId: string): Promise<number | null> {
+    if (typeof workId !== 'string' || !workId.length || workId.length > 256) throw new Error('invalid_state_query');
+    const folder = this.#workDirectory(workId, false);
+    if (!folder) return null;
+    let revision: number | null = null;
+    for (const name of this.#names(folder)) {
+      if (validRecordName(name)) revision = Math.max(revision ?? 0, Number(name.slice(0, 16)));
+      else if (!this.#pending(name)) throw new JournalStateError('journal_layout_invalid');
+    }
+    this.#directory(folder, this.#workDirectories.get(this.#key(workId))); this.#check();
+    // Names can announce a candidate without promoting an unverified record into the replay cache or observed head.
+    return revision;
+  }
   async receipt(workId: string, commandId: string) { return structuredClone(this.#replay(workId).receipts.get(commandId) ?? null); }
   async events(workId: string, afterSequence: number) { return structuredClone(this.#replay(workId).events.filter(e => e.sequence > afterSequence)); }
   async eventPage(workId: string, input: EventPageQuery) {

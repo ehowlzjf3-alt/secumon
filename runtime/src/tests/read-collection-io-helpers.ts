@@ -49,7 +49,7 @@ export class IoMeter {
     artifactApi: { get: { calls: 0, requestedBodyBytes: 0, returnedBodyBytes: 0, failures: 0 },
       exists: { calls: 0, referencedBodyBytes: 0, available: 0, unavailable: 0 },
       put: { calls: 0, inputBodyBytes: 0, returnedReferenceBodyBytes: 0, failures: 0 } },
-    stateApi: { get: 0, receipt: 0, commit: 0, events: 0, eventPage: 0, recentEventMetadata: 0, deliveries: 0, workIdsForConversation: 0, conversationWorkPage: 0, runnable: 0, close: 0 }, physical: null,
+    stateApi: { get: 0, revisionHint: 0, receipt: 0, commit: 0, events: 0, eventPage: 0, recentEventMetadata: 0, deliveries: 0, workIdsForConversation: 0, conversationWorkPage: 0, runnable: 0, close: 0 }, physical: null,
   };
   readonly physicalStores: ArtifactStore[] = [];
   snapshot(): IoSnapshot { return { ...structuredClone(this.counts), physical: physicalSnapshot(this.physicalStores) }; }

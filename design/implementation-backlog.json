@@ -1,5 +1,5 @@
 {
-  "revision": "v0.81",
+  "revision": "v0.82",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1922,7 +1922,7 @@
     "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
     "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
   },
-  "next_local_work_item": "C09 cross-process immediate delivery of resident commands to active polling hosts",
+  "next_local_work_item": "C09 browser pending command persistence across reload and actual browser interaction validation",
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
   "execution_state": "ordered_verification_active",
@@ -4756,78 +4756,91 @@
         "firstUnit": "A2A off/on registration, acknowledgement then explicit execution, redelivery and caller isolation"
       },
       "ordered_verification": {
-        "checkpoint": 397,
+        "checkpoint": 398,
         "recordedAt": "2026-09-09",
-        "status": "C09_resident_commands_local_verified",
-        "baselineCommit": "c741ffaa76cbae8cc334d3eaaf48255f88543de3",
-        "plan": "design/chapters/C09-resident-command-plan.md",
-        "result": "design/chapters/C09-resident-command-result.md",
-        "usage": "design/chapters/C09-resident-command-usage.md",
-        "newUnique": 16,
-        "relatedUnique": 46,
-        "allUnique": 62,
-        "mixedBuildEvidence": true,
-        "allRerunAtFinalSource": false,
-        "finalBuild": "C09-resident-command-build4",
+        "status": "C09_cross_process_observation_controls_local_verified",
+        "baselineCommit": "c0a14e9b401aa2426b8975cbecc5c9a85143fce7",
+        "plan": "design/chapters/C09-cross-process-controls-plan.md",
+        "result": "design/chapters/C09-cross-process-controls-result.md",
+        "usage": "design/chapters/C09-cross-process-controls-usage.md",
+        "newUnique": 23,
+        "relatedUnique": 55,
+        "allUnique": 78,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-cross-process-controls-build1",
         "finalSource": {
-          "build": "C09-resident-command-build4",
+          "build": "C09-cross-process-controls-build1",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "25100731090e209678b754d9fc4eda4af59b84fc999158c893823eaa50b28403",
-          "filesDigest": "4da77114cd9c13f8fb672c92d903c238523e7900fd22fd5e6d9e75bd62b11758",
-          "fileCount": 2538
+          "sourceDigest": "20447a7872f8e72507e2c6e4362dbf2b7a89a4a32c426d7b268b764e254728a0",
+          "filesDigest": "fd6a033eb6674bcc43e1351374511b39675be6f891acb87605bded821eca9e53",
+          "fileCount": 2559
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint397-final-source.json",
-        "buildComparisonEvidence": "runtime/evidence/checkpoint397-build-comparison.json",
-        "verificationReuse": "build3 results reused only for identical compiled files; two changed test files rerun on build4 (9 passes); all product binaries unchanged",
+        "finalSourceEvidence": "runtime/evidence/checkpoint398-final-source.json",
+        "measurementsEvidence": "runtime/evidence/checkpoint398-measurements.json",
         "checks": {
-          "build1ExitCode": 2,
-          "build1TestsRun": false,
-          "build2ExitCode": 0,
-          "build2TestsRun": false,
-          "build3ExitCode": 0,
-          "build4ExitCode": 0,
-          "core1ExitCode": 2,
-          "core2ExitCode": 0,
+          "buildExitCode": 0,
           "coreExitCode": 0,
-          "coreLog": "runtime/evidence/C09-resident-command-core3.log",
-          "architectureInspected": 202,
+          "architectureInspected": 203,
           "architectureViolations": 0,
-          "architectureLog": "runtime/evidence/C09-resident-command-architecture1.log",
-          "architectureSource": "Product import graph unchanged after architecture1",
-          "coreSource": "Core product source unchanged after core3; Web active label clarified before build3 and two test files adapted before build4",
-          "finalBuildLog": "runtime/evidence/C09-resident-command-build4.log"
+          "finalBuildLog": "runtime/evidence/C09-cross-process-controls-build1.log",
+          "coreLog": "runtime/evidence/C09-cross-process-controls-core1.log",
+          "architectureLog": "runtime/evidence/C09-cross-process-controls-architecture1.log",
+          "allChecksAtFinalSource": true
         },
         "verifiedScope": [
-          "One original stable command receipt is published atomically with its resident checkpoint; no second alias receipt or new database write protocol",
-          "SQLite/file-journal explicit pause/resume/stop replay, payload conflict, expected-control revision, original receipt/artifact preservation and reopen",
-          "Old pause retry reports original applied revision and fresh current status without cancelling a post-resume poll",
-          "Actual file-journal candidate_synced and published failure hooks preserve original errors and allow exact command retry; pre-publication does not interrupt, published original does",
-          "Real CLI child processes enforce selected directory/user session/binding, do not prepare a missing agent, register, poll or invoke a model",
-          "Local HTTP authentication/CSRF, exact selected session/binding, optional registration and screen disclosure boundaries retain original work isolation",
-          "Browser control helper retains uncertain command identity through status reads and same-tab retry, and clears views on connection expiry; this is not browser rendering validation",
-          "Existing resident controls/recovery/entry and CLI launcher/options/general Web/server regressions pass with identical product binaries"
+          "Optional repository revisionHint on memory/SQLite/file/Postgres without new schema or side publication; scalar DB reads or protected file names are not authority or original-history proof",
+          "An observation-local serialized watcher checks hints every 250 ms and reauthorizes at least on each detected candidate change and after a 5-second scheduled interval; it runs only while source.poll is pending",
+          "Authoritative exact-basis checks cancel only the stale resident/mission source operation and preserve existing command/receipt/cursor/event/session/resource records",
+          "Actual child CLI pause/stop reaches parent observations on SQLite/file-journal; old pause replay leaves a post-resume poll running",
+          "Both pause and resume may finish in separate child processes before the parent reads the change; the parent still stops its stale poll while preserving the latest active state",
+          "Different sessions and agents remain observing when a valid command affects only its selected controller; invalid child selections are rejected",
+          "Actual general mission command worker cancels a pending source without creating a failed-source checkpoint or inferring a new answer",
+          "Helper timers stop, checks do not overlap within a watch, late storage/source outcomes cannot alter a completed or newer poll, unavailable hints use full authorization, and actual errors are retained",
+          "File hint calls read no original record bytes or hashes and do not update verified heads/cache; a subsequent formal get rejects tampered original history",
+          "Existing resident and mission control/recovery/entry tests pass on the same final build"
         ],
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
         "notRun": [
-          "Full suite, actual browser DOM/rendering/reload recovery",
-          "Current Linux/native Windows, real PostgreSQL, current installed native addon/deployment acceptance",
-          "Corporate MCP/Knox/external A2A and production/final integration",
+          "Full suite and actual browser rendering/reload tests",
+          "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
+          "Corporate MCP/Knox/external A2A, production load and final integration",
           "Actual model/API response quality: stopped by user"
         ],
         "remaining": [
-          "C09 cross-process immediate delivery of resident commands to active polling hosts",
-          "C09 browser pending command persistence across reload, whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+          "C09 browser pending command persistence across reload and actual browser interaction validation",
+          "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
           "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
           "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
           "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
         ],
         "goalComplete": false,
         "chapterComplete": false,
-        "next": "C09 cross-process immediate delivery of resident commands to active polling hosts",
-        "evidence": "runtime/evidence/checkpoint397.json"
+        "next": "C09 browser pending command persistence across reload and actual browser interaction validation",
+        "evidence": "runtime/evidence/checkpoint398.json",
+        "measurements": {
+          "fileHints": {
+            "calls": 6,
+            "recordReads": 0,
+            "rawHashBytes": 0,
+            "headerReads": 12,
+            "metadataChecks": 60
+          },
+          "defaultWatch": {
+            "intervalMs": 250,
+            "revalidateMs": 5000
+          },
+          "note": "A local observation recorded ordinary resident abort signals at -31.811 to 213.687 ms relative to child CLI close; negative means the poll aborted before the command process exited. These are individual samples, not latency bounds or production benchmarks."
+        },
+        "limitations": [
+          "The cadence is a scheduling interval, not a wall-clock maximum; storage reads and event-loop delay add latency",
+          "File revision hints still enumerate retained filenames and check metadata; periodic authoritative checks retain full original read/hash costs",
+          "Cancellation stops the observation wait; a noncooperative raw source or already-pending storage read may finish later under its owning host",
+          "The watcher covers active resident/mission source polls and does not add a global cross-process cancellation bus for unrelated model/tool execution"
+        ]
       },
       "mission_verification": {
         "checkpoint": 381,
@@ -5464,6 +5477,93 @@
         "chapterComplete": false,
         "next": "C09 cross-process immediate delivery of resident commands to active polling hosts",
         "evidence": "runtime/evidence/checkpoint397.json"
+      },
+      "cross_process_observation_verification": {
+        "checkpoint": 398,
+        "recordedAt": "2026-09-09",
+        "status": "C09_cross_process_observation_controls_local_verified",
+        "baselineCommit": "c0a14e9b401aa2426b8975cbecc5c9a85143fce7",
+        "plan": "design/chapters/C09-cross-process-controls-plan.md",
+        "result": "design/chapters/C09-cross-process-controls-result.md",
+        "usage": "design/chapters/C09-cross-process-controls-usage.md",
+        "newUnique": 23,
+        "relatedUnique": 55,
+        "allUnique": 78,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-cross-process-controls-build1",
+        "finalSource": {
+          "build": "C09-cross-process-controls-build1",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "20447a7872f8e72507e2c6e4362dbf2b7a89a4a32c426d7b268b764e254728a0",
+          "filesDigest": "fd6a033eb6674bcc43e1351374511b39675be6f891acb87605bded821eca9e53",
+          "fileCount": 2559
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint398-final-source.json",
+        "measurementsEvidence": "runtime/evidence/checkpoint398-measurements.json",
+        "checks": {
+          "buildExitCode": 0,
+          "coreExitCode": 0,
+          "architectureInspected": 203,
+          "architectureViolations": 0,
+          "finalBuildLog": "runtime/evidence/C09-cross-process-controls-build1.log",
+          "coreLog": "runtime/evidence/C09-cross-process-controls-core1.log",
+          "architectureLog": "runtime/evidence/C09-cross-process-controls-architecture1.log",
+          "allChecksAtFinalSource": true
+        },
+        "verifiedScope": [
+          "Optional repository revisionHint on memory/SQLite/file/Postgres without new schema or side publication; scalar DB reads or protected file names are not authority or original-history proof",
+          "An observation-local serialized watcher checks hints every 250 ms and reauthorizes at least on each detected candidate change and after a 5-second scheduled interval; it runs only while source.poll is pending",
+          "Authoritative exact-basis checks cancel only the stale resident/mission source operation and preserve existing command/receipt/cursor/event/session/resource records",
+          "Actual child CLI pause/stop reaches parent observations on SQLite/file-journal; old pause replay leaves a post-resume poll running",
+          "Both pause and resume may finish in separate child processes before the parent reads the change; the parent still stops its stale poll while preserving the latest active state",
+          "Different sessions and agents remain observing when a valid command affects only its selected controller; invalid child selections are rejected",
+          "Actual general mission command worker cancels a pending source without creating a failed-source checkpoint or inferring a new answer",
+          "Helper timers stop, checks do not overlap within a watch, late storage/source outcomes cannot alter a completed or newer poll, unavailable hints use full authorization, and actual errors are retained",
+          "File hint calls read no original record bytes or hashes and do not update verified heads/cache; a subsequent formal get rejects tampered original history",
+          "Existing resident and mission control/recovery/entry tests pass on the same final build"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Full suite and actual browser rendering/reload tests",
+          "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
+          "Corporate MCP/Knox/external A2A, production load and final integration",
+          "Actual model/API response quality: stopped by user"
+        ],
+        "remaining": [
+          "C09 browser pending command persistence across reload and actual browser interaction validation",
+          "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+          "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 browser pending command persistence across reload and actual browser interaction validation",
+        "evidence": "runtime/evidence/checkpoint398.json",
+        "measurements": {
+          "fileHints": {
+            "calls": 6,
+            "recordReads": 0,
+            "rawHashBytes": 0,
+            "headerReads": 12,
+            "metadataChecks": 60
+          },
+          "defaultWatch": {
+            "intervalMs": 250,
+            "revalidateMs": 5000
+          },
+          "note": "A local observation recorded ordinary resident abort signals at -31.811 to 213.687 ms relative to child CLI close; negative means the poll aborted before the command process exited. These are individual samples, not latency bounds or production benchmarks."
+        },
+        "limitations": [
+          "The cadence is a scheduling interval, not a wall-clock maximum; storage reads and event-loop delay add latency",
+          "File revision hints still enumerate retained filenames and check metadata; periodic authoritative checks retain full original read/hash costs",
+          "Cancellation stops the observation wait; a noncooperative raw source or already-pending storage read may finish later under its owning host",
+          "The watcher covers active resident/mission source polls and does not add a global cross-process cancellation bus for unrelated model/tool execution"
+        ]
       }
     },
     {
@@ -6176,13 +6276,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 397,
-      "status": "C09_resident_commands_local_verified",
-      "plan": "design/chapters/C09-resident-command-plan.md",
+      "checkpoint": 398,
+      "status": "C09_cross_process_observation_controls_local_verified",
+      "plan": "design/chapters/C09-cross-process-controls-plan.md",
       "nextChapter": "C09",
-      "preparedIdentityTests": 16,
+      "preparedIdentityTests": 23,
       "existingFixtureFilesAdapted": 1,
-      "result": "design/chapters/C09-resident-command-result.md",
+      "result": "design/chapters/C09-cross-process-controls-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -6297,8 +6397,8 @@
         ]
       },
       "remaining": [
-        "C09 cross-process immediate delivery of resident commands to active polling hosts",
-        "C09 browser pending command persistence across reload, whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+        "C09 browser pending command persistence across reload and actual browser interaction validation",
+        "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
         "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
         "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
         "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
@@ -6399,6 +6499,12 @@
           "status": "C09_mission_history_local_verified",
           "nextChapter": "C09",
           "evidence": "runtime/evidence/checkpoint396.json"
+        },
+        {
+          "checkpoint": 397,
+          "status": "C09_resident_commands_local_verified",
+          "nextChapter": "C09",
+          "evidence": "runtime/evidence/checkpoint397.json"
         }
       ],
       "C03": {
@@ -6514,78 +6620,91 @@
       },
       "C09Preparation": "design/chapters/C09-ordered-verification-preparation.md",
       "C09": {
-        "checkpoint": 397,
+        "checkpoint": 398,
         "recordedAt": "2026-09-09",
-        "status": "C09_resident_commands_local_verified",
-        "baselineCommit": "c741ffaa76cbae8cc334d3eaaf48255f88543de3",
-        "plan": "design/chapters/C09-resident-command-plan.md",
-        "result": "design/chapters/C09-resident-command-result.md",
-        "usage": "design/chapters/C09-resident-command-usage.md",
-        "newUnique": 16,
-        "relatedUnique": 46,
-        "allUnique": 62,
-        "mixedBuildEvidence": true,
-        "allRerunAtFinalSource": false,
-        "finalBuild": "C09-resident-command-build4",
+        "status": "C09_cross_process_observation_controls_local_verified",
+        "baselineCommit": "c0a14e9b401aa2426b8975cbecc5c9a85143fce7",
+        "plan": "design/chapters/C09-cross-process-controls-plan.md",
+        "result": "design/chapters/C09-cross-process-controls-result.md",
+        "usage": "design/chapters/C09-cross-process-controls-usage.md",
+        "newUnique": 23,
+        "relatedUnique": 55,
+        "allUnique": 78,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-cross-process-controls-build1",
         "finalSource": {
-          "build": "C09-resident-command-build4",
+          "build": "C09-cross-process-controls-build1",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "25100731090e209678b754d9fc4eda4af59b84fc999158c893823eaa50b28403",
-          "filesDigest": "4da77114cd9c13f8fb672c92d903c238523e7900fd22fd5e6d9e75bd62b11758",
-          "fileCount": 2538
+          "sourceDigest": "20447a7872f8e72507e2c6e4362dbf2b7a89a4a32c426d7b268b764e254728a0",
+          "filesDigest": "fd6a033eb6674bcc43e1351374511b39675be6f891acb87605bded821eca9e53",
+          "fileCount": 2559
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint397-final-source.json",
-        "buildComparisonEvidence": "runtime/evidence/checkpoint397-build-comparison.json",
-        "verificationReuse": "build3 results reused only for identical compiled files; two changed test files rerun on build4 (9 passes); all product binaries unchanged",
+        "finalSourceEvidence": "runtime/evidence/checkpoint398-final-source.json",
+        "measurementsEvidence": "runtime/evidence/checkpoint398-measurements.json",
         "checks": {
-          "build1ExitCode": 2,
-          "build1TestsRun": false,
-          "build2ExitCode": 0,
-          "build2TestsRun": false,
-          "build3ExitCode": 0,
-          "build4ExitCode": 0,
-          "core1ExitCode": 2,
-          "core2ExitCode": 0,
+          "buildExitCode": 0,
           "coreExitCode": 0,
-          "coreLog": "runtime/evidence/C09-resident-command-core3.log",
-          "architectureInspected": 202,
+          "architectureInspected": 203,
           "architectureViolations": 0,
-          "architectureLog": "runtime/evidence/C09-resident-command-architecture1.log",
-          "architectureSource": "Product import graph unchanged after architecture1",
-          "coreSource": "Core product source unchanged after core3; Web active label clarified before build3 and two test files adapted before build4",
-          "finalBuildLog": "runtime/evidence/C09-resident-command-build4.log"
+          "finalBuildLog": "runtime/evidence/C09-cross-process-controls-build1.log",
+          "coreLog": "runtime/evidence/C09-cross-process-controls-core1.log",
+          "architectureLog": "runtime/evidence/C09-cross-process-controls-architecture1.log",
+          "allChecksAtFinalSource": true
         },
         "verifiedScope": [
-          "One original stable command receipt is published atomically with its resident checkpoint; no second alias receipt or new database write protocol",
-          "SQLite/file-journal explicit pause/resume/stop replay, payload conflict, expected-control revision, original receipt/artifact preservation and reopen",
-          "Old pause retry reports original applied revision and fresh current status without cancelling a post-resume poll",
-          "Actual file-journal candidate_synced and published failure hooks preserve original errors and allow exact command retry; pre-publication does not interrupt, published original does",
-          "Real CLI child processes enforce selected directory/user session/binding, do not prepare a missing agent, register, poll or invoke a model",
-          "Local HTTP authentication/CSRF, exact selected session/binding, optional registration and screen disclosure boundaries retain original work isolation",
-          "Browser control helper retains uncertain command identity through status reads and same-tab retry, and clears views on connection expiry; this is not browser rendering validation",
-          "Existing resident controls/recovery/entry and CLI launcher/options/general Web/server regressions pass with identical product binaries"
+          "Optional repository revisionHint on memory/SQLite/file/Postgres without new schema or side publication; scalar DB reads or protected file names are not authority or original-history proof",
+          "An observation-local serialized watcher checks hints every 250 ms and reauthorizes at least on each detected candidate change and after a 5-second scheduled interval; it runs only while source.poll is pending",
+          "Authoritative exact-basis checks cancel only the stale resident/mission source operation and preserve existing command/receipt/cursor/event/session/resource records",
+          "Actual child CLI pause/stop reaches parent observations on SQLite/file-journal; old pause replay leaves a post-resume poll running",
+          "Both pause and resume may finish in separate child processes before the parent reads the change; the parent still stops its stale poll while preserving the latest active state",
+          "Different sessions and agents remain observing when a valid command affects only its selected controller; invalid child selections are rejected",
+          "Actual general mission command worker cancels a pending source without creating a failed-source checkpoint or inferring a new answer",
+          "Helper timers stop, checks do not overlap within a watch, late storage/source outcomes cannot alter a completed or newer poll, unavailable hints use full authorization, and actual errors are retained",
+          "File hint calls read no original record bytes or hashes and do not update verified heads/cache; a subsequent formal get rejects tampered original history",
+          "Existing resident and mission control/recovery/entry tests pass on the same final build"
         ],
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
         "notRun": [
-          "Full suite, actual browser DOM/rendering/reload recovery",
-          "Current Linux/native Windows, real PostgreSQL, current installed native addon/deployment acceptance",
-          "Corporate MCP/Knox/external A2A and production/final integration",
+          "Full suite and actual browser rendering/reload tests",
+          "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
+          "Corporate MCP/Knox/external A2A, production load and final integration",
           "Actual model/API response quality: stopped by user"
         ],
         "remaining": [
-          "C09 cross-process immediate delivery of resident commands to active polling hosts",
-          "C09 browser pending command persistence across reload, whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+          "C09 browser pending command persistence across reload and actual browser interaction validation",
+          "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
           "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
           "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
           "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
         ],
         "goalComplete": false,
         "chapterComplete": false,
-        "next": "C09 cross-process immediate delivery of resident commands to active polling hosts",
-        "evidence": "runtime/evidence/checkpoint397.json"
+        "next": "C09 browser pending command persistence across reload and actual browser interaction validation",
+        "evidence": "runtime/evidence/checkpoint398.json",
+        "measurements": {
+          "fileHints": {
+            "calls": 6,
+            "recordReads": 0,
+            "rawHashBytes": 0,
+            "headerReads": 12,
+            "metadataChecks": 60
+          },
+          "defaultWatch": {
+            "intervalMs": 250,
+            "revalidateMs": 5000
+          },
+          "note": "A local observation recorded ordinary resident abort signals at -31.811 to 213.687 ms relative to child CLI close; negative means the poll aborted before the command process exited. These are individual samples, not latency bounds or production benchmarks."
+        },
+        "limitations": [
+          "The cadence is a scheduling interval, not a wall-clock maximum; storage reads and event-loop delay add latency",
+          "File revision hints still enumerate retained filenames and check metadata; periodic authoritative checks retain full original read/hash costs",
+          "Cancellation stops the observation wait; a noncooperative raw source or already-pending storage read may finish later under its owning host",
+          "The watcher covers active resident/mission source polls and does not add a global cross-process cancellation bus for unrelated model/tool execution"
+        ]
       },
       "C09A2A": {
         "checkpoint": 380,
@@ -7399,6 +7518,93 @@
         "chapterComplete": false,
         "next": "C09 cross-process immediate delivery of resident commands to active polling hosts",
         "evidence": "runtime/evidence/checkpoint397.json"
+      },
+      "C09CrossProcessControls": {
+        "checkpoint": 398,
+        "recordedAt": "2026-09-09",
+        "status": "C09_cross_process_observation_controls_local_verified",
+        "baselineCommit": "c0a14e9b401aa2426b8975cbecc5c9a85143fce7",
+        "plan": "design/chapters/C09-cross-process-controls-plan.md",
+        "result": "design/chapters/C09-cross-process-controls-result.md",
+        "usage": "design/chapters/C09-cross-process-controls-usage.md",
+        "newUnique": 23,
+        "relatedUnique": 55,
+        "allUnique": 78,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-cross-process-controls-build1",
+        "finalSource": {
+          "build": "C09-cross-process-controls-build1",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "20447a7872f8e72507e2c6e4362dbf2b7a89a4a32c426d7b268b764e254728a0",
+          "filesDigest": "fd6a033eb6674bcc43e1351374511b39675be6f891acb87605bded821eca9e53",
+          "fileCount": 2559
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint398-final-source.json",
+        "measurementsEvidence": "runtime/evidence/checkpoint398-measurements.json",
+        "checks": {
+          "buildExitCode": 0,
+          "coreExitCode": 0,
+          "architectureInspected": 203,
+          "architectureViolations": 0,
+          "finalBuildLog": "runtime/evidence/C09-cross-process-controls-build1.log",
+          "coreLog": "runtime/evidence/C09-cross-process-controls-core1.log",
+          "architectureLog": "runtime/evidence/C09-cross-process-controls-architecture1.log",
+          "allChecksAtFinalSource": true
+        },
+        "verifiedScope": [
+          "Optional repository revisionHint on memory/SQLite/file/Postgres without new schema or side publication; scalar DB reads or protected file names are not authority or original-history proof",
+          "An observation-local serialized watcher checks hints every 250 ms and reauthorizes at least on each detected candidate change and after a 5-second scheduled interval; it runs only while source.poll is pending",
+          "Authoritative exact-basis checks cancel only the stale resident/mission source operation and preserve existing command/receipt/cursor/event/session/resource records",
+          "Actual child CLI pause/stop reaches parent observations on SQLite/file-journal; old pause replay leaves a post-resume poll running",
+          "Both pause and resume may finish in separate child processes before the parent reads the change; the parent still stops its stale poll while preserving the latest active state",
+          "Different sessions and agents remain observing when a valid command affects only its selected controller; invalid child selections are rejected",
+          "Actual general mission command worker cancels a pending source without creating a failed-source checkpoint or inferring a new answer",
+          "Helper timers stop, checks do not overlap within a watch, late storage/source outcomes cannot alter a completed or newer poll, unavailable hints use full authorization, and actual errors are retained",
+          "File hint calls read no original record bytes or hashes and do not update verified heads/cache; a subsequent formal get rejects tampered original history",
+          "Existing resident and mission control/recovery/entry tests pass on the same final build"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Full suite and actual browser rendering/reload tests",
+          "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
+          "Corporate MCP/Knox/external A2A, production load and final integration",
+          "Actual model/API response quality: stopped by user"
+        ],
+        "remaining": [
+          "C09 browser pending command persistence across reload and actual browser interaction validation",
+          "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+          "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 browser pending command persistence across reload and actual browser interaction validation",
+        "evidence": "runtime/evidence/checkpoint398.json",
+        "measurements": {
+          "fileHints": {
+            "calls": 6,
+            "recordReads": 0,
+            "rawHashBytes": 0,
+            "headerReads": 12,
+            "metadataChecks": 60
+          },
+          "defaultWatch": {
+            "intervalMs": 250,
+            "revalidateMs": 5000
+          },
+          "note": "A local observation recorded ordinary resident abort signals at -31.811 to 213.687 ms relative to child CLI close; negative means the poll aborted before the command process exited. These are individual samples, not latency bounds or production benchmarks."
+        },
+        "limitations": [
+          "The cadence is a scheduling interval, not a wall-clock maximum; storage reads and event-loop delay add latency",
+          "File revision hints still enumerate retained filenames and check metadata; periodic authoritative checks retain full original read/hash costs",
+          "Cancellation stops the observation wait; a noncooperative raw source or already-pending storage read may finish later under its owning host",
+          "The watcher covers active resident/mission source polls and does not add a global cross-process cancellation bus for unrelated model/tool execution"
+        ]
       }
     }
   }

@@ -1,0 +1,101 @@
+TAP version 13
+# Subtest: observation watch removes its timer after source success or failure without changing the original result
+ok 1 - observation watch removes its timer after source success or failure without changing the original result
+  ---
+  duration_ms: 77.273
+  type: 'test'
+  ...
+# Subtest: observation watch returns parent cancellation before a noncooperative source settles and consumes its late success or failure
+ok 2 - observation watch returns parent cancellation before a noncooperative source settles and consumes its late success or failure
+  ---
+  duration_ms: 43.337542
+  type: 'test'
+  ...
+# Subtest: observation watch serializes slow hint reads and ignores their late failure after completion without aborting a newer poll
+ok 3 - observation watch serializes slow hint reads and ignores their late failure after completion without aborting a newer poll
+  ---
+  duration_ms: 71.286917
+  type: 'test'
+  ...
+# Subtest: observation watch treats a missing or changed revision hint only as a reason to authorize, not as an applied control
+ok 4 - observation watch treats a missing or changed revision hint only as a reason to authorize, not as an applied control
+  ---
+  duration_ms: 12.55225
+  type: 'test'
+  ...
+# Subtest: observation watch periodically reauthorizes even an unchanged hint and preserves the authoritative failure
+ok 5 - observation watch periodically reauthorizes even an unchanged hint and preserves the authoritative failure
+  ---
+  duration_ms: 94.129958
+  type: 'test'
+  ...
+# Subtest: observation watch falls back to full authorization when the store has no hint method and ignores late authorization after source completion
+ok 6 - observation watch falls back to full authorization when the store has no hint method and ignores late authorization after source completion
+  ---
+  duration_ms: 49.682792
+  type: 'test'
+  ...
+# Subtest: observation watch rejects invalid revision hints and preserves original storage errors without inventing authorization
+ok 7 - observation watch rejects invalid revision hints and preserves original storage errors without inventing authorization
+  ---
+  duration_ms: 13.072083
+  type: 'test'
+  ...
+# Subtest: observation watch starts no source or storage operation when already cancelled or configured with invalid timing
+ok 8 - observation watch starts no source or storage operation when already cancelled or configured with invalid timing
+  ---
+  duration_ms: 0.292291
+  type: 'test'
+  ...
+# Subtest: memory: revision hints follow commits within one repository and work without changing original receipts
+ok 9 - memory: revision hints follow commits within one repository and work without changing original receipts
+  ---
+  duration_ms: 10.376084
+  type: 'test'
+  ...
+# Subtest: sqlite: revision hints follow commits within one repository and work without changing original receipts
+ok 10 - sqlite: revision hints follow commits within one repository and work without changing original receipts
+  ---
+  duration_ms: 66.961709
+  type: 'test'
+  ...
+# Subtest: file-journal: revision hints follow commits within one repository and work without changing original receipts
+ok 11 - file-journal: revision hints follow commits within one repository and work without changing original receipts
+  ---
+  duration_ms: 187.813167
+  type: 'test'
+  ...
+# Subtest: sqlite: another connection becomes visible through a single bound scalar read and malformed revisions are rejected
+ok 12 - sqlite: another connection becomes visible through a single bound scalar read and malformed revisions are rejected
+  ---
+  duration_ms: 72.848917
+  type: 'test'
+  ...
+# Subtest: journal: repeated filename hints read no record bodies and never promote unverified history into the replay cache
+ok 13 - journal: repeated filename hints read no record bodies and never promote unverified history into the replay cache
+  ---
+  duration_ms: 379.641125
+  type: 'test'
+  ...
+# {"hintCalls":6,"hintRecordReads":0,"hintRawHashBytes":0,"hintHeaderReads":12,"hintMetadataChecks":60,"meaning":"Node reads and application hashes, not physical disk I/O; formal get still validates every original record"}
+# Subtest: journal: hint rejects unexpected names and changed store identity through the existing file boundary
+ok 14 - journal: hint rejects unexpected names and changed store identity through the existing file boundary
+  ---
+  duration_ms: 59.509667
+  type: 'test'
+  ...
+# Subtest: postgres recording transport: scalar hints retain binding checks, scope, validation and closed-store behavior
+ok 15 - postgres recording transport: scalar hints retain binding checks, scope, validation and closed-store behavior
+  ---
+  duration_ms: 0.956875
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1232.806333

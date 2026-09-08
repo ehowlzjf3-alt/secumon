@@ -14,6 +14,7 @@ import { assertExecutionAuthority, executionAuthoritySignal } from './execution-
 import { asJson } from './plan-validator.js';
 import { frozen } from './resource-contracts.js';
 import { transact } from './work-transactions.js';
+import { observePendingPoll } from './observation-control-watch.js';
 
 const id = z.string().min(1).max(256), count = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER), hash = z.string().regex(/^[a-f0-9]{64}$/);
 export const ResidentMissionSchema = z.strictObject({ rule: MissionRuleSchema, sessionId: id, binding: BindingInputSchema.omit({ session: true }),
@@ -44,14 +45,6 @@ export interface ResidentDriveOptions extends Pick<WorkflowRunOptions, 'maxSteps
 const controllerReason = 'resident_mission_controller';
 const terminal = (state: WorkState) => ['completed', 'cancelled', 'paused', 'failed', 'blocked'].includes(state.status);
 function changed(): never { throw new Error('resident_mission_changed'); }
-function abortablePoll<T>(operation: Promise<T>, signal: AbortSignal): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    const aborted = () => { signal.removeEventListener('abort', aborted); reject(signal.reason); };
-    signal.addEventListener('abort', aborted, { once: true });
-    void operation.then(value => { signal.removeEventListener('abort', aborted); resolve(value); }, error => { signal.removeEventListener('abort', aborted); reject(error); });
-    if (signal.aborted) aborted();
-  });
-}
 
 /** A host-owned paused controller holds only observation metadata; every event has its own normal work and budget. */
 export class ResidentMissions {
@@ -341,8 +334,10 @@ export class ResidentMissions {
         try {
           // Registration precedes the last current-state check, closing the command-before-dispatch gap.
           await authorize(); pollSignal.throwIfAborted();
-          page = MissionPageSchema.parse(await abortablePoll(source.poll({ resourceId: checkpoint.definition.rule.resourceId, cursor: checkpoint.cursor, snapshotDigest: checkpoint.snapshotDigest,
-            now, signal: pollSignal, authorize: async () => { pollSignal.throwIfAborted(); await authorize(); pollSignal.throwIfAborted(); } }), pollSignal));
+          page = MissionPageSchema.parse(await observePendingPoll({ state: this.deps.services.state, workId, basisRevision: state.revision,
+            signal: pollSignal, controller: new AbortController(), authorize }, watchedSignal => source.poll({ resourceId: checkpoint.definition.rule.resourceId, cursor: checkpoint.cursor,
+            snapshotDigest: checkpoint.snapshotDigest, now, signal: watchedSignal,
+            authorize: async () => { watchedSignal.throwIfAborted(); await authorize(); watchedSignal.throwIfAborted(); } })));
           await authorize(); pollSignal.throwIfAborted();
         } catch (error) {
           // Durable observation controls retain the existing error contract; caller/provider errors remain original.

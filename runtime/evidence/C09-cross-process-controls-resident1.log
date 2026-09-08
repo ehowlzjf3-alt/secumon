@@ -1,0 +1,166 @@
+TAP version 13
+# Subtest: resident stable control sqlite: replay, conflict, stale, stop and legacy publication across reopen
+ok 1 - resident stable control sqlite: replay, conflict, stale, stop and legacy publication across reopen
+  ---
+  duration_ms: 1940.904667
+  type: 'test'
+  ...
+# Subtest: resident stable control file-journal: replay, conflict, stale, stop and legacy publication across reopen
+ok 2 - resident stable control file-journal: replay, conflict, stale, stop and legacy publication across reopen
+  ---
+  duration_ms: 1764.146125
+  type: 'test'
+  ...
+# Subtest: resident stable control: prior pause replay leaves the post-resume poll running and preserves raw events
+ok 3 - resident stable control: prior pause replay leaves the post-resume poll running and preserves raw events
+  ---
+  duration_ms: 850.467334
+  type: 'test'
+  ...
+# Subtest: resident stable control: actual journal candidate_synced failure and exact retry
+ok 4 - resident stable control: actual journal candidate_synced failure and exact retry
+  ---
+  duration_ms: 1392.203959
+  type: 'test'
+  ...
+# Subtest: resident stable control: actual journal published failure and exact retry
+ok 5 - resident stable control: actual journal published failure and exact retry
+  ---
+  duration_ms: 1476.176125
+  type: 'test'
+  ...
+# Subtest: resident command recovery: post-publication pause cancels the original poll but preserves the unknown commit error
+ok 6 - resident command recovery: post-publication pause cancels the original poll but preserves the unknown commit error
+  ---
+  duration_ms: 1116.377667
+  type: 'test'
+  ...
+# Subtest: resident command recovery: post-publication stop cancels the original poll but preserves the unknown commit error
+ok 7 - resident command recovery: post-publication stop cancels the original poll but preserves the unknown commit error
+  ---
+  duration_ms: 763.62875
+  type: 'test'
+  ...
+# Subtest: resident command recovery: a pre-publication failure neither cancels the poll nor claims a committed control
+ok 8 - resident command recovery: a pre-publication failure neither cancels the poll nor claims a committed control
+  ---
+  duration_ms: 1136.136875
+  type: 'test'
+  ...
+# Subtest: resident command recovery: a failed receipt lookup preserves both errors and a paused retry recovers the missed cancellation
+ok 9 - resident command recovery: a failed receipt lookup preserves both errors and a paused retry recovers the missed cancellation
+  ---
+  duration_ms: 1101.598167
+  type: 'test'
+  ...
+# Subtest: resident command recovery: a receipt lookup delayed across resume cancels only the old revision and preserves the new poll
+ok 10 - resident command recovery: a receipt lookup delayed across resume cancels only the old revision and preserves the new poll
+  ---
+  duration_ms: 1192.29125
+  type: 'test'
+  ...
+# Subtest: resident controls: pause persists pending events across reopen, resume uses the same session, and stop cannot be resumed
+ok 11 - resident controls: pause persists pending events across reopen, resume uses the same session, and stop cannot be resumed
+  ---
+  duration_ms: 3094.276042
+  type: 'test'
+  ...
+# Subtest: resident controls: an explicitly changed goal after original intake is detached without automatic execution and remains explicitly resumable
+ok 12 - resident controls: an explicitly changed goal after original intake is detached without automatic execution and remains explicitly resumable
+  ---
+  duration_ms: 2158.981667
+  type: 'test'
+  ...
+# Subtest: resident controls: explicitly paused or cancelled accepted event work is not reexecuted while the next event remains independent
+ok 13 - resident controls: explicitly paused or cancelled accepted event work is not reexecuted while the next event remains independent
+  ---
+  duration_ms: 3499.558208
+  type: 'test'
+  ...
+# Subtest: resident controls: pause during a gated source poll rejects its late page and resume reads the same cursor once
+ok 14 - resident controls: pause during a gated source poll rejects its late page and resume reads the same cursor once
+  ---
+  duration_ms: 748.103209
+  type: 'test'
+  ...
+# Subtest: resident controls: an actual goal change during workflow stops automatic continuation until an explicit user resume
+ok 15 - resident controls: an actual goal change during workflow stops automatic continuation until an explicit user resume
+  ---
+  duration_ms: 820.035875
+  type: 'test'
+  ...
+# Subtest: mission entry: the ordinary model tool loop reads a newly observed event and reports it without creating personal memory or evidence
+ok 16 - mission entry: the ordinary model tool loop reads a newly observed event and reports it without creating personal memory or evidence
+  ---
+  duration_ms: 1174.635
+  type: 'test'
+  ...
+# Subtest: resident entry: event tasks share only their persistent conversation while the controller never executes
+ok 17 - resident entry: event tasks share only their persistent conversation while the controller never executes
+  ---
+  duration_ms: 1013.115334
+  type: 'test'
+  ...
+# Subtest: resident entry: independent directories and original event receipts survive reopen and reject changed redelivery
+ok 18 - resident entry: independent directories and original event receipts survive reopen and reject changed redelivery
+  ---
+  duration_ms: 2482.912875
+  type: 'test'
+  ...
+# Subtest: resident entry: accepted intake interrupted before its controller receipt reuses the same work after real compact and reopen
+ok 19 - resident entry: accepted intake interrupted before its controller receipt reuses the same work after real compact and reopen
+  ---
+  duration_ms: 3928.621334
+  type: 'test'
+  ...
+# Subtest: resident entry: a question remains explicitly resumable without repeated inference on an empty poll
+ok 20 - resident entry: a question remains explicitly resumable without repeated inference on an empty poll
+  ---
+  duration_ms: 2792.769125
+  type: 'test'
+  ...
+# Subtest: resident entry: stopping a gated poll preserves its controller and prevents late event intake or inference
+ok 21 - resident entry: stopping a gated poll preserves its controller and prevents late event intake or inference
+  ---
+  duration_ms: 434.079875
+  type: 'test'
+  ...
+# Subtest: resident poll control pause ends before raw release and leaves another controller on the same source running
+ok 22 - resident poll control pause ends before raw release and leaves another controller on the same source running
+  ---
+  duration_ms: 321.935417
+  type: 'test'
+  ...
+# Subtest: resident poll control stop ends before raw release and leaves another controller on the same source running
+ok 23 - resident poll control stop ends before raw release and leaves another controller on the same source running
+  ---
+  duration_ms: 299.717959
+  type: 'test'
+  ...
+# Subtest: resident poll control drive caller abort releases its claim while the owner remains live
+ok 24 - resident poll control drive caller abort releases its claim while the owner remains live
+  ---
+  duration_ms: 242.893333
+  type: 'test'
+  ...
+# Subtest: resident poll control driver close releases only its own claim and leaves late raw rejection to the source owner drain
+ok 25 - resident poll control driver close releases only its own claim and leaves late raw rejection to the source owner drain
+  ---
+  duration_ms: 319.611042
+  type: 'test'
+  ...
+# Subtest: resident poll control profile authority closure preserves the original claim without an unauthorized cleanup write
+ok 26 - resident poll control profile authority closure preserves the original claim without an unauthorized cleanup write
+  ---
+  duration_ms: 295.951583
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37003.717

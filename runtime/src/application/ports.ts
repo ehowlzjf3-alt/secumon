@@ -32,6 +32,8 @@ export interface ConversationWorkQuery {
 export interface ConversationWorkPage { workIds: string[]; nextCursor: string | null }
 export interface StateRepository {
   get(workId: string): Promise<WorkState | null>;
+  /** Change candidate only; does not prove current authority, original-history integrity or completion. */
+  revisionHint?(workId: string): Promise<number | null>;
   receipt(workId: string, commandId: string): Promise<{ digest: string; state: WorkState } | null>;
   commit(request: CommitRequest): Promise<CommitResult>;
   events(workId: string, afterSequence: number): Promise<StoredEvent[]>;
