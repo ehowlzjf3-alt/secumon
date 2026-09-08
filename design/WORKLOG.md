@@ -2370,3 +2370,11 @@ C08 선택 고유199개(기존152+신규47)와 관련 공통 회귀47개를 확�
 최종 build5 source71297c2791e56723c18dcee539e79d9ccfa239df8d7db0bf9bda75f26a176feb 및 산출물2,217개 일치, 마지막 예산입구·진전12/12. 앞선 타입/계약/무진전 실패와 fixture 교정은 원로그로 보존한다. 소스별 통과를 전체 최종 재실행으로 합치지 않는다. [결과](chapters/C08-ordered-verification-result.md) · [증거](../runtime/evidence/checkpoint378.json).
 
 분리 원장 반환/재배정·활성 grant compact·접수 중단 복구와 C09/C10, 기존 플랫폼·실제 연동 잔여를 저장했다. 활성 실행은 없으며 실제 모델/API 시험 중단과 전체 goal 미완료를 유지한다. 코드·문서·증거를 함께 커밋/푸시한다.
+
+## 체크포인트 379: C08 반환·활성 배정·접수 중단
+
+- C08 반환·활성 배정·접수 중단의 신규5개와 직접 영향 회귀11개를 확인했다. 실제 세션 요약 후 원 배정으로 이어가기, 자진 반환 뒤 새 배정, 실제 SIGKILL 후 원 동료 요청의 명시 재개를 확인했다. 제품 변경 없이 시험을 보완했고, 실제 모델/API·운영 인수와 전체 goal은 미완료다.
+- 처음16개 중14통과·2실패. compact 원 장부 버전 동기화 기대값과 시험용 모델의 자기 계획 몫 계산을 바로잡았다. 원 하드한도·무진전3·목표·기록은 바꾸지 않았다.
+- 최종 build3과 수정파일4개 통과. SIGKILL1개와 기존11개는 build2 통과이며 반복 실행하지 않았다. 실행 handle은 모두 종료했고 source/output manifest 일치를 확인했다.
+- 동료 crash의 자동 모델 재계획·호출자 완료, staged frame의 자동 적용, 실제 모델 품질을 통과로 주장하지 않는다.
+- [결과](chapters/C08-remaining-boundaries-result.md) · [다음 C09](chapters/C09-ordered-verification-preparation.md). 완료 단위 전체를 커밋·푸시하고 원격 일치를 확인한다.

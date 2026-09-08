@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import type { TestContext } from 'node:test';
 import { mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -94,10 +93,21 @@ function nextTurn(packet: ContextPacket, which: 0 | 1): AgentTurnResult {
   return answer(`동료 의견으로만 기록한다: ${peer.text}`, baseline ? [baseline.id] : []);
 }
 
-export function peerDeploymentFixture(t: TestContext) {
-  const base = realpathSync(mkdtempSync(join(tmpdir(), 'peer-deployment-entry-'))), identityRegistryDirectory = join(base, 'registry');
+export interface PeerDeploymentOptions {
+  directory?: string;
+  existing?: boolean;
+  onAccepted?: (to: 0 | 1, request: PeerRequest, ticket: PeerTicket) => Promise<void>;
+}
+export function peerDeploymentFixture(t: { after(callback: () => Promise<void>): void }, options: PeerDeploymentOptions = {}) {
+  assert.ok(!options.existing || options.directory, 'existing profiles require a caller-owned directory');
+  const base = options.directory ? realpathSync(options.directory) : realpathSync(mkdtempSync(join(tmpdir(), 'peer-deployment-entry-')));
+  const identityRegistryDirectory = join(base, 'registry');
   const profiles = new FileAgentProfileStore(engine);
   const ready = peerSpecs.map(spec => {
+    if (options.existing) {
+      const value = profiles.inspect(join(base, spec.key)); assert.equal(value.status, 'ready');
+      assert.ok(value.status === 'ready'); return value;
+    }
     const value = profiles.initialize(join(base, spec.key), { name: spec.principalId, purpose: spec.purpose, stateBackend: 'sqlite', personalMemory: 'sqlite' });
     writeFileSync(join(value.root, 'config.json'), JSON.stringify({ ...value.config, model: { profile: PROFILE }, skills: { mode: 'off' },
       features: { peers: true, board: false, archive: false, missions: false, a2a: false } }), { mode: 0o600 });
@@ -113,7 +123,8 @@ export function peerDeploymentFixture(t: TestContext) {
   const forwarding = (to: 0 | 1, role: 'resident' | 'temporary'): PeerAgent => ({
     identity: { agentId: ready[to]!.identity.agentId, revision: '1', role, model: modelIdentity(to) }, destination: 'local', allowedLabels: ['synthetic'],
     async request(request, signal) { const ticket = await peers(to, role).request(request, signal);
-      exchanges.push({ to, role, request: structuredClone(request), ticket: structuredClone(ticket) }); return ticket; },
+      exchanges.push({ to, role, request: structuredClone(request), ticket: structuredClone(ticket) });
+      await options.onAccepted?.(to, structuredClone(request), structuredClone(ticket)); return ticket; },
     async run(request, ticket, signal) { const reply = await peers(to, role).run(request, ticket, signal);
       const exchange = exchanges.findLast(value => value.to === to && value.request.id === request.id); assert.ok(exchange);
       exchange.reply = structuredClone(reply); return reply; },
@@ -165,7 +176,7 @@ export function peerDeploymentFixture(t: TestContext) {
   }
   t.after(async () => {
     const errors: unknown[] = []; for (const value of [...current.values()]) try { await value.close(); } catch (error) { errors.push(error); }
-    try { rmSync(base, { recursive: true, force: true }); } catch (error) { errors.push(error); }
+    if (!options.directory) try { rmSync(base, { recursive: true, force: true }); } catch (error) { errors.push(error); }
     if (errors.length) throw new AggregateError(errors, 'peer_entry_cleanup_failed');
   });
   return { base, ready, profiles, observed, exchanges, peers, open,

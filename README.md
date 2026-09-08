@@ -20,9 +20,9 @@ node dist/presentation/agent-cli.js chat help
 
 ## 현재 확인한 범위
 
-현재 진행은 [인수인계](design/IMPLEMENTATION-RESUME.md)의 checkpoint378을 따른다. C08 첫 인수에서 선택 고유199개(기존152+신규47)와 관련 공통 회귀47개를 확인했다. C07 선택261개·관련89개와 C01~C06 결과는 이전 실행 기록으로 유지한다. 각 빌드 결과를 최종 한 소스의 전체 재실행으로 합치지 않는다.
+현재 진행은 [인수인계](design/IMPLEMENTATION-RESUME.md)의 checkpoint379를 따른다. C08 반환·활성 배정·접수 중단의 신규5개와 직접 영향 회귀11개를 확인했다. 실제 세션 요약 후 원 배정으로 이어가기, 자진 반환 뒤 새 배정, 실제 SIGKILL 후 원 동료 요청의 명시 재개를 확인했다. 제품 변경 없이 시험을 보완했고, 실제 모델/API·운영 인수와 전체 goal은 미완료다. 앞선 C08 선택199개·관련47개와 C01~C07 결과는 이전 실행 기록으로 유지한다. 소스별 결과와 재실행을 중복 합산하지 않는다.
 
-2026-09-08, checkpoint378 기준이다. 아래 수치는 macOS arm64·Node v24.20.0의 선택한 로컬 시험 결과이며 전체 환경의 통과 수가 아니다.
+2026-09-08, checkpoint379 기준이다. 아래 수치는 macOS arm64·Node v24.20.0의 선택한 로컬 시험 결과이며 전체 환경의 통과 수가 아니다.
 
 | 범위 | 상태와 근거 |
 | --- | --- |
@@ -33,7 +33,7 @@ node dist/presentation/agent-cli.js chat help
 | C05 도구·문맥·MCP | 선택한 **고유682개 통과**. 권한이 철회된 수집 작업의 일반 CLI/HTTP·정산·현재 제한 안내를 확인했다. 개인 기억 조회의 중복 포트 호출을 줄였고, 원본·권한 재검사를 유지했다. [결과](design/chapters/C05-ordered-verification-result.md) |
 | C06 대화 입구·설치·두 담당 배치 | 선택 **고유16개 통과**. Knox의 실행 전 권한 확인·종료 시작 후 새 호출 거절을 교정했다. 원 npm 격리 전역 설치·재설치, 두 담당의 설정·스킬·대화·기억 분리를 확인했다. 실제 Knox·브라우저 렌더·현재 Linux/Windows는 별도다. [결과](design/chapters/C06-ordered-verification-result.md) |
 | C07 선택 게시판·아카이브 | **고유261개 통과**, 관련 진전·호스트 회귀89개 별도. 담당별 원출처 등록, 독립 DB의 질문·답변·요청자 확인, 아카이브 원문/영수증·기억 비복사, 의미 있는 진전과 반복 중단을 확인했다. 원 committed revision 반환으로 후속 명령의 불필요한 재조회를 줄였다. [결과](design/chapters/C07-ordered-verification-result.md) |
-| C08 동료·반론·자원 | 첫 로컬 인수 선택199개·관련47개. 분리 DB 반환/재배정·활성 배정 compact·접수 중단 복구는 남는다. [결과](design/chapters/C08-ordered-verification-result.md) |
+| C08 동료·반론·자원 | 첫 로컬 인수 선택199개·관련47개. [앞선 결과](design/chapters/C08-ordered-verification-result.md) 후속 반환·활성 배정·접수 중단의 신규5개와 영향11개도 통과했다. 실제 DB·모델·플랫폼 인수는 별도다. [후속 결과](design/chapters/C08-remaining-boundaries-result.md) |
 | C09~C10 기능 연결 | 채택한 지원 범위의 구현과 통합 빌드를 마쳤다. 상세 검증과 실제 연동은 별도다. [구현 결과](design/chapters/C06-C10-implementation-result.md) · [검증 목록](design/chapters/C06-C10-verification-plan.md) |
 
 C06~C10에는 CLI/Web·전달 채널, 선택 게시판·아카이브, 동료·반론·자원 배정, A2A 지원 부분·사건별 상시 임무, 설치·버전 고정·업데이트·백업·복원이 포함된다. 구현되어 있다는 설명을 모든 조건에서 검증되었다는 의미로 사용하지 않는다. 과거 단위별 Linux 결과도 해당 소스 지문의 이력으로 보존한다.

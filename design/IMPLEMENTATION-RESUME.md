@@ -4,6 +4,14 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT379-START -->
+### Checkpoint379 — 반환·배정·압축과 실제 동료 접수 중단
+
+C08 반환·활성 배정·접수 중단의 신규5개와 직접 영향 회귀11개를 확인했다. 실제 세션 요약 후 원 배정으로 이어가기, 자진 반환 뒤 새 배정, 실제 SIGKILL 후 원 동료 요청의 명시 재개를 확인했다. 제품 변경 없이 시험을 보완했고, 실제 모델/API·운영 인수와 전체 goal은 미완료다. [결과](chapters/C08-remaining-boundaries-result.md) · [체크포인트](../runtime/evidence/checkpoint379.json). 원 C08 선택199개·관련47개를 반복하거나 이번16개와 중복 합산하지 않는다. 신규4개는 build3, SIGKILL1개와 영향11개는 build2의 기록이다. 최종 sourceDigest는 `22e72c6cc895d503d7f48c7ab565b29b80b4ed636e2b1fd66a0d28cc89b51019`이다.
+
+다음 실행은 **C09 A2A 등록·왕복·재전달·caller 격리**부터다. [준비 문서](chapters/C09-ordered-verification-preparation.md)를 따라 기존 구현과 시험을 재사용한다. 이어 사건/상시 임무·협업 비교→C10 순서를 유지한다. C08 PostgreSQL·실제 모델, 현재 Linux/native Windows·C06 브라우저·최종 통합·C05 정책 재허용 완주는 남아 있다. staged 작업 frame은 실제 summary 게시와 다르며 이번 peer crash는 명시 host resume이지 호출자의 자동 최종 완료가 아니다. 활성 빌드·시험은 없다.
+<!-- CHECKPOINT379-END -->
+
 <!-- CHECKPOINT378-START -->
 ### Checkpoint378 — 동료 입구·반론·분리 원장과 자원 도구
 

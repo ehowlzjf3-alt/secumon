@@ -10,7 +10,7 @@ import { HostBudgetLedgerRouter, budgetWorkAddress } from '../application/budget
 import { BUDGET_TOOL_IDS } from '../application/budget-tools.js';
 import { ToolResultSchema } from '../application/contracts.js';
 import { asJson } from '../application/plan-validator.js';
-import type { Tool } from '../application/ports.js';
+import type { ModelIdentity, Tool } from '../application/ports.js';
 import type { BudgetAuthorityBinding } from '../application/budget-authority.js';
 import type { AgentTurnResult } from '../domain/agent-turn.js';
 import type { ArtifactRef, ContextPacket, Json, Limits, PlanProposal, Policy, TaskSpec } from '../domain/model.js';
@@ -101,7 +101,10 @@ function sponsorTurn(input: AgentTurnInput, steps: readonly BudgetEntryStep[]): 
 }
 
 /** Actual independent profile stores and product ledger router; model transports are finite local fixtures. */
-export async function budgetToolsEntryFixture(t: TestContext, options: { child?: 'read' | 'request' | 'unknown' } = {}) {
+export async function budgetToolsEntryFixture(t: TestContext, options: {
+  child?: 'read' | 'request' | 'unknown' | 'return' | 'read-then-return';
+  compactPlanner?: (role: BudgetEntryRole, identity: ModelIdentity) => Pick<RegisteredTurnPlanner, 'compact' | 'estimateCompactInput'>;
+} = {}) {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'budget-tools-entry-'))), runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
   const profiles = new FileAgentProfileStore(runtimeRoot), router = new HostBudgetLedgerRouter();
   const directories = { sponsor: join(base, 'sponsor'), recipient: join(base, 'recipient') };
@@ -133,7 +136,9 @@ export async function budgetToolsEntryFixture(t: TestContext, options: { child?:
           assert.equal(role, 'recipient'); observed.recipientInputs.push(structuredClone(request.packet));
           if (controls.child === 'unknown') throw new Error('injected_recipient_transport_response_lost');
           const requested = (request.packet.toolObservations ?? []).some(item => item.toolId === 'core.budget.request' && item.status === 'success');
-          const selected = controls.child === 'request' && !requested ? task('recipient-request', 'core.budget.request',
+          const read = (request.packet.toolObservations ?? []).some(item => item.toolId === BUDGET_ENTRY_SOURCE && item.status === 'success');
+          const selected = controls.child === 'return' || controls.child === 'read-then-return' && read ? task('recipient-return', 'core.budget.return', {}) :
+            controls.child === 'request' && !requested ? task('recipient-request', 'core.budget.request',
             { extra: BUDGET_ENTRY_EXTRA, reason: BUDGET_ENTRY_REQUEST_REASON }) :
             task('recipient-read', BUDGET_ENTRY_SOURCE, {}, ['criterion']);
           assert.ok(request.packet.activeToolIds.includes(selected.toolId));
@@ -144,7 +149,8 @@ export async function budgetToolsEntryFixture(t: TestContext, options: { child?:
         const planner: RegisteredTurnPlanner = { identity: turn.identity, destination: turn.destination, capabilities: turn.capabilities,
           prompt: turn.prompt, inputEstimation: turn.inputEstimation, turn: turn.turn.bind(turn), propose: plan.propose.bind(plan),
           estimateTurnInput: turn.estimateTurnInput.bind(turn), estimateInput: plan.estimateInput.bind(plan),
-          estimateContextPreview: (preview, call) => preview.turn ? turn.estimateContextPreview(preview, call) : plan.estimateContextPreview(preview, call) };
+          estimateContextPreview: (preview, call) => preview.turn ? turn.estimateContextPreview(preview, call) : plan.estimateContextPreview(preview, call),
+          ...(options.compactPlanner?.(role, identity) ?? {}) };
         return { planner, inputLimits: { maxInputBytes: 131072, maxOutputTokens: 2048 }, async close() {} };
       } }]]),
       tools: { async open(context, assembly) {

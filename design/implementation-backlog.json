@@ -1,5 +1,5 @@
 {
-  "revision": "v0.68",
+  "revision": "v0.69",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1922,7 +1922,7 @@
     "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
     "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
   },
-  "next_local_work_item": "C08 remaining split-ledger return/reallocation, active-grant compact/reopen, and accepted-recipient/before-caller-ticket crash recovery; then C09/C10 and existing C05/C06/platform/integration followups. Preserve actual model/API stop.",
+  "next_local_work_item": "C09 local A2A off/on registration, first acknowledgement and explicit execution, redelivery and caller isolation, then event/resident recovery and evaluation; retain C05/C06/platform/C10/integration followups and actual model/API stop.",
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
   "execution_state": "ordered_verification_active",
@@ -4659,13 +4659,38 @@
           "fileCount": 2217
         },
         "remaining": [
-          "Split-ledger explicit return and reallocation",
-          "Compact and reopen with an active split-ledger grant",
-          "Recipient accepted but caller ticket not committed recovery",
-          "C09/C10 ordered acceptance and existing C05/C06 followups"
+          "See checkpoint379 for completed local return/reallocation, active grant summary/reopen and explicit accepted-peer crash resume; actual environment and final integration remain."
         ],
         "actualModelApi": "stopped_by_user",
         "goalComplete": false
+      },
+      "remaining_boundary_verification": {
+        "checkpoint": 379,
+        "status": "local_boundary_unit_verified",
+        "result": "design/chapters/C08-remaining-boundaries-result.md",
+        "evidence": "runtime/evidence/checkpoint379.json",
+        "newUnique": 5,
+        "affectedRegressionUnique": 11,
+        "selectedUnique": 16,
+        "mixedBuildEvidence": true,
+        "allRerunAtFinalSource": false,
+        "productSourceChanged": false,
+        "finalSource": {
+          "node": "v24.20.0",
+          "sourceDigest": "22e72c6cc895d503d7f48c7ab565b29b80b4ed636e2b1fd66a0d28cc89b51019",
+          "filesDigest": "60224a0a7580d503e2bd0553ef6e61f22d250797d279ea4e8c2aa17ffecf933e",
+          "fileCount": 2232,
+          "sourceMatches": true,
+          "outputsMatch": true
+        },
+        "actualModelApi": "stopped_by_user",
+        "goalComplete": false,
+        "remaining": [
+          "Actual PostgreSQL/internal peer delivery and cross-platform acceptance",
+          "Actual model quality remains untested",
+          "Crash case validates explicit host resume, not automatic caller completion",
+          "C09/C10 and C05/C06/integration followups"
+        ]
       }
     },
     {
@@ -4723,6 +4748,12 @@
         "evidence": "runtime/evidence/C01-windows-administrative-checkpoint.json",
         "detailed_verification": "not_run",
         "remaining_implementation": []
+      },
+      "ordered_verification_preparation": {
+        "checkpoint": 379,
+        "status": "prepared_not_run",
+        "document": "design/chapters/C09-ordered-verification-preparation.md",
+        "firstUnit": "A2A off/on registration, acknowledgement then explicit execution, redelivery and caller isolation"
       }
     },
     {
@@ -4841,7 +4872,7 @@
     }
   ],
   "legacy_next_work_item": "P1-06",
-  "next_execution_chapter": "C08",
+  "next_execution_chapter": "C09",
   "reconciliation_documents": [
     "design/chapters/workspace-agent-defaults.md",
     "design/chapters/agent-lifecycle-and-memory-boundaries.md",

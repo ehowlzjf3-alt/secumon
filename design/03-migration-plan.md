@@ -2,7 +2,7 @@
 
 ## 현재 실행 방침 — 2026-09-08
 
-최신 checkpoint378: C08 첫 로컬 인수에서 선택 고유199개(기존152+신규47)와 관련 공통 회귀47개를 확인했다. 동료 세션 생성·사용자 분리와 반론→자체 판별, 분리 원장·도구 계약·자원 준비 진전·제한 재시도를 교정했다. [결과](chapters/C08-ordered-verification-result.md)에 소스별 통과와 앞선 실패를 구분했다. 다음은 C08의 분리 DB 반환/재배정·활성 grant compact·수신 접수 뒤 ticket 저장 전 중단 복구이며 이어 C09/C10을 진행한다. 현재 OS·브라우저·최종 통합, 기억 HTTP 지연, C05 정책 재허용 완주와 실제 연동은 남긴다. 실제 모델/API 중단과 전체 goal 미완료를 유지한다. [인수인계](IMPLEMENTATION-RESUME.md) · [다음 작업](NEXT-STEPS.md). 아래 이전 checkpoint 설명은 당시 이력이다.
+최신 checkpoint379: C08 반환·활성 배정·접수 중단의 신규5개와 직접 영향 회귀11개를 확인했다. 실제 세션 요약 후 원 배정으로 이어가기, 자진 반환 뒤 새 배정, 실제 SIGKILL 후 원 동료 요청의 명시 재개를 확인했다. 제품 변경 없이 시험을 보완했고, 실제 모델/API·운영 인수와 전체 goal은 미완료다. [결과](chapters/C08-remaining-boundaries-result.md)에 소스별 통과와 실패 교정을 기록했다. 다음은 [C09 A2A·사건/상시 임무·비교](chapters/C09-ordered-verification-preparation.md), 이어 C10이다. 현재 OS·브라우저·최종 통합, 기억 HTTP 지연, C05 정책 재허용 완주와 실제 연동은 남긴다. [인수인계](IMPLEMENTATION-RESUME.md) · [다음 작업](NEXT-STEPS.md). 아래 이전 checkpoint 설명은 당시 이력이다.
 
 이전 Checkpoint375: C03의 명시 복구 중단·실제 로컬 도구 기록5개를 추가해 선택 고유243개, C05의 원문 조회 재사용·수집 권한 차단·CLI 안내20개를 추가해 선택 고유682개를 확인했다. 각 실행의 소스 지문과 실패 후 교정을 구분하며 전체를 최종 소스에서 재실행한 것으로 표시하지 않는다. [현재 인수인계](IMPLEMENTATION-RESUME.md)와 [다음 작업](NEXT-STEPS.md)을 따른다. C06 직접 입구·설치·두 담당 배치부터 이어가며, 정책 재허용 후 전체 재개·최종 통합·현재 Linux/native Windows 및 실제 환경 인수는 별도다. 아래 checkpoint374 이전의 상태·다음 작업은 이력이다.
 

@@ -1,18 +1,23 @@
 # 다음 작업
 
-2026-09-08 · checkpoint378. C08 첫 로컬 인수의 선택 고유199개와 관련 공통 회귀47개를 확인했다. 최종 build5의 예산 입구·진전12개도 통과했다. 모든 시험을 최종 한 소스에서 재실행한 결과는 아니다. [결과](chapters/C08-ordered-verification-result.md) · [체크포인트](../runtime/evidence/checkpoint378.json). 이번 단위의 게시 기준선은 c6a5225이며 전체 goal과 C08의 잔여 인수는 미완료다.
+2026-09-08 · checkpoint379. C08 후속의 신규5개와 직접 영향 회귀11개를 확인했다. 실제 세션 요약과 활성 배정 재접속, 반환 후 새 배정, 동료 접수 직후 SIGKILL 뒤 원 요청의 명시 재개를 확인했다. [결과](chapters/C08-remaining-boundaries-result.md) · [체크포인트](../runtime/evidence/checkpoint379.json). 게시 전 기준선은 3d75c031이며 전체 goal과 실제 환경 인수는 미완료다.
 
 완료 단위의 코드·문서·검증 결과·남은 작업을 함께 커밋하고 origin에 푸시한다. [저장소 규칙](../AGENTS.md).
 
 ## 바로 이어갈 일
 
-1. C08 분리 DB의 **명시 return→재배정**, **활성 grant compact/reopen**, **수신 접수 뒤 발신 ticket 저장 전 중단·복구**를 인수한다. 새 목표나 grant로 바꾸어 통과시키지 않는다. 이미 확인한 [동료·자원 입구](chapters/C08-ordered-verification-result.md)와 기존 같은 DB budget/runtime/crash152개는 반복하지 않으며 분리 DB 장애 인수의 대체물로 세지 않는다.
-2. 이어 C09 A2A·상시 임무 → C10 설치·버전·복구의 [검증 항목](chapters/C06-C10-verification-plan.md)을 진행한다. 실제 모델/API 시험 중단을 유지한다.
+1. **C09 A2A 등록·왕복·재전달·caller 격리**부터 진행한다. [준비 문서](chapters/C09-ordered-verification-preparation.md)는 현재 연결과 재사용 시험, 신규 인수 후보를 구분한다. off/on 등록→첫 ACK에서 실행0→명시 run→원 결과 GetTask→같은 메시지 재전달·다른 담당 격리를 먼저 확인한다. C08에서 끝난 반환/재배정·활성 배정·동료 접수 중단을 다시 만들지 않는다.
+2. 이어 C09 사건 원문·업무 재개→상주 담당의 사건별 격리/중단 복구→단독/협업 비교, C10 설치·버전·복구의 [검증 항목](chapters/C06-C10-verification-plan.md)을 진행한다. 실제 모델/API 시험 중단을 유지한다.
 3. C06 브라우저 렌더링·실제 사용자 조작, 현재 Linux/native Windows와 최종 통합은 별도 인수다. 로컬 HTTP bytes·대역·macOS 설치로 대신하지 않는다.
 4. C05 신뢰된 정책 재허용 → 명시 resume → 저장 수집 결과 소비의 전체 흐름을 인수한다. 차단/정산·독립 successor 시험만으로 완주를 주장하지 않는다. [결과와 한계](chapters/C05-collection-permission-resume-result.md).
 5. 개인 기억을 선택한 HTTP 완료의 지연과 권한 설정을 검토한다. 기존 fixture20초를 넘겨60초 대기로 기능을 확인한 것이며 성능 개선은 아니다. 현재 호스트 allowWrites와 실제 write/computer 등록 결합, 기억 전용 허용의 사용성을 함께 살핀다.
 
 ## 이번에 마친 범위
+
+- 후속 신규5개: 명시 반환 전/부분 실행 뒤 정산·새 배정2개, 실제 세션 요약·활성 요청 재접속2개, 접수 후 실제 SIGKILL과 원 ticket의 명시 재개1개. 제품 변경 없이 시험 기대값과 시험용 모델의 자원 배정 계산을 교정했다.
+- 공유 fixture 직접 영향11개도 통과했다. 신규4개는 build3, SIGKILL1개와 영향11개는 build2 기록이다. 소스별 결과를 최종 한 소스의 전체 재실행으로 합치지 않는다.
+
+아래는 앞선 checkpoint378에서 마친 연결이다.
 
 - 동료: 독립 담당의 양방향 상담, 사용자별 상주 세션과 요청별 임시/검토 세션, 반론 후 자체 판별 관측·재평가, compact/reopen 뒤 원 ticket·예산 재사용.
 - 내부 전달: peer/local의 원 세션 답변, 같은 전달 ID의 세션·담당 변조 거절과 원문·대화 불변. 새 ID까지 재발급하는 신뢰된 호스트의 모든 오용을 검증한 것은 아니다.
