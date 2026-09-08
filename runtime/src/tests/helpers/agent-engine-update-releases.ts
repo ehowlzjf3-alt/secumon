@@ -9,7 +9,7 @@ export const ENGINE_UPDATE_MARKER = 'engine-update-v2';
 const runtimeRoot = fileURLToPath(new URL('../../../', import.meta.url));
 
 /** Compatible test releases from the full built runtime. Only the private B candidate gets an executable fixture-format change. */
-export function createEngineUpdateReleases(base: string) {
+export function createEngineUpdateReleases(base: string, options: { customizeCandidate?: (directory: string) => void } = {}) {
   const bundleA = bundleAgentEngine(runtimeRoot, join(base, 'bundle-a'));
   const a = installAgentEngine(bundleA.directory, join(base, 'engine-a'), bundleA.release.digest);
   const candidateB = join(base, 'candidate-b'); createLifecycleDirectory(candidateB);
@@ -29,6 +29,7 @@ export function createEngineUpdateReleases(base: string) {
   assert.equal(originalCode.split(expression).length, 2, 'the actual compiled deterministic answer formatter must have one exact fixture seam');
   const updatedCode = originalCode.replace(expression, `text: \`[합성 규칙 결과 / ${ENGINE_UPDATE_MARKER}] \${text}\``);
   assert.notEqual(updatedCode, originalCode); writeFileSync(modulePath, updatedCode, { mode: 0o600 });
+  options.customizeCandidate?.(candidateB);
   const bundleB = bundleAgentEngine(candidateB, join(base, 'bundle-b'));
   const b = installAgentEngine(bundleB.directory, join(base, 'engine-b'), bundleB.release.digest);
   assert.notEqual(a.release.digest, b.release.digest); assert.notEqual(a.release.version, b.release.version);

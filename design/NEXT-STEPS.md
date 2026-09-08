@@ -1,5 +1,21 @@
 # 다음 작업
 
+2026-09-08 · checkpoint386. 고정 CLI 전달 형식과 실제 compact 세션의 설치 엔진 전환을 구현·로컬 검증했다. 신규4개·관련55개, 합계59개 통과다. 큰 A/B 및 회귀는 build1, 시험 격리만 보완한3개 재시험은 build2이므로 최종 소스 전체59개 재실행으로 표시하지 않는다. build2 exit0·최종2388파일 일치, core exit0·계층199/위반0은 제품 동일 build1 기록이다.
+
+[결과](chapters/C10-launch-envelope-result.md) · [사용법](chapters/C10-launch-envelope-usage.md) · [체크포인트](../runtime/evidence/checkpoint386.json)
+
+## 바로 이어갈 일
+
+[자동 최초 pin 계획](chapters/C10-initial-pin-plan.md)에 따라 검증된 설치 release의 신규 setup→첫 pin→ready부터 구현한다. 이후 npm/개발 패키지를 호스트 소유 release로 준비하는 연결을 붙인다. 기존 무핀 담당·clone·restore는 자동으로 새 담당 취급하지 않는다.
+
+저장 schema 이행·미확정 외부 효과·C09 종료/저널/이력 비용·C05 권한 재허용 완주·C06 기억 HTTP/권한/브라우저·현재 Linux/native Windows/실제PG/사내 연동·운영/최종통합은 남는다. 실제 모델/API 시험 중단과 외부 연결0을 유지하며 전체 C10/goal은 미완료다. 활성 build/test는 없다.
+
+완료 단위의 코드·문서·결과·남은 작업을 함께 커밋하고 origin에 푸시한 뒤 원격 일치를 확인한다.
+
+## 이전 기록 — checkpoint385 이하
+
+아래의 다음 행동·미실행 표현은 당시 기록이며 위 현재 계획을 우선한다.
+
 2026-09-08 · checkpoint385. 동일 전역 입구에서 담당별 등록 엔진을 선택하고 공통 확장 호환을 검사하도록 연결했다. 같은 build2 소스에서 신규26개·관련161개, 총187개 통과·코어 타입 exit0·계층199개/위반0. 실제 설치 B로 기존 업무를 재개했고 도구 호출은1회로 유지했다.
 
 [결과](chapters/C10-launcher-extensions-result.md) · [사용법](chapters/C10-launcher-extensions-usage.md) · [체크포인트](../runtime/evidence/checkpoint385.json). 실행 중인 빌드·시험은 없다. 완료 단위를 문서/결과/미완료 항목과 함께 커밋하고 origin에 푸시한다.

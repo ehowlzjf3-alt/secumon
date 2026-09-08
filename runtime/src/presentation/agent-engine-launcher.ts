@@ -4,14 +4,20 @@ import { join } from 'node:path';
 import { AgentLifecycleError } from '../application/agent-lifecycle-contracts.js';
 import { resolveAgentEngine } from '../infrastructure/agent-engine-registry.js';
 import { agentLaunchDirectory } from './agent-cli-options.js';
+import { parseAgentDispatch, validateAgentDispatch } from './agent-dispatch.js';
 
-/** Returns null when the invoked engine handles this command; otherwise the selected child owns the terminal. */
-export async function launchPinnedAgent(args: string[], currentEngine: string): Promise<number | null> {
-  const directory = agentLaunchDirectory(args, process.cwd());
-  if (directory === null) return null;
+export type AgentLaunchResult = { kind: 'local'; args: string[]; defaultDirectory?: string } | { kind: 'exited'; code: number };
+
+/** Selects the installation before interpreting an envelope's target-engine command. */
+export async function launchPinnedAgent(args: string[], currentEngine: string): Promise<AgentLaunchResult> {
+  const dispatch = parseAgentDispatch(args, process.cwd());
+  const directory = dispatch?.directory ?? agentLaunchDirectory(args, process.cwd());
+  if (directory === null) return { kind: 'local', args };
   const selection = resolveAgentEngine(directory, currentEngine);
-  if (selection.source === 'current') return null;
-  return executeSelectedAgentEngine(args, selection.directory);
+  if (selection.source === 'current') return dispatch
+    ? { kind: 'local', args: dispatch.args, defaultDirectory: validateAgentDispatch(dispatch, currentEngine) }
+    : { kind: 'local', args };
+  return { kind: 'exited', code: await executeSelectedAgentEngine(args, selection.directory) };
 }
 
 /** Terminal transport for an already selected installation; only trusted launcher code calls this. */

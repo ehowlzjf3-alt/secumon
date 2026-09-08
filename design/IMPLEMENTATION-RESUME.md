@@ -1,5 +1,19 @@
 # 구현 이어가기
 
+## CHECKPOINT 386 — 새 엔진 옵션 전달과 compact 문맥 유지
+
+2026-09-08 · checkpoint386. 고정 CLI 전달 형식과 실제 compact 세션의 설치 엔진 전환을 구현·로컬 검증했다. 신규4개·관련55개, 합계59개 통과다. 큰 A/B 및 회귀는 build1, 시험 격리만 보완한3개 재시험은 build2이므로 최종 소스 전체59개 재실행으로 표시하지 않는다. build2 exit0·최종2388파일 일치, core exit0·계층199/위반0은 제품 동일 build1 기록이다.
+
+[자동 최초 pin 계획](chapters/C10-initial-pin-plan.md)에 따라 검증된 설치 release의 신규 setup→첫 pin→ready부터 구현한다. 이후 npm/개발 패키지를 호스트 소유 release로 준비하는 연결을 붙인다. 기존 무핀 담당·clone·restore는 자동으로 새 담당 취급하지 않는다.
+
+저장 schema 이행·미확정 외부 효과·C09 종료/저널/이력 비용·C05 권한 재허용 완주·C06 기억 HTTP/권한/브라우저·현재 Linux/native Windows/실제PG/사내 연동·운영/최종통합은 남는다. 실제 모델/API 시험 중단과 외부 연결0을 유지하며 전체 C10/goal은 미완료다. 활성 build/test는 없다.
+
+[결과](chapters/C10-launch-envelope-result.md) · [사용법](chapters/C10-launch-envelope-usage.md) · [체크포인트](../runtime/evidence/checkpoint386.json)
+
+사용자가 물은 공통 메인 프롬프트는 실제 소스와 StructuredAgentTurnAdapter 연결을 확인했다. 범용 역할·대화 연속성·직접 답변/질문/계획·가설/반론·도구/스킬 지침은 구현돼 있으며 실제 모델 품질은 미검증이다.
+
+아래 checkpoint385 이하의 다음 행동은 당시 이력이다. 현재는 checkpoint386을 따른다.
+
 ## CHECKPOINT 385 — 전역 엔진 선택과 확장 호환
 
 Checkpoint385: 직전 단위는 결과 저장·242d0b1 커밋/원격 일치로 progress다. 이번에는 동일 전역 bin의 담당별 등록 엔진 선택, 별도 호스트 설치 등록표와 install/register, 공통 확장 API/필수 기능 선언·기동/로컬 및 PG check/pin/update 검사를 연결했다. 같은 최종 build2에서 신규26/관련161, 합계187개 통과·core exit0·계층199/위반0. 실제 A bin이 B formatter로 원 업무를 완료하며 세션/기억/원문/영수증과 도구1회를 유지했다. 등록표 변경 중 조회 거절, 실제 parent-only SIGTERM/stdio/종료코드도 확인했다. 최초 build1은 시험 삼항식 오류 exit2였고 원로그를 보존했다. 최종 source 85f45154e47f3dae10ab15a7e57f741f6f69ff4cc949561b9ca30d082a7e17d9/2376파일 대조 일치. 실제 모델/API·외부 서비스 연결0, 이번 Linux/native Windows/실제PG/브라우저/운영 미검증. 활성 build/test 없음. 다음은 고정 전달 형식+실제 compact 세션 버전전환, 그 뒤 신규 setup 자동 최초pin/npm release 준비다. 기존 무핀 담당의 자동채택·offline 확인 대행은 하지 않는다. C09/C05/C06/플랫폼·최종통합 잔여와 전체 goal 미완료를 유지한다.
@@ -10,7 +24,7 @@ Checkpoint385: 직전 단위는 결과 저장·242d0b1 커밋/원격 일치로 p
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
-아래 checkpoint384 이하의 다음 행동은 당시 기록이다. 현재 작업은 위 checkpoint385를 따른다.
+아래 checkpoint384 이하의 다음 행동은 당시 기록이다. 현재 작업은 위 checkpoint386을 따른다.
 
 <!-- CHECKPOINT384-START -->
 ### Checkpoint384 — 호환 배포본 전환과 담당 연속성

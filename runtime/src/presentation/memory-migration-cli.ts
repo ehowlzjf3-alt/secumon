@@ -19,8 +19,8 @@ preview는 파일을 생성하지 않습니다. apply 전에 해당 담당의 �
 원 기억 ID·최신 내용·저장된 영수증을 보존합니다. 원 DB에 없는 과거 본문은 만들지 않습니다.
 source fence 뒤에는 취소/SQLite 자동 복귀가 없으며 같은 operation의 resume을 사용합니다.
 `;
-export async function runMemoryMigrationCli(args: string[], profiles: AgentProfileStore, forbiddenRoots: readonly string[]) {
-  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: memoryMigrationCliOptions(process.cwd()) });
+export async function runMemoryMigrationCli(args: string[], profiles: AgentProfileStore, forbiddenRoots: readonly string[], defaultDirectory = process.cwd()) {
+  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: memoryMigrationCliOptions(defaultDirectory) });
   if (values.help || positionals[0] === 'help') { process.stdout.write(help); return; }
   const command = positionals[0];
   if (positionals.length !== 1 || !['preview', 'apply', 'resume', 'status'].includes(command ?? '')) throw new PersonalMemoryMigrationError('agent_migration_command_invalid');

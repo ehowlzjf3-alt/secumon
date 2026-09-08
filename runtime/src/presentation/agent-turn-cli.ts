@@ -83,8 +83,8 @@ async function view(profile: AgentTurnProfile, workId: string, scope: SessionSco
   throw new Error('conversation_view_contention');
 }
 
-export async function runAgentTurnCli(args: string[], host: AgentExecutionHost = createLocalContractHost()) {
-  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: agentTurnCliOptions(process.cwd()) });
+export async function runAgentTurnCli(args: string[], host: AgentExecutionHost = createLocalContractHost(), defaultDirectory = process.cwd()) {
+  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: agentTurnCliOptions(defaultDirectory) });
   const command = positionals[0] ?? 'help';
   if (values.help || command === 'help') { process.stdout.write(help); return; }
   if (positionals.length !== 1 || !['session', 'ask', 'followup', 'goal', 'resume', 'pause', 'cancel', 'status', 'history'].includes(command)) throw new Error('chat_command_invalid');

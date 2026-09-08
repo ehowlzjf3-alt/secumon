@@ -50,35 +50,50 @@ const workCommands = ['accept', 'demo', 'demo-plan', 'plan', 'run', 'status', 'w
   'compact', 'context-status', 'memory-remember', 'memory-search', 'memory-get', 'memory-recall', 'memory-clear', 'memory-selected',
   'memory-revise', 'memory-forget', 'memory-draft-create', 'memory-draft-apply', 'memory-draft-resume', 'memory-draft-status'];
 
-/** Selects only a CLI directory; the launcher must separately validate its host identity, pin and installed engine. */
-export function agentLaunchDirectory(args: string[], cwd: string): string | null {
+export type AgentCliRoute = { kind: 'agent'; directory: string } | { kind: 'help' | 'bootstrap' | 'invalid' };
+
+/** Uses this engine's parser. Invalid routes fail before profile access in the corresponding CLI. */
+export function agentCliRoute(args: string[], cwd: string): AgentCliRoute {
   try {
     // Match runAgentCli's first-token dispatch before parsing each route's options.
-    if (args[0] === 'lifecycle') return null;
+    if (args[0] === 'lifecycle' || args[0] === 'dispatch') return { kind: 'bootstrap' };
     if (args[0] === 'chat') {
       const { values, positionals } = parseArgs({ args: args.slice(1), allowPositionals: true, strict: true, options: agentTurnCliOptions(cwd) });
-      if (values.help || positionals.length !== 1 || !chatCommands.includes(positionals[0]!)) return null;
-      return values.directory;
+      if (values.help || (positionals[0] ?? 'help') === 'help') return { kind: 'help' };
+      if (positionals.length !== 1 || !chatCommands.includes(positionals[0]!)) return { kind: 'invalid' };
+      return { kind: 'agent', directory: values.directory };
     }
     if (args[0] === 'work') {
       const { values, positionals } = parseArgs({ args: args.slice(1), allowPositionals: true, strict: true, options: localCliOptions() });
-      if (values.help || positionals.length < 1 || positionals.length > 2 || !workCommands.includes(positionals[0]!)) return null;
-      if (values.directory !== undefined) return values.directory;
-      // Preserve standalone options and let the original CLI report any agent-mode conflict.
-      if (values['data-dir'] !== undefined || values['state-backend'] !== undefined) return null;
-      return cwd;
+      if (values.help || (positionals[0] ?? 'help') === 'help') return { kind: 'help' };
+      if (positionals.length > 2 || !workCommands.includes(positionals[0]!)) return { kind: 'invalid' };
+      if (values['data-dir'] !== undefined || values['state-backend'] !== undefined) {
+        // An explicit directory retains the CLI's original conflict error, before any store opens.
+        return values.directory === undefined ? { kind: 'bootstrap' } : { kind: 'agent', directory: values.directory };
+      }
+      return { kind: 'agent', directory: values.directory ?? cwd };
     }
     if (args[0] === 'memory-migrate') {
       const { values, positionals } = parseArgs({ args: args.slice(1), allowPositionals: true, strict: true, options: memoryMigrationCliOptions(cwd) });
-      if (values.help || positionals.length !== 1 || !['preview', 'apply', 'resume', 'status'].includes(positionals[0]!)) return null;
-      return values.directory;
+      if (values.help || positionals[0] === 'help') return { kind: 'help' };
+      if (positionals.length !== 1 || !['preview', 'apply', 'resume', 'status'].includes(positionals[0]!)) return { kind: 'invalid' };
+      return { kind: 'agent', directory: values.directory };
     }
     const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: agentCliOptions(cwd) });
-    const command = positionals[0] ?? 'open';
-    if (values.help || values.version || positionals.length > 1 || !['open', 'init', 'status'].includes(command)) return null;
-    return values.directory;
+    if (values.help || positionals.length === 1 && positionals[0] === 'help') return { kind: 'help' };
+    const command = values.version ? 'version' : positionals[0] ?? 'open';
+    if (positionals.length > 1 || !['open', 'init', 'status', 'repair', 'clone', 'version'].includes(command)) return { kind: 'invalid' };
+    if (command === 'version') return { kind: 'help' };
+    if (command === 'repair' || command === 'clone') return { kind: 'bootstrap' };
+    return { kind: 'agent', directory: values.directory };
   } catch {
     // Parsing failures retain the original CLI's error and output handling.
-    return null;
+    return { kind: 'invalid' };
   }
+}
+
+/** Selects only a CLI directory; the launcher separately validates its host identity, pin and installed engine. */
+export function agentLaunchDirectory(args: string[], cwd: string): string | null {
+  const route = agentCliRoute(args, cwd);
+  return route.kind === 'agent' ? route.directory : null;
 }

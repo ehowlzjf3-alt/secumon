@@ -24,6 +24,7 @@ const help = `secumon-agent · 담당 디렉터리 설정
   chat <명령> 일반 원문 요청·후속 대화 (chat help; synthetic 또는 registered 제공자 명시)
   memory-migrate <명령> 기존 SQLite 개인 기억의 명시적 문서 이관 (memory-migrate help)
   lifecycle <명령> 오프라인 설치·엔진 핀·업데이트·자료 백업/복원 (lifecycle help)
+  dispatch --directory 담당 -- <명령> …  지정 엔진에 원 옵션 전달; 내부 기본 담당은 외곽 경로
 옵션: --directory 경로 --name 이름 --purpose 담당목적 --json --help
 작업 상태: init --state-backend sqlite|file-journal (새 담당 선택; 기본 sqlite)
 repair --state-backend는 기존 선택 확인용이며 생략하면 저장된 선택을 따릅니다.
@@ -35,7 +36,7 @@ documents는 개인 기억의 정본을 문서로 저장합니다. 업무 근거
 기본 경로는 현재 디렉터리입니다. 설정 명령은 작업을 실행하지 않습니다. 실제 모델은 연결하지 않습니다.
 `;
 /** Trusted setup/lifecycle/work/chat host configuration; normal bin startup uses the default host registry. */
-export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOptions & EngineExtensionCheckOptions = {}) {
+export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOptions & EngineExtensionCheckOptions = {}, defaultDirectory = process.cwd()) {
   if (args[0] === 'lifecycle') {
     const { runAgentLifecycleCli } = await import('./agent-lifecycle-cli.js');
     await runAgentLifecycleCli(args.slice(1), new FileAgentProfileStore(root), root, hostOptions); return;
@@ -44,17 +45,17 @@ export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOpt
     const { runAgentTurnCli, reportAgentTurnCliFailure } = await import('./agent-turn-cli.js');
     const { createLocalContractHost } = await import('./local-contract-model.js');
     const chatArgs = args.slice(1);
-    await runAgentTurnCli(chatArgs, { ...createLocalContractHost(), ...hostOptions }).catch(error => reportAgentTurnCliFailure(error, chatArgs.includes('--json'))); return;
+    await runAgentTurnCli(chatArgs, { ...createLocalContractHost(), ...hostOptions }, defaultDirectory).catch(error => reportAgentTurnCliFailure(error, chatArgs.includes('--json'))); return;
   }
   if (args[0] === 'memory-migrate') {
     const { runMemoryMigrationCli } = await import('./memory-migration-cli.js');
-    await runMemoryMigrationCli(args.slice(1), new FileAgentProfileStore(root), [root]); return;
+    await runMemoryMigrationCli(args.slice(1), new FileAgentProfileStore(root), [root], defaultDirectory); return;
   }
   if (args[0] === 'work') {
     const { runLocalCli, reportCliFailure } = await import('./cli.js');
-    await runLocalCli(args.slice(1), process.cwd(), hostOptions).catch(reportCliFailure); return;
+    await runLocalCli(args.slice(1), defaultDirectory, hostOptions).catch(reportCliFailure); return;
   }
-  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: agentCliOptions(process.cwd()) });
+  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: agentCliOptions(defaultDirectory) });
   if (values.help || positionals.length === 1 && positionals[0] === 'help') { process.stdout.write(help); return; }
   const command = values.version ? 'version' : positionals[0] ?? 'open';
   if (positionals.length > 1 || !['open', 'init', 'status', 'repair', 'clone', 'version'].includes(command)) throw new AgentProfileError('agent_command_invalid');
@@ -100,6 +101,6 @@ if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToP
     const args = process.argv.slice(2);
     const { launchPinnedAgent } = await import('./agent-engine-launcher.js');
     const status = await launchPinnedAgent(args, root);
-    if (status === null) await runAgentCli(args); else process.exitCode = status;
+    if (status.kind === 'local') await runAgentCli(status.args, {}, status.defaultDirectory); else process.exitCode = status.code;
   } catch (error) { reportAgentCliFailure(error); }
 }
