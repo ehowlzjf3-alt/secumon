@@ -141,6 +141,7 @@ export async function startWebServer(workbench: WebWorkbench, options: WebOption
     ['/assets/view-state.js', { path: join(runtimeRoot, 'dist/presentation/web/view-state.js'), type: 'text/javascript; charset=utf-8' }],
     ['/assets/personal-memory.js', { path: join(runtimeRoot, 'dist/presentation/web/personal-memory.js'), type: 'text/javascript; charset=utf-8' }],
     ['/assets/resident-missions.js', { path: join(runtimeRoot, 'dist/presentation/web/resident-missions.js'), type: 'text/javascript; charset=utf-8' }],
+    ['/assets/resident-command-store.js', { path: join(runtimeRoot, 'dist/presentation/web/resident-command-store.js'), type: 'text/javascript; charset=utf-8' }],
   ]);
   function authenticated(req: IncomingMessage): { id: string; session: Session } {
     const cookies = (singleton(req, 'cookie') ?? '').split(';').map(v => v.trim()).filter(v => v.startsWith(`${cookieName}=`));

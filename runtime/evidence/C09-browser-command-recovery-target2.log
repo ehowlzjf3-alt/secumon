@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: resident command recovery restores the same command identity and basis without restoring a trusted status view
+ok 1 - resident command recovery restores the same command identity and basis without restoring a trusted status view
+  ---
+  duration_ms: 1.150083
+  type: 'test'
+  ...
+# Subtest: resident command recovery keeps durable requests through status refresh, view invalidation and authentication clear
+ok 2 - resident command recovery keeps durable requests through status refresh, view invalidation and authentication clear
+  ---
+  duration_ms: 0.217958
+  type: 'test'
+  ...
+# Subtest: resident command recovery exposes no sendable new command if persistence fails before prepare completes
+ok 3 - resident command recovery exposes no sendable new command if persistence fails before prepare completes
+  ---
+  duration_ms: 0.130292
+  type: 'test'
+  ...
+# Subtest: resident command recovery retains the original ticket when a confirmed result cannot be removed from persistence
+ok 4 - resident command recovery retains the original ticket when a confirmed result cannot be removed from persistence
+  ---
+  duration_ms: 0.238541
+  type: 'test'
+  ...
+# Subtest: resident command recovery preserves an unresolved or failed-to-delete stale request while retaining other controllers
+ok 5 - resident command recovery preserves an unresolved or failed-to-delete stale request while retaining other controllers
+  ---
+  duration_ms: 0.246042
+  type: 'test'
+  ...
+# Subtest: resident command recovery does not delete a restored request for another receipt or an older status response
+ok 6 - resident command recovery does not delete a restored request for another receipt or an older status response
+  ---
+  duration_ms: 0.222416
+  type: 'test'
+  ...
+# Subtest: resident command storage: reload preserves only frozen original retry tickets and empty save removes the exact key
+ok 7 - resident command storage: reload preserves only frozen original retry tickets and empty save removes the exact key
+  ---
+  duration_ms: 1.328
+  type: 'test'
+  ...
+# Subtest: resident command storage: exact agent, session and conversation keys remain separate without normalizing scope identifiers
+ok 8 - resident command storage: exact agent, session and conversation keys remain separate without normalizing scope identifiers
+  ---
+  duration_ms: 0.310584
+  type: 'test'
+  ...
+# Subtest: resident command storage: malformed, foreign and extra-field envelopes cannot be loaded or overwritten, even by empty save
+ok 9 - resident command storage: malformed, foreign and extra-field envelopes cannot be loaded or overwritten, even by empty save
+  ---
+  duration_ms: 0.355542
+  type: 'test'
+  ...
+# Subtest: resident command storage: strict tickets reject hidden payloads, invalid identifiers, unsafe revisions and duplicate identities
+ok 10 - resident command storage: strict tickets reject hidden payloads, invalid identifiers, unsafe revisions and duplicate identities
+  ---
+  duration_ms: 0.75225
+  type: 'test'
+  ...
+# Subtest: resident command storage: scope validation and accessor rejection cannot silently discard supplied data
+ok 11 - resident command storage: scope validation and accessor rejection cannot silently discard supplied data
+  ---
+  duration_ms: 0.093834
+  type: 'test'
+  ...
+# Subtest: resident command storage: capacity bounds preserve all pending requests without expiry or eviction
+ok 12 - resident command storage: capacity bounds preserve all pending requests without expiry or eviction
+  ---
+  duration_ms: 0.300125
+  type: 'test'
+  ...
+# Subtest: resident command storage: read, write and removal failures preserve the old request and block replacement
+ok 13 - resident command storage: read, write and removal failures preserve the old request and block replacement
+  ---
+  duration_ms: 0.133833
+  type: 'test'
+  ...
+# Subtest: resident web controls keep a lost-response command through fresh status reads and controller switches
+ok 14 - resident web controls keep a lost-response command through fresh status reads and controller switches
+  ---
+  duration_ms: 0.764583
+  type: 'test'
+  ...
+# Subtest: resident web controls distinguish an unresolved response from a confirmed rejection before a new command
+ok 15 - resident web controls distinguish an unresolved response from a confirmed rejection before a new command
+  ---
+  duration_ms: 0.471541
+  type: 'test'
+  ...
+# Subtest: resident web controls retain only display summaries and discard protected state when the connection expires
+ok 16 - resident web controls retain only display summaries and discard protected state when the connection expires
+  ---
+  duration_ms: 0.170708
+  type: 'test'
+  ...
+# Subtest: resident mission Web: stable commands replay across resume and reopen without cancelling a newer poll
+ok 17 - resident mission Web: stable commands replay across resume and reopen without cancelling a newer poll
+  ---
+  duration_ms: 828.291625
+  type: 'test'
+  ...
+# Subtest: resident mission Web: authentication, CSRF and exact user selection reject commands without changing the controller
+ok 18 - resident mission Web: authentication, CSRF and exact user selection reject commands without changing the controller
+  ---
+  duration_ms: 388.012708
+  type: 'test'
+  ...
+# Subtest: resident mission Web: disabled mission registration is advertised and cannot create a controller
+ok 19 - resident mission Web: disabled mission registration is advertised and cannot create a controller
+  ---
+  duration_ms: 513.077208
+  type: 'test'
+  ...
+# Subtest: resident mission Web: matching user selection does not bypass screen disclosure
+ok 20 - resident mission Web: matching user selection does not bypass screen disclosure
+  ---
+  duration_ms: 381.377375
+  type: 'test'
+  ...
+# Subtest: web session is one-time, per-instance, HttpOnly; reload and static reads never execute
+ok 21 - web session is one-time, per-instance, HttpOnly; reload and static reads never execute
+  ---
+  duration_ms: 29.781333
+  type: 'test'
+  ...
+# Subtest: web Host, Origin, Fetch Metadata, CSRF and strict JSON reject before controller entry
+ok 22 - web Host, Origin, Fetch Metadata, CSRF and strict JSON reject before controller entry
+  ---
+  duration_ms: 12.848125
+  type: 'test'
+  ...
+# Subtest: web exact assets, methods and cursor options do not expose files or internal errors
+ok 23 - web exact assets, methods and cursor options do not expose files or internal errors
+  ---
+  duration_ms: 14.253459
+  type: 'test'
+  ...
+# Subtest: web session expiry during body blocks mutation entry, logout blocks late view payload
+ok 24 - web session expiry during body blocks mutation entry, logout blocks late view payload
+  ---
+  duration_ms: 27.93175
+  type: 'test'
+  ...
+# Subtest: web bootstrap expires and authenticated request rate has a finite window
+ok 25 - web bootstrap expires and authenticated request rate has a finite window
+  ---
+  duration_ms: 335.001708
+  type: 'test'
+  ...
+# Subtest: web SSE emits projection changes at same revision, reconnect is readonly, denial closes
+ok 26 - web SSE emits projection changes at same revision, reconnect is readonly, denial closes
+  ---
+  duration_ms: 3039.11
+  type: 'test'
+  ...
+# Subtest: web SSE session revocation, stream cap and lifetime release resources
+ok 27 - web SSE session revocation, stream cap and lifetime release resources
+  ---
+  duration_ms: 44.802542
+  type: 'test'
+  ...
+# Subtest: closed SSE keeps physical read slots until completion; reconnect cannot create unbounded reads
+ok 28 - closed SSE keeps physical read slots until completion; reconnect cannot create unbounded reads
+  ---
+  duration_ms: 384.914875
+  type: 'test'
+  ...
+# Subtest: web pending run permits independent cancel and disconnect does not call cancel
+ok 29 - web pending run permits independent cancel and disconnect does not call cancel
+  ---
+  duration_ms: 21.6625
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6437.214334

@@ -1,5 +1,5 @@
 {
-  "revision": "v0.82",
+  "revision": "v0.83",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1922,7 +1922,7 @@
     "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
     "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
   },
-  "next_local_work_item": "C09 browser pending command persistence across reload and actual browser interaction validation",
+  "next_local_work_item": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
   "execution_state": "ordered_verification_active",
@@ -4756,62 +4756,87 @@
         "firstUnit": "A2A off/on registration, acknowledgement then explicit execution, redelivery and caller isolation"
       },
       "ordered_verification": {
-        "checkpoint": 398,
+        "checkpoint": 399,
         "recordedAt": "2026-09-09",
-        "status": "C09_cross_process_observation_controls_local_verified",
-        "baselineCommit": "c0a14e9b401aa2426b8975cbecc5c9a85143fce7",
-        "plan": "design/chapters/C09-cross-process-controls-plan.md",
-        "result": "design/chapters/C09-cross-process-controls-result.md",
-        "usage": "design/chapters/C09-cross-process-controls-usage.md",
-        "newUnique": 23,
-        "relatedUnique": 55,
-        "allUnique": 78,
+        "status": "C09_browser_command_recovery_local_verified",
+        "baselineCommit": "c295c6116bbc23cfbe7d5562a3b800ed48990b9b",
+        "plan": "design/chapters/C09-browser-command-recovery-plan.md",
+        "result": "design/chapters/C09-browser-command-recovery-result.md",
+        "usage": "design/chapters/C09-browser-command-recovery-usage.md",
+        "newUnique": 13,
+        "relatedUnique": 16,
+        "allUnique": 29,
         "mixedBuildEvidence": false,
         "allRerunAtFinalSource": true,
-        "finalBuild": "C09-cross-process-controls-build1",
+        "finalBuild": "C09-browser-command-recovery-build2",
         "finalSource": {
-          "build": "C09-cross-process-controls-build1",
+          "build": "C09-browser-command-recovery-build2",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "20447a7872f8e72507e2c6e4362dbf2b7a89a4a32c426d7b268b764e254728a0",
-          "filesDigest": "fd6a033eb6674bcc43e1351374511b39675be6f891acb87605bded821eca9e53",
-          "fileCount": 2559
+          "sourceDigest": "38c152c21f8225609ef5e8c2a9906fc6dbf7ed7af0fe0416d7d9c1ee3d130533",
+          "filesDigest": "5c2794eacb33c3fe122a366126361525dd60ce6db0fa3aa699389cb0305dac27",
+          "fileCount": 2571
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint398-final-source.json",
-        "measurementsEvidence": "runtime/evidence/checkpoint398-measurements.json",
+        "finalSourceEvidence": "runtime/evidence/checkpoint399-final-source.json",
+        "browserEvidence": "runtime/evidence/checkpoint399-browser.json",
         "checks": {
           "buildExitCode": 0,
           "coreExitCode": 0,
           "architectureInspected": 203,
           "architectureViolations": 0,
-          "finalBuildLog": "runtime/evidence/C09-cross-process-controls-build1.log",
-          "coreLog": "runtime/evidence/C09-cross-process-controls-core1.log",
-          "architectureLog": "runtime/evidence/C09-cross-process-controls-architecture1.log",
-          "allChecksAtFinalSource": true
+          "finalBuildLog": "runtime/evidence/C09-browser-command-recovery-build2.log",
+          "coreLog": "runtime/evidence/C09-browser-command-recovery-core1.log",
+          "architectureLog": "runtime/evidence/C09-browser-command-recovery-architecture1.log",
+          "targetLog": "runtime/evidence/C09-browser-command-recovery-target2.log",
+          "coreAndArchitectureReused": "After these passes only the browser verification helper payload reader changed. Core source and import graph are unchanged.",
+          "finalSourceMatchesPreTest": true
         },
         "verifiedScope": [
-          "Optional repository revisionHint on memory/SQLite/file/Postgres without new schema or side publication; scalar DB reads or protected file names are not authority or original-history proof",
-          "An observation-local serialized watcher checks hints every 250 ms and reauthorizes at least on each detected candidate change and after a 5-second scheduled interval; it runs only while source.poll is pending",
-          "Authoritative exact-basis checks cancel only the stale resident/mission source operation and preserve existing command/receipt/cursor/event/session/resource records",
-          "Actual child CLI pause/stop reaches parent observations on SQLite/file-journal; old pause replay leaves a post-resume poll running",
-          "Both pause and resume may finish in separate child processes before the parent reads the change; the parent still stops its stale poll while preserving the latest active state",
-          "Different sessions and agents remain observing when a valid command affects only its selected controller; invalid child selections are rejected",
-          "Actual general mission command worker cancels a pending source without creating a failed-source checkpoint or inferring a new answer",
-          "Helper timers stop, checks do not overlap within a watch, late storage/source outcomes cannot alter a completed or newer poll, unavailable hints use full authorization, and actual errors are retained",
-          "File hint calls read no original record bytes or hashes and do not update verified heads/cache; a subsequent formal get rejects tampered original history",
-          "Existing resident and mission control/recovery/entry tests pass on the same final build"
+          "Same-tab sessionStorage pending commands partitioned by authenticated agent, persistent user session and conversation; only retry identity and original basis are retained",
+          "Persist before a new POST; remove only after a matching response or definite rejection; bounded storage errors retain existing pending records",
+          "Status reads and authentication/page exit clear do not remove durable pending requests; restored status is not trusted",
+          "Actual browser loss of command response, reload without a new POST, exact original command replay and unchanged receipt, subsequent resume and stop",
+          "Confirmed pending request stays absent after reload; closed controls are disabled",
+          "Unit and HTTP scope, response, failure, auth and CSRF regressions at the final build"
         ],
+        "storage": {
+          "backend": "sessionStorage",
+          "maxPending": 16,
+          "maxUtf8Bytes": 32768,
+          "scope": [
+            "agentId",
+            "sessionId",
+            "conversationId"
+          ],
+          "automaticPostOnReload": false,
+          "automaticEviction": false
+        },
+        "browser": {
+          "uniqueControlReceipts": 3,
+          "successfulCommandInvocations": 4,
+          "modelCalls": 0,
+          "pollCalls": 0,
+          "originalPauseReceiptUnchanged": true,
+          "finalFixtureExitCode": 0,
+          "temporaryTabClosed": true
+        },
+        "initialVerificationIssue": {
+          "kind": "helper_event_payload_reader_and_mixed_browser_run",
+          "evidence": "runtime/evidence/C09-browser-command-recovery-fixture-error.json",
+          "initialFixtureExitCode": 1,
+          "actualModelApiCalls": 0,
+          "productChangeNeeded": false
+        },
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
         "notRun": [
-          "Full suite and actual browser rendering/reload tests",
+          "Full suite; browser back-forward cache and multiple scoped browser sessions; cross-browser behavior",
           "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
-          "Corporate MCP/Knox/external A2A, production load and final integration",
+          "Corporate MCP/Knox/external A2A, operational load and final integration",
           "Actual model/API response quality: stopped by user"
         ],
         "remaining": [
-          "C09 browser pending command persistence across reload and actual browser interaction validation",
           "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
           "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
           "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
@@ -4819,28 +4844,9 @@
         ],
         "goalComplete": false,
         "chapterComplete": false,
-        "next": "C09 browser pending command persistence across reload and actual browser interaction validation",
-        "evidence": "runtime/evidence/checkpoint398.json",
-        "measurements": {
-          "fileHints": {
-            "calls": 6,
-            "recordReads": 0,
-            "rawHashBytes": 0,
-            "headerReads": 12,
-            "metadataChecks": 60
-          },
-          "defaultWatch": {
-            "intervalMs": 250,
-            "revalidateMs": 5000
-          },
-          "note": "A local observation recorded ordinary resident abort signals at -31.811 to 213.687 ms relative to child CLI close; negative means the poll aborted before the command process exited. These are individual samples, not latency bounds or production benchmarks."
-        },
-        "limitations": [
-          "The cadence is a scheduling interval, not a wall-clock maximum; storage reads and event-loop delay add latency",
-          "File revision hints still enumerate retained filenames and check metadata; periodic authoritative checks retain full original read/hash costs",
-          "Cancellation stops the observation wait; a noncooperative raw source or already-pending storage read may finish later under its owning host",
-          "The watcher covers active resident/mission source polls and does not add a global cross-process cancellation bus for unrelated model/tool execution"
-        ]
+        "next": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+        "evidence": "runtime/evidence/checkpoint399.json",
+        "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
       },
       "mission_verification": {
         "checkpoint": 381,
@@ -5564,6 +5570,99 @@
           "Cancellation stops the observation wait; a noncooperative raw source or already-pending storage read may finish later under its owning host",
           "The watcher covers active resident/mission source polls and does not add a global cross-process cancellation bus for unrelated model/tool execution"
         ]
+      },
+      "browser_command_recovery_verification": {
+        "checkpoint": 399,
+        "recordedAt": "2026-09-09",
+        "status": "C09_browser_command_recovery_local_verified",
+        "baselineCommit": "c295c6116bbc23cfbe7d5562a3b800ed48990b9b",
+        "plan": "design/chapters/C09-browser-command-recovery-plan.md",
+        "result": "design/chapters/C09-browser-command-recovery-result.md",
+        "usage": "design/chapters/C09-browser-command-recovery-usage.md",
+        "newUnique": 13,
+        "relatedUnique": 16,
+        "allUnique": 29,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-browser-command-recovery-build2",
+        "finalSource": {
+          "build": "C09-browser-command-recovery-build2",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "38c152c21f8225609ef5e8c2a9906fc6dbf7ed7af0fe0416d7d9c1ee3d130533",
+          "filesDigest": "5c2794eacb33c3fe122a366126361525dd60ce6db0fa3aa699389cb0305dac27",
+          "fileCount": 2571
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint399-final-source.json",
+        "browserEvidence": "runtime/evidence/checkpoint399-browser.json",
+        "checks": {
+          "buildExitCode": 0,
+          "coreExitCode": 0,
+          "architectureInspected": 203,
+          "architectureViolations": 0,
+          "finalBuildLog": "runtime/evidence/C09-browser-command-recovery-build2.log",
+          "coreLog": "runtime/evidence/C09-browser-command-recovery-core1.log",
+          "architectureLog": "runtime/evidence/C09-browser-command-recovery-architecture1.log",
+          "targetLog": "runtime/evidence/C09-browser-command-recovery-target2.log",
+          "coreAndArchitectureReused": "After these passes only the browser verification helper payload reader changed. Core source and import graph are unchanged.",
+          "finalSourceMatchesPreTest": true
+        },
+        "verifiedScope": [
+          "Same-tab sessionStorage pending commands partitioned by authenticated agent, persistent user session and conversation; only retry identity and original basis are retained",
+          "Persist before a new POST; remove only after a matching response or definite rejection; bounded storage errors retain existing pending records",
+          "Status reads and authentication/page exit clear do not remove durable pending requests; restored status is not trusted",
+          "Actual browser loss of command response, reload without a new POST, exact original command replay and unchanged receipt, subsequent resume and stop",
+          "Confirmed pending request stays absent after reload; closed controls are disabled",
+          "Unit and HTTP scope, response, failure, auth and CSRF regressions at the final build"
+        ],
+        "storage": {
+          "backend": "sessionStorage",
+          "maxPending": 16,
+          "maxUtf8Bytes": 32768,
+          "scope": [
+            "agentId",
+            "sessionId",
+            "conversationId"
+          ],
+          "automaticPostOnReload": false,
+          "automaticEviction": false
+        },
+        "browser": {
+          "uniqueControlReceipts": 3,
+          "successfulCommandInvocations": 4,
+          "modelCalls": 0,
+          "pollCalls": 0,
+          "originalPauseReceiptUnchanged": true,
+          "finalFixtureExitCode": 0,
+          "temporaryTabClosed": true
+        },
+        "initialVerificationIssue": {
+          "kind": "helper_event_payload_reader_and_mixed_browser_run",
+          "evidence": "runtime/evidence/C09-browser-command-recovery-fixture-error.json",
+          "initialFixtureExitCode": 1,
+          "actualModelApiCalls": 0,
+          "productChangeNeeded": false
+        },
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Full suite; browser back-forward cache and multiple scoped browser sessions; cross-browser behavior",
+          "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
+          "Corporate MCP/Knox/external A2A, operational load and final integration",
+          "Actual model/API response quality: stopped by user"
+        ],
+        "remaining": [
+          "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+          "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+        "evidence": "runtime/evidence/checkpoint399.json",
+        "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
       }
     },
     {
@@ -6276,13 +6375,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 398,
-      "status": "C09_cross_process_observation_controls_local_verified",
-      "plan": "design/chapters/C09-cross-process-controls-plan.md",
+      "checkpoint": 399,
+      "status": "C09_browser_command_recovery_local_verified",
+      "plan": "design/chapters/C09-browser-command-recovery-plan.md",
       "nextChapter": "C09",
       "preparedIdentityTests": 23,
       "existingFixtureFilesAdapted": 1,
-      "result": "design/chapters/C09-cross-process-controls-result.md",
+      "result": "design/chapters/C09-browser-command-recovery-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -6397,7 +6496,6 @@
         ]
       },
       "remaining": [
-        "C09 browser pending command persistence across reload and actual browser interaction validation",
         "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
         "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
         "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
@@ -6505,6 +6603,12 @@
           "status": "C09_resident_commands_local_verified",
           "nextChapter": "C09",
           "evidence": "runtime/evidence/checkpoint397.json"
+        },
+        {
+          "checkpoint": 398,
+          "status": "C09_cross_process_observation_controls_local_verified",
+          "nextChapter": "C09",
+          "evidence": "runtime/evidence/checkpoint398.json"
         }
       ],
       "C03": {
@@ -6620,62 +6724,87 @@
       },
       "C09Preparation": "design/chapters/C09-ordered-verification-preparation.md",
       "C09": {
-        "checkpoint": 398,
+        "checkpoint": 399,
         "recordedAt": "2026-09-09",
-        "status": "C09_cross_process_observation_controls_local_verified",
-        "baselineCommit": "c0a14e9b401aa2426b8975cbecc5c9a85143fce7",
-        "plan": "design/chapters/C09-cross-process-controls-plan.md",
-        "result": "design/chapters/C09-cross-process-controls-result.md",
-        "usage": "design/chapters/C09-cross-process-controls-usage.md",
-        "newUnique": 23,
-        "relatedUnique": 55,
-        "allUnique": 78,
+        "status": "C09_browser_command_recovery_local_verified",
+        "baselineCommit": "c295c6116bbc23cfbe7d5562a3b800ed48990b9b",
+        "plan": "design/chapters/C09-browser-command-recovery-plan.md",
+        "result": "design/chapters/C09-browser-command-recovery-result.md",
+        "usage": "design/chapters/C09-browser-command-recovery-usage.md",
+        "newUnique": 13,
+        "relatedUnique": 16,
+        "allUnique": 29,
         "mixedBuildEvidence": false,
         "allRerunAtFinalSource": true,
-        "finalBuild": "C09-cross-process-controls-build1",
+        "finalBuild": "C09-browser-command-recovery-build2",
         "finalSource": {
-          "build": "C09-cross-process-controls-build1",
+          "build": "C09-browser-command-recovery-build2",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "20447a7872f8e72507e2c6e4362dbf2b7a89a4a32c426d7b268b764e254728a0",
-          "filesDigest": "fd6a033eb6674bcc43e1351374511b39675be6f891acb87605bded821eca9e53",
-          "fileCount": 2559
+          "sourceDigest": "38c152c21f8225609ef5e8c2a9906fc6dbf7ed7af0fe0416d7d9c1ee3d130533",
+          "filesDigest": "5c2794eacb33c3fe122a366126361525dd60ce6db0fa3aa699389cb0305dac27",
+          "fileCount": 2571
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint398-final-source.json",
-        "measurementsEvidence": "runtime/evidence/checkpoint398-measurements.json",
+        "finalSourceEvidence": "runtime/evidence/checkpoint399-final-source.json",
+        "browserEvidence": "runtime/evidence/checkpoint399-browser.json",
         "checks": {
           "buildExitCode": 0,
           "coreExitCode": 0,
           "architectureInspected": 203,
           "architectureViolations": 0,
-          "finalBuildLog": "runtime/evidence/C09-cross-process-controls-build1.log",
-          "coreLog": "runtime/evidence/C09-cross-process-controls-core1.log",
-          "architectureLog": "runtime/evidence/C09-cross-process-controls-architecture1.log",
-          "allChecksAtFinalSource": true
+          "finalBuildLog": "runtime/evidence/C09-browser-command-recovery-build2.log",
+          "coreLog": "runtime/evidence/C09-browser-command-recovery-core1.log",
+          "architectureLog": "runtime/evidence/C09-browser-command-recovery-architecture1.log",
+          "targetLog": "runtime/evidence/C09-browser-command-recovery-target2.log",
+          "coreAndArchitectureReused": "After these passes only the browser verification helper payload reader changed. Core source and import graph are unchanged.",
+          "finalSourceMatchesPreTest": true
         },
         "verifiedScope": [
-          "Optional repository revisionHint on memory/SQLite/file/Postgres without new schema or side publication; scalar DB reads or protected file names are not authority or original-history proof",
-          "An observation-local serialized watcher checks hints every 250 ms and reauthorizes at least on each detected candidate change and after a 5-second scheduled interval; it runs only while source.poll is pending",
-          "Authoritative exact-basis checks cancel only the stale resident/mission source operation and preserve existing command/receipt/cursor/event/session/resource records",
-          "Actual child CLI pause/stop reaches parent observations on SQLite/file-journal; old pause replay leaves a post-resume poll running",
-          "Both pause and resume may finish in separate child processes before the parent reads the change; the parent still stops its stale poll while preserving the latest active state",
-          "Different sessions and agents remain observing when a valid command affects only its selected controller; invalid child selections are rejected",
-          "Actual general mission command worker cancels a pending source without creating a failed-source checkpoint or inferring a new answer",
-          "Helper timers stop, checks do not overlap within a watch, late storage/source outcomes cannot alter a completed or newer poll, unavailable hints use full authorization, and actual errors are retained",
-          "File hint calls read no original record bytes or hashes and do not update verified heads/cache; a subsequent formal get rejects tampered original history",
-          "Existing resident and mission control/recovery/entry tests pass on the same final build"
+          "Same-tab sessionStorage pending commands partitioned by authenticated agent, persistent user session and conversation; only retry identity and original basis are retained",
+          "Persist before a new POST; remove only after a matching response or definite rejection; bounded storage errors retain existing pending records",
+          "Status reads and authentication/page exit clear do not remove durable pending requests; restored status is not trusted",
+          "Actual browser loss of command response, reload without a new POST, exact original command replay and unchanged receipt, subsequent resume and stop",
+          "Confirmed pending request stays absent after reload; closed controls are disabled",
+          "Unit and HTTP scope, response, failure, auth and CSRF regressions at the final build"
         ],
+        "storage": {
+          "backend": "sessionStorage",
+          "maxPending": 16,
+          "maxUtf8Bytes": 32768,
+          "scope": [
+            "agentId",
+            "sessionId",
+            "conversationId"
+          ],
+          "automaticPostOnReload": false,
+          "automaticEviction": false
+        },
+        "browser": {
+          "uniqueControlReceipts": 3,
+          "successfulCommandInvocations": 4,
+          "modelCalls": 0,
+          "pollCalls": 0,
+          "originalPauseReceiptUnchanged": true,
+          "finalFixtureExitCode": 0,
+          "temporaryTabClosed": true
+        },
+        "initialVerificationIssue": {
+          "kind": "helper_event_payload_reader_and_mixed_browser_run",
+          "evidence": "runtime/evidence/C09-browser-command-recovery-fixture-error.json",
+          "initialFixtureExitCode": 1,
+          "actualModelApiCalls": 0,
+          "productChangeNeeded": false
+        },
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
         "notRun": [
-          "Full suite and actual browser rendering/reload tests",
+          "Full suite; browser back-forward cache and multiple scoped browser sessions; cross-browser behavior",
           "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
-          "Corporate MCP/Knox/external A2A, production load and final integration",
+          "Corporate MCP/Knox/external A2A, operational load and final integration",
           "Actual model/API response quality: stopped by user"
         ],
         "remaining": [
-          "C09 browser pending command persistence across reload and actual browser interaction validation",
           "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
           "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
           "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
@@ -6683,28 +6812,9 @@
         ],
         "goalComplete": false,
         "chapterComplete": false,
-        "next": "C09 browser pending command persistence across reload and actual browser interaction validation",
-        "evidence": "runtime/evidence/checkpoint398.json",
-        "measurements": {
-          "fileHints": {
-            "calls": 6,
-            "recordReads": 0,
-            "rawHashBytes": 0,
-            "headerReads": 12,
-            "metadataChecks": 60
-          },
-          "defaultWatch": {
-            "intervalMs": 250,
-            "revalidateMs": 5000
-          },
-          "note": "A local observation recorded ordinary resident abort signals at -31.811 to 213.687 ms relative to child CLI close; negative means the poll aborted before the command process exited. These are individual samples, not latency bounds or production benchmarks."
-        },
-        "limitations": [
-          "The cadence is a scheduling interval, not a wall-clock maximum; storage reads and event-loop delay add latency",
-          "File revision hints still enumerate retained filenames and check metadata; periodic authoritative checks retain full original read/hash costs",
-          "Cancellation stops the observation wait; a noncooperative raw source or already-pending storage read may finish later under its owning host",
-          "The watcher covers active resident/mission source polls and does not add a global cross-process cancellation bus for unrelated model/tool execution"
-        ]
+        "next": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+        "evidence": "runtime/evidence/checkpoint399.json",
+        "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
       },
       "C09A2A": {
         "checkpoint": 380,
@@ -7605,6 +7715,99 @@
           "Cancellation stops the observation wait; a noncooperative raw source or already-pending storage read may finish later under its owning host",
           "The watcher covers active resident/mission source polls and does not add a global cross-process cancellation bus for unrelated model/tool execution"
         ]
+      },
+      "C09BrowserCommandRecovery": {
+        "checkpoint": 399,
+        "recordedAt": "2026-09-09",
+        "status": "C09_browser_command_recovery_local_verified",
+        "baselineCommit": "c295c6116bbc23cfbe7d5562a3b800ed48990b9b",
+        "plan": "design/chapters/C09-browser-command-recovery-plan.md",
+        "result": "design/chapters/C09-browser-command-recovery-result.md",
+        "usage": "design/chapters/C09-browser-command-recovery-usage.md",
+        "newUnique": 13,
+        "relatedUnique": 16,
+        "allUnique": 29,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-browser-command-recovery-build2",
+        "finalSource": {
+          "build": "C09-browser-command-recovery-build2",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "38c152c21f8225609ef5e8c2a9906fc6dbf7ed7af0fe0416d7d9c1ee3d130533",
+          "filesDigest": "5c2794eacb33c3fe122a366126361525dd60ce6db0fa3aa699389cb0305dac27",
+          "fileCount": 2571
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint399-final-source.json",
+        "browserEvidence": "runtime/evidence/checkpoint399-browser.json",
+        "checks": {
+          "buildExitCode": 0,
+          "coreExitCode": 0,
+          "architectureInspected": 203,
+          "architectureViolations": 0,
+          "finalBuildLog": "runtime/evidence/C09-browser-command-recovery-build2.log",
+          "coreLog": "runtime/evidence/C09-browser-command-recovery-core1.log",
+          "architectureLog": "runtime/evidence/C09-browser-command-recovery-architecture1.log",
+          "targetLog": "runtime/evidence/C09-browser-command-recovery-target2.log",
+          "coreAndArchitectureReused": "After these passes only the browser verification helper payload reader changed. Core source and import graph are unchanged.",
+          "finalSourceMatchesPreTest": true
+        },
+        "verifiedScope": [
+          "Same-tab sessionStorage pending commands partitioned by authenticated agent, persistent user session and conversation; only retry identity and original basis are retained",
+          "Persist before a new POST; remove only after a matching response or definite rejection; bounded storage errors retain existing pending records",
+          "Status reads and authentication/page exit clear do not remove durable pending requests; restored status is not trusted",
+          "Actual browser loss of command response, reload without a new POST, exact original command replay and unchanged receipt, subsequent resume and stop",
+          "Confirmed pending request stays absent after reload; closed controls are disabled",
+          "Unit and HTTP scope, response, failure, auth and CSRF regressions at the final build"
+        ],
+        "storage": {
+          "backend": "sessionStorage",
+          "maxPending": 16,
+          "maxUtf8Bytes": 32768,
+          "scope": [
+            "agentId",
+            "sessionId",
+            "conversationId"
+          ],
+          "automaticPostOnReload": false,
+          "automaticEviction": false
+        },
+        "browser": {
+          "uniqueControlReceipts": 3,
+          "successfulCommandInvocations": 4,
+          "modelCalls": 0,
+          "pollCalls": 0,
+          "originalPauseReceiptUnchanged": true,
+          "finalFixtureExitCode": 0,
+          "temporaryTabClosed": true
+        },
+        "initialVerificationIssue": {
+          "kind": "helper_event_payload_reader_and_mixed_browser_run",
+          "evidence": "runtime/evidence/C09-browser-command-recovery-fixture-error.json",
+          "initialFixtureExitCode": 1,
+          "actualModelApiCalls": 0,
+          "productChangeNeeded": false
+        },
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Full suite; browser back-forward cache and multiple scoped browser sessions; cross-browser behavior",
+          "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
+          "Corporate MCP/Knox/external A2A, operational load and final integration",
+          "Actual model/API response quality: stopped by user"
+        ],
+        "remaining": [
+          "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+          "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+        "evidence": "runtime/evidence/checkpoint399.json",
+        "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
       }
     }
   }

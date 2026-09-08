@@ -380,7 +380,7 @@ async function sendCommand(id: string, command: WebCommandInput) {
 }
 function nextRequestId() { return crypto.randomUUID(); }
 const residentUI = installResidentMissionsUI({ request, epoch: () => sessionEpoch, nextId: nextRequestId, errorText,
-  errorCode: error => error instanceof RequestError ? error.code : null });
+  errorCode: error => error instanceof RequestError ? error.code : null, storage: () => sessionStorage });
 const memoryUI = installPersonalMemoryUI({ request, current, workId: () => selectedId, epoch: () => sessionEpoch, errorText,
   sessionId: () => persistentSessionId, documentDrafts: () => config?.memoryDrafts === true,
   refresh: async () => { const view = await readView('conversation', true); if (view && selectedId === view.workId && !stream) connectStream(view.workId); await loadHistory(); await loadWorks(); } });
@@ -635,7 +635,9 @@ async function start() {
       const token = connectionToken; connectionToken = null; session = await request('/api/session', { token }, true);
     }
     connectionToken = null; csrf = session.csrf; config = session.config; persistentSessionId = config.persistentSession?.sessionId ?? null; connection('연결됨', true);
-    residentUI.configure(config.residentMissions === true);
+    residentUI.configure(config.residentMissions === true, config.persistentSession && persistentSessionId ? {
+      agentId: config.persistentSession.agentId, sessionId: persistentSessionId, conversationId: config.conversationId,
+    } : null);
     element('request-text-field').hidden = !config.persistentSession; element<HTMLTextAreaElement>('request-text').required = Boolean(config.persistentSession);
     element('persistent-conversation').hidden = !config.persistentSession;
     element('personal-memory').hidden = !config.persistentSession;
@@ -662,6 +664,6 @@ async function start() {
     const remembered = rememberedSelection(); if (remembered && csrf) await selectWork(remembered);
   } catch (error) { connectionToken = null; connection('연결 필요', false); element('session-notice').hidden = false; text('session-notice', errorText(error)); element<HTMLButtonElement>('create-submit').disabled = true; }
 }
-window.addEventListener('pagehide', () => { stream?.close(); stream = null; });
-window.addEventListener('pageshow', event => { if (event.persisted && csrf && selectedId) void selectWork(selectedId); });
+window.addEventListener('pagehide', () => { stream?.close(); stream = null; residentUI.clear(); });
+window.addEventListener('pageshow', event => { if (event.persisted) void start(); });
 void start();
