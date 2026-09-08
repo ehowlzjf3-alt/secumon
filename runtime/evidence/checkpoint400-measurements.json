@@ -1,0 +1,139 @@
+{
+  "baseline": "checkpoint400-baseline.json",
+  "afterLog": "C09-history-cost-target1.log",
+  "afterBuild": "build1",
+  "sourceEntries": 129,
+  "maxContextBytes": 262144,
+  "textSize": 128,
+  "comparison": [
+    {
+      "operation": "context",
+      "beforeStateReads": 129,
+      "afterStateReads": 5,
+      "beforeStateBytes": 276060,
+      "afterStateBytes": 10700,
+      "historyEntries": 129,
+      "historyBytes": 47870,
+      "inputReads": 130,
+      "beforeElapsedMs": 10.201665999999932,
+      "afterElapsedMs": 10.42195799999999
+    },
+    {
+      "operation": "current",
+      "beforeStateReads": 129,
+      "afterStateReads": 5,
+      "beforeStateBytes": 276060,
+      "afterStateBytes": 10700,
+      "historyEntries": 129,
+      "historyBytes": 47870,
+      "inputReads": 130,
+      "beforeElapsedMs": 12.530292000000031,
+      "afterElapsedMs": 9.33850000000001
+    },
+    {
+      "operation": "inspect",
+      "beforeStateReads": 131,
+      "afterStateReads": 7,
+      "beforeStateBytes": 280340,
+      "afterStateBytes": 14980,
+      "historyEntries": 129,
+      "historyBytes": 47870,
+      "inputReads": 132,
+      "beforeElapsedMs": 9.262875000000008,
+      "afterElapsedMs": 10.358791999999994
+    },
+    {
+      "operation": "materialize",
+      "beforeStateReads": 262,
+      "afterStateReads": 14,
+      "beforeStateBytes": 560680,
+      "afterStateBytes": 29960,
+      "historyEntries": 258,
+      "historyBytes": 95740,
+      "inputReads": 264,
+      "beforeElapsedMs": 21.346499999999992,
+      "afterElapsedMs": 18.983666999999997
+    }
+  ],
+  "after": {
+    "perEntryStateReadBaseline": {
+      "stateGets": 129,
+      "stateBytes": 276060,
+      "historyPages": 0,
+      "historyEntries": 0,
+      "historyBytes": 0,
+      "inputReads": 0,
+      "inputBytes": 0,
+      "artifactProbes": 0,
+      "returnedBytes": 23,
+      "elapsedMs": 1.4527499999999804
+    },
+    "directRead": {
+      "stateGets": 5,
+      "stateBytes": 10700,
+      "historyPages": 3,
+      "historyEntries": 129,
+      "historyBytes": 47870,
+      "inputReads": 129,
+      "inputBytes": 88184,
+      "artifactProbes": 0,
+      "returnedBytes": 63140,
+      "elapsedMs": 9.080291999999986
+    },
+    "context": {
+      "stateGets": 5,
+      "stateBytes": 10700,
+      "historyPages": 3,
+      "historyEntries": 129,
+      "historyBytes": 47870,
+      "inputReads": 130,
+      "inputBytes": 88865,
+      "artifactProbes": 0,
+      "returnedBytes": 47965,
+      "elapsedMs": 10.42195799999999
+    },
+    "current": {
+      "stateGets": 5,
+      "stateBytes": 10700,
+      "historyPages": 3,
+      "historyEntries": 129,
+      "historyBytes": 47870,
+      "inputReads": 130,
+      "inputBytes": 88865,
+      "artifactProbes": 0,
+      "returnedBytes": 4,
+      "elapsedMs": 9.33850000000001
+    },
+    "inspect": {
+      "stateGets": 7,
+      "stateBytes": 14980,
+      "historyPages": 3,
+      "historyEntries": 129,
+      "historyBytes": 47870,
+      "inputReads": 132,
+      "inputBytes": 90227,
+      "artifactProbes": 0,
+      "returnedBytes": 48466,
+      "elapsedMs": 10.358791999999994
+    },
+    "materialize": {
+      "stateGets": 14,
+      "stateBytes": 29960,
+      "historyPages": 6,
+      "historyEntries": 258,
+      "historyBytes": 95740,
+      "inputReads": 264,
+      "inputBytes": 180454,
+      "artifactProbes": 0,
+      "returnedBytes": 47965,
+      "elapsedMs": 18.983666999999997
+    },
+    "meaning": "Measured repository calls and serialized returned data; baseline repeats only the old per-entry state access pattern. Timings include instrumentation, not model tokens or physical disk I/O."
+  },
+  "actualModelApiCalls": 0,
+  "limitations": [
+    "Counters are repository calls and serialized returned UTF-8 bytes, not physical disk I/O, CPU work or model tokens.",
+    "One local instrumented elapsed sample does not establish wall-clock speedup; original history and input-receipt reads remain unchanged.",
+    "SQLite session intake uses in-memory work state/artifacts in this cost fixture. Long retained storage and real PostgreSQL remain untested."
+  ]
+}

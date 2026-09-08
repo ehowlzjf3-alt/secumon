@@ -499,11 +499,16 @@ export class MissionRuntime {
         if (seen && seen.digest !== this.digest(event)) throw new Error('mission_event_identity_conflict');
         return !seen;
       });
+      if (checkpoint.seen.length + fresh.length > 512) {
+        // The page was not admitted. Retain the last accepted source position, originals and acknowledgement.
+        checkpoint.status = 'closed'; checkpoint.reason = 'event_capacity';
+        state = await this.save(state, checkpoint, signal); continue;
+      }
       checkpoint.cursor = page.cursor; checkpoint.snapshotDigest = page.snapshotDigest; checkpoint.nextPollAt = observedAt + checkpoint.rule.pollIntervalMs; checkpoint.reason = null;
       delete checkpoint.acknowledgedRead;
       checkpoint.idlePolls = fresh.length ? 0 : checkpoint.idlePolls + 1;
-      if (checkpoint.seen.length + fresh.length > 512 || checkpoint.idlePolls >= checkpoint.rule.maxIdlePolls) {
-        checkpoint.status = 'closed'; checkpoint.reason = checkpoint.idlePolls >= checkpoint.rule.maxIdlePolls ? 'idle_limit' : 'event_capacity';
+      if (checkpoint.idlePolls >= checkpoint.rule.maxIdlePolls) {
+        checkpoint.status = 'closed'; checkpoint.reason = 'idle_limit';
       } else {
         checkpoint.seen.push(...fresh.map(event => ({ id: event.id, digest: this.digest(event) })));
         checkpoint.events = fresh; checkpoint.pendingRun = fresh.length > 0; checkpoint.resumeAt = now;

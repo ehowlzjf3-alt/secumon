@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: mission event capacity sqlite: an unadmitted page preserves the prior cursor, original body and ACK across reopen
+ok 1 - mission event capacity sqlite: an unadmitted page preserves the prior cursor, original body and ACK across reopen
+  ---
+  duration_ms: 164.687625
+  type: 'test'
+  ...
+# Subtest: mission event capacity file-journal: an unadmitted page preserves the prior cursor, original body and ACK across reopen
+ok 2 - mission event capacity file-journal: an unadmitted page preserves the prior cursor, original body and ACK across reopen
+  ---
+  duration_ms: 200.451625
+  type: 'test'
+  ...
+# Subtest: mission event capacity: both backends accept exact duplicate pages at 512 and reject changed original IDs
+ok 3 - mission event capacity: both backends accept exact duplicate pages at 512 and reject changed original IDs
+  ---
+  duration_ms: 310.032042
+  type: 'test'
+  ...
+# {"backend":"sqlite","boundary":"512-duplicate-and-conflict","polls":2,"modelCalls":0,"toolCalls":0}
+# {"backend":"file-journal","boundary":"512-duplicate-and-conflict","polls":2,"modelCalls":0,"toolCalls":0}
+# Subtest: mission event capacity: both backends admit the one fresh event that reaches exactly 512
+ok 4 - mission event capacity: both backends admit the one fresh event that reaches exactly 512
+  ---
+  duration_ms: 299.764167
+  type: 'test'
+  ...
+# {"backend":"sqlite","boundary":"511-to-512","polls":1,"modelCalls":0,"toolCalls":0}
+# {"backend":"file-journal","boundary":"511-to-512","polls":1,"modelCalls":0,"toolCalls":0}
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1073.6625

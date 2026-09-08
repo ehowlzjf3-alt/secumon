@@ -1,5 +1,5 @@
 {
-  "revision": "v0.83",
+  "revision": "v0.84",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1922,7 +1922,7 @@
     "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
     "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
   },
-  "next_local_work_item": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+  "next_local_work_item": "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
   "execution_state": "ordered_verification_active",
@@ -4756,96 +4756,106 @@
         "firstUnit": "A2A off/on registration, acknowledgement then explicit execution, redelivery and caller isolation"
       },
       "ordered_verification": {
-        "checkpoint": 399,
+        "checkpoint": 400,
         "recordedAt": "2026-09-09",
-        "status": "C09_browser_command_recovery_local_verified",
-        "baselineCommit": "c295c6116bbc23cfbe7d5562a3b800ed48990b9b",
-        "plan": "design/chapters/C09-browser-command-recovery-plan.md",
-        "result": "design/chapters/C09-browser-command-recovery-result.md",
-        "usage": "design/chapters/C09-browser-command-recovery-usage.md",
-        "newUnique": 13,
-        "relatedUnique": 16,
-        "allUnique": 29,
-        "mixedBuildEvidence": false,
-        "allRerunAtFinalSource": true,
-        "finalBuild": "C09-browser-command-recovery-build2",
+        "status": "C09_history_read_cost_and_capacity_preservation_local_verified",
+        "baselineCommit": "ab5c0761ed80936fce86b3497b19fe22da454294",
+        "plan": "design/chapters/C09-history-cost-plan.md",
+        "result": "design/chapters/C09-history-cost-result.md",
+        "usage": "design/chapters/C09-history-cost-usage.md",
+        "newUnique": 9,
+        "relatedUnique": 44,
+        "allUnique": 53,
+        "mixedBuildEvidence": true,
+        "allRerunAtFinalSource": false,
+        "finalBuild": "C09-history-cost-build2",
         "finalSource": {
-          "build": "C09-browser-command-recovery-build2",
+          "build": "C09-history-cost-build2",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "38c152c21f8225609ef5e8c2a9906fc6dbf7ed7af0fe0416d7d9c1ee3d130533",
-          "filesDigest": "5c2794eacb33c3fe122a366126361525dd60ce6db0fa3aa699389cb0305dac27",
-          "fileCount": 2571
+          "sourceDigest": "bfb94c45673af5ecc87d1fbc52119717a39c7f09e066762ca63e48e52ca56b1e",
+          "filesDigest": "e9f93c3ec565564fb0fcb68bd527f13c090d8a2b980e0ab1c6d64afa82d42891",
+          "fileCount": 2577
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint399-final-source.json",
-        "browserEvidence": "runtime/evidence/checkpoint399-browser.json",
+        "finalSourceEvidence": "runtime/evidence/checkpoint400-final-source.json",
+        "measurementsEvidence": "runtime/evidence/checkpoint400-measurements.json",
+        "buildComparison": "runtime/evidence/checkpoint400-build-comparison.json",
         "checks": {
           "buildExitCode": 0,
           "coreExitCode": 0,
           "architectureInspected": 203,
           "architectureViolations": 0,
-          "finalBuildLog": "runtime/evidence/C09-browser-command-recovery-build2.log",
-          "coreLog": "runtime/evidence/C09-browser-command-recovery-core1.log",
-          "architectureLog": "runtime/evidence/C09-browser-command-recovery-architecture1.log",
-          "targetLog": "runtime/evidence/C09-browser-command-recovery-target2.log",
-          "coreAndArchitectureReused": "After these passes only the browser verification helper payload reader changed. Core source and import graph are unchanged.",
+          "finalBuildLog": "runtime/evidence/C09-history-cost-build2.log",
+          "coreLog": "runtime/evidence/C09-history-cost-core1.log",
+          "architectureLog": "runtime/evidence/C09-history-cost-architecture1.log",
+          "runs": [
+            {
+              "build": "build1",
+              "log": "runtime/evidence/C09-history-cost-target1.log",
+              "exitCode": 1,
+              "tests": 53,
+              "pass": 49,
+              "fail": 4,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            },
+            {
+              "build": "build2",
+              "log": "runtime/evidence/C09-history-cost-capacity2.log",
+              "exitCode": 0,
+              "tests": 4,
+              "pass": 4,
+              "fail": 0,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            }
+          ],
+          "reused": "49 passing tests and core/architecture checks from build1. Only the capacity test JS and source map changed; 2575 other compiled files match. No passing tests repeated.",
           "finalSourceMatchesPreTest": true
         },
         "verifiedScope": [
-          "Same-tab sessionStorage pending commands partitioned by authenticated agent, persistent user session and conversation; only retry identity and original basis are retained",
-          "Persist before a new POST; remove only after a matching response or definite rejection; bounded storage errors retain existing pending records",
-          "Status reads and authentication/page exit clear do not remove durable pending requests; restored status is not trusted",
-          "Actual browser loss of command response, reload without a new POST, exact original command replay and unchanged receipt, subsequent resume and stop",
-          "Confirmed pending request stays absent after reload; closed controls are disabled",
-          "Unit and HTTP scope, response, failure, auth and CSRF regressions at the final build"
+          "Page-local reuse of repeated original work states, with full-state recheck before publishing context; at most 8 works and 4MiB serialized UTF-8 state per history page",
+          "129 real session inputs: context/current state reads 129 to 5, inspect 131 to 7, materialize 262 to 14; original pages, input receipts and returned sizes retained",
+          "Concurrent original state/policy changes reject the candidate; pending/rejected receipts, artifact checks and oversized fallback remain enforced",
+          "SQLite and file-journal mission capacity closure preserves the last admitted cursor/snapshot/original events/ACK and receipts across reopen",
+          "Exact duplicates at 512 remain accepted, changed event IDs conflict, and 511 to 512 admits the final new event",
+          "Related compact, context, mission read ACK/history/runtime and resident entry regressions"
         ],
-        "storage": {
-          "backend": "sessionStorage",
-          "maxPending": 16,
-          "maxUtf8Bytes": 32768,
-          "scope": [
-            "agentId",
-            "sessionId",
-            "conversationId"
-          ],
-          "automaticPostOnReload": false,
-          "automaticEviction": false
-        },
-        "browser": {
-          "uniqueControlReceipts": 3,
-          "successfulCommandInvocations": 4,
-          "modelCalls": 0,
-          "pollCalls": 0,
-          "originalPauseReceiptUnchanged": true,
-          "finalFixtureExitCode": 0,
-          "temporaryTabClosed": true
-        },
         "initialVerificationIssue": {
-          "kind": "helper_event_payload_reader_and_mixed_browser_run",
-          "evidence": "runtime/evidence/C09-browser-command-recovery-fixture-error.json",
-          "initialFixtureExitCode": 1,
-          "actualModelApiCalls": 0,
-          "productChangeNeeded": false
+          "kind": "test_fixture_Buffer_vs_Uint8Array_strict_comparison",
+          "failedTests": 4,
+          "productChangeNeeded": false,
+          "originalLog": "runtime/evidence/C09-history-cost-target1.log",
+          "correction": "Compare byte contents, not differing Buffer/Uint8Array prototypes; rerun only the four affected tests"
         },
+        "limitations": [
+          "Cached states are scoped to one history page and discarded afterward; serialized byte cap is not a total process-memory cap.",
+          "Full-state recheck can conservatively reject unrelated progress in the same work; it is not replaced by a revision hint.",
+          "A rejected mission page is not persisted or acknowledged. Closed event_capacity does not automatically reopen and is not goal completion.",
+          "Mission capacity setup seeds valid 511/512 original records through real storage ports; synthetic ACK marker proves preservation, not actual ACK issuance.",
+          "Original history/receipt checks and cumulative retained storage still grow; no original records were deleted."
+        ],
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
         "notRun": [
-          "Full suite; browser back-forward cache and multiple scoped browser sessions; cross-browser behavior",
+          "Full suite and actual browser interactions; no UI changes in this unit",
           "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
-          "Corporate MCP/Knox/external A2A, operational load and final integration",
+          "Corporate MCP/Knox/external A2A, long-running operational storage and final integration",
           "Actual model/API response quality: stopped by user"
         ],
         "remaining": [
-          "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+          "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
           "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
           "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
           "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
         ],
         "goalComplete": false,
         "chapterComplete": false,
-        "next": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
-        "evidence": "runtime/evidence/checkpoint399.json",
+        "next": "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
+        "evidence": "runtime/evidence/checkpoint400.json",
         "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
       },
       "mission_verification": {
@@ -5663,6 +5673,109 @@
         "next": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
         "evidence": "runtime/evidence/checkpoint399.json",
         "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
+      },
+      "history_cost_verification": {
+        "checkpoint": 400,
+        "recordedAt": "2026-09-09",
+        "status": "C09_history_read_cost_and_capacity_preservation_local_verified",
+        "baselineCommit": "ab5c0761ed80936fce86b3497b19fe22da454294",
+        "plan": "design/chapters/C09-history-cost-plan.md",
+        "result": "design/chapters/C09-history-cost-result.md",
+        "usage": "design/chapters/C09-history-cost-usage.md",
+        "newUnique": 9,
+        "relatedUnique": 44,
+        "allUnique": 53,
+        "mixedBuildEvidence": true,
+        "allRerunAtFinalSource": false,
+        "finalBuild": "C09-history-cost-build2",
+        "finalSource": {
+          "build": "C09-history-cost-build2",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "bfb94c45673af5ecc87d1fbc52119717a39c7f09e066762ca63e48e52ca56b1e",
+          "filesDigest": "e9f93c3ec565564fb0fcb68bd527f13c090d8a2b980e0ab1c6d64afa82d42891",
+          "fileCount": 2577
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint400-final-source.json",
+        "measurementsEvidence": "runtime/evidence/checkpoint400-measurements.json",
+        "buildComparison": "runtime/evidence/checkpoint400-build-comparison.json",
+        "checks": {
+          "buildExitCode": 0,
+          "coreExitCode": 0,
+          "architectureInspected": 203,
+          "architectureViolations": 0,
+          "finalBuildLog": "runtime/evidence/C09-history-cost-build2.log",
+          "coreLog": "runtime/evidence/C09-history-cost-core1.log",
+          "architectureLog": "runtime/evidence/C09-history-cost-architecture1.log",
+          "runs": [
+            {
+              "build": "build1",
+              "log": "runtime/evidence/C09-history-cost-target1.log",
+              "exitCode": 1,
+              "tests": 53,
+              "pass": 49,
+              "fail": 4,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            },
+            {
+              "build": "build2",
+              "log": "runtime/evidence/C09-history-cost-capacity2.log",
+              "exitCode": 0,
+              "tests": 4,
+              "pass": 4,
+              "fail": 0,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            }
+          ],
+          "reused": "49 passing tests and core/architecture checks from build1. Only the capacity test JS and source map changed; 2575 other compiled files match. No passing tests repeated.",
+          "finalSourceMatchesPreTest": true
+        },
+        "verifiedScope": [
+          "Page-local reuse of repeated original work states, with full-state recheck before publishing context; at most 8 works and 4MiB serialized UTF-8 state per history page",
+          "129 real session inputs: context/current state reads 129 to 5, inspect 131 to 7, materialize 262 to 14; original pages, input receipts and returned sizes retained",
+          "Concurrent original state/policy changes reject the candidate; pending/rejected receipts, artifact checks and oversized fallback remain enforced",
+          "SQLite and file-journal mission capacity closure preserves the last admitted cursor/snapshot/original events/ACK and receipts across reopen",
+          "Exact duplicates at 512 remain accepted, changed event IDs conflict, and 511 to 512 admits the final new event",
+          "Related compact, context, mission read ACK/history/runtime and resident entry regressions"
+        ],
+        "initialVerificationIssue": {
+          "kind": "test_fixture_Buffer_vs_Uint8Array_strict_comparison",
+          "failedTests": 4,
+          "productChangeNeeded": false,
+          "originalLog": "runtime/evidence/C09-history-cost-target1.log",
+          "correction": "Compare byte contents, not differing Buffer/Uint8Array prototypes; rerun only the four affected tests"
+        },
+        "limitations": [
+          "Cached states are scoped to one history page and discarded afterward; serialized byte cap is not a total process-memory cap.",
+          "Full-state recheck can conservatively reject unrelated progress in the same work; it is not replaced by a revision hint.",
+          "A rejected mission page is not persisted or acknowledged. Closed event_capacity does not automatically reopen and is not goal completion.",
+          "Mission capacity setup seeds valid 511/512 original records through real storage ports; synthetic ACK marker proves preservation, not actual ACK issuance.",
+          "Original history/receipt checks and cumulative retained storage still grow; no original records were deleted."
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Full suite and actual browser interactions; no UI changes in this unit",
+          "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
+          "Corporate MCP/Knox/external A2A, long-running operational storage and final integration",
+          "Actual model/API response quality: stopped by user"
+        ],
+        "remaining": [
+          "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
+          "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
+        "evidence": "runtime/evidence/checkpoint400.json",
+        "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
       }
     },
     {
@@ -6375,13 +6488,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 399,
-      "status": "C09_browser_command_recovery_local_verified",
-      "plan": "design/chapters/C09-browser-command-recovery-plan.md",
+      "checkpoint": 400,
+      "status": "C09_history_read_cost_and_capacity_preservation_local_verified",
+      "plan": "design/chapters/C09-history-cost-plan.md",
       "nextChapter": "C09",
       "preparedIdentityTests": 23,
       "existingFixtureFilesAdapted": 1,
-      "result": "design/chapters/C09-browser-command-recovery-result.md",
+      "result": "design/chapters/C09-history-cost-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -6496,7 +6609,7 @@
         ]
       },
       "remaining": [
-        "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+        "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
         "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
         "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
         "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
@@ -6609,6 +6722,12 @@
           "status": "C09_cross_process_observation_controls_local_verified",
           "nextChapter": "C09",
           "evidence": "runtime/evidence/checkpoint398.json"
+        },
+        {
+          "checkpoint": 399,
+          "status": "C09_browser_command_recovery_local_verified",
+          "nextChapter": "C09",
+          "evidence": "runtime/evidence/checkpoint399.json"
         }
       ],
       "C03": {
@@ -6724,96 +6843,106 @@
       },
       "C09Preparation": "design/chapters/C09-ordered-verification-preparation.md",
       "C09": {
-        "checkpoint": 399,
+        "checkpoint": 400,
         "recordedAt": "2026-09-09",
-        "status": "C09_browser_command_recovery_local_verified",
-        "baselineCommit": "c295c6116bbc23cfbe7d5562a3b800ed48990b9b",
-        "plan": "design/chapters/C09-browser-command-recovery-plan.md",
-        "result": "design/chapters/C09-browser-command-recovery-result.md",
-        "usage": "design/chapters/C09-browser-command-recovery-usage.md",
-        "newUnique": 13,
-        "relatedUnique": 16,
-        "allUnique": 29,
-        "mixedBuildEvidence": false,
-        "allRerunAtFinalSource": true,
-        "finalBuild": "C09-browser-command-recovery-build2",
+        "status": "C09_history_read_cost_and_capacity_preservation_local_verified",
+        "baselineCommit": "ab5c0761ed80936fce86b3497b19fe22da454294",
+        "plan": "design/chapters/C09-history-cost-plan.md",
+        "result": "design/chapters/C09-history-cost-result.md",
+        "usage": "design/chapters/C09-history-cost-usage.md",
+        "newUnique": 9,
+        "relatedUnique": 44,
+        "allUnique": 53,
+        "mixedBuildEvidence": true,
+        "allRerunAtFinalSource": false,
+        "finalBuild": "C09-history-cost-build2",
         "finalSource": {
-          "build": "C09-browser-command-recovery-build2",
+          "build": "C09-history-cost-build2",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "38c152c21f8225609ef5e8c2a9906fc6dbf7ed7af0fe0416d7d9c1ee3d130533",
-          "filesDigest": "5c2794eacb33c3fe122a366126361525dd60ce6db0fa3aa699389cb0305dac27",
-          "fileCount": 2571
+          "sourceDigest": "bfb94c45673af5ecc87d1fbc52119717a39c7f09e066762ca63e48e52ca56b1e",
+          "filesDigest": "e9f93c3ec565564fb0fcb68bd527f13c090d8a2b980e0ab1c6d64afa82d42891",
+          "fileCount": 2577
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint399-final-source.json",
-        "browserEvidence": "runtime/evidence/checkpoint399-browser.json",
+        "finalSourceEvidence": "runtime/evidence/checkpoint400-final-source.json",
+        "measurementsEvidence": "runtime/evidence/checkpoint400-measurements.json",
+        "buildComparison": "runtime/evidence/checkpoint400-build-comparison.json",
         "checks": {
           "buildExitCode": 0,
           "coreExitCode": 0,
           "architectureInspected": 203,
           "architectureViolations": 0,
-          "finalBuildLog": "runtime/evidence/C09-browser-command-recovery-build2.log",
-          "coreLog": "runtime/evidence/C09-browser-command-recovery-core1.log",
-          "architectureLog": "runtime/evidence/C09-browser-command-recovery-architecture1.log",
-          "targetLog": "runtime/evidence/C09-browser-command-recovery-target2.log",
-          "coreAndArchitectureReused": "After these passes only the browser verification helper payload reader changed. Core source and import graph are unchanged.",
+          "finalBuildLog": "runtime/evidence/C09-history-cost-build2.log",
+          "coreLog": "runtime/evidence/C09-history-cost-core1.log",
+          "architectureLog": "runtime/evidence/C09-history-cost-architecture1.log",
+          "runs": [
+            {
+              "build": "build1",
+              "log": "runtime/evidence/C09-history-cost-target1.log",
+              "exitCode": 1,
+              "tests": 53,
+              "pass": 49,
+              "fail": 4,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            },
+            {
+              "build": "build2",
+              "log": "runtime/evidence/C09-history-cost-capacity2.log",
+              "exitCode": 0,
+              "tests": 4,
+              "pass": 4,
+              "fail": 0,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            }
+          ],
+          "reused": "49 passing tests and core/architecture checks from build1. Only the capacity test JS and source map changed; 2575 other compiled files match. No passing tests repeated.",
           "finalSourceMatchesPreTest": true
         },
         "verifiedScope": [
-          "Same-tab sessionStorage pending commands partitioned by authenticated agent, persistent user session and conversation; only retry identity and original basis are retained",
-          "Persist before a new POST; remove only after a matching response or definite rejection; bounded storage errors retain existing pending records",
-          "Status reads and authentication/page exit clear do not remove durable pending requests; restored status is not trusted",
-          "Actual browser loss of command response, reload without a new POST, exact original command replay and unchanged receipt, subsequent resume and stop",
-          "Confirmed pending request stays absent after reload; closed controls are disabled",
-          "Unit and HTTP scope, response, failure, auth and CSRF regressions at the final build"
+          "Page-local reuse of repeated original work states, with full-state recheck before publishing context; at most 8 works and 4MiB serialized UTF-8 state per history page",
+          "129 real session inputs: context/current state reads 129 to 5, inspect 131 to 7, materialize 262 to 14; original pages, input receipts and returned sizes retained",
+          "Concurrent original state/policy changes reject the candidate; pending/rejected receipts, artifact checks and oversized fallback remain enforced",
+          "SQLite and file-journal mission capacity closure preserves the last admitted cursor/snapshot/original events/ACK and receipts across reopen",
+          "Exact duplicates at 512 remain accepted, changed event IDs conflict, and 511 to 512 admits the final new event",
+          "Related compact, context, mission read ACK/history/runtime and resident entry regressions"
         ],
-        "storage": {
-          "backend": "sessionStorage",
-          "maxPending": 16,
-          "maxUtf8Bytes": 32768,
-          "scope": [
-            "agentId",
-            "sessionId",
-            "conversationId"
-          ],
-          "automaticPostOnReload": false,
-          "automaticEviction": false
-        },
-        "browser": {
-          "uniqueControlReceipts": 3,
-          "successfulCommandInvocations": 4,
-          "modelCalls": 0,
-          "pollCalls": 0,
-          "originalPauseReceiptUnchanged": true,
-          "finalFixtureExitCode": 0,
-          "temporaryTabClosed": true
-        },
         "initialVerificationIssue": {
-          "kind": "helper_event_payload_reader_and_mixed_browser_run",
-          "evidence": "runtime/evidence/C09-browser-command-recovery-fixture-error.json",
-          "initialFixtureExitCode": 1,
-          "actualModelApiCalls": 0,
-          "productChangeNeeded": false
+          "kind": "test_fixture_Buffer_vs_Uint8Array_strict_comparison",
+          "failedTests": 4,
+          "productChangeNeeded": false,
+          "originalLog": "runtime/evidence/C09-history-cost-target1.log",
+          "correction": "Compare byte contents, not differing Buffer/Uint8Array prototypes; rerun only the four affected tests"
         },
+        "limitations": [
+          "Cached states are scoped to one history page and discarded afterward; serialized byte cap is not a total process-memory cap.",
+          "Full-state recheck can conservatively reject unrelated progress in the same work; it is not replaced by a revision hint.",
+          "A rejected mission page is not persisted or acknowledged. Closed event_capacity does not automatically reopen and is not goal completion.",
+          "Mission capacity setup seeds valid 511/512 original records through real storage ports; synthetic ACK marker proves preservation, not actual ACK issuance.",
+          "Original history/receipt checks and cumulative retained storage still grow; no original records were deleted."
+        ],
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
         "notRun": [
-          "Full suite; browser back-forward cache and multiple scoped browser sessions; cross-browser behavior",
+          "Full suite and actual browser interactions; no UI changes in this unit",
           "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
-          "Corporate MCP/Knox/external A2A, operational load and final integration",
+          "Corporate MCP/Knox/external A2A, long-running operational storage and final integration",
           "Actual model/API response quality: stopped by user"
         ],
         "remaining": [
-          "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
+          "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
           "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
           "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
           "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
         ],
         "goalComplete": false,
         "chapterComplete": false,
-        "next": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
-        "evidence": "runtime/evidence/checkpoint399.json",
+        "next": "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
+        "evidence": "runtime/evidence/checkpoint400.json",
         "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
       },
       "C09A2A": {
@@ -7807,6 +7936,109 @@
         "chapterComplete": false,
         "next": "C09 whole-session context retrieval cost, same-goal event deduplication/capacity and long-term retention",
         "evidence": "runtime/evidence/checkpoint399.json",
+        "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
+      },
+      "C09HistoryCost": {
+        "checkpoint": 400,
+        "recordedAt": "2026-09-09",
+        "status": "C09_history_read_cost_and_capacity_preservation_local_verified",
+        "baselineCommit": "ab5c0761ed80936fce86b3497b19fe22da454294",
+        "plan": "design/chapters/C09-history-cost-plan.md",
+        "result": "design/chapters/C09-history-cost-result.md",
+        "usage": "design/chapters/C09-history-cost-usage.md",
+        "newUnique": 9,
+        "relatedUnique": 44,
+        "allUnique": 53,
+        "mixedBuildEvidence": true,
+        "allRerunAtFinalSource": false,
+        "finalBuild": "C09-history-cost-build2",
+        "finalSource": {
+          "build": "C09-history-cost-build2",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "bfb94c45673af5ecc87d1fbc52119717a39c7f09e066762ca63e48e52ca56b1e",
+          "filesDigest": "e9f93c3ec565564fb0fcb68bd527f13c090d8a2b980e0ab1c6d64afa82d42891",
+          "fileCount": 2577
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint400-final-source.json",
+        "measurementsEvidence": "runtime/evidence/checkpoint400-measurements.json",
+        "buildComparison": "runtime/evidence/checkpoint400-build-comparison.json",
+        "checks": {
+          "buildExitCode": 0,
+          "coreExitCode": 0,
+          "architectureInspected": 203,
+          "architectureViolations": 0,
+          "finalBuildLog": "runtime/evidence/C09-history-cost-build2.log",
+          "coreLog": "runtime/evidence/C09-history-cost-core1.log",
+          "architectureLog": "runtime/evidence/C09-history-cost-architecture1.log",
+          "runs": [
+            {
+              "build": "build1",
+              "log": "runtime/evidence/C09-history-cost-target1.log",
+              "exitCode": 1,
+              "tests": 53,
+              "pass": 49,
+              "fail": 4,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            },
+            {
+              "build": "build2",
+              "log": "runtime/evidence/C09-history-cost-capacity2.log",
+              "exitCode": 0,
+              "tests": 4,
+              "pass": 4,
+              "fail": 0,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            }
+          ],
+          "reused": "49 passing tests and core/architecture checks from build1. Only the capacity test JS and source map changed; 2575 other compiled files match. No passing tests repeated.",
+          "finalSourceMatchesPreTest": true
+        },
+        "verifiedScope": [
+          "Page-local reuse of repeated original work states, with full-state recheck before publishing context; at most 8 works and 4MiB serialized UTF-8 state per history page",
+          "129 real session inputs: context/current state reads 129 to 5, inspect 131 to 7, materialize 262 to 14; original pages, input receipts and returned sizes retained",
+          "Concurrent original state/policy changes reject the candidate; pending/rejected receipts, artifact checks and oversized fallback remain enforced",
+          "SQLite and file-journal mission capacity closure preserves the last admitted cursor/snapshot/original events/ACK and receipts across reopen",
+          "Exact duplicates at 512 remain accepted, changed event IDs conflict, and 511 to 512 admits the final new event",
+          "Related compact, context, mission read ACK/history/runtime and resident entry regressions"
+        ],
+        "initialVerificationIssue": {
+          "kind": "test_fixture_Buffer_vs_Uint8Array_strict_comparison",
+          "failedTests": 4,
+          "productChangeNeeded": false,
+          "originalLog": "runtime/evidence/C09-history-cost-target1.log",
+          "correction": "Compare byte contents, not differing Buffer/Uint8Array prototypes; rerun only the four affected tests"
+        },
+        "limitations": [
+          "Cached states are scoped to one history page and discarded afterward; serialized byte cap is not a total process-memory cap.",
+          "Full-state recheck can conservatively reject unrelated progress in the same work; it is not replaced by a revision hint.",
+          "A rejected mission page is not persisted or acknowledged. Closed event_capacity does not automatically reopen and is not goal completion.",
+          "Mission capacity setup seeds valid 511/512 original records through real storage ports; synthetic ACK marker proves preservation, not actual ACK issuance.",
+          "Original history/receipt checks and cumulative retained storage still grow; no original records were deleted."
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Full suite and actual browser interactions; no UI changes in this unit",
+          "Current Linux/native Windows, real PostgreSQL and installed native-addon/deployment acceptance",
+          "Corporate MCP/Knox/external A2A, long-running operational storage and final integration",
+          "Actual model/API response quality: stopped by user"
+        ],
+        "remaining": [
+          "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
+          "C05 policy regrant to original stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 same-goal event capacity continuation and retained-original storage/transfer policy; full-original verification remains linear after removing repeated per-page work-state reads",
+        "evidence": "runtime/evidence/checkpoint400.json",
         "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
       }
     }

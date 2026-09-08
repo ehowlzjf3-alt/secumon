@@ -8,6 +8,8 @@ import { asJson } from './plan-validator.js';
 import { sessionOriginalEligible, validateSessionUserOriginal } from './session-original-validation.js';
 
 type Services = Pick<RuntimeServices, 'state' | 'artifacts' | 'digester' | 'planner'>;
+const maxPageStates = 8, maxPageStateBytes = 4 * 1024 * 1024;
+type PageState = { state: WorkState; digest: string; reused: boolean };
 export interface SessionOriginal { entry: SessionEntry; eligible: boolean; pending: boolean; provenance: string }
 export class SessionOriginals {
   constructor(readonly services: Services, readonly repository: SessionRepository) {}
@@ -20,6 +22,8 @@ export class SessionOriginals {
     do {
       if (signal?.aborted) throw new Error('session_compact_interrupted');
       const page = await this.repository.history(basis.scope, state.policy, { limit: 64, afterSequence, throughSequence, ...(cursor ? { cursor } : {}) });
+      const occurrences = new Map<string, number>(), states = new Map<string, PageState>(); let stateBytes = 0;
+      for (const entry of page.entries) occurrences.set(entry.workId, (occurrences.get(entry.workId) ?? 0) + 1);
       for (const entry of page.entries) {
         const receipt = entry.role === 'user' ? await this.repository.input(basis.scope, entry.sourceId) : null;
         validateSessionUserOriginal(entry, receipt, basis.scope, value => this.digest(value));
@@ -28,11 +32,27 @@ export class SessionOriginals {
           yield { entry, eligible: false, pending: receipt.status === 'pending', provenance: this.digest({ entry, receipt: receipt.status }) };
           continue;
         }
-        const source = await this.services.state.get(entry.workId);
+        const cached = states.get(entry.workId);
+        let source = cached?.state ?? await this.services.state.get(entry.workId);
         if (!source) throw new Error('session_source_unavailable');
+        if (cached) cached.reused = true;
+        else if ((occurrences.get(entry.workId) ?? 0) >= 3 && states.size < maxPageStates) {
+          const serialized = JSON.stringify(source), remaining = maxPageStateBytes - stateBytes;
+          const size = serialized.length <= remaining ? new TextEncoder().encode(serialized).byteLength : remaining + 1;
+          if (size <= remaining) {
+            source = structuredClone(source);
+            states.set(entry.workId, { state: source, digest: this.digest(source), reused: false }); stateBytes += size;
+          } else occurrences.delete(entry.workId);
+        }
         const eligible = sessionOriginalEligible(state, basis, entry, source, this.services.planner.destination, value => this.digest(value));
         if (eligible && entry.artifact && (artifactBlocked(source, entry.artifact) || !(await this.services.artifacts.exists(entry.artifact)))) throw new Error('session_source_unavailable');
         yield { entry, eligible, pending: false, provenance: this.digest({ entry, sourcePolicy: source.policy, generation: dataGeneration(source), eligible }) };
+      }
+      // Yielded rows remain candidates until the read finishes. Reuse never replaces the final original-state check.
+      for (const [workId, cached] of states) if (cached.reused) {
+        if (signal?.aborted) throw new Error('session_compact_interrupted');
+        const current = await this.services.state.get(workId);
+        if (!current || this.digest(current) !== cached.digest) throw new Error('session_source_changed');
       }
       cursor = page.nextCursor ?? undefined;
     } while (cursor);
