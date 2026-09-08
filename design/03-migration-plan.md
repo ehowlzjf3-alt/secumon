@@ -1,5 +1,11 @@
 # 통합 구현 순서와 검증 플랜
 
+2026-09-08 · checkpoint389 · 기준선 `53019cf`. 쓰기 가능한 저장소를 열기 전에 공통 읽기 전용 형식 검사를 연결하고, 정확한 버전·compact 지원 확인과 기존 SQLite 상태 1/2→3·지식 1→2 이행을 재사용했다. 신규 경계9개·실제 설치 A/B의 구형 저장 구조 통합 시나리오2개·관련 회귀109개가 통과했다. Node 집계는 통합 묶음 상위 항목1개를 포함한121개이며 전체 최종 소스 재실행이 아니다. 최종 build3의 선검사9개·문서 기억8개는17/17, 설치 통합은 build2의 상위 항목 포함3개다. 관련109개는 build2의101개와 build3의 문서 기억8개다. build3 exit0·2,433파일 대조 일치, 코어 타입 exit0·계층199/위반0은 안쪽 코어가 바뀌지 않은 build1 기록이다. [결과](chapters/C10-storage-upgrade-result.md) · [사용법](chapters/C10-storage-upgrade-usage.md) · [체크포인트](../runtime/evidence/checkpoint389.json).
+
+다음은 `agent-lifecycle`·`agent-host-identity-recovery`·`workflow`·`computer-reconciliation`의 기존 복원 업무·외부 효과 대조 경로를 읽고 백업 복원 후 새 외부 실행 전의 연결 공백을 좁히는 일이다. 이후 C09 취소·목표 변경·일시정지·저널 응답 불명·이력 비용, C05/C06 후속, 현재 Linux/native Windows·실제 PostgreSQL·사내 연동·패키지 효율·운영 배포·최종통합을 이어간다. 전체 C10/goal은 미완료이며 실제 모델/API 시험 중단·외부 서비스 연결0을 유지한다. 활성 빌드·시험은 없다.
+
+이전 checkpoint388의 기록(아래 다음 행동·미실행 표현은 당시 기준이다):
+
 2026-09-08 · checkpoint388. npm/개발 패키지에서 호스트 소유 설치본을 준비하고 그 실제 CLI로 새 담당의 첫 엔진 고정을 연결했다. 같은 원본의 두 담당은 설치본을 재사용하고 각자의 자료를 유지한다. 신규16개는 최종 build3, 관련·확장 기존32개는 build2에서 통과했다. 고유48개를 최종 소스에서 모두 재실행한 것은 아니다. 최종 build3 exit0·2,421파일 대조 일치, 코어 타입 exit0·계층199/위반0은 build2 기록이다. [결과](chapters/C10-engine-preparation-result.md) · [사용법](chapters/C10-engine-preparation-usage.md) · [체크포인트](../runtime/evidence/checkpoint388.json)
 
 다음은 기존 저장 형식 이행과 읽기 전용 호환 확인 코드를 확인한 뒤 백업→엔진 변경→최초 저장소 열기의 연결에서 빠진 부분을 정하는 일이다. SQLite 상태·지식 저장소의 기존 이행 코드를 재사용하며 완료된 설치 준비를 반복하지 않는다. 전체 C10/goal은 미완료이며 실제 모델/API 시험 중단을 유지한다.

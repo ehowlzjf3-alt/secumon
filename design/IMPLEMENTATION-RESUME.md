@@ -1,5 +1,19 @@
 # 구현 이어가기
 
+## CHECKPOINT 389 — 저장 형식 선검사와 설치 엔진의 최초 이행
+
+2026-09-08 · checkpoint389 · 기준선 `53019cf`. 쓰기 가능한 저장소를 열기 전에 공통 읽기 전용 형식 검사를 연결했다. 버전 기록과 compact 지원 형식을 정확히 확인하고 기존 SQLite 상태 1/2→3·지식 1→2 이행을 재사용한다. 지원되는 최초 초기화·중단 복구는 유지하며, 전체 본문 무결성 검사나 여러 DB의 원자적 이행을 뜻하지 않는다.
+
+신규 경계9개·실제 설치 A/B의 구형 저장 구조 통합 시나리오2개·관련 회귀109개, 실질 사례120개가 통과했다. Node 집계에는 통합 묶음 상위 항목1개가 추가된다. 최종 build3은 선검사9개·문서 기억8개, 합계17개 통과이고 설치 통합은 build2의 상위 항목 포함3개다. 관련109개는 build2의101개와 최종 build3의 문서 기억8개이며, 전체121개를 최종 소스에서 재실행하지 않았다.
+
+build3 exit0·최종2,433파일 대조 일치, sourceDigest `ff49b6e744418aecc40c4fd655f2c283dd616f54c4b7da78b0657b606c7413a1`이다. 코어 타입 exit0·계층199/위반0은 안쪽 코어가 바뀌지 않은 build1 기록이다. [결과](chapters/C10-storage-upgrade-result.md) · [사용법](chapters/C10-storage-upgrade-usage.md) · [체크포인트](../runtime/evidence/checkpoint389.json) · [최종 대조](../runtime/evidence/checkpoint389-final-source.json).
+
+다음은 `agent-lifecycle`·`agent-host-identity-recovery`·`workflow`·`computer-reconciliation`의 기존 복원 업무·외부 효과 대조 경로를 읽고, 백업 복원 후 새 외부 실행 전에 빠진 확인이 있는지 좁혀보는 일이다. 확인된 연결 공백만 구현하며 이번에 검증한 설치 준비·저장 형식 이행은 반복하지 않는다.
+
+C09 취소·목표 변경·일시정지·저널 응답 불명·이력 비용, C05 권한 재허용 후 완주, C06 기억 HTTP·권한·브라우저, 현재 Linux/native Windows·실제 PostgreSQL·사내 연동·패키지 효율·운영 배포·최종통합은 남아 있다. 전체 C10/goal은 미완료이며 모든 빌드·시험 세션은 종료됐다. 실제 모델/API 시험 중단과 외부 서비스 연결0을 유지한다. 공통 메인 프롬프트는 `agent-turn-prompt.ts`에 구현돼 `StructuredAgentTurnAdapter`에 연결되어 있으나 실제 모델 품질은 미검증이다.
+
+아래 checkpoint388 이하는 당시 기록이다.
+
 ## CHECKPOINT 388 — npm/개발 패키지의 실행 설치본 준비
 
 2026-09-08 · checkpoint388. npm/개발 패키지에서 호스트 소유 설치본을 준비하고 그 실제 CLI로 새 담당의 첫 엔진 고정을 연결했다. 같은 원본의 두 담당은 설치본을 재사용하고 각자의 자료를 유지한다. 신규16개는 최종 build3, 관련·확장 기존32개는 build2에서 통과했다. 고유48개를 최종 소스에서 모두 재실행한 것은 아니다. 최종 build3 exit0·2,421파일 대조 일치, 코어 타입 exit0·계층199/위반0은 build2 기록이다.

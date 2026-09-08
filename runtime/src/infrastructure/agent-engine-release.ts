@@ -10,7 +10,7 @@ import { publishWindowsLifecycleJson, readWindowsLifecycleJson } from './windows
 import { initialEnginePinHistoryNames } from './agent-initial-pin-files.js';
 import { assertAgentEngineDependencies } from './agent-engine-dependencies.js';
 
-export const engineCompatibility = Object.freeze({ config: [1, 2], state: [1, 2, 3], knowledge: [1, 2, 3], session: [1], journal: [2], documents: [1, 2], setup: [1, 2, 3],
+export const engineCompatibility = Object.freeze({ config: [1, 2], state: [1, 2, 3], knowledge: [1, 2, 3], session: [1], journal: [2], documents: [1, 2], setup: [1, 2, 3], sessionCompact: [1],
   extensions: ENGINE_EXTENSION_SUPPORT,
   postgres: { installation: [2], binding: [1], state: [1], knowledge: [1], channel: [1] },
 });

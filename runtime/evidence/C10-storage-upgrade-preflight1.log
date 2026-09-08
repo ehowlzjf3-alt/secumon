@@ -1,0 +1,100 @@
+✔ storage preflight rejects unsupported knowledge before committing the older state migration (217.93575ms)
+✔ storage preflight rejects unsupported session before committing the older state migration (196.792ms)
+✖ storage preflight refuses ambiguous knowledge version rows before changing original state (189.231542ms)
+✖ storage preflight checks the physical compact format before migrating work state (201.131292ms)
+✔ storage preflight refuses a partial compact schema while preserving the original summary and work (182.652583ms)
+✖ lifecycle checks inherited compact version one support and explicit omission without changing the old state (178.989209ms)
+✔ storage preflight refuses an unsupported document memory format before migrating original work (217.110166ms)
+✔ storage preflight recovers assigned owner-only databases with legacy channel false (177.84975ms)
+✔ storage preflight recovers assigned owner-only databases with legacy channel true (179.450333ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 6
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1837.744042
+
+✖ failing tests:
+
+test at dist/tests/agent-storage-preflight.test.js:93:1
+✖ storage preflight refuses ambiguous knowledge version rows before changing original state (189.231542ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /lifecycle_storage_version_invalid/. Input:
+  
+  'Error: engine_release_digest_mismatch'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-storage-preflight.test.js:101:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: engine_release_digest_mismatch
+        at lifecycleFail (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-lifecycle-files.js:10:46)
+        at assertManifest (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-engine-release.js:36:9)
+        at inspectEngineRelease (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-engine-release.js:51:5)
+        at checkAgentLifecycle (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-lifecycle.js:33:59)
+        at file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-storage-preflight.test.js:101:29
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-storage-preflight.test.js:101:16)
+        at async Test.run (node:internal/test_runner/test:1404:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:969:7),
+    expected: /lifecycle_storage_version_invalid/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-storage-preflight.test.js:108:1
+✖ storage preflight checks the physical compact format before migrating work state (201.131292ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /engine_session_compact_incompatible/. Input:
+  
+  'Error: engine_release_digest_mismatch'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-storage-preflight.test.js:116:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: engine_release_digest_mismatch
+        at lifecycleFail (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-lifecycle-files.js:10:46)
+        at assertManifest (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-engine-release.js:36:9)
+        at inspectEngineRelease (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-engine-release.js:51:5)
+        at checkAgentLifecycle (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-lifecycle.js:33:59)
+        at file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-storage-preflight.test.js:116:29
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-storage-preflight.test.js:116:16)
+        at async Test.run (node:internal/test_runner/test:1404:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:969:7),
+    expected: /engine_session_compact_incompatible/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-storage-preflight.test.js:136:1
+✖ lifecycle checks inherited compact version one support and explicit omission without changing the old state (178.989209ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /engine_session_compact_incompatible/. Input:
+  
+  'Error: engine_release_digest_mismatch'
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-storage-preflight.test.js:145:16)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: engine_release_digest_mismatch
+        at lifecycleFail (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-lifecycle-files.js:10:46)
+        at assertManifest (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-engine-release.js:36:9)
+        at inspectEngineRelease (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-engine-release.js:51:5)
+        at checkAgentLifecycle (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/agent-lifecycle.js:33:59)
+        at file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-storage-preflight.test.js:145:29
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-storage-preflight.test.js:145:16)
+        at async Test.run (node:internal/test_runner/test:1404:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:969:7),
+    expected: /engine_session_compact_incompatible/,
+    operator: 'throws',
+    diff: 'simple'
+  }

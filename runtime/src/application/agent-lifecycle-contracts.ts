@@ -12,6 +12,7 @@ export const EngineReleaseSchema = z.strictObject({
   node: z.literal('>=24.20.0 <25'), platform: z.string(), arch: z.string(),
   compatibility: z.strictObject({ config: z.array(z.number().int()), state: z.array(z.number().int()), knowledge: z.array(z.number().int()), session: z.array(z.number().int()), journal: z.array(z.number().int()), documents: z.array(z.number().int()),
     setup: z.array(z.number().int()).optional(),
+    sessionCompact: z.array(z.number().int()).optional(),
     extensions: EngineExtensionSupportSchema.optional(),
     postgres: z.strictObject({ installation: z.array(z.number().int().positive()).min(1), binding: z.array(z.number().int().positive()).min(1),
       state: z.array(z.number().int().positive()).min(1), knowledge: z.array(z.number().int().positive()).min(1), channel: z.array(z.number().int().positive()).min(1) }).optional(),

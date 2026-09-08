@@ -23,6 +23,8 @@ import { PostgresKnowledgeRepository } from './postgres-knowledge.js';
 import { PostgresChannel } from './postgres-channel.js';
 import { claimAgentHostIdentity } from './agent-host-identities.js';
 import { effectiveAgentPostgresSelection } from './agent-postgres-migration-profile.js';
+import { inspectAgentLocalStorageCompatibility } from './agent-storage-compatibility.js';
+import { engineCompatibility } from './agent-engine-release.js';
 
 export interface AgentStoreHostOptions { readonly identityRegistryDirectory?: string }
 const currentEngine = fileURLToPath(new URL('../../', import.meta.url));
@@ -63,6 +65,7 @@ export async function openAgentStores(profiles: AgentProfileStore, directory: st
     if (!effectiveAgentPostgresSelection(profile)?.purposes.includes('state')) inspectAgentStateProfile(profile);
     lifecycleLease = acquireAgentRuntimeLease(profile.root);
     identityClaim.assertCurrent();
+    inspectAgentLocalStorageCompatibility(profile, { compatibility: engineCompatibility }, { allowUninitialized: true });
     const host = postgresHost ? { selection: structuredClone(postgresHost.selection), pool: { connect: postgresHost.pool.connect.bind(postgresHost.pool) } } : undefined;
     const pg = bindAgentStorageSelection(profile, host);
     if (pg?.purposes.includes('state')) state = new PostgresStateRepository(await openAgentPostgresStore(profile, pg, host!, 'state'));

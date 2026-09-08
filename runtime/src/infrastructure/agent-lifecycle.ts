@@ -8,12 +8,11 @@ import { acquireAgentMaintenance } from './agent-lifecycle-lease.js';
 import { captureLifecycleTree, copyLifecycleTree, createLifecycleDirectory, disjoint, lifecycleDigest, lifecycleExists, lifecycleFail, lifecycleLimits, lifecycleNames, lifecycleRoot } from './agent-lifecycle-files.js';
 import { assertAgentSetupCompatibility, engineCompatibility, inspectEngineRelease, publishLifecycleManifest, readAgentEnginePin } from './agent-engine-release.js';
 import { openProfileMutationScope, profileDirectory, publishProfileJson, readProfileJson, syncProfileDirectory } from './agent-profile-files.js';
-import { inspectAgentDatabaseOwner } from './agent-database-owner.js';
-import { inspectDocumentKnowledgeStore } from './document-knowledge-owner.js';
 import { effectiveAgentPostgresSelection } from './agent-postgres-migration-profile.js';
 import { readWindowsLifecycleJson, removeWindowsLifecycleMarker } from './windows-lifecycle-files.js';
-import { openHostSqliteDatabase } from './windows-sqlite.js';
 import { restoreWindowsLifecycleTree } from './windows-lifecycle-recovery.js';
+import { inspectAgentLocalStorageCompatibility } from './agent-storage-compatibility.js';
+export { inspectAgentLocalStorageCompatibility } from './agent-storage-compatibility.js';
 
 type Ready = Extract<AgentProfileStatus, { status: 'ready' }>;
 const backupInclude = (path: string) => path !== '.secumon/runtime-leases' && !path.startsWith('.secumon/runtime-leases/') && path !== '.secumon/lifecycle-maintenance.json' &&
@@ -24,39 +23,6 @@ function ready(profiles: AgentProfileStore, directory: string) {
   if (profile.status !== 'ready') return lifecycleFail('agent_profile_not_ready');
   if (profile.personalMemoryMigration?.phase === 'pending') lifecycleFail('agent_migration_resume_required');
   return profile;
-}
-function sqliteVersion(path: string, profile: Ready, kind: 'state' | 'memory' | 'channel', query: string) {
-  if (inspectAgentDatabaseOwner(path, profile.identity.agentId, kind) !== 'owned') lifecycleFail('lifecycle_storage_not_initialized');
-  const db = openHostSqliteDatabase(path, { readOnly: true });
-  try {
-    db.exec('PRAGMA busy_timeout=5000; BEGIN;');
-    const result = db.prepare(query).get(); const value = result && Object.values(result)[0];
-    if (typeof value !== 'number') return lifecycleFail('lifecycle_storage_version_invalid');
-    db.exec('COMMIT;'); return value;
-  } finally { db.close(); }
-}
-/** Checks only the local portions of the actual selected storage; PG binding versions are separate. */
-export function inspectAgentLocalStorageCompatibility(profile: Ready, release: Pick<EngineRelease, 'compatibility'>) {
-  assertAgentSetupCompatibility(profile.root, release);
-  if (profile.postgresMigration?.phase === 'pending' || profile.personalMemoryMigration?.phase === 'pending') lifecycleFail('agent_migration_resume_required');
-  const postgres = effectiveAgentPostgresSelection(profile);
-  const config = profile.config, support = release.compatibility;
-  if (!support.config.includes(config.schemaVersion)) lifecycleFail('engine_config_incompatible');
-  const state = postgres?.purposes.includes('state') ? null : config.storage.state === 'sqlite' ? sqliteVersion(profile.paths.state, profile, 'state', 'PRAGMA user_version') : (() => {
-    const header = readProfileJson(join(profile.paths.state, 'format.json'), z.strictObject({ kind: z.literal('long-horizon-file-journal'), schemaVersion: z.literal(2), storeId: z.uuid(), owner: z.strictObject({ agentId: z.uuid(), kind: z.literal('state') }) }), [2]);
-    if (!header || header.owner.agentId !== profile.identity.agentId) return lifecycleFail('lifecycle_storage_owner_mismatch'); return header.schemaVersion;
-  })();
-  const knowledge = postgres?.purposes.includes('knowledge') ? null : sqliteVersion(profile.paths.memory, profile, 'memory', 'SELECT version FROM knowledge_schema');
-  const session = postgres?.purposes.includes('channel') ? null : sqliteVersion(join(profile.paths.metadata, 'channel.sqlite'), profile, 'channel', 'SELECT version FROM session_schema');
-  if (state !== null && !(config.storage.state === 'sqlite' ? support.state : support.journal).includes(state) ||
-    knowledge !== null && !support.knowledge.includes(knowledge) || session !== null && !support.session.includes(session)) lifecycleFail('engine_storage_incompatible');
-  if (profile.effectivePersonalMemory.backend === 'documents') {
-    const folder = join(profile.root, 'memory', 'documents');
-    if (inspectDocumentKnowledgeStore(folder, { agentId: profile.identity.agentId, storeId: profile.effectivePersonalMemory.storeId, root: profile.root }) !== 'registered') lifecycleFail('lifecycle_document_store_invalid');
-    const format = readProfileJson(join(folder, 'format.json'), z.object({ schemaVersion: z.number().int() }).passthrough(), [1, 2]);
-    if (!format || !support.documents.includes(format.schemaVersion)) lifecycleFail('engine_document_storage_incompatible');
-  }
-  return { config: config.schemaVersion, stateBackend: config.storage.state, state, knowledge, session, personalMemory: profile.effectivePersonalMemory.backend };
 }
 function inspectCompatibility(profile: Ready, release: Pick<EngineRelease, 'compatibility'>) {
   if (effectiveAgentPostgresSelection(profile) || profile.postgresMigration?.phase === 'pending') lifecycleFail('lifecycle_external_storage_snapshot_required');
