@@ -699,7 +699,7 @@ export class ExecutionRuntime {
           a.adopted && state.progress?.processed.includes(`attempt:${a.id}:settled`) ? `attempt:${a.id}:received:${a.resultId}:adopted` : `attempt:${a.id}:settled`, this.services.clock.now(), {
           failureKey: a.error ? taskFailureKey(state, task, this.services.digester) : null,
           additionalKeys: a.adopted && !result.reuse ? acceptedToolProgressKeys(state, task, result, this.services.digester,
-            toolProofValid && proofTool?.definition.resultValidation === 'artifact-proof-v1' && Boolean(proofTool.validateResult) && isComputerObservationTool(proofTool)) : [],
+            toolProofValid && proofTool?.definition.resultValidation === 'artifact-proof-v1' && Boolean(proofTool.validateResult) && isComputerObservationTool(proofTool), toolProofValid ? proofTool : undefined) : [],
         });
       if (!['cancelled', 'paused', 'failed', 'blocked', 'completed'].includes(state.status)) { state.status = 'ready'; state.statusReason = rejection ?? 'result_settled'; }
     }, async () => {

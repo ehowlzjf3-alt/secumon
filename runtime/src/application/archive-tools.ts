@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { markCollaborationTool } from './collaboration-tool-identity.js';
 import type { Json, TaskSpec, ToolResult } from '../domain/model.js';
 import type { Tool } from './ports.js';
 import type { WorkActor } from './work-resources.js';
@@ -33,7 +34,7 @@ export function createArchiveTools(service: ArchiveService, actor: WorkActor): T
   const descriptor = service.descriptor;
   const reads: Tool[] = (['search', 'get'] as const).map(operation => {
     const id = `${descriptor.id}.${operation}`, schema = operation === 'search' ? SearchSchema : GetSchema;
-    return {
+    return markCollaborationTool({
       definition: { provider: descriptor.id, id, version: descriptor.version, effect: 'read', destination: descriptor.destination,
         labels: [...descriptor.labels], description: operation === 'search' ?
           'Search registered archive reference material. Returns title, path and source version; not verified Evidence and never automatically saved as personal memory.' :
@@ -62,7 +63,7 @@ export function createArchiveTools(service: ArchiveService, actor: WorkActor): T
         if (bytes > maxBytes) { partial = true; output = { kind: 'archive_reference', status: 'too_large', byteLength: bytes }; }
         return { ...base, status: partial ? 'partial' : 'success', coverage: partial ? 'partial' : 'complete', output, error: null };
       },
-    };
+    }, operation === 'search' ? 'archive-search' : 'archive-get');
   });
   if (!service.allowWrites) return reads;
   const writes: Tool[] = Object.entries(mutationInputs).map(([operation, schema]) => {

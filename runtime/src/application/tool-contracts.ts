@@ -5,6 +5,7 @@ import { ReadKeySchema, ReadRequestSchema, ReadResponseSchema } from './read-col
 import { ArtifactSchema, parseContract, TaskSchema, ToolResultSchema, ToolUsageSchema } from './contracts.js';
 import { frozen, ToolDefinitionSchema } from './resource-contracts.js';
 import { copyComputerObservationIdentity } from './computer-tool-identity.js';
+import { copyCollaborationToolIdentity } from './collaboration-tool-identity.js';
 
 export function toolAllowed(definition: Tool['definition'], policy: Policy): boolean {
   return policy.allowedTools.includes(definition.id) && policy.allowedDestinations.includes(definition.destination) &&
@@ -50,14 +51,14 @@ export function snapshotTool(tool: Tool): Tool {
   if (definition.collection?.responseRecovery && !restoreReadResponse) throw new Error('tool_response_restorer_required');
   if (definition.collection?.coverage && !readManifest) throw new Error('tool_read_manifest_required');
   const boundManifest = readManifest?.bind(tool);
-  return copyComputerObservationIdentity(tool, Object.freeze({ definition, ...(availability === undefined ? {} : { availability }), execute: execute.bind(tool), ...(validateResult ? { validateResult: validateResult.bind(tool) } : {}),
+  return copyCollaborationToolIdentity(tool, copyComputerObservationIdentity(tool, Object.freeze({ definition, ...(availability === undefined ? {} : { availability }), execute: execute.bind(tool), ...(validateResult ? { validateResult: validateResult.bind(tool) } : {}),
     ...(validateReadPage ? { validateReadPage: validateReadPage.bind(tool) } : {}),
     ...(validateReadDeferral ? { validateReadDeferral: validateReadDeferral.bind(tool) } : {}),
     ...(restoreReadResponse ? { restoreReadResponse: restoreReadResponse.bind(tool) } : {}),
     ...(restoreResult ? { restoreResult: restoreResult.bind(tool) } : {}),
     ...(restoreUsage ? { restoreUsage: restoreUsage.bind(tool) } : {}),
     ...(restoreReadUsage ? { restoreReadUsage: restoreReadUsage.bind(tool) } : {}),
-    ...(boundManifest ? { readManifest: (task: TaskSpec) => z.array(ReadKeySchema).max(10000).parse(boundManifest(structuredClone(task))) } : {}) }));
+    ...(boundManifest ? { readManifest: (task: TaskSpec) => z.array(ReadKeySchema).max(10000).parse(boundManifest(structuredClone(task))) } : {}) })));
 }
 
 export class ToolContracts {

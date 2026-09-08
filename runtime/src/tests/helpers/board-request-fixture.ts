@@ -4,6 +4,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { composeRuntime } from '../../application/compose-runtime.js';
+import { BoardWorkSourceRegistry } from '../../application/board-work-source-registry.js';
 import { BOARD_REQUEST_TOOLS, BOARD_WRITE_TOOLS } from '../../application/board-commands.js';
 import { BOARD_READ_TOOL } from '../../application/board-tools.js';
 import { ToolResultSchema } from '../../application/contracts.js';
@@ -28,8 +29,9 @@ export async function boardRequestFixture(t: TestContext, adapter: Adapter, fami
   const actors: Record<string, BoardActor> = Object.fromEntries(['a', 'b'].map(person => [person, { tenantId: 'tenant-a', principalId: `person-${person}`,
     allowedLabels: ['synthetic'], allowedScopes: ['fixture'], allowedNamespaces: ['team'], canPublish: true, canReview: false, canManageBoards: person === 'a' }]));
   const clock = new FakeClock(1100), ids = new SequenceIds(), digester = new Sha256Digester(); let sequence = 0;
+  const workSources = new BoardWorkSourceRegistry(); let registrations: Array<() => void> = [];
   const compose = (person: string) => composeRuntime({ services: { state, artifacts, clock, ids, digester, tools: [], planner: new ScriptedPlanner([]), sink: new FakeSink() },
-    board: { repository, actors: { current: async () => structuredClone(actors[person]!) }, authority: { resolve: async identity => {
+    board: { repository, workSources, actors: { current: async () => structuredClone(actors[person]!) }, authority: { resolve: async identity => {
       const actor = Object.values(actors).find(value => value.tenantId === identity.tenantId && value.principalId === identity.principalId);
       if (!actor) return null;
       const { canManageBoards: _manage, ...trusted } = actor; return structuredClone(trusted);
@@ -46,6 +48,9 @@ export async function boardRequestFixture(t: TestContext, adapter: Adapter, fami
     await state.commit(command(work, `seed-${person}`));
   }
   let a = await compose('a'), b = await compose('b'); const bundle = (person: string) => person === 'a' ? a : b;
+  const registerSources = () => { registrations.forEach(remove => remove());
+    registrations = ['a', 'b'].map(person => workSources.register(actors[person]!, bundle(person).boardWorkSource!)); };
+  registerSources();
   await a.board!.create({ id: 'board', commandId: 'create', namespace: 'team', scope: 'fixture', labels: ['synthetic'],
     roles: ['a', 'b'].map(person => ({ id: `role-${person}`, principalId: `person-${person}`, purpose: 'Collaborate', active: true })),
     limits: { maxPosts: 20, maxReplies: 5, maxUnproductiveReplies: 3, maxRequests: 5 } });
@@ -82,7 +87,7 @@ export async function boardRequestFixture(t: TestContext, adapter: Adapter, fami
   const answer = async () => { await publish('b', 'answer', true); return execute('b', BOARD_REQUEST_TOOLS[2], { ...await mutation(), requestId: 'request', postId: 'answer' }); };
   const confirm = async () => { await read('a'); return execute('a', BOARD_REQUEST_TOOLS[3], { ...await mutation(), requestId: 'request' }); };
   const edit = async (person: string, change: (work: WorkState) => void) => { const next = advance((await state.get(`work-${person}`))!); change(next); await state.commit(command(next, `edit-${++sequence}`)); };
-  const reopen = async () => { await state.close(); await repository.close(); state = openRepository(adapter, directory); repository = openBoard(); a = await compose('a'); b = await compose('b'); };
-  t.after(async () => { await state.close(); await repository.close(); await rm(directory, { recursive: true, force: true }); });
+  const reopen = async () => { registrations.forEach(remove => remove()); await state.close(); await repository.close(); state = openRepository(adapter, directory); repository = openBoard(); a = await compose('a'); b = await compose('b'); registerSources(); };
+  t.after(async () => { registrations.forEach(remove => remove()); await state.close(); await repository.close(); await rm(directory, { recursive: true, force: true }); });
   return { get state() { return state; }, get repository() { return repository; }, bundle, clock, directory, artifacts, actors, mutation, prepare, execute, publish, read, readRequests, offer, accept, answer, confirm, refresh, edit, reopen };
 }

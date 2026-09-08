@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { markCollaborationTool } from './collaboration-tool-identity.js';
 import type { BoardActor } from '../domain/board.js';
 import type { ToolResult, WorkState } from '../domain/model.js';
 import { dataGeneration, visibleArtifact } from '../domain/data-lifecycle.js';
@@ -122,5 +123,5 @@ export function createBoardRequestTool(deps: Dependencies): Tool {
       } catch { return false; }
     },
   };
-  return tool;
+  return markCollaborationTool(tool, 'board-requests');
 }

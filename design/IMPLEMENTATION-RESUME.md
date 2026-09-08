@@ -4,6 +4,20 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT377-START -->
+### Checkpoint377 — 선택 협업의 원출처·진전·게시 도구 응답
+
+C07 선택 고유261개(기존215+신규46)와 관련 공통 진전/호스트 회귀89개를 확인했다. 각 빌드의 통과와 재실행을 구분하며 최종 소스에서 전부 재실행한 결과는 아니다. 기준선은 69f84d5다. [C07 결과](chapters/C07-ordered-verification-result.md) · [체크포인트](../runtime/evidence/checkpoint377.json).
+
+다른 담당의 업무는 명시 등록한 원출처 검사기로 읽고, 등록 해제 뒤 늦은 응답과 반복 해제의 다른 등록 삭제를 막았다. 채택된 archive/board 관측과 실제 게시를 진전에 연결하되 반복 ID·시각·내용은 기본 무진전 한도3을 초기화하지 않는다. 원 영수증의 committed revision을 도구 결과로 반환하여 후속 명령의 revision 재조회를 줄였으며 기존 저장 출력의 검증을 유지했다.
+
+독립 SQLite 담당의 선택 답글과 명시 요청 수락→답변→요청자 확인, 아카이브 검색/원문·쓰기 응답 유실 후 원 receipt 복구를 확인했다. 개인 기억과 독립 Evidence로 자동 복사하지 않는다. bounded context에서 오래된 관측이 빠져도 시험 모델은 새 task ID와 공개 요청/의무 상태를 사용한다. 진짜 모델 품질 검증은 아니다.
+
+최종 build7 exit0, sourceDigest 5a935be65c4bfc584c08a28d11f00721e4852889cbc00605c912b2f630eb92da, [소스/산출물 대조](../runtime/evidence/checkpoint377-final-source.json) 2,184파일 일치다. 같은 소스에서 독립 담당/게시쓰기46개와 요청 영수증 복구6개를 통과했다. 앞선 실패·진단 원로그는 보존한다.
+
+다음은 [C08 동료·반론·자원 검증](chapters/C08-ordered-verification-preparation.md)이다. C05 정책 재허용 전체 재개, C06 브라우저·기억 HTTP 지연, 현재 Linux/native Windows·PostgreSQL·실제 모델/서비스·최종 통합은 [다음 작업](NEXT-STEPS.md)에 유지한다. 실제 모델/API 시험은 중단하며 전체 goal은 미완료다. 활성 빌드·시험은 없다. 이 단위의 코드·문서·증거를 함께 커밋/푸시하고 원격 일치를 확인한다. 아래 checkpoint376 이하는 당시 기록이다.
+<!-- CHECKPOINT377-END -->
+
 <!-- CHECKPOINT376-START -->
 ### Checkpoint376 — Knox 입구 교정·격리 설치·두 담당 배치
 

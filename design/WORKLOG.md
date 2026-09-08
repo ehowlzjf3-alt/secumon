@@ -2353,3 +2353,11 @@ C03 추가5개는 실제 프로세스 SIGKILL 경계3·임시 쓰기 영수증2�
 C06 고유16개를 확인했다. Knox12/build3, 배치 첫 시험1+설치2/build2, 개인 기억1/build6의 서로 다른 소스 결과이며 재실행 중복은 제외한다. Knox run은 대상 권한을 pending 복구 전에 확인하고 close 시작 뒤 새 호출을 거절한다. 실제 원 npm tarball 격리 전역 설치·재설치, bundle 반환 명령, 독립 담당의 설정/스킬/대화/기억을 확인했다. [결과](chapters/C06-ordered-verification-result.md) · [증거](../runtime/evidence/checkpoint376.json).
 
 기억 시험의 호스트 권한과 foreign source 기대 오류를 교정했다. 실제 HTTP20초 TimeoutError를 진단하고 해당 기억 명령만 대기60초로 시험해1/1 통과했다. 이 시험 전체31.325초는 단일 HTTP 응답시간이 아니며 성능 개선으로 해석하지 않는다. 최종 build6 및 소스 대조가 통과했고 활성 실행은 없다. 메인 프롬프트 구현/어댑터 연결의 현재 설명을 역사 검토 문서에 추가했다. 다음 C07 준비와 C06 UI/플랫폼·통합·성능 잔여를 저장했다. 실제 모델/API 중단과 전체 goal 미완료를 유지하며 코드·문서·증거를 함께 커밋/푸시한다.
+
+### Checkpoint377 — 게시판·아카이브 원출처와 의미 있는 진전
+
+C07 선택 고유261개와 관련 회귀89개를 확인했다. 원출처 명시 등록/해제, 독립 담당 DB의 질문·답변·확인, 아카이브 참고자료와 개인 기억 분리·원 영수증 복구를 검증했다. 성공 관측/게시 진전 누락을 교정했고 native 도구 identity와 내용별 dedup으로 반복을 기본3에서 멈춘다. 게시 도구는 원 committed revision을 반환하여 후속 명령의 revision-only 조회를 줄이고 이전 저장 출력의 exact 검증을 유지한다.
+
+마지막 request 실패를 모델 제안 task_id_contract_changed와 필요한 revision 재조회로 구분했다. 시험 모델의 bounded-context 판단을 교정하고 실제 도구 결과를 활용했다. build7 source5a935be65c4bfc584c08a28d11f00721e4852889cbc00605c912b2f630eb92da, 최종 소스/산출물2,184개 일치, 마지막 선택46/46+영수증6/6이다. 이전 실행 결과를 최종 소스 재실행으로 합치지 않는다. [결과](chapters/C07-ordered-verification-result.md) · [증거](../runtime/evidence/checkpoint377.json).
+
+활성 실행은 없고 C08 준비와 기존 실제 연동/플랫폼·C05 재허용·C06 지연 잔여를 저장했다. 실제 모델/API 중단과 전체 goal 미완료를 유지하며 코드·문서·증거를 함께 커밋/푸시한다.

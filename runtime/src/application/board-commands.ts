@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { markCollaborationTool } from './collaboration-tool-identity.js';
 import type { Attempt, EffectReceipt, Obligation, ToolResult, WorkState } from '../domain/model.js';
 import { dataGeneration, visibleArtifact } from '../domain/data-lifecycle.js';
 import { boardRole } from '../domain/board.js';
@@ -41,7 +42,7 @@ const unavailable = () => new Error('board_command_unavailable');
 /** Local board commands have durable storage receipts. Neither a receipt nor an input application completes a goal. */
 export class BoardCommands {
   readonly tools: Tool[];
-  constructor(private readonly deps: Dependencies) { this.tools = [...BOARD_WRITE_TOOLS, ...BOARD_REQUEST_TOOLS].map(id => this.tool(id)); }
+  constructor(private readonly deps: Dependencies) { this.tools = [...BOARD_WRITE_TOOLS, ...BOARD_REQUEST_TOOLS].map(id => markCollaborationTool(this.tool(id), 'board-command')); }
   private digest(value: unknown) { return this.deps.services.digester.digest(asJson(value)); }
   private boundary(state: WorkState) { return this.digest({ id: state.id, scope: state.goal.scope, generation: dataGeneration(state),
     tenantId: state.policy.tenantId, principalId: state.policy.principalId, labels: [...state.policy.allowedLabels].sort() }); }
@@ -75,6 +76,12 @@ export class BoardCommands {
       status: action === 'publish' ? 'published' : 'retracted' };
     return { boardId: args.boardId, requestId: action === 'offer' ? OfferBoardRequestSchema.parse(args).id : ChangeBoardRequestSchema.parse(args).requestId,
       status: { offer: 'offered', accept: 'accepted', answer: 'answered', confirm: 'satisfied', decline: 'declined', cancel: 'cancelled' }[action]! };
+  }
+  private async committedOutput(state: WorkState, descriptor: Awaited<ReturnType<BoardCommands['descriptor']>>, receipt: EffectReceipt) {
+    // The verified receipt supplies the revision of this command, not a claim about the current board head.
+    const bytes = await this.deps.services.artifacts.get(receipt.artifact, state.policy);
+    const proof = ProofSchema.parse(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)));
+    return { ...this.output(descriptor), revision: proof.revision };
   }
   private async access(state: WorkState, boardId: string) {
     const trusted = await this.deps.authority.resolve({ tenantId: state.policy.tenantId, principalId: state.policy.principalId });
@@ -305,7 +312,7 @@ export class BoardCommands {
           const latest = await this.state(state.id), receipt = await this.recorded(latest, context.attemptId, 'execution', false);
           if (receipt.outcome !== 'applied' || !(await this.verify(latest, context.attemptId, receipt))) throw unavailable();
           return { ...base, status: 'success', effectState: 'confirmed', coverage: 'complete', error: null, effectReceipt: receipt,
-            output: this.output(descriptor) };
+            output: await this.committedOutput(latest, descriptor, receipt) };
         } catch { return { ...base, status: context.signal.aborted ? 'cancelled' : 'error', effectState: 'unknown', coverage: 'unknown', output: null,
           error: { code: 'board_command_unavailable', retryable: false } }; }
       },
@@ -318,7 +325,10 @@ export class BoardCommands {
             result.coverage !== 'complete' || result.error !== null || !(await this.verify(state, result.attemptId, result.effectReceipt)) ||
             !(await knowledgeInputsCurrent(this.deps.services, state))) return false;
           const descriptor = await this.descriptor(state, result.attemptId);
-          return descriptor.attempt.toolId === id && this.digest(result.output) === this.digest(this.output(descriptor));
+          // Older version-1 results did not expose the committed revision. Keep their exact original proof contract.
+          const withRevision = result.output !== null && typeof result.output === 'object' && !Array.isArray(result.output) && 'revision' in result.output;
+          const expected = withRevision ? await this.committedOutput(state, descriptor, result.effectReceipt) : this.output(descriptor);
+          return descriptor.attempt.toolId === id && this.digest(result.output) === this.digest(expected);
         } catch { return false; }
       },
     };

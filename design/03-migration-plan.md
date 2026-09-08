@@ -2,7 +2,7 @@
 
 ## 현재 실행 방침 — 2026-09-08
 
-최신 checkpoint376: C06 Knox 직접 입구12·두 담당 배치/기억2·실제 격리 설치2의 선택 고유16개를 확인했다. Knox 실행 전 권한·종료 시작 후 호출을 교정했으며 실행별 소스와 실패 이력을 [결과](chapters/C06-ordered-verification-result.md)에 기록했다. 다음은 [C07 게시판·아카이브](chapters/C07-ordered-verification-preparation.md)다. C06 브라우저·현재 대상 OS·최종 통합, 기억 작업 HTTP 응답시간, C05 정책 재허용 후 완주와 실제 연동은 남긴다. 실제 모델/API 중단과 전체 goal 미완료를 유지한다. [인수인계](IMPLEMENTATION-RESUME.md) · [다음 작업](NEXT-STEPS.md). 아래 checkpoint375 이전의 다음 작업은 이력이다.
+최신 checkpoint377: C07 선택 고유261개와 관련 공통 회귀89개를 확인했다. 담당별 원출처 등록·늦은 조회 거절, 아카이브/게시판 진전, 원 committed revision 응답으로 불필요한 후속 조회를 교정했다. 독립 담당의 명시 요청은 수락·답변·요청자 확인까지 이어진다. 실행별 소스와 실패/교정을 [결과](chapters/C07-ordered-verification-result.md)에 기록했다. 다음은 [C08 동료·반론·자원](chapters/C08-ordered-verification-preparation.md)이다. 현재 대상 OS·브라우저·최종 통합, 기억 HTTP 지연, C05 정책 재허용 완주와 실제 연동은 남긴다. 실제 모델/API 중단과 전체 goal 미완료를 유지한다. [인수인계](IMPLEMENTATION-RESUME.md) · [다음 작업](NEXT-STEPS.md). 아래 checkpoint376 이전의 다음 작업은 이력이다.
 
 이전 Checkpoint375: C03의 명시 복구 중단·실제 로컬 도구 기록5개를 추가해 선택 고유243개, C05의 원문 조회 재사용·수집 권한 차단·CLI 안내20개를 추가해 선택 고유682개를 확인했다. 각 실행의 소스 지문과 실패 후 교정을 구분하며 전체를 최종 소스에서 재실행한 것으로 표시하지 않는다. [현재 인수인계](IMPLEMENTATION-RESUME.md)와 [다음 작업](NEXT-STEPS.md)을 따른다. C06 직접 입구·설치·두 담당 배치부터 이어가며, 정책 재허용 후 전체 재개·최종 통합·현재 Linux/native Windows 및 실제 환경 인수는 별도다. 아래 checkpoint374 이전의 상태·다음 작업은 이력이다.
 

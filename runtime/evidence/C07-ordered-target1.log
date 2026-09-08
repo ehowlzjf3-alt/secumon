@@ -1,0 +1,1524 @@
+TAP version 13
+# Subtest: sqlite: board transitions, receipts and event cursors persist together and duplicates do not add events
+ok 1 - sqlite: board transitions, receipts and event cursors persist together and duplicates do not add events
+  ---
+  duration_ms: 223.492583
+  type: 'test'
+  ...
+# Subtest: sqlite: an event burst coalesces only after a complete current request scan
+ok 2 - sqlite: an event burst coalesces only after a complete current request scan
+  ---
+  duration_ms: 168.901958
+  type: 'test'
+  ...
+# Subtest: sqlite: missing event history under an established root is rejected rather than silently skipped
+ok 3 - sqlite: missing event history under an established root is rejected rather than silently skipped
+  ---
+  duration_ms: 144.315167
+  type: 'test'
+  ...
+# Subtest: sqlite: an owned worker killed after commit leaves one event and the same command receipt
+ok 4 - sqlite: an owned worker killed after commit leaves one event and the same command receipt
+  ---
+  duration_ms: 115.951708
+  type: 'test'
+  ...
+# Subtest: file-journal: board transitions, receipts and event cursors persist together and duplicates do not add events
+ok 5 - file-journal: board transitions, receipts and event cursors persist together and duplicates do not add events
+  ---
+  duration_ms: 481.552084
+  type: 'test'
+  ...
+# Subtest: file-journal: an event burst coalesces only after a complete current request scan
+ok 6 - file-journal: an event burst coalesces only after a complete current request scan
+  ---
+  duration_ms: 1018.971541
+  type: 'test'
+  ...
+# Subtest: file-journal: missing event history under an established root is rejected rather than silently skipped
+ok 7 - file-journal: missing event history under an established root is rejected rather than silently skipped
+  ---
+  duration_ms: 453.504166
+  type: 'test'
+  ...
+# Subtest: file-journal: an owned worker killed after commit leaves one event and the same command receipt
+ok 8 - file-journal: an owned worker killed after commit leaves one event and the same command receipt
+  ---
+  duration_ms: 169.559459
+  type: 'test'
+  ...
+# Subtest: sqlite: a pre-event database declares a rescan boundary and recovers current offers without fabricating past events
+ok 9 - sqlite: a pre-event database declares a rescan boundary and recovers current offers without fabricating past events
+  ---
+  duration_ms: 164.561125
+  type: 'test'
+  ...
+# Subtest: event pagination applies its byte limit to the final cursor including a digit boundary
+ok 10 - event pagination applies its byte limit to the final cursor including a digit boundary
+  ---
+  duration_ms: 0.22075
+  type: 'test'
+  ...
+# Subtest: sqlite/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion
+not ok 11 - sqlite/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion
+  ---
+  duration_ms: 1078.404084
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:12:9'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.confirm","toolVersion":"1","inputDigest":"2738ee71543f9d5ad9db63a25ea9bad1c14b12679c8a0b355c832e8a8bf0b923","scope":"fixture","contractDigest":"0e17999d851bd572629d1844f22a779d231dd635430dd0c3e28ba7d7f1fc94c5","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:result","resultArtifact":{"id":"6f9e0029967c139c92a2198b109c3d9b5a1e4141f5742ef7122942669f838bc6","sha256":"91602276fc3aa08af565e29e899697be8ab0ac69ab2b95b9ea3612d34cb89c16","byteLength":555,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:dcfb01074c95f76e966b37930a1275bc5460340a425ac7ba6ec185d6cc0fdeaf","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"34263c11066913cfeae353c8e778530d10927c7ce2965bab8665e2335b1a6e5f","sha256":"c6356d66af707ee45307c52b5b326447f17194f3066e5d07a1067a492e87187a","byteLength":462,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-12:result","attemptId":"attempt-12","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown","inputDependencies":[{"provider":"board","workId":"work-a","artifact":{"id":"7a66cb2afeec539ce7f1772f6105580c0f1c2540ce2a2ec3abfdc7073f9e4d80","sha256":"72c3103d610a8370fef5bba401d9bf9aca10e54a69756f203b26af0d56707b00","byteLength":1076,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]}}]}}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:76:16)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:28:13)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: sqlite/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion
+not ok 12 - sqlite/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion
+  ---
+  duration_ms: 995.20575
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:12:9'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.confirm","toolVersion":"1","inputDigest":"2738ee71543f9d5ad9db63a25ea9bad1c14b12679c8a0b355c832e8a8bf0b923","scope":"fixture","contractDigest":"0e17999d851bd572629d1844f22a779d231dd635430dd0c3e28ba7d7f1fc94c5","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:result","resultArtifact":{"id":"07f3b9d68c0b8548c3aa803e14c63a14fb9d32a73b9e83a6fb437ddb090b2d06","sha256":"7f648ae174e48718d687ff040aa6e1e29372fbac44c47974dcff62a3252d6b3c","byteLength":555,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:dcfb01074c95f76e966b37930a1275bc5460340a425ac7ba6ec185d6cc0fdeaf","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"34263c11066913cfeae353c8e778530d10927c7ce2965bab8665e2335b1a6e5f","sha256":"c6356d66af707ee45307c52b5b326447f17194f3066e5d07a1067a492e87187a","byteLength":462,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-12:result","attemptId":"attempt-12","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown","inputDependencies":[{"provider":"board","workId":"work-a","artifact":{"id":"1c61f8e3de9b76c2a5f31709d838973134811c40a777e96f782ba643527f33a1","sha256":"d306c599a6da27461c2202eb77e3e182568ea0ce814dfdf2cc1003587f827157","byteLength":1085,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]}}]}}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:76:16)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:28:13)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: sqlite: lost offer response restores one obligation from the applied receipt without inventing a result
+ok 13 - sqlite: lost offer response restores one obligation from the applied receipt without inventing a result
+  ---
+  duration_ms: 168.007459
+  type: 'test'
+  ...
+# Subtest: sqlite: a missing projection is restored and generic wait or resolve cannot forge coordination
+ok 14 - sqlite: a missing projection is restored and generic wait or resolve cannot forge coordination
+  ---
+  duration_ms: 181.742916
+  type: 'test'
+  ...
+# Subtest: sqlite: requester can cancel a waiting request and cancellation is waived rather than satisfied
+ok 15 - sqlite: requester can cancel a waiting request and cancellation is waived rather than satisfied
+  ---
+  duration_ms: 406.448667
+  type: 'test'
+  ...
+# Subtest: sqlite: decline does not create an obligation for a recipient who never accepted
+ok 16 - sqlite: decline does not create an obligation for a recipient who never accepted
+  ---
+  duration_ms: 191.132208
+  type: 'test'
+  ...
+# Subtest: sqlite: expiry is actionable review and retains the original pending obligation
+ok 17 - sqlite: expiry is actionable review and retains the original pending obligation
+  ---
+  duration_ms: 224.488166
+  type: 'test'
+  ...
+# Subtest: sqlite: confirmed answer retraction invalidates the previous completion projection
+not ok 18 - sqlite: confirmed answer retraction invalidates the previous completion projection
+  ---
+  duration_ms: 928.142292
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:107:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.confirm","toolVersion":"1","inputDigest":"2738ee71543f9d5ad9db63a25ea9bad1c14b12679c8a0b355c832e8a8bf0b923","scope":"fixture","contractDigest":"0e17999d851bd572629d1844f22a779d231dd635430dd0c3e28ba7d7f1fc94c5","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:result","resultArtifact":{"id":"6f9e0029967c139c92a2198b109c3d9b5a1e4141f5742ef7122942669f838bc6","sha256":"91602276fc3aa08af565e29e899697be8ab0ac69ab2b95b9ea3612d34cb89c16","byteLength":555,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:dcfb01074c95f76e966b37930a1275bc5460340a425ac7ba6ec185d6cc0fdeaf","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"34263c11066913cfeae353c8e778530d10927c7ce2965bab8665e2335b1a6e5f","sha256":"c6356d66af707ee45307c52b5b326447f17194f3066e5d07a1067a492e87187a","byteLength":462,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-12:result","attemptId":"attempt-12","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown","inputDependencies":[{"provider":"board","workId":"work-a","artifact":{"id":"7a66cb2afeec539ce7f1772f6105580c0f1c2540ce2a2ec3abfdc7073f9e4d80","sha256":"72c3103d610a8370fef5bba401d9bf9aca10e54a69756f203b26af0d56707b00","byteLength":1076,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]}}]}}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:76:16)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:112:9)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: sqlite: loss of an applied request receipt cannot silently discharge the response
+ok 19 - sqlite: loss of an applied request receipt cannot silently discharge the response
+  ---
+  duration_ms: 146.64975
+  type: 'test'
+  ...
+# Subtest: sqlite: lost acceptance response recovers the assignee obligation and leaves work executable
+ok 20 - sqlite: lost acceptance response recovers the assignee obligation and leaves work executable
+  ---
+  duration_ms: 813.0095
+  type: 'test'
+  ...
+# Subtest: sqlite: an expired assignee can decline instead of falsely satisfying the answer
+ok 21 - sqlite: an expired assignee can decline instead of falsely satisfying the answer
+  ---
+  duration_ms: 493.251459
+  type: 'test'
+  ...
+# Subtest: sqlite: coordination waits do not become questions for a human
+ok 22 - sqlite: coordination waits do not become questions for a human
+  ---
+  duration_ms: 153.463333
+  type: 'test'
+  ...
+# Subtest: sqlite: withdrawal of current authority denies a retained coordination projection
+ok 23 - sqlite: withdrawal of current authority denies a retained coordination projection
+  ---
+  duration_ms: 142.899333
+  type: 'test'
+  ...
+# Subtest: sqlite: request tool contracts reject caller-selected owner, command and action
+ok 24 - sqlite: request tool contracts reject caller-selected owner, command and action
+  ---
+  duration_ms: 242.256125
+  type: 'test'
+  ...
+# Subtest: sqlite: even satisfied goal facts wait for requester confirmation
+not ok 25 - sqlite: even satisfied goal facts wait for requester confirmation
+  ---
+  duration_ms: 924.485375
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:176:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"attempt":{"id":"attempt-12","taskId":"task-9","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.confirm","toolVersion":"1","inputDigest":"2738ee71543f9d5ad9db63a25ea9bad1c14b12679c8a0b355c832e8a8bf0b923","scope":"fixture","contractDigest":"0e17999d851bd572629d1844f22a779d231dd635430dd0c3e28ba7d7f1fc94c5","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:result","resultArtifact":{"id":"6f9e0029967c139c92a2198b109c3d9b5a1e4141f5742ef7122942669f838bc6","sha256":"91602276fc3aa08af565e29e899697be8ab0ac69ab2b95b9ea3612d34cb89c16","byteLength":555,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:dcfb01074c95f76e966b37930a1275bc5460340a425ac7ba6ec185d6cc0fdeaf","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"34263c11066913cfeae353c8e778530d10927c7ce2965bab8665e2335b1a6e5f","sha256":"c6356d66af707ee45307c52b5b326447f17194f3066e5d07a1067a492e87187a","byteLength":462,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-12:result","attemptId":"attempt-12","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown","inputDependencies":[{"provider":"board","workId":"work-a","artifact":{"id":"7a66cb2afeec539ce7f1772f6105580c0f1c2540ce2a2ec3abfdc7073f9e4d80","sha256":"72c3103d610a8370fef5bba401d9bf9aca10e54a69756f203b26af0d56707b00","byteLength":1076,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]}}]}}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:76:16)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:184:9)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: file-journal/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion
+not ok 26 - file-journal/documents: two runtimes request, accept, answer and confirm without treating discussion as goal completion
+  ---
+  duration_ms: 4042.353417
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:12:9'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.confirm","toolVersion":"1","inputDigest":"2738ee71543f9d5ad9db63a25ea9bad1c14b12679c8a0b355c832e8a8bf0b923","scope":"fixture","contractDigest":"0e17999d851bd572629d1844f22a779d231dd635430dd0c3e28ba7d7f1fc94c5","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:result","resultArtifact":{"id":"6f9e0029967c139c92a2198b109c3d9b5a1e4141f5742ef7122942669f838bc6","sha256":"91602276fc3aa08af565e29e899697be8ab0ac69ab2b95b9ea3612d34cb89c16","byteLength":555,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:dcfb01074c95f76e966b37930a1275bc5460340a425ac7ba6ec185d6cc0fdeaf","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"34263c11066913cfeae353c8e778530d10927c7ce2965bab8665e2335b1a6e5f","sha256":"c6356d66af707ee45307c52b5b326447f17194f3066e5d07a1067a492e87187a","byteLength":462,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-12:result","attemptId":"attempt-12","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown","inputDependencies":[{"provider":"board","workId":"work-a","artifact":{"id":"7a66cb2afeec539ce7f1772f6105580c0f1c2540ce2a2ec3abfdc7073f9e4d80","sha256":"72c3103d610a8370fef5bba401d9bf9aca10e54a69756f203b26af0d56707b00","byteLength":1076,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]}}]}}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:76:16)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:28:13)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: file-journal/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion
+not ok 27 - file-journal/observations: two runtimes request, accept, answer and confirm without treating discussion as goal completion
+  ---
+  duration_ms: 4183.049292
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:12:9'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.confirm","toolVersion":"1","inputDigest":"2738ee71543f9d5ad9db63a25ea9bad1c14b12679c8a0b355c832e8a8bf0b923","scope":"fixture","contractDigest":"0e17999d851bd572629d1844f22a779d231dd635430dd0c3e28ba7d7f1fc94c5","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:result","resultArtifact":{"id":"07f3b9d68c0b8548c3aa803e14c63a14fb9d32a73b9e83a6fb437ddb090b2d06","sha256":"7f648ae174e48718d687ff040aa6e1e29372fbac44c47974dcff62a3252d6b3c","byteLength":555,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:dcfb01074c95f76e966b37930a1275bc5460340a425ac7ba6ec185d6cc0fdeaf","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"34263c11066913cfeae353c8e778530d10927c7ce2965bab8665e2335b1a6e5f","sha256":"c6356d66af707ee45307c52b5b326447f17194f3066e5d07a1067a492e87187a","byteLength":462,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-12:result","attemptId":"attempt-12","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown","inputDependencies":[{"provider":"board","workId":"work-a","artifact":{"id":"1c61f8e3de9b76c2a5f31709d838973134811c40a777e96f782ba643527f33a1","sha256":"d306c599a6da27461c2202eb77e3e182568ea0ce814dfdf2cc1003587f827157","byteLength":1085,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]}}]}}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:76:16)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:28:13)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: file-journal: lost offer response restores one obligation from the applied receipt without inventing a result
+ok 28 - file-journal: lost offer response restores one obligation from the applied receipt without inventing a result
+  ---
+  duration_ms: 457.946416
+  type: 'test'
+  ...
+# Subtest: file-journal: a missing projection is restored and generic wait or resolve cannot forge coordination
+ok 29 - file-journal: a missing projection is restored and generic wait or resolve cannot forge coordination
+  ---
+  duration_ms: 611.459875
+  type: 'test'
+  ...
+# Subtest: file-journal: requester can cancel a waiting request and cancellation is waived rather than satisfied
+ok 30 - file-journal: requester can cancel a waiting request and cancellation is waived rather than satisfied
+  ---
+  duration_ms: 1503.326791
+  type: 'test'
+  ...
+# Subtest: file-journal: decline does not create an obligation for a recipient who never accepted
+ok 31 - file-journal: decline does not create an obligation for a recipient who never accepted
+  ---
+  duration_ms: 617.8585
+  type: 'test'
+  ...
+# Subtest: file-journal: expiry is actionable review and retains the original pending obligation
+ok 32 - file-journal: expiry is actionable review and retains the original pending obligation
+  ---
+  duration_ms: 833.926208
+  type: 'test'
+  ...
+# Subtest: file-journal: confirmed answer retraction invalidates the previous completion projection
+not ok 33 - file-journal: confirmed answer retraction invalidates the previous completion projection
+  ---
+  duration_ms: 3852.906875
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:107:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"attempt":{"id":"attempt-12","taskId":"task-8","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.confirm","toolVersion":"1","inputDigest":"2738ee71543f9d5ad9db63a25ea9bad1c14b12679c8a0b355c832e8a8bf0b923","scope":"fixture","contractDigest":"0e17999d851bd572629d1844f22a779d231dd635430dd0c3e28ba7d7f1fc94c5","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:result","resultArtifact":{"id":"6f9e0029967c139c92a2198b109c3d9b5a1e4141f5742ef7122942669f838bc6","sha256":"91602276fc3aa08af565e29e899697be8ab0ac69ab2b95b9ea3612d34cb89c16","byteLength":555,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:dcfb01074c95f76e966b37930a1275bc5460340a425ac7ba6ec185d6cc0fdeaf","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"34263c11066913cfeae353c8e778530d10927c7ce2965bab8665e2335b1a6e5f","sha256":"c6356d66af707ee45307c52b5b326447f17194f3066e5d07a1067a492e87187a","byteLength":462,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-12:result","attemptId":"attempt-12","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown","inputDependencies":[{"provider":"board","workId":"work-a","artifact":{"id":"7a66cb2afeec539ce7f1772f6105580c0f1c2540ce2a2ec3abfdc7073f9e4d80","sha256":"72c3103d610a8370fef5bba401d9bf9aca10e54a69756f203b26af0d56707b00","byteLength":1076,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]}}]}}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:76:16)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:112:9)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: file-journal: loss of an applied request receipt cannot silently discharge the response
+ok 34 - file-journal: loss of an applied request receipt cannot silently discharge the response
+  ---
+  duration_ms: 456.670125
+  type: 'test'
+  ...
+# Subtest: file-journal: lost acceptance response recovers the assignee obligation and leaves work executable
+ok 35 - file-journal: lost acceptance response recovers the assignee obligation and leaves work executable
+  ---
+  duration_ms: 2608.188667
+  type: 'test'
+  ...
+# Subtest: file-journal: an expired assignee can decline instead of falsely satisfying the answer
+ok 36 - file-journal: an expired assignee can decline instead of falsely satisfying the answer
+  ---
+  duration_ms: 1862.364958
+  type: 'test'
+  ...
+# Subtest: file-journal: coordination waits do not become questions for a human
+ok 37 - file-journal: coordination waits do not become questions for a human
+  ---
+  duration_ms: 456.014833
+  type: 'test'
+  ...
+# Subtest: file-journal: withdrawal of current authority denies a retained coordination projection
+ok 38 - file-journal: withdrawal of current authority denies a retained coordination projection
+  ---
+  duration_ms: 441.236625
+  type: 'test'
+  ...
+# Subtest: file-journal: request tool contracts reject caller-selected owner, command and action
+ok 39 - file-journal: request tool contracts reject caller-selected owner, command and action
+  ---
+  duration_ms: 746.577417
+  type: 'test'
+  ...
+# Subtest: file-journal: even satisfied goal facts wait for requester confirmation
+not ok 40 - file-journal: even satisfied goal facts wait for requester confirmation
+  ---
+  duration_ms: 4135.835042
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:176:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"attempt":{"id":"attempt-12","taskId":"task-9","planRevision":4,"goalRevision":1,"toolId":"core.board.requests.confirm","toolVersion":"1","inputDigest":"2738ee71543f9d5ad9db63a25ea9bad1c14b12679c8a0b355c832e8a8bf0b923","scope":"fixture","contractDigest":"0e17999d851bd572629d1844f22a779d231dd635430dd0c3e28ba7d7f1fc94c5","execution":{"mode":"invoked","implementationCalls":1,"usage":{"transportCalls":null,"internalOperations":null,"imageBytes":null,"waitMs":null}},"effect":"write","effectState":"none","status":"unknown","owner":"worker-a","leaseUntil":11100,"startedAt":1100,"finishedAt":1100,"resultId":"attempt-12:result","resultArtifact":{"id":"6f9e0029967c139c92a2198b109c3d9b5a1e4141f5742ef7122942669f838bc6","sha256":"91602276fc3aa08af565e29e899697be8ab0ac69ab2b95b9ea3612d34cb89c16","byteLength":555,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"adopted":false,"effectReceipt":{"provider":"board","operationId":"board:dcfb01074c95f76e966b37930a1275bc5460340a425ac7ba6ec185d6cc0fdeaf","outcome":"not_applied","origin":"reconciliation","artifact":{"id":"34263c11066913cfeae353c8e778530d10927c7ce2965bab8665e2335b1a6e5f","sha256":"c6356d66af707ee45307c52b5b326447f17194f3066e5d07a1067a492e87187a","byteLength":462,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]},"observedAt":1100},"error":{"code":"board_command_unavailable","retryable":false}},"result":{"resultId":"attempt-12:result","attemptId":"attempt-12","status":"error","effectState":"unknown","evidence":[],"artifacts":[],"output":null,"error":{"code":"board_command_unavailable","retryable":false},"cursor":null,"coverage":"unknown","inputDependencies":[{"provider":"board","workId":"work-a","artifact":{"id":"7a66cb2afeec539ce7f1772f6105580c0f1c2540ce2a2ec3abfdc7073f9e4d80","sha256":"72c3103d610a8370fef5bba401d9bf9aca10e54a69756f203b26af0d56707b00","byteLength":1076,"mediaType":"application/json","tenantId":"tenant-a","labels":["synthetic"]}}]}}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:76:16)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-request-runtime.test.js:184:9)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: sqlite/documents: runtime board read retains custody through history, compact and reopen
+ok 41 - sqlite/documents: runtime board read retains custody through history, compact and reopen
+  ---
+  duration_ms: 418.615666
+  type: 'test'
+  ...
+# Subtest: sqlite/observations: runtime board read retains custody through history, compact and reopen
+ok 42 - sqlite/observations: runtime board read retains custody through history, compact and reopen
+  ---
+  duration_ms: 315.33925
+  type: 'test'
+  ...
+# Subtest: sqlite: mutual work references terminate and a revoked member invalidates the whole closure
+not ok 43 - sqlite: mutual work references terminate and a revoked member invalidates the whole closure
+  ---
+  duration_ms: 168.820083
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-runtime.test.js:139:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-runtime.test.js:146:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: sqlite: private memory custody crosses a shared post without exposing the memory body
+ok 44 - sqlite: private memory custody crosses a shared post without exposing the memory body
+  ---
+  duration_ms: 198.231042
+  type: 'test'
+  ...
+# Subtest: sqlite: page content and consumer identity cannot be substituted in a result
+ok 45 - sqlite: page content and consumer identity cannot be substituted in a result
+  ---
+  duration_ms: 121.813459
+  type: 'test'
+  ...
+# Subtest: sqlite: memory and authenticated collection inputs share the board closure without recursive full validation
+ok 46 - sqlite: memory and authenticated collection inputs share the board closure without recursive full validation
+  ---
+  duration_ms: 647.181916
+  type: 'test'
+  ...
+# Subtest: sqlite: cancellation ends a board-tool wait before an unavailable repository responds
+ok 47 - sqlite: cancellation ends a board-tool wait before an unavailable repository responds
+  ---
+  duration_ms: 55.579625
+  type: 'test'
+  ...
+# Subtest: sqlite: a later goal retains original input custody until copied data is quarantined
+ok 48 - sqlite: a later goal retains original input custody until copied data is quarantined
+  ---
+  duration_ms: 121.427
+  type: 'test'
+  ...
+# Subtest: sqlite: changed post blocks retained board context and quarantines copied state
+ok 49 - sqlite: changed post blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 119.044667
+  type: 'test'
+  ...
+# Subtest: sqlite: changed source blocks retained board context and quarantines copied state
+ok 50 - sqlite: changed source blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 124.376625
+  type: 'test'
+  ...
+# Subtest: sqlite: changed raw blocks retained board context and quarantines copied state
+ok 51 - sqlite: changed raw blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 122.192166
+  type: 'test'
+  ...
+# Subtest: sqlite: changed receipt blocks retained board context and quarantines copied state
+ok 52 - sqlite: changed receipt blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 118.584542
+  type: 'test'
+  ...
+# Subtest: sqlite: changed role blocks retained board context and quarantines copied state
+ok 53 - sqlite: changed role blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 119.239125
+  type: 'test'
+  ...
+# Subtest: sqlite: changed authority blocks retained board context and quarantines copied state
+ok 54 - sqlite: changed authority blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 124.836833
+  type: 'test'
+  ...
+# Subtest: sqlite: changed labels blocks retained board context and quarantines copied state
+ok 55 - sqlite: changed labels blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 117.717625
+  type: 'test'
+  ...
+# Subtest: sqlite: changed generation blocks retained board context and quarantines copied state
+ok 56 - sqlite: changed generation blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 113.908083
+  type: 'test'
+  ...
+# Subtest: sqlite: changed validator blocks retained board context and quarantines copied state
+ok 57 - sqlite: changed validator blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 116.291042
+  type: 'test'
+  ...
+# Subtest: file-journal/documents: runtime board read retains custody through history, compact and reopen
+ok 58 - file-journal/documents: runtime board read retains custody through history, compact and reopen
+  ---
+  duration_ms: 826.454708
+  type: 'test'
+  ...
+# Subtest: file-journal/observations: runtime board read retains custody through history, compact and reopen
+ok 59 - file-journal/observations: runtime board read retains custody through history, compact and reopen
+  ---
+  duration_ms: 782.631875
+  type: 'test'
+  ...
+# Subtest: file-journal: mutual work references terminate and a revoked member invalidates the whole closure
+not ok 60 - file-journal: mutual work references terminate and a revoked member invalidates the whole closure
+  ---
+  duration_ms: 467.676208
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-runtime.test.js:139:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-runtime.test.js:146:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: file-journal: private memory custody crosses a shared post without exposing the memory body
+ok 61 - file-journal: private memory custody crosses a shared post without exposing the memory body
+  ---
+  duration_ms: 473.61
+  type: 'test'
+  ...
+# Subtest: file-journal: page content and consumer identity cannot be substituted in a result
+ok 62 - file-journal: page content and consumer identity cannot be substituted in a result
+  ---
+  duration_ms: 290.730833
+  type: 'test'
+  ...
+# Subtest: file-journal: memory and authenticated collection inputs share the board closure without recursive full validation
+ok 63 - file-journal: memory and authenticated collection inputs share the board closure without recursive full validation
+  ---
+  duration_ms: 1520.138042
+  type: 'test'
+  ...
+# Subtest: file-journal: cancellation ends a board-tool wait before an unavailable repository responds
+ok 64 - file-journal: cancellation ends a board-tool wait before an unavailable repository responds
+  ---
+  duration_ms: 97.942833
+  type: 'test'
+  ...
+# Subtest: file-journal: a later goal retains original input custody until copied data is quarantined
+ok 65 - file-journal: a later goal retains original input custody until copied data is quarantined
+  ---
+  duration_ms: 370.0115
+  type: 'test'
+  ...
+# Subtest: file-journal: changed post blocks retained board context and quarantines copied state
+ok 66 - file-journal: changed post blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 310.61725
+  type: 'test'
+  ...
+# Subtest: file-journal: changed source blocks retained board context and quarantines copied state
+ok 67 - file-journal: changed source blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 316.098375
+  type: 'test'
+  ...
+# Subtest: file-journal: changed raw blocks retained board context and quarantines copied state
+ok 68 - file-journal: changed raw blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 307.112167
+  type: 'test'
+  ...
+# Subtest: file-journal: changed receipt blocks retained board context and quarantines copied state
+ok 69 - file-journal: changed receipt blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 302.877791
+  type: 'test'
+  ...
+# Subtest: file-journal: changed role blocks retained board context and quarantines copied state
+ok 70 - file-journal: changed role blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 310.785792
+  type: 'test'
+  ...
+# Subtest: file-journal: changed authority blocks retained board context and quarantines copied state
+ok 71 - file-journal: changed authority blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 327.965584
+  type: 'test'
+  ...
+# Subtest: file-journal: changed labels blocks retained board context and quarantines copied state
+ok 72 - file-journal: changed labels blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 340.084584
+  type: 'test'
+  ...
+# Subtest: file-journal: changed generation blocks retained board context and quarantines copied state
+ok 73 - file-journal: changed generation blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 309.136125
+  type: 'test'
+  ...
+# Subtest: file-journal: changed validator blocks retained board context and quarantines copied state
+ok 74 - file-journal: changed validator blocks retained board context and quarantines copied state
+  ---
+  duration_ms: 358.180583
+  type: 'test'
+  ...
+# Subtest: sqlite/documents: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen
+not ok 75 - sqlite/documents: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen
+  ---
+  duration_ms: 1445.727708
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:13:9'
+  failureType: 'testCodeFailure'
+  error: 'task_not_ready'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:386:23
+    transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:18:28)
+    async ExecutionRuntime.reserve (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:379:24)
+    async prepare (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:67:33)
+    async execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:70:25)
+    async Object.readRequests (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:84:24)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:41:30)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: sqlite/observations: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen
+not ok 76 - sqlite/observations: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen
+  ---
+  duration_ms: 1346.549708
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:13:9'
+  failureType: 'testCodeFailure'
+  error: 'task_not_ready'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:386:23
+    transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:18:28)
+    async ExecutionRuntime.reserve (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:379:24)
+    async prepare (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:67:33)
+    async execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:70:25)
+    async Object.readRequests (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:84:24)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:41:30)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: sqlite: duplicate wake is a no-op with zero model, tool and chat delivery activity
+ok 77 - sqlite: duplicate wake is a no-op with zero model, tool and chat delivery activity
+  ---
+  duration_ms: 193.925666
+  type: 'test'
+  ...
+# Subtest: sqlite: an unprocessed event rejects stale context and a pending offer blocks completion even after metadata is read
+ok 78 - sqlite: an unprocessed event rejects stale context and a pending offer blocks completion even after metadata is read
+  ---
+  duration_ms: 274.785
+  type: 'test'
+  ...
+# Subtest: sqlite: a missed wake and a lost checkpoint reply resume with one durable notification
+ok 79 - sqlite: a missed wake and a lost checkpoint reply resume with one durable notification
+  ---
+  duration_ms: 181.991125
+  type: 'test'
+  ...
+# Subtest: sqlite: notifications and cursor require their original checkpoint and survive compact without omissions
+ok 80 - sqlite: notifications and cursor require their original checkpoint and survive compact without omissions
+  ---
+  duration_ms: 211.391
+  type: 'test'
+  ...
+# Subtest: sqlite: request metadata cannot be forged and current authority is rechecked after artifact reads
+ok 81 - sqlite: request metadata cannot be forged and current authority is rechecked after artifact reads
+  ---
+  duration_ms: 192.633042
+  type: 'test'
+  ...
+# Subtest: sqlite: another owner cannot register or close a subscription; revoked access prevents wake
+ok 82 - sqlite: another owner cannot register or close a subscription; revoked access prevents wake
+  ---
+  duration_ms: 152.323542
+  type: 'test'
+  ...
+# Subtest: sqlite: expiry before a poll creates no actionable offer and unchanged waiting does not call a model
+ok 83 - sqlite: expiry before a poll creates no actionable offer and unchanged waiting does not call a model
+  ---
+  duration_ms: 312.173042
+  type: 'test'
+  ...
+# Subtest: sqlite: pause preserves the cursor, resume reads missed events, and cancellation closes the inbox
+ok 84 - sqlite: pause preserves the cursor, resume reads missed events, and cancellation closes the inbox
+  ---
+  duration_ms: 152.370375
+  type: 'test'
+  ...
+# Subtest: sqlite: metadata pagination is bounded and rejects stale cursors and caller-selected ownership
+ok 85 - sqlite: metadata pagination is bounded and rejects stale cursors and caller-selected ownership
+  ---
+  duration_ms: 159.863666
+  type: 'test'
+  ...
+# Subtest: sqlite: goal revision closes its old inbox and a new host subscription rescans current offers
+ok 86 - sqlite: goal revision closes its old inbox and a new host subscription rescans current offers
+  ---
+  duration_ms: 159.506541
+  type: 'test'
+  ...
+# Subtest: sqlite: completed work closes its subscription and a later offer does not reopen it
+ok 87 - sqlite: completed work closes its subscription and a later offer does not reopen it
+  ---
+  duration_ms: 152.662458
+  type: 'test'
+  ...
+# Subtest: sqlite: a data access change closes old generation subscriptions and removes their context references
+ok 88 - sqlite: a data access change closes old generation subscriptions and removes their context references
+  ---
+  duration_ms: 155.340708
+  type: 'test'
+  ...
+# Subtest: sqlite: repeated metadata observations do not manufacture progress or independent evidence
+ok 89 - sqlite: repeated metadata observations do not manufacture progress or independent evidence
+  ---
+  duration_ms: 239.687834
+  type: 'test'
+  ...
+# Subtest: sqlite: authority withdrawn during the final metadata check prevents cursor advancement
+ok 90 - sqlite: authority withdrawn during the final metadata check prevents cursor advancement
+  ---
+  duration_ms: 147.790083
+  type: 'test'
+  ...
+# Subtest: sqlite: a refresh that exceeds its time budget leaves the cursor and inbox uncommitted
+ok 91 - sqlite: a refresh that exceeds its time budget leaves the cursor and inbox uncommitted
+  ---
+  duration_ms: 157.839333
+  type: 'test'
+  ...
+# Subtest: sqlite: an incoming offer invalidates a reserved model context before any model invocation
+ok 92 - sqlite: an incoming offer invalidates a reserved model context before any model invocation
+  ---
+  duration_ms: 202.404292
+  type: 'test'
+  ...
+# Subtest: sqlite: an active nonparticipant role sees no request metadata and receives no offer notification
+ok 93 - sqlite: an active nonparticipant role sees no request metadata and receives no offer notification
+  ---
+  duration_ms: 51.689792
+  type: 'test'
+  ...
+# Subtest: file-journal/documents: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen
+not ok 94 - file-journal/documents: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen
+  ---
+  duration_ms: 7443.254042
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:13:9'
+  failureType: 'testCodeFailure'
+  error: 'task_not_ready'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:386:23
+    transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:18:28)
+    async ExecutionRuntime.reserve (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:379:24)
+    async prepare (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:67:33)
+    async execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:70:25)
+    async Object.readRequests (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:84:24)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:41:30)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: file-journal/observations: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen
+not ok 95 - file-journal/observations: discover and finish a request using observed IDs and revisions, then retain history across compact and reopen
+  ---
+  duration_ms: 7049.938833
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:13:9'
+  failureType: 'testCodeFailure'
+  error: 'task_not_ready'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:386:23
+    transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:18:28)
+    async ExecutionRuntime.reserve (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-runtime.js:379:24)
+    async prepare (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:67:33)
+    async execute (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:70:25)
+    async Object.readRequests (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/helpers/board-request-fixture.js:84:24)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-wake-runtime.test.js:41:30)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: file-journal: duplicate wake is a no-op with zero model, tool and chat delivery activity
+ok 96 - file-journal: duplicate wake is a no-op with zero model, tool and chat delivery activity
+  ---
+  duration_ms: 606.536458
+  type: 'test'
+  ...
+# Subtest: file-journal: an unprocessed event rejects stale context and a pending offer blocks completion even after metadata is read
+ok 97 - file-journal: an unprocessed event rejects stale context and a pending offer blocks completion even after metadata is read
+  ---
+  duration_ms: 1014.101209
+  type: 'test'
+  ...
+# Subtest: file-journal: a missed wake and a lost checkpoint reply resume with one durable notification
+ok 98 - file-journal: a missed wake and a lost checkpoint reply resume with one durable notification
+  ---
+  duration_ms: 531.642375
+  type: 'test'
+  ...
+# Subtest: file-journal: notifications and cursor require their original checkpoint and survive compact without omissions
+ok 99 - file-journal: notifications and cursor require their original checkpoint and survive compact without omissions
+  ---
+  duration_ms: 599.22775
+  type: 'test'
+  ...
+# Subtest: file-journal: request metadata cannot be forged and current authority is rechecked after artifact reads
+ok 100 - file-journal: request metadata cannot be forged and current authority is rechecked after artifact reads
+  ---
+  duration_ms: 609.486833
+  type: 'test'
+  ...
+# Subtest: file-journal: another owner cannot register or close a subscription; revoked access prevents wake
+ok 101 - file-journal: another owner cannot register or close a subscription; revoked access prevents wake
+  ---
+  duration_ms: 500.500333
+  type: 'test'
+  ...
+# Subtest: file-journal: expiry before a poll creates no actionable offer and unchanged waiting does not call a model
+ok 102 - file-journal: expiry before a poll creates no actionable offer and unchanged waiting does not call a model
+  ---
+  duration_ms: 1190.788083
+  type: 'test'
+  ...
+# Subtest: file-journal: pause preserves the cursor, resume reads missed events, and cancellation closes the inbox
+ok 103 - file-journal: pause preserves the cursor, resume reads missed events, and cancellation closes the inbox
+  ---
+  duration_ms: 540.398292
+  type: 'test'
+  ...
+# Subtest: file-journal: metadata pagination is bounded and rejects stale cursors and caller-selected ownership
+ok 104 - file-journal: metadata pagination is bounded and rejects stale cursors and caller-selected ownership
+  ---
+  duration_ms: 525.499167
+  type: 'test'
+  ...
+# Subtest: file-journal: goal revision closes its old inbox and a new host subscription rescans current offers
+ok 105 - file-journal: goal revision closes its old inbox and a new host subscription rescans current offers
+  ---
+  duration_ms: 569.263792
+  type: 'test'
+  ...
+# Subtest: file-journal: completed work closes its subscription and a later offer does not reopen it
+ok 106 - file-journal: completed work closes its subscription and a later offer does not reopen it
+  ---
+  duration_ms: 519.060416
+  type: 'test'
+  ...
+# Subtest: file-journal: a data access change closes old generation subscriptions and removes their context references
+ok 107 - file-journal: a data access change closes old generation subscriptions and removes their context references
+  ---
+  duration_ms: 506.99325
+  type: 'test'
+  ...
+# Subtest: file-journal: repeated metadata observations do not manufacture progress or independent evidence
+ok 108 - file-journal: repeated metadata observations do not manufacture progress or independent evidence
+  ---
+  duration_ms: 827.917292
+  type: 'test'
+  ...
+# Subtest: file-journal: authority withdrawn during the final metadata check prevents cursor advancement
+ok 109 - file-journal: authority withdrawn during the final metadata check prevents cursor advancement
+  ---
+  duration_ms: 506.314625
+  type: 'test'
+  ...
+# Subtest: file-journal: a refresh that exceeds its time budget leaves the cursor and inbox uncommitted
+ok 110 - file-journal: a refresh that exceeds its time budget leaves the cursor and inbox uncommitted
+  ---
+  duration_ms: 476.801625
+  type: 'test'
+  ...
+# Subtest: file-journal: an incoming offer invalidates a reserved model context before any model invocation
+ok 111 - file-journal: an incoming offer invalidates a reserved model context before any model invocation
+  ---
+  duration_ms: 610.054417
+  type: 'test'
+  ...
+# Subtest: file-journal: an active nonparticipant role sees no request metadata and receives no offer notification
+ok 112 - file-journal: an active nonparticipant role sees no request metadata and receives no offer notification
+  ---
+  duration_ms: 167.196
+  type: 'test'
+  ...
+# Subtest: sqlite: board publish and retract run through the broker and retain mechanical receipts
+ok 113 - sqlite: board publish and retract run through the broker and retain mechanical receipts
+  ---
+  duration_ms: 215.830458
+  type: 'test'
+  ...
+# Subtest: sqlite: applied board command survives response loss and cannot be overwritten by the late result
+ok 114 - sqlite: applied board command survives response loss and cannot be overwritten by the late result
+  ---
+  duration_ms: 66.232083
+  type: 'test'
+  ...
+# Subtest: sqlite: saved unknown result stays immutable after durable receipt reconciliation
+ok 115 - sqlite: saved unknown result stays immutable after durable receipt reconciliation
+  ---
+  duration_ms: 53.244958
+  type: 'test'
+  ...
+# Subtest: sqlite: a late valid result is reconciled without adopting its expired execution
+ok 116 - sqlite: a late valid result is reconciled without adopting its expired execution
+  ---
+  duration_ms: 53.088542
+  type: 'test'
+  ...
+# Subtest: sqlite: an expired absent command is closed and a delayed original commit cannot publish
+ok 117 - sqlite: an expired absent command is closed and a delayed original commit cannot publish
+  ---
+  duration_ms: 46.237292
+  type: 'test'
+  ...
+# Subtest: sqlite: stale revision is reconciled as closed without changing posts
+ok 118 - sqlite: stale revision is reconciled as closed without changing posts
+  ---
+  duration_ms: 52.798791
+  type: 'test'
+  ...
+# Subtest: sqlite: proof deletion denies context, reopens obligation and does not fabricate replacement
+ok 119 - sqlite: proof deletion denies context, reopens obligation and does not fabricate replacement
+  ---
+  duration_ms: 54.90425
+  type: 'test'
+  ...
+# Subtest: sqlite: retained receipt requires a reader and current role authority
+ok 120 - sqlite: retained receipt requires a reader and current role authority
+  ---
+  duration_ms: 54.609125
+  type: 'test'
+  ...
+# Subtest: sqlite: authority withdrawn during receipt proof I/O invalidates that same read
+ok 121 - sqlite: authority withdrawn during receipt proof I/O invalidates that same read
+  ---
+  duration_ms: 53.732709
+  type: 'test'
+  ...
+# Subtest: sqlite: removing the stored receipt invalidates an intact result artifact
+ok 122 - sqlite: removing the stored receipt invalidates an intact result artifact
+  ---
+  duration_ms: 51.8235
+  type: 'test'
+  ...
+# Subtest: sqlite: a forged post outcome or another attempt receipt cannot be adopted
+ok 123 - sqlite: a forged post outcome or another attempt receipt cannot be adopted
+  ---
+  duration_ms: 32.791833
+  type: 'test'
+  ...
+# Subtest: sqlite: policy revoked immediately before storage prevents publication
+ok 124 - sqlite: policy revoked immediately before storage prevents publication
+  ---
+  duration_ms: 15.056709
+  type: 'test'
+  ...
+# Subtest: sqlite: tool schemas exclude actor, command identity and foreign source work
+ok 125 - sqlite: tool schemas exclude actor, command identity and foreign source work
+  ---
+  duration_ms: 12.1605
+  type: 'test'
+  ...
+# Subtest: sqlite: a narrower session publish grant is not widened by the directory
+ok 126 - sqlite: a narrower session publish grant is not widened by the directory
+  ---
+  duration_ms: 31.722875
+  type: 'test'
+  ...
+# Subtest: sqlite: a narrower session namespace grant is not widened by the directory
+ok 127 - sqlite: a narrower session namespace grant is not widened by the directory
+  ---
+  duration_ms: 31.218459
+  type: 'test'
+  ...
+# Subtest: sqlite: a no-op closure cannot smuggle a board mutation
+ok 128 - sqlite: a no-op closure cannot smuggle a board mutation
+  ---
+  duration_ms: 9.734458
+  type: 'test'
+  ...
+# Subtest: sqlite: closure duplicate and changed digest have stable distinct outcomes
+ok 129 - sqlite: closure duplicate and changed digest have stable distinct outcomes
+  ---
+  duration_ms: 18.205375
+  type: 'test'
+  ...
+# Subtest: sqlite: previously unread quotes are rejected and a retained current read permits publication
+ok 130 - sqlite: previously unread quotes are rejected and a retained current read permits publication
+  ---
+  duration_ms: 225.617541
+  type: 'test'
+  ...
+# Subtest: sqlite: compact source checks reject omitted or altered effect outcomes
+ok 131 - sqlite: compact source checks reject omitted or altered effect outcomes
+  ---
+  duration_ms: 77.629417
+  type: 'test'
+  ...
+# Subtest: sqlite: a SIGKILL at the storage-worker boundary retains the runtime command receipt
+ok 132 - sqlite: a SIGKILL at the storage-worker boundary retains the runtime command receipt
+  ---
+  duration_ms: 107.179833
+  type: 'test'
+  ...
+# Subtest: file-journal: board publish and retract run through the broker and retain mechanical receipts
+ok 133 - file-journal: board publish and retract run through the broker and retain mechanical receipts
+  ---
+  duration_ms: 454.060208
+  type: 'test'
+  ...
+# Subtest: file-journal: applied board command survives response loss and cannot be overwritten by the late result
+ok 134 - file-journal: applied board command survives response loss and cannot be overwritten by the late result
+  ---
+  duration_ms: 217.224417
+  type: 'test'
+  ...
+# Subtest: file-journal: saved unknown result stays immutable after durable receipt reconciliation
+ok 135 - file-journal: saved unknown result stays immutable after durable receipt reconciliation
+  ---
+  duration_ms: 201.634
+  type: 'test'
+  ...
+# Subtest: file-journal: a late valid result is reconciled without adopting its expired execution
+ok 136 - file-journal: a late valid result is reconciled without adopting its expired execution
+  ---
+  duration_ms: 212.590375
+  type: 'test'
+  ...
+# Subtest: file-journal: an expired absent command is closed and a delayed original commit cannot publish
+ok 137 - file-journal: an expired absent command is closed and a delayed original commit cannot publish
+  ---
+  duration_ms: 168.664041
+  type: 'test'
+  ...
+# Subtest: file-journal: stale revision is reconciled as closed without changing posts
+ok 138 - file-journal: stale revision is reconciled as closed without changing posts
+  ---
+  duration_ms: 186.704875
+  type: 'test'
+  ...
+# Subtest: file-journal: proof deletion denies context, reopens obligation and does not fabricate replacement
+ok 139 - file-journal: proof deletion denies context, reopens obligation and does not fabricate replacement
+  ---
+  duration_ms: 204.624334
+  type: 'test'
+  ...
+# Subtest: file-journal: retained receipt requires a reader and current role authority
+ok 140 - file-journal: retained receipt requires a reader and current role authority
+  ---
+  duration_ms: 186.129875
+  type: 'test'
+  ...
+# Subtest: file-journal: authority withdrawn during receipt proof I/O invalidates that same read
+ok 141 - file-journal: authority withdrawn during receipt proof I/O invalidates that same read
+  ---
+  duration_ms: 187.821917
+  type: 'test'
+  ...
+# Subtest: file-journal: removing the stored receipt invalidates an intact result artifact
+ok 142 - file-journal: removing the stored receipt invalidates an intact result artifact
+  ---
+  duration_ms: 200.08
+  type: 'test'
+  ...
+# Subtest: file-journal: a forged post outcome or another attempt receipt cannot be adopted
+ok 143 - file-journal: a forged post outcome or another attempt receipt cannot be adopted
+  ---
+  duration_ms: 132.626083
+  type: 'test'
+  ...
+# Subtest: file-journal: policy revoked immediately before storage prevents publication
+ok 144 - file-journal: policy revoked immediately before storage prevents publication
+  ---
+  duration_ms: 135.548667
+  type: 'test'
+  ...
+# Subtest: file-journal: tool schemas exclude actor, command identity and foreign source work
+ok 145 - file-journal: tool schemas exclude actor, command identity and foreign source work
+  ---
+  duration_ms: 63.136625
+  type: 'test'
+  ...
+# Subtest: file-journal: a narrower session publish grant is not widened by the directory
+ok 146 - file-journal: a narrower session publish grant is not widened by the directory
+  ---
+  duration_ms: 142.827
+  type: 'test'
+  ...
+# Subtest: file-journal: a narrower session namespace grant is not widened by the directory
+ok 147 - file-journal: a narrower session namespace grant is not widened by the directory
+  ---
+  duration_ms: 153.083166
+  type: 'test'
+  ...
+# Subtest: file-journal: a no-op closure cannot smuggle a board mutation
+ok 148 - file-journal: a no-op closure cannot smuggle a board mutation
+  ---
+  duration_ms: 51.062291
+  type: 'test'
+  ...
+# Subtest: file-journal: closure duplicate and changed digest have stable distinct outcomes
+ok 149 - file-journal: closure duplicate and changed digest have stable distinct outcomes
+  ---
+  duration_ms: 68.967417
+  type: 'test'
+  ...
+# Subtest: file-journal: previously unread quotes are rejected and a retained current read permits publication
+ok 150 - file-journal: previously unread quotes are rejected and a retained current read permits publication
+  ---
+  duration_ms: 794.874833
+  type: 'test'
+  ...
+# Subtest: file-journal: compact source checks reject omitted or altered effect outcomes
+ok 151 - file-journal: compact source checks reject omitted or altered effect outcomes
+  ---
+  duration_ms: 209.702708
+  type: 'test'
+  ...
+# Subtest: file-journal: a SIGKILL at the storage-worker boundary retains the runtime command receipt
+ok 152 - file-journal: a SIGKILL at the storage-worker boundary retains the runtime command receipt
+  ---
+  duration_ms: 191.921959
+  type: 'test'
+  ...
+# Subtest: sqlite/documents: bounded discussion pages resume after reopening with no new evidence
+ok 153 - sqlite/documents: bounded discussion pages resume after reopening with no new evidence
+  ---
+  duration_ms: 44.25775
+  type: 'test'
+  ...
+# Subtest: sqlite/observations: bounded discussion pages resume after reopening with no new evidence
+ok 154 - sqlite/observations: bounded discussion pages resume after reopening with no new evidence
+  ---
+  duration_ms: 26.903958
+  type: 'test'
+  ...
+# Subtest: sqlite: uncited hypotheses persist as unverified and never supply independent facts or request answers
+ok 155 - sqlite: uncited hypotheses persist as unverified and never supply independent facts or request answers
+  ---
+  duration_ms: 30.184333
+  type: 'test'
+  ...
+# Subtest: sqlite: quoted coverage remains partial or unknown instead of becoming complete
+ok 156 - sqlite: quoted coverage remains partial or unknown instead of becoming complete
+  ---
+  duration_ms: 26.898834
+  type: 'test'
+  ...
+# Subtest: sqlite: UTF-8 output limits retain complete posts and require a larger page for an oversized item
+ok 157 - sqlite: UTF-8 output limits retain complete posts and require a larger page for an oversized item
+  ---
+  duration_ms: 25.379541
+  type: 'test'
+  ...
+# Subtest: sqlite: pages exclude other entity details and reject stale, foreign, and unavailable cursor positions
+ok 158 - sqlite: pages exclude other entity details and reject stale, foreign, and unavailable cursor positions
+  ---
+  duration_ms: 27.838084
+  type: 'test'
+  ...
+# Subtest: sqlite: page authority includes the consuming work and rejects invalid limits before reading
+ok 159 - sqlite: page authority includes the consuming work and rejects invalid limits before reading
+  ---
+  duration_ms: 23.697166
+  type: 'test'
+  ...
+# Subtest: sqlite: a bounded first page reuses source reads and stops before unrelated later sources
+ok 160 - sqlite: a bounded first page reuses source reads and stops before unrelated later sources
+  ---
+  duration_ms: 29.444958
+  type: 'test'
+  ...
+# Subtest: sqlite: a consuming work change during a page read prevents returning the stale page
+ok 161 - sqlite: a consuming work change during a page read prevents returning the stale page
+  ---
+  duration_ms: 23.391167
+  type: 'test'
+  ...
+# Subtest: sqlite: removing citations does not bypass the author's retained memory dependencies
+ok 162 - sqlite: removing citations does not bypass the author's retained memory dependencies
+  ---
+  duration_ms: 40.291958
+  type: 'test'
+  ...
+# Subtest: file-journal/documents: bounded discussion pages resume after reopening with no new evidence
+ok 163 - file-journal/documents: bounded discussion pages resume after reopening with no new evidence
+  ---
+  duration_ms: 136.38975
+  type: 'test'
+  ...
+# Subtest: file-journal/observations: bounded discussion pages resume after reopening with no new evidence
+ok 164 - file-journal/observations: bounded discussion pages resume after reopening with no new evidence
+  ---
+  duration_ms: 141.420375
+  type: 'test'
+  ...
+# Subtest: file-journal: uncited hypotheses persist as unverified and never supply independent facts or request answers
+ok 165 - file-journal: uncited hypotheses persist as unverified and never supply independent facts or request answers
+  ---
+  duration_ms: 154.676292
+  type: 'test'
+  ...
+# Subtest: file-journal: quoted coverage remains partial or unknown instead of becoming complete
+ok 166 - file-journal: quoted coverage remains partial or unknown instead of becoming complete
+  ---
+  duration_ms: 160.46425
+  type: 'test'
+  ...
+# Subtest: file-journal: UTF-8 output limits retain complete posts and require a larger page for an oversized item
+ok 167 - file-journal: UTF-8 output limits retain complete posts and require a larger page for an oversized item
+  ---
+  duration_ms: 99.248
+  type: 'test'
+  ...
+# Subtest: file-journal: pages exclude other entity details and reject stale, foreign, and unavailable cursor positions
+ok 168 - file-journal: pages exclude other entity details and reject stale, foreign, and unavailable cursor positions
+  ---
+  duration_ms: 168.735458
+  type: 'test'
+  ...
+# Subtest: file-journal: page authority includes the consuming work and rejects invalid limits before reading
+ok 169 - file-journal: page authority includes the consuming work and rejects invalid limits before reading
+  ---
+  duration_ms: 107.397375
+  type: 'test'
+  ...
+# Subtest: file-journal: a bounded first page reuses source reads and stops before unrelated later sources
+ok 170 - file-journal: a bounded first page reuses source reads and stops before unrelated later sources
+  ---
+  duration_ms: 247.740958
+  type: 'test'
+  ...
+# Subtest: file-journal: a consuming work change during a page read prevents returning the stale page
+ok 171 - file-journal: a consuming work change during a page read prevents returning the stale page
+  ---
+  duration_ms: 102.631333
+  type: 'test'
+  ...
+# Subtest: file-journal: removing citations does not bypass the author's retained memory dependencies
+ok 172 - file-journal: removing citations does not bypass the author's retained memory dependencies
+  ---
+  duration_ms: 181.546958
+  type: 'test'
+  ...
+# Subtest: sqlite/documents: two persistent roles share citations without publishing private memory or inflating sources
+ok 173 - sqlite/documents: two persistent roles share citations without publishing private memory or inflating sources
+  ---
+  duration_ms: 31.995125
+  type: 'test'
+  ...
+# Subtest: sqlite/observations: two persistent roles share citations without publishing private memory or inflating sources
+ok 174 - sqlite/observations: two persistent roles share citations without publishing private memory or inflating sources
+  ---
+  duration_ms: 31.649125
+  type: 'test'
+  ...
+# Subtest: sqlite: direct source sharing requires source ownership; quotes require a currently visible post
+ok 175 - sqlite: direct source sharing requires source ownership; quotes require a currently visible post
+  ---
+  duration_ms: 23.635292
+  type: 'test'
+  ...
+# Subtest: sqlite: retract-post removes the claim and its quoted descendants from current views
+ok 176 - sqlite: retract-post removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 28.973417
+  type: 'test'
+  ...
+# Subtest: sqlite: restrict-source removes the claim and its quoted descendants from current views
+ok 177 - sqlite: restrict-source removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 25.411167
+  type: 'test'
+  ...
+# Subtest: sqlite: change-goal removes the claim and its quoted descendants from current views
+ok 178 - sqlite: change-goal removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 24.327083
+  type: 'test'
+  ...
+# Subtest: sqlite: delete-original removes the claim and its quoted descendants from current views
+ok 179 - sqlite: delete-original removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 23.589833
+  type: 'test'
+  ...
+# Subtest: sqlite: expire removes the claim and its quoted descendants from current views
+ok 180 - sqlite: expire removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 21.072667
+  type: 'test'
+  ...
+# Subtest: sqlite: an entity with the same key in a different time scope stays separate
+ok 181 - sqlite: an entity with the same key in a different time scope stays separate
+  ---
+  duration_ms: 22.508916
+  type: 'test'
+  ...
+# Subtest: sqlite: publishing a question does not assign it; acceptance, response and requester confirmation remain distinct
+ok 182 - sqlite: publishing a question does not assign it; acceptance, response and requester confirmation remain distinct
+  ---
+  duration_ms: 28.065209
+  type: 'test'
+  ...
+# Subtest: sqlite: repeated replies and explicit cyclic waits are bounded; deadlines do not reset on reopen
+ok 183 - sqlite: repeated replies and explicit cyclic waits are bounded; deadlines do not reset on reopen
+  ---
+  duration_ms: 31.910209
+  type: 'test'
+  ...
+# Subtest: sqlite: exact command retry survives a lost reply; reused IDs with changed content and concurrent edits fail
+ok 184 - sqlite: exact command retry survives a lost reply; reused IDs with changed content and concurrent edits fail
+  ---
+  duration_ms: 23.790542
+  type: 'test'
+  ...
+# Subtest: sqlite: authority changing during a source read cannot publish or return the delayed content
+ok 185 - sqlite: authority changing during a source read cannot publish or return the delayed content
+  ---
+  duration_ms: 23.892959
+  type: 'test'
+  ...
+# Subtest: sqlite: a derived claim retains ancestry without becoming another independent fact source
+ok 186 - sqlite: a derived claim retains ancestry without becoming another independent fact source
+  ---
+  duration_ms: 28.672959
+  type: 'test'
+  ...
+# Subtest: sqlite: repeated quotes share one source read within a view and a later view revalidates it
+ok 187 - sqlite: repeated quotes share one source read within a view and a later view revalidates it
+  ---
+  duration_ms: 25.7045
+  type: 'test'
+  ...
+# Subtest: sqlite: unlabelled prose inherits the author's work labels and current exchange policy
+ok 188 - sqlite: unlabelled prose inherits the author's work labels and current exchange policy
+  ---
+  duration_ms: 24.499333
+  type: 'test'
+  ...
+# Subtest: sqlite: a fulfilled dependency remains attached and its later retraction invalidates dependent confirmation
+ok 189 - sqlite: a fulfilled dependency remains attached and its later retraction invalidates dependent confirmation
+  ---
+  duration_ms: 34.120708
+  type: 'test'
+  ...
+# Subtest: sqlite: reply depth, total posts, total requests and repeated causes have separate limits
+ok 190 - sqlite: reply depth, total posts, total requests and repeated causes have separate limits
+  ---
+  duration_ms: 28.030416
+  type: 'test'
+  ...
+# Subtest: sqlite: an advancing clock permits ordinary writes and blocks a post expiring during the final boundary check
+ok 191 - sqlite: an advancing clock permits ordinary writes and blocks a post expiring during the final boundary check
+  ---
+  duration_ms: 23.870416
+  type: 'test'
+  ...
+# Subtest: sqlite: a paused assignee cannot have its submitted answer confirmed
+ok 192 - sqlite: a paused assignee cannot have its submitted answer confirmed
+  ---
+  duration_ms: 25.298958
+  type: 'test'
+  ...
+# Subtest: sqlite: an actual worker SIGKILL after durable publication preserves one post and one command receipt
+ok 193 - sqlite: an actual worker SIGKILL after durable publication preserves one post and one command receipt
+  ---
+  duration_ms: 76.640417
+  type: 'test'
+  ...
+# Subtest: file-journal/documents: two persistent roles share citations without publishing private memory or inflating sources
+ok 194 - file-journal/documents: two persistent roles share citations without publishing private memory or inflating sources
+  ---
+  duration_ms: 132.625917
+  type: 'test'
+  ...
+# Subtest: file-journal/observations: two persistent roles share citations without publishing private memory or inflating sources
+ok 195 - file-journal/observations: two persistent roles share citations without publishing private memory or inflating sources
+  ---
+  duration_ms: 134.8965
+  type: 'test'
+  ...
+# Subtest: file-journal: direct source sharing requires source ownership; quotes require a currently visible post
+ok 196 - file-journal: direct source sharing requires source ownership; quotes require a currently visible post
+  ---
+  duration_ms: 88.730916
+  type: 'test'
+  ...
+# Subtest: file-journal: retract-post removes the claim and its quoted descendants from current views
+ok 197 - file-journal: retract-post removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 114.447792
+  type: 'test'
+  ...
+# Subtest: file-journal: restrict-source removes the claim and its quoted descendants from current views
+ok 198 - file-journal: restrict-source removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 130.331291
+  type: 'test'
+  ...
+# Subtest: file-journal: change-goal removes the claim and its quoted descendants from current views
+ok 199 - file-journal: change-goal removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 143.707833
+  type: 'test'
+  ...
+# Subtest: file-journal: delete-original removes the claim and its quoted descendants from current views
+ok 200 - file-journal: delete-original removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 138.133
+  type: 'test'
+  ...
+# Subtest: file-journal: expire removes the claim and its quoted descendants from current views
+ok 201 - file-journal: expire removes the claim and its quoted descendants from current views
+  ---
+  duration_ms: 125.603541
+  type: 'test'
+  ...
+# Subtest: file-journal: an entity with the same key in a different time scope stays separate
+ok 202 - file-journal: an entity with the same key in a different time scope stays separate
+  ---
+  duration_ms: 99.082792
+  type: 'test'
+  ...
+# Subtest: file-journal: publishing a question does not assign it; acceptance, response and requester confirmation remain distinct
+ok 203 - file-journal: publishing a question does not assign it; acceptance, response and requester confirmation remain distinct
+  ---
+  duration_ms: 223.273667
+  type: 'test'
+  ...
+# Subtest: file-journal: repeated replies and explicit cyclic waits are bounded; deadlines do not reset on reopen
+ok 204 - file-journal: repeated replies and explicit cyclic waits are bounded; deadlines do not reset on reopen
+  ---
+  duration_ms: 291.601083
+  type: 'test'
+  ...
+# Subtest: file-journal: exact command retry survives a lost reply; reused IDs with changed content and concurrent edits fail
+ok 205 - file-journal: exact command retry survives a lost reply; reused IDs with changed content and concurrent edits fail
+  ---
+  duration_ms: 85.354041
+  type: 'test'
+  ...
+# Subtest: file-journal: authority changing during a source read cannot publish or return the delayed content
+ok 206 - file-journal: authority changing during a source read cannot publish or return the delayed content
+  ---
+  duration_ms: 85.92575
+  type: 'test'
+  ...
+# Subtest: file-journal: a derived claim retains ancestry without becoming another independent fact source
+ok 207 - file-journal: a derived claim retains ancestry without becoming another independent fact source
+  ---
+  duration_ms: 106.09175
+  type: 'test'
+  ...
+# Subtest: file-journal: repeated quotes share one source read within a view and a later view revalidates it
+ok 208 - file-journal: repeated quotes share one source read within a view and a later view revalidates it
+  ---
+  duration_ms: 190.529875
+  type: 'test'
+  ...
+# Subtest: file-journal: unlabelled prose inherits the author's work labels and current exchange policy
+ok 209 - file-journal: unlabelled prose inherits the author's work labels and current exchange policy
+  ---
+  duration_ms: 120.741041
+  type: 'test'
+  ...
+# Subtest: file-journal: a fulfilled dependency remains attached and its later retraction invalidates dependent confirmation
+ok 210 - file-journal: a fulfilled dependency remains attached and its later retraction invalidates dependent confirmation
+  ---
+  duration_ms: 351.630208
+  type: 'test'
+  ...
+# Subtest: file-journal: reply depth, total posts, total requests and repeated causes have separate limits
+ok 211 - file-journal: reply depth, total posts, total requests and repeated causes have separate limits
+  ---
+  duration_ms: 145.199625
+  type: 'test'
+  ...
+# Subtest: file-journal: an advancing clock permits ordinary writes and blocks a post expiring during the final boundary check
+ok 212 - file-journal: an advancing clock permits ordinary writes and blocks a post expiring during the final boundary check
+  ---
+  duration_ms: 105.653292
+  type: 'test'
+  ...
+# Subtest: file-journal: a paused assignee cannot have its submitted answer confirmed
+ok 213 - file-journal: a paused assignee cannot have its submitted answer confirmed
+  ---
+  duration_ms: 188.169292
+  type: 'test'
+  ...
+# Subtest: file-journal: an actual worker SIGKILL after durable publication preserves one post and one command receipt
+ok 214 - file-journal: an actual worker SIGKILL after durable publication preserves one post and one command receipt
+  ---
+  duration_ms: 187.482459
+  type: 'test'
+  ...
+# Subtest: file board journal detects missing revisions and changed content instead of returning a partial history
+ok 215 - file board journal detects missing revisions and changed content instead of returning a partial history
+  ---
+  duration_ms: 78.048667
+  type: 'test'
+  ...
+1..215
+# tests 215
+# suites 0
+# pass 201
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90068.849708

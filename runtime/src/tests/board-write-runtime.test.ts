@@ -76,6 +76,55 @@ async function fixture(t: TestContext, adapter: Adapter, separateAuthority = fal
     directory, input, prepare, execute, invoke, edit, reopen };
 }
 
+test('board committed revision: the response retains its applied revision after a later board change and reopen', async t => {
+  const h = await fixture(t, 'sqlite'), published = await h.execute();
+  assert.equal(published.attempt.adopted, true); assert.ok(published.result.effectReceipt);
+  const proofBytes = await h.artifacts.get(published.result.effectReceipt.artifact, published.state.policy);
+  const proof = JSON.parse(new TextDecoder().decode(proofBytes)) as { revision: number };
+  assert.equal(proof.revision, 3);
+  assert.deepEqual(published.result.output, { boardId: 'board', postId: 'post', status: 'published', revision: proof.revision });
+  const originalBytes = await h.artifacts.get(published.attempt.resultArtifact!, published.state.policy);
+  const retracted = await h.execute({ boardId: 'board', expectedRevision: 3, postId: 'post' }, BOARD_WRITE_TOOLS[1]);
+  assert.equal(retracted.attempt.adopted, true);
+  assert.deepEqual(retracted.result.output, { boardId: 'board', postId: 'post', status: 'retracted', revision: 4 });
+  assert.equal((await h.repository.get('tenant-a', 'board'))!.revision, 4);
+  assert.equal(await h.bundle.contracts.validateResult(retracted.state, published.result), true);
+  await h.reopen();
+  const state = (await h.state.get('writer'))!;
+  assert.equal(await h.bundle.contracts.validateResult(state, published.result), true);
+  assert.equal(await effectProofsCurrent(h.bundle.services, state), true);
+  assert.deepEqual(await h.artifacts.get(published.attempt.resultArtifact!, state.policy), originalBytes);
+  const persisted = ToolResultSchema.parse(JSON.parse(new TextDecoder().decode(originalBytes)));
+  assert.deepEqual(persisted.output, { boardId: 'board', postId: 'post', status: 'published', revision: 3 });
+});
+
+test('board committed revision: exact legacy output remains valid but wrong revision, extra fields and polluted output are rejected', async t => {
+  const h = await fixture(t, 'sqlite'), pending = await h.prepare(), result = await h.invoke(pending);
+  assert.equal(result.status, 'success'); assert.ok(result.effectReceipt);
+  const legacy = ToolResultSchema.parse({ ...result, output: { boardId: 'board', postId: 'post', status: 'published' } });
+  const current = (await h.state.get('writer'))!;
+  assert.equal(await h.bundle.contracts.validateResult(current, result), true);
+  assert.equal(await h.bundle.contracts.validateResult(current, legacy), true);
+  for (const output of [
+    { boardId: 'board', postId: 'post', status: 'published', revision: 4 },
+    { boardId: 'board', postId: 'post', status: 'published', revision: null },
+    { boardId: 'board', postId: 'post', status: 'published', revision: 3, extra: 'unproven' },
+    { boardId: 'board', postId: 'post', status: 'published', extra: 'unproven' },
+    { boardId: 'board', postId: 'other-post', status: 'published' },
+    { boardId: 'board', postId: 'post', status: 'retracted', revision: 3 },
+  ]) assert.equal(await h.bundle.contracts.validateResult(current, ToolResultSchema.parse({ ...result, output })), false, JSON.stringify(output));
+  await h.bundle.runtime.receive('writer', pending.attempt.id, legacy);
+  await h.bundle.runtime.adopt('writer', pending.attempt.id);
+  const adopted = (await h.state.get('writer'))!, saved = adopted.attempts.find(item => item.id === pending.attempt.id)!;
+  assert.equal(saved.adopted, true);
+  const persisted = ToolResultSchema.parse(JSON.parse(new TextDecoder().decode(await h.artifacts.get(saved.resultArtifact!, adopted.policy))));
+  assert.deepEqual(persisted.output, legacy.output); assert.deepEqual(persisted.effectReceipt, result.effectReceipt);
+  assert.equal((await h.repository.get('tenant-a', 'board'))!.posts.length, 1);
+  h.actor.allowedNamespaces = [];
+  assert.equal(await h.bundle.contracts.validateResult(adopted, persisted), false, 'legacy output retains current authority checks');
+  assert.equal(await h.bundle.contracts.validateResult(adopted, result), false);
+});
+
 for (const adapter of ['sqlite', 'file-journal'] as const) {
   test(`${adapter}: board publish and retract run through the broker and retain mechanical receipts`, async t => {
     const h = await fixture(t, adapter), published = await h.execute();

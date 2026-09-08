@@ -5,6 +5,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { composeRuntime } from '../application/compose-runtime.js';
+import { BoardWorkSourceRegistry } from '../application/board-work-source-registry.js';
 import { BOARD_READ_TOOL } from '../application/board-tools.js';
 import { RESOURCE_TOOL_IDS } from '../application/resource-tools.js';
 import { KNOWLEDGE_TOOL_IDS } from '../application/knowledge-tools.js';
@@ -47,8 +48,9 @@ async function harness(t: TestContext, adapter: Adapter, family = 'documents', c
     const value = grants.get(principalId); if (!value || value.tenantId !== tenantId) return null;
     const { canManageBoards: _manage, ...trusted } = value; return structuredClone(trusted);
   } };
+  const workSources = new BoardWorkSourceRegistry(); let registrations: Array<() => void> = [];
   const compose = (person: string) => composeRuntime({ services: { state, artifacts, clock, digester, ids,
-    planner: new ScriptedPlanner([]), tools: [], sink: new FakeSink() }, board: { repository, actors: actors(person), authority },
+    planner: new ScriptedPlanner([]), tools: [], sink: new FakeSink() }, board: { repository, workSources, actors: actors(person), authority },
     knowledge: { repository: memory, actors: { current: async () => {
       const { canManageBoards: _manage, ...value } = await actors(person).current(); return value;
     } } },
@@ -72,6 +74,9 @@ async function harness(t: TestContext, adapter: Adapter, family = 'documents', c
     await state.commit(command(work, `seed-${person}`));
   }
   let a = await compose('a'), b = await compose('b'), sequence = 0;
+  const registerSources = () => { registrations.forEach(remove => remove());
+    registrations = [a, b].map((bundle, index) => workSources.register(actor(index === 0 ? 'a' : 'b'), bundle.boardWorkSource!)); };
+  registerSources();
   await a.board!.create({ id: 'board', commandId: 'create', namespace: 'team', scope: 'fixture', labels: ['synthetic'],
     roles: ['a', 'b'].map(person => ({ id: `role-${person}`, principalId: `person-${person}`, purpose: 'Investigate a generic question', active: true })),
     limits: { maxPosts: 30, maxReplies: 8, maxUnproductiveReplies: 3, maxRequests: 8 } });
@@ -94,13 +99,28 @@ async function harness(t: TestContext, adapter: Adapter, family = 'documents', c
   const changeWork = async (person: string, edit: (work: WorkState) => void) => {
     const next = advance((await state.get(`work-${person}`))!); edit(next); await state.commit(command(next, `work-${++sequence}`));
   };
-  const reopen = async () => { await repository.close(); await state.close(); repository = openBoard(); state = openRepository(adapter, directory); a = await compose('a'); b = await compose('b'); };
-  t.after(async () => { await state.close(); await repository.close(); await memory.close(); await rm(directory, { recursive: true, force: true }); });
+  const reopen = async () => { registrations.forEach(remove => remove()); await repository.close(); await state.close(); repository = openBoard(); state = openRepository(adapter, directory); a = await compose('a'); b = await compose('b'); registerSources(); };
+  t.after(async () => { registrations.forEach(remove => remove()); await state.close(); await repository.close(); await memory.close(); await rm(directory, { recursive: true, force: true }); });
   return { get a() { return a; }, get b() { return b; }, get state() { return state; }, repository: () => repository,
-    artifacts, grants, actors, mutation, publish, execute, changeWork, reopen, directory };
+    artifacts, grants, actors, mutation, publish, execute, changeWork, reopen, directory,
+    removeSource: (person: 'a' | 'b') => registrations[person === 'a' ? 0 : 1]!(), registerSources };
 }
 
 for (const adapter of ['sqlite', 'file-journal'] as const) {
+  test(`${adapter}: shared physical storage still requires the registered foreign owner for retained board sources`, async t => {
+    const h = await harness(t, adapter); await h.publish('b', 'foreign-original');
+    const read = await h.execute('a'); assert.equal(read.attempt.adopted, true);
+    assert.equal(await h.a.services.inputs!.current(read.state), true);
+    h.removeSource('b'); assert.ok(await h.state.get('work-b'), 'the foreign row still exists in the shared physical store');
+    assert.equal(await h.a.services.inputs!.current(read.state), false, 'retained input cannot fall back to the shared row');
+    await assert.rejects(
+      h.a.board!.readPage({ boardId: 'board', workId: 'work-a', maxPosts: 20, maxBytes: 32768 }),
+      /board_unavailable/,
+      'the reader retains an invalid source dependency and must be denied before page retrieval',
+    );
+    h.registerSources(); assert.equal(await h.a.services.inputs!.current(read.state), true);
+  });
+
   for (const family of ['documents', 'observations']) test(`${adapter}/${family}: runtime board read retains custody through history, compact and reopen`, async t => {
     const h = await harness(t, adapter, family); await h.publish('a', 'original');
     const first = await h.execute('b');

@@ -77,9 +77,12 @@ export class BoardService {
     const prior = snapshot.works.get(id);
     if (prior) { if (ownerId === undefined && snapshot.workSources.has(id) || ownerId !== undefined && prior.policy.principalId !== ownerId) unavailable(); return prior; }
     let state = await this.dependencies.services.state.get(id), source: BoardWorkSource | null = null;
-    if (!state && ownerId !== undefined && this.dependencies.workSources) {
+    // A shared physical store does not make another owner's readers/proofs local.
+    // Prefer the explicitly registered owner even when its row exists here.
+    if (ownerId !== undefined && this.dependencies.workSources &&
+      (!state || ownerId !== snapshot.actor.principalId || state.policy.principalId !== ownerId)) {
       source = await this.dependencies.workSources.resolve({ tenantId: snapshot.actor.tenantId, principalId: ownerId, workId: id });
-      if (source) state = await source.inputs.state.get(id);
+      state = source ? await source.inputs.state.get(id) : null;
     }
     if (!state || state.id !== id || state.policy.tenantId !== snapshot.actor.tenantId ||
       ownerId !== undefined && state.policy.principalId !== ownerId || !snapshot.actor.allowedScopes.includes(state.goal.scope)) unavailable();

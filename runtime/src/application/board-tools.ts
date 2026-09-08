@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { markCollaborationTool } from './collaboration-tool-identity.js';
 import type { BoardActor } from '../domain/board.js';
 import type { InputDependency } from '../domain/inputs.js';
 import type { TrustedKnowledgeActor } from '../domain/knowledge.js';
@@ -131,7 +132,7 @@ export function createBoardTools(deps: Dependencies): { tools: Tool[]; reader: W
       } catch { return false; }
     },
   };
-  return { tools: [tool], reader, async containsPosts(state, boardId, ids) {
+  return { tools: [markCollaborationTool(tool, 'board-read')], reader, async containsPosts(state, boardId, ids) {
     if (!ids.length) return true;
     try {
       const found = new Set<string>(), actor = await scoped(state);

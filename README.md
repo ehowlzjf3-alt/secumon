@@ -20,9 +20,9 @@ node dist/presentation/agent-cli.js chat help
 
 ## 현재 확인한 범위
 
-현재 진행은 [인수인계](design/IMPLEMENTATION-RESUME.md)의 checkpoint376을 따른다. C06 대화 입구·설치·두 담당 배치의 선택 고유16개를 확인했다. 이전 C03 선택243개, C04 선택158개, C05 선택682개는 각 실행의 기록으로 유지한다. 전체를 최종 소스에서 재실행한 결과로 합치지 않는다.
+현재 진행은 [인수인계](design/IMPLEMENTATION-RESUME.md)의 checkpoint377을 따른다. C07 게시판·아카이브의 선택 고유261개와 관련 공통 회귀89개를 확인했다. C06 선택16개는 이전 기록으로 유지한다. 이전 C03 선택243개, C04 선택158개, C05 선택682개는 각 실행의 기록으로 유지한다. 전체를 최종 소스에서 재실행한 결과로 합치지 않는다.
 
-2026-09-08, checkpoint376 기준이다. 아래 수치는 macOS arm64·Node v24.20.0의 선택한 로컬 시험 결과이며 전체 환경의 통과 수가 아니다.
+2026-09-08, checkpoint377 기준이다. 아래 수치는 macOS arm64·Node v24.20.0의 선택한 로컬 시험 결과이며 전체 환경의 통과 수가 아니다.
 
 | 범위 | 상태와 근거 |
 | --- | --- |
@@ -32,7 +32,8 @@ node dist/presentation/agent-cli.js chat help
 | C04 모델·에이전트 실행 | 선택한20파일 **고유158개 통과**. chat의 호스트 등록 경로 전달을 보완하고 문맥·재접속·목표 변경·CLI/Web 흐름을 확인했다. 실제 모델 품질 검증은 아니다. [결과](design/chapters/C04-ordered-verification-result.md) |
 | C05 도구·문맥·MCP | 선택한 **고유682개 통과**. 권한이 철회된 수집 작업의 일반 CLI/HTTP·정산·현재 제한 안내를 확인했다. 개인 기억 조회의 중복 포트 호출을 줄였고, 원본·권한 재검사를 유지했다. [결과](design/chapters/C05-ordered-verification-result.md) |
 | C06 대화 입구·설치·두 담당 배치 | 선택 **고유16개 통과**. Knox의 실행 전 권한 확인·종료 시작 후 새 호출 거절을 교정했다. 원 npm 격리 전역 설치·재설치, 두 담당의 설정·스킬·대화·기억 분리를 확인했다. 실제 Knox·브라우저 렌더·현재 Linux/Windows는 별도다. [결과](design/chapters/C06-ordered-verification-result.md) |
-| C07~C10 기능 연결 | 채택한 지원 범위의 구현과 통합 빌드를 마쳤다. 상세 검증과 실제 연동은 별도다. [구현 결과](design/chapters/C06-C10-implementation-result.md) · [검증 목록](design/chapters/C06-C10-verification-plan.md) |
+| C07 선택 게시판·아카이브 | **고유261개 통과**, 관련 진전·호스트 회귀89개 별도. 담당별 원출처 등록, 독립 DB의 질문·답변·요청자 확인, 아카이브 원문/영수증·기억 비복사, 의미 있는 진전과 반복 중단을 확인했다. 원 committed revision 반환으로 후속 명령의 불필요한 재조회를 줄였다. [결과](design/chapters/C07-ordered-verification-result.md) |
+| C08~C10 기능 연결 | 채택한 지원 범위의 구현과 통합 빌드를 마쳤다. 상세 검증과 실제 연동은 별도다. [구현 결과](design/chapters/C06-C10-implementation-result.md) · [검증 목록](design/chapters/C06-C10-verification-plan.md) |
 
 C06~C10에는 CLI/Web·전달 채널, 선택 게시판·아카이브, 동료·반론·자원 배정, A2A 지원 부분·사건별 상시 임무, 설치·버전 고정·업데이트·백업·복원이 포함된다. 구현되어 있다는 설명을 모든 조건에서 검증되었다는 의미로 사용하지 않는다. 과거 단위별 Linux 결과도 해당 소스 지문의 이력으로 보존한다.
 
@@ -40,7 +41,7 @@ C06~C10에는 CLI/Web·전달 채널, 선택 게시판·아카이브, 동료·�
 
 [다음 작업](design/NEXT-STEPS.md)에 바로 이어갈 수정과 미실행 검증을 모았다.
 
-- [C07 준비](design/chapters/C07-ordered-verification-preparation.md)의 선택 게시판·아카이브 등록과 두 담당 질문·답변부터 C07~C10 검증을 진행한다. C06의 브라우저·플랫폼 인수는 별도로 유지한다.
+- [C08 준비](design/chapters/C08-ordered-verification-preparation.md)의 동료·반론·분리 원장과 배정/정산/반환부터 C08~C10 검증을 진행한다. 현재 Linux/Windows·브라우저·최종 통합과 실제 연동 인수는 별도로 유지한다.
 - C03의 [플랫폼·최종 통합 잔여](design/chapters/C03-remaining-acceptance.md)와 C05의 권한 재허용 후 명시 재개 전체 흐름은 별도 인수로 유지한다. 완료한 묶음은 근거 없이 반복하지 않는다.
 - [조회 개선 결과](design/chapters/C05-source-read-reuse-result.md)는 한 개인 기억 조회의 포트 횟수·반환량 측정이다. 전체 속도·토큰 절감률은 주장하지 않는다.
 - 기억을 선택한 HTTP 작업 완료가 시험의 20초 대기 한도를 넘긴 사례는 성능 검토에 남겼다. 대기 한도를 늘려 기능을 확인한 것이며 속도를 개선한 결과는 아니다.

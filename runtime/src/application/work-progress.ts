@@ -1,4 +1,5 @@
-import type { Digester } from './ports.js';
+import type { Digester, Tool } from './ports.js';
+import { collaborationProgressKeys } from './collaboration-progress.js';
 import type { Evidence, TaskSpec, ToolResult, WorkState } from '../domain/model.js';
 import type { ProgressGate, ProgressPolicy, WorkProgress } from '../domain/work-progress.js';
 import { observeProgress } from '../domain/work-progress.js';
@@ -11,7 +12,6 @@ import { ArtifactSchema } from './contracts.js';
 import { ToolDefinitionSchema } from './resource-contracts.js';
 import { GuidanceManifestSchema } from './guidance.js';
 import { toolAllowed } from './tool-contracts.js';
-import { BoardRequestPageSchema } from './board-contracts.js';
 import { ComputerDriverIdentitySchema, ComputerViewSchema } from './computer-use-contracts.js';
 
 type ProgressState = WorkState & { progress?: WorkProgress | undefined };
@@ -37,15 +37,18 @@ function record(value: unknown): Record<string, unknown> | null {
 }
 
 /** Preparation credit only after ordinary source/contract validation and adoption; this never supplies evidence or grants authority. */
-export function acceptedToolProgressKeys(state: WorkState, task: TaskSpec, result: ToolResult, digester: Digester, verifiedComputerObservation = false): string[] {
+export function acceptedToolProgressKeys(state: WorkState, task: TaskSpec, result: ToolResult, digester: Digester, verifiedComputerObservation = false, verifiedCollaborationTool?: Tool): string[] {
   const attempt = state.attempts.find(value => value.id === result.attemptId);
   if (!attempt?.adopted || attempt.resultId !== result.resultId || attempt.taskId !== task.id || attempt.toolId !== task.toolId || attempt.toolVersion !== task.toolVersion ||
-    attempt.goalRevision !== state.goal.revision || attempt.scope !== state.goal.scope || attempt.effect !== 'read' || attempt.effectState !== 'none' || task.effect !== 'read' ||
-    !['succeeded', 'partial'].includes(attempt.status) || !['success', 'partial'].includes(result.status) || result.error || result.effectState !== 'none' ||
+    attempt.goalRevision !== state.goal.revision || attempt.scope !== state.goal.scope || attempt.effect !== task.effect || attempt.effectState !== result.effectState ||
+    !['succeeded', 'partial'].includes(attempt.status) || !['success', 'partial'].includes(result.status) || result.error ||
     result.reuse || attempt.reuse || attempt.execution?.mode === 'reused' || !state.policy.allowedTools.includes(task.toolId)) return [];
-  const output = record(result.output); if (!output || (output['status'] !== undefined && output['status'] !== 'available')) return [];
   const digest = (value: unknown) => digester.digest(asJson(value));
   const key = (kind: string, value: unknown) => `preparation:${kind}:${digest({ tenantId: state.policy.tenantId, value })}`;
+  const collaboration = collaborationProgressKeys(state, task, result, verifiedCollaborationTool, key);
+  if (collaboration.length) return collaboration;
+  if (attempt.effect !== 'read' || attempt.effectState !== 'none' || task.effect !== 'read' || result.effectState !== 'none') return [];
+  const output = record(result.output); if (!output || (output['status'] !== undefined && output['status'] !== 'available')) return [];
   if (verifiedComputerObservation && output['kind'] === 'computer_observation') {
     const view = ComputerViewSchema.safeParse(output['view']), driver = ComputerDriverIdentitySchema.safeParse(output['driver']);
     if (!view.success || !driver.success || output['sessionId'] !== view.data.sessionId ||
@@ -92,10 +95,6 @@ export function acceptedToolProgressKeys(state: WorkState, task: TaskSpec, resul
     const byteLength = new TextEncoder().encode(JSON.stringify(body)).byteLength;
     if (output['byteLength'] !== byteLength || byteLength > input.data.maxBytes) return [];
     return [cardKey(value), key('evidence-body', evidenceIdentity(value))];
-  }
-  if (task.toolId === 'core.board.requests.read') {
-    const page = BoardRequestPageSchema.safeParse(output); if (!page.success || page.data.boardId !== task.input['boardId']) return [];
-    return page.data.requests.map(({ updatedAt: _updatedAt, ...request }) => key('request-metadata', { boardId: page.data.boardId, roleId: page.data.roleId, request }));
   }
   if (task.toolId === 'core.catalog.search') {
     const parsed = toolCard.array().max(20).safeParse(output['cards']);

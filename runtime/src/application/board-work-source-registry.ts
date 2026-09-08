@@ -17,10 +17,10 @@ export class BoardWorkSourceRegistry implements BoardWorkSources {
         authority: Object.freeze({ resolve: async (identity: Parameters<typeof inputs.authority.resolve>[0]) => {
           guard(); const value = await inputs.authority.resolve(identity); guard(); return value;
         } }),
-        inspectInput: async (...args: Parameters<typeof inputs.inspectInput>) => { guard(); return inputs.inspectInput(...args); },
-        inspectMemory: async (...args: Parameters<typeof inputs.inspectMemory>) => { guard(); return inputs.inspectMemory(...args); },
+        inspectInput: async (...args: Parameters<typeof inputs.inspectInput>) => { guard(); const value = await inputs.inspectInput(...args); guard(); return value; },
+        inspectMemory: async (...args: Parameters<typeof inputs.inspectMemory>) => { guard(); const value = await inputs.inspectMemory(...args); guard(); return value; },
         effectsCurrent: async (...args: Parameters<typeof inputs.effectsCurrent>) => { guard(); const value = await inputs.effectsCurrent(...args); guard(); return value; },
-        inspectCoverage: async (...args: Parameters<typeof inputs.inspectCoverage>) => { guard(); return inputs.inspectCoverage(...args); },
+        inspectCoverage: async (...args: Parameters<typeof inputs.inspectCoverage>) => { guard(); const value = await inputs.inspectCoverage(...args); guard(); return value; },
       }),
       artifacts: Object.freeze({
         get: async (...args: Parameters<typeof source.artifacts.get>) => { guard(); const value = await source.artifacts.get(...args); guard(); return value; },
@@ -29,7 +29,7 @@ export class BoardWorkSourceRegistry implements BoardWorkSources {
       current: async (state: WorkState) => { guard(); const value = await source.current(state); guard(); return value; },
     });
     this.#entries.set(id, { ...owner, source: registered });
-    return () => { active = false; this.#entries.delete(id); };
+    return () => { if (!active) return; active = false; this.#entries.delete(id); };
   }
   async resolve(identity: { tenantId: string; principalId: string; workId: string }): Promise<BoardWorkSource | null> {
     let selected: BoardWorkSource | null = null;
