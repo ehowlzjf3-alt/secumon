@@ -42,6 +42,18 @@
       <p class="sidebar-footer">창을 닫아도 업무를 취소하지 않습니다.</p>
     </aside>
     <section id="workspace" class="workspace" tabindex="-1" aria-label="현재 업무">
+      <details id="resident-missions" class="persistent-conversation resident-panel" hidden>
+        <summary>상시 임무 <span class="muted">새 사건의 관측 상태와 제어</span></summary>
+        <p class="help-text">상시 임무를 등록할 때 받은 제어 업무 ID로 조회하세요. 아래 제어는 새 사건 관측에 적용됩니다. 이미 접수된 개별 업무의 일시정지·취소는 해당 업무 화면에서 할 수 있습니다.</p>
+        <form id="resident-form" class="resident-lookup">
+          <label for="resident-work-id">제어 업무 ID <span class="optional">상시 임무를 식별하는 값</span></label>
+          <div class="resident-lookup-row"><input id="resident-work-id" required maxlength="256" autocomplete="off" spellcheck="false" placeholder="상시 임무의 제어 업무 ID"><button id="resident-read" class="button secondary" type="submit">상태 조회</button></div>
+        </form>
+        <div id="resident-summary" class="resident-summary" hidden><span id="resident-status" class="status-badge"></span><p id="resident-counts" class="help-text"></p></div>
+        <div id="resident-actions" class="resident-actions" aria-label="상시 임무 관측 제어" hidden><button id="resident-pause" class="button secondary" type="button" disabled>관측 일시정지</button><button id="resident-resume" class="button secondary" type="button" disabled>관측 재개</button><button id="resident-stop" class="button quiet danger" type="button" disabled>관측 종료</button><button id="resident-retry" class="button secondary" type="button" hidden>같은 요청 다시 확인</button></div>
+        <p class="help-text">관측 종료 후에는 같은 규칙을 재개할 수 없습니다. 조회·제어는 새 임무를 등록하거나 사건을 조회·실행하지 않습니다.</p>
+        <p id="resident-pending" class="help-text" hidden></p><p id="resident-notice" class="resident-notice" role="status" aria-live="polite" aria-atomic="true"></p>
+      </details>
       <details id="persistent-conversation" class="persistent-conversation" hidden><summary>이 대화의 기록 <span id="persistent-session-id" class="muted"></span></summary><p class="help-text">완료된 업무의 입력과 응답도 이어서 봅니다. 기록 자체가 검증된 근거라는 의미는 아닙니다.</p><button id="refresh-history" class="button quiet" type="button">기록 새로고침</button><div id="history-list" class="history-list"></div><button id="more-history" class="button quiet" type="button" hidden>다음 기록</button><p id="history-error" class="error-text" role="alert"></p></details>
       <details id="personal-memory" class="persistent-conversation" hidden>
         <summary>개인 기억 <span class="muted">이 담당과 사용자의 장기 기억</span> <span id="memory-backend" class="muted"></span></summary>

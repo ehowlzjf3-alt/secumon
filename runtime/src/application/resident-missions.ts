@@ -19,9 +19,15 @@ const id = z.string().min(1).max(256), count = z.number().int().nonnegative().ma
 export const ResidentMissionSchema = z.strictObject({ rule: MissionRuleSchema, sessionId: id, binding: BindingInputSchema.omit({ session: true }),
   instruction: z.string().min(1).max(16000), policy: PolicySchema, limits: BudgetSchema.shape.limits, mode: z.enum(['auto', 'fast', 'deep']) });
 export type ResidentMission = z.infer<typeof ResidentMissionSchema>;
+export const ResidentControlCommandSchema = z.strictObject({ commandId: id, expectedControlRevision: count.max(Number.MAX_SAFE_INTEGER - 1),
+  kind: z.enum(['pause', 'resume', 'stop']) });
+export type ResidentControlCommand = z.infer<typeof ResidentControlCommandSchema>;
+export interface ResidentMissionSelection { sessionId: string; binding: ResidentMission['binding'] }
+const SelectionSchema = z.strictObject({ sessionId: id, binding: BindingInputSchema.omit({ session: true }) });
 const CheckpointSchema = z.strictObject({ schemaVersion: z.literal(1), workId: id, agentId: id, controllerSessionId: id, createdAt: count, generation: count,
   definition: ResidentMissionSchema, cursor: count, snapshotDigest: z.string().max(256).nullable(), nextPollAt: count, idlePolls: count,
   status: z.enum(['active', 'closed']), suspended: z.boolean().optional(), controlRevision: count.optional(),
+  controlPublication: ResidentControlCommandSchema.optional(),
   reason: z.string().max(256).nullable(), claim: z.strictObject({ owner: id, until: count }).nullable(),
   seen: z.array(z.strictObject({ id, digest: hash, workId: id })).max(512),
   pending: z.array(z.strictObject({ event: MissionEventSchema, workId: id.nullable(), started: z.boolean() })).max(32) });
@@ -37,7 +43,7 @@ export interface ResidentDriveOptions extends Pick<WorkflowRunOptions, 'maxSteps
 }
 const controllerReason = 'resident_mission_controller';
 const terminal = (state: WorkState) => ['completed', 'cancelled', 'paused', 'failed', 'blocked'].includes(state.status);
-const changed = (): never => { throw new Error('resident_mission_changed'); };
+function changed(): never { throw new Error('resident_mission_changed'); }
 function abortablePoll<T>(operation: Promise<T>, signal: AbortSignal): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const aborted = () => { signal.removeEventListener('abort', aborted); reject(signal.reason); };
@@ -75,41 +81,69 @@ export class ResidentMissions {
   }
   private async state(workId: string, signal = this.deps.signal) { const state = await this.deps.services.state.get(workId); if (!state) throw new Error('work_not_found'); this.access(state, signal); return state; }
   private key(ruleId: string) { return `resident-${this.digest({ agentId: this.deps.agentId, ruleId })}`; }
+  private controlKey(workId: string, commandId: string) { return `resident-control:${this.digest({ agentId: this.deps.agentId, workId, commandId })}`; }
+  private publication(checkpoint: Checkpoint, subscription: ExternalSubscription, artifact: ArtifactRef) {
+    const command = checkpoint.controlPublication;
+    return command ? { commandId: this.controlKey(checkpoint.workId, command.commandId), type: 'resident_control',
+      data: asJson({ subscriptionId: subscription.id, artifact, command }) } :
+      { commandId: subscription.checkpointId, type: 'resident_checkpoint', data: asJson({ subscriptionId: subscription.id, artifact }) };
+  }
+  private selection(checkpoint: Checkpoint, selection?: ResidentMissionSelection) {
+    if (selection === undefined) return;
+    const parsed = SelectionSchema.safeParse(selection);
+    if (!parsed.success || parsed.data.sessionId !== checkpoint.definition.sessionId ||
+      this.digest(parsed.data.binding) !== this.digest(checkpoint.definition.binding)) throw new Error('resident_selection_mismatch');
+  }
   private async read(workId: string, signal = this.deps.signal): Promise<{ state: WorkState; checkpoint: Checkpoint; commandRevision: number }> {
     const state = await this.state(workId, signal);
     if (state.status !== 'paused' || state.statusReason !== controllerReason || state.plan || state.attempts.length || state.modelCalls.length ||
       state.budget.limits.modelCalls || state.budget.limits.toolCalls || state.budget.limits.tokens || state.budget.limits.replans) throw new Error('resident_controller_not_idle');
     const subscription = state.subscriptions?.find(value => value.provider === 'resident-mission');
+    if (!subscription) throw new Error('resident_not_registered');
+    const publication = await this.readCheckpoint(state, subscription, signal);
+    if (this.digest(await this.state(workId, signal)) !== this.digest(state)) changed();
+    return { state, ...publication };
+  }
+  private async readCheckpoint(state: WorkState, subscription: ExternalSubscription, signal: AbortSignal) {
+    this.access(state, signal);
     if (!subscription || !subscription.checkpointId.startsWith('resident:')) throw new Error('resident_not_registered');
     const artifact = state.artifacts.find(value => value.sha256 === subscription.checkpointId.slice(9));
     if (!artifact || !visibleArtifact(state, artifact) || artifact.byteLength > 512 * 1024) throw new Error('resident_checkpoint_unavailable');
-    const receipt = await this.deps.services.state.receipt(workId, subscription.checkpointId);
+    const bytes = await this.deps.services.artifacts.get(artifact, state.policy), hashed = await crypto.subtle.digest('SHA-256', new Uint8Array(bytes).buffer);
+    if (bytes.byteLength !== artifact.byteLength || Array.from(new Uint8Array(hashed), byte => byte.toString(16).padStart(2, '0')).join('') !== artifact.sha256) changed();
+    const checkpoint = CheckpointSchema.parse(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)));
+    const publication = this.publication(checkpoint, subscription, artifact);
+    const receipt = await this.deps.services.state.receipt(state.id, publication.commandId);
     if (!receipt) throw new Error('resident_mission_changed');
     if (receipt.state.id !== state.id || receipt.state.createdAt !== state.createdAt || receipt.state.revision > state.revision ||
       this.digest(receipt.state.policy) !== this.digest(state.policy) || this.digest(receipt.state.goal) !== this.digest(state.goal) ||
       dataGeneration(receipt.state) !== dataGeneration(state) ||
       this.digest(receipt.state.conversation?.session?.scope ?? null) !== this.digest(state.conversation?.session?.scope ?? null) ||
       !receipt.state.artifacts.some(value => this.digest(value) === this.digest(artifact)) ||
-      receipt.digest !== this.digest({ type: 'resident_checkpoint', data: { subscriptionId: subscription.id, artifact } }) ||
+      receipt.digest !== this.digest({ type: publication.type, data: publication.data }) ||
       this.digest(receipt.state.subscriptions?.find(value => value.id === subscription.id)) !== this.digest(subscription)) changed();
-    const bytes = await this.deps.services.artifacts.get(artifact, state.policy), hashed = await crypto.subtle.digest('SHA-256', new Uint8Array(bytes).buffer);
-    if (bytes.byteLength !== artifact.byteLength || Array.from(new Uint8Array(hashed), byte => byte.toString(16).padStart(2, '0')).join('') !== artifact.sha256) changed();
-    const checkpoint = CheckpointSchema.parse(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)));
     if (checkpoint.workId !== state.id || checkpoint.agentId !== this.deps.agentId || checkpoint.createdAt !== state.createdAt || checkpoint.generation !== dataGeneration(state) ||
       checkpoint.controllerSessionId !== state.conversation?.session?.scope.sessionId || checkpoint.controllerSessionId === checkpoint.definition.sessionId || this.key(checkpoint.definition.rule.id) !== subscription.id ||
       checkpoint.cursor !== subscription.cursor || checkpoint.status !== subscription.status || checkpoint.generation !== subscription.generation ||
       subscription.goalRevision !== state.goal.revision || subscription.resourceId !== checkpoint.definition.rule.resourceId ||
       this.digest(checkpoint.definition.policy) !== this.digest(state.policy)) changed();
+    if (checkpoint.controlPublication) {
+      const command = checkpoint.controlPublication;
+      if (checkpoint.controlRevision !== command.expectedControlRevision + 1 || checkpoint.claim ||
+        (command.kind === 'stop' ? checkpoint.status !== 'closed' || checkpoint.reason !== 'host_closed' :
+          checkpoint.status !== 'active' || (command.kind === 'pause' ? !checkpoint.suspended || checkpoint.reason !== 'host_paused' :
+            !!checkpoint.suspended || checkpoint.reason !== null))) changed();
+    }
     this.source(checkpoint.definition);
-    if (this.digest(await this.state(workId, signal)) !== this.digest(state)) changed();
-    return { state, checkpoint, commandRevision: receipt.state.revision };
+    return { checkpoint, commandRevision: receipt.state.revision, receiptDigest: this.digest(receipt) };
   }
   /** Recover only the exact intended publication; a later resume may exist, but cannot expand the interruption cutoff. */
   private async controlReceipt(state: WorkState, checkpoint: Checkpoint, artifact: ArtifactRef, subscription: ExternalSubscription, signal: AbortSignal) {
     this.access(state, signal); this.source(checkpoint.definition);
-    const receipt = await this.deps.services.state.receipt(state.id, subscription.checkpointId);
+    const publication = this.publication(checkpoint, subscription, artifact);
+    const receipt = await this.deps.services.state.receipt(state.id, publication.commandId);
     if (!receipt) return null;
-    if (receipt.digest !== this.digest({ type: 'resident_checkpoint', data: { subscriptionId: subscription.id, artifact } }) ||
+    if (receipt.digest !== this.digest({ type: publication.type, data: publication.data }) ||
       receipt.state.id !== state.id || receipt.state.createdAt !== state.createdAt || receipt.state.revision > state.revision + 1 ||
       receipt.state.status !== 'paused' || receipt.state.statusReason !== controllerReason ||
       this.digest(receipt.state.policy) !== this.digest(state.policy) || this.digest(receipt.state.goal) !== this.digest(state.goal) ||
@@ -129,21 +163,29 @@ export class ResidentMissions {
     return receipt.state.revision;
   }
   private async save(state: WorkState, input: Checkpoint, signal = this.deps.signal, interrupt = false) {
-    const checkpoint = CheckpointSchema.parse(input), bytes = new TextEncoder().encode(JSON.stringify(checkpoint));
+    return (await this.publish(state, input, signal, interrupt)).state;
+  }
+  private async publish(state: WorkState, input: Checkpoint, signal: AbortSignal, interrupt: boolean, command?: ResidentControlCommand) {
+    const checkpoint = CheckpointSchema.parse(input);
+    // A subsequent poll or legacy host action is a new SHA publication, not another execution of the prior command.
+    delete checkpoint.controlPublication;
+    if (command) checkpoint.controlPublication = command;
+    const bytes = new TextEncoder().encode(JSON.stringify(checkpoint));
     if (bytes.byteLength > 512 * 1024) throw new Error('resident_checkpoint_capacity');
     this.access(state, signal); const artifact = await this.deps.services.artifacts.put(bytes, { tenantId: state.policy.tenantId, labels: [...state.policy.allowedLabels], mediaType: 'application/json' });
     const subscription = { id: this.key(checkpoint.definition.rule.id), provider: 'resident-mission', resourceId: checkpoint.definition.rule.resourceId,
       goalRevision: state.goal.revision, generation: checkpoint.generation, cursor: checkpoint.cursor, status: checkpoint.status, checkpointId: `resident:${artifact.sha256}` };
+    const publication = this.publication(checkpoint, subscription, artifact);
     let result: Awaited<ReturnType<typeof transact>>;
     try {
-      result = await transact(this.deps.services, state.id, subscription.checkpointId, 'resident_checkpoint', asJson({ subscriptionId: subscription.id, artifact }), next => {
+      result = await transact(this.deps.services, state.id, publication.commandId, publication.type, publication.data, next => {
         if (this.digest(next) !== this.digest(state)) changed(); this.access(next, signal);
         next.status = 'paused'; next.statusReason = controllerReason;
         next.subscriptions = [...(next.subscriptions ?? []).filter(value => value.id !== subscription.id), subscription];
         if (!next.artifacts.some(value => value.id === artifact.id)) next.artifacts.push(artifact);
       }, async () => { if (this.digest(await this.state(state.id, signal)) !== this.digest(state)) changed(); });
     } catch (error) {
-      if (interrupt) {
+      if (interrupt && !(command && error instanceof Error && ['idempotency_conflict', 'resident_mission_changed'].includes(error.message))) {
         try {
           const revision = await this.controlReceipt(state, checkpoint, artifact, subscription, signal);
           if (revision !== null) this.deps.services.workCancellation?.interrupt(state.id, revision);
@@ -152,7 +194,7 @@ export class ResidentMissions {
       throw error;
     }
     if (interrupt) { this.access(result.state, signal); this.source(checkpoint.definition); this.deps.services.workCancellation?.interrupt(state.id, result.commandRevision); }
-    return result.state;
+    return result;
   }
   async register(value: ResidentMission) {
     const definition = ResidentMissionSchema.parse(structuredClone(value)); this.source(definition);
@@ -204,11 +246,56 @@ export class ResidentMissions {
     if (!accepted || accepted.digest !== this.digest({ input: request, session: basis }) || accepted.state.id !== input.workId) throw new Error('resident_event_receipt_unavailable');
     this.access(context.state); return input.workId;
   }
-  async status(workId: string) {
-    const { checkpoint } = await this.read(workId);
-    return { workId, sessionId: checkpoint.definition.sessionId, rule: checkpoint.definition.rule,
+  async status(workId: string, selection?: ResidentMissionSelection) {
+    const { state, checkpoint } = await this.read(workId); this.selection(checkpoint, selection);
+    return { workId, stateRevision: state.revision, controlRevision: checkpoint.controlRevision ?? 0,
+      sessionId: checkpoint.definition.sessionId, rule: checkpoint.definition.rule,
       status: checkpoint.status === 'closed' ? 'closed' as const : checkpoint.suspended ? 'paused' as const : 'active' as const, reason: checkpoint.reason,
       cursor: checkpoint.cursor, nextPollAt: checkpoint.nextPollAt, events: checkpoint.seen, pending: checkpoint.pending.map(item => ({ eventId: item.event.id, workId: item.workId })) };
+  }
+  private async replayControl(workId: string, command: ResidentControlCommand, selection: ResidentMissionSelection | undefined, replayed: boolean) {
+    const { state, checkpoint } = await this.read(workId); this.selection(checkpoint, selection);
+    const receipt = await this.deps.services.state.receipt(workId, this.controlKey(workId, command.commandId));
+    if (!receipt) return null;
+    const subscription = receipt.state.subscriptions?.find(value => value.provider === 'resident-mission');
+    if (!subscription) throw new Error('resident_mission_changed');
+    const original = await this.readCheckpoint(state, subscription, this.deps.signal), recorded = original.checkpoint.controlPublication;
+    if (original.receiptDigest !== this.digest(receipt) || !recorded || recorded.commandId !== command.commandId ||
+      this.digest(original.checkpoint.definition) !== this.digest(checkpoint.definition)) changed();
+    if (this.digest(recorded) !== this.digest(command)) throw new Error('resident_control_conflict');
+    this.selection(original.checkpoint, selection);
+    const current = await this.status(workId, selection);
+    if (command.kind !== 'resume') this.deps.services.workCancellation?.interrupt(workId, original.commandRevision);
+    return { commandId: command.commandId, replayed, appliedControlRevision: original.checkpoint.controlRevision!,
+      appliedStateRevision: original.commandRevision, current };
+  }
+  /** Retry identity and compare-and-set apply to observation control, never to the separate event work. */
+  async control(workId: string, input: ResidentControlCommand, selection?: ResidentMissionSelection) {
+    const parsed = ResidentControlCommandSchema.safeParse(structuredClone(input));
+    if (!parsed.success) throw new Error('resident_control_invalid');
+    const command = frozen(parsed.data), selected = selection === undefined ? undefined : structuredClone(selection);
+    const replay = await this.replayControl(workId, command, selected, true); if (replay) return replay;
+    const { state, checkpoint } = await this.read(workId); this.selection(checkpoint, selected);
+    if ((checkpoint.controlRevision ?? 0) !== command.expectedControlRevision) {
+      const concurrent = await this.replayControl(workId, command, selected, true); if (concurrent) return concurrent;
+      throw new Error('resident_control_stale');
+    }
+    if (checkpoint.status === 'closed') throw new Error('resident_mission_closed');
+    checkpoint.controlRevision = command.expectedControlRevision + 1; checkpoint.claim = null;
+    if (command.kind === 'stop') { checkpoint.status = 'closed'; checkpoint.reason = 'host_closed'; }
+    else if (command.kind === 'pause') { checkpoint.suspended = true; checkpoint.reason = 'host_paused'; }
+    else { delete checkpoint.suspended; checkpoint.reason = null; }
+    let result: Awaited<ReturnType<ResidentMissions['publish']>>;
+    try { result = await this.publish(state, checkpoint, this.deps.signal, command.kind !== 'resume', command); }
+    catch (error) {
+      // A competing identical request can publish using a newer poll snapshot. Its original command remains authoritative.
+      if (error instanceof Error && ['idempotency_conflict', 'resident_mission_changed'].includes(error.message)) {
+        const replay = await this.replayControl(workId, command, selected, true); if (replay) return replay;
+      }
+      throw error;
+    }
+    const confirmed = await this.replayControl(workId, command, selected, !result.committed);
+    if (!confirmed) changed(); return confirmed;
   }
   /** Observation control is separate from commands on already accepted event work. */
   async pause(workId: string) {

@@ -1,0 +1,218 @@
+TAP version 13
+# Subtest: resident command recovery: post-publication pause cancels the original poll but preserves the unknown commit error
+ok 1 - resident command recovery: post-publication pause cancels the original poll but preserves the unknown commit error
+  ---
+  duration_ms: 1990.8355
+  type: 'test'
+  ...
+# Subtest: resident command recovery: post-publication stop cancels the original poll but preserves the unknown commit error
+ok 2 - resident command recovery: post-publication stop cancels the original poll but preserves the unknown commit error
+  ---
+  duration_ms: 2035.4175
+  type: 'test'
+  ...
+# Subtest: resident command recovery: a pre-publication failure neither cancels the poll nor claims a committed control
+ok 3 - resident command recovery: a pre-publication failure neither cancels the poll nor claims a committed control
+  ---
+  duration_ms: 2089.472375
+  type: 'test'
+  ...
+# Subtest: resident command recovery: a failed receipt lookup preserves both errors and a paused retry recovers the missed cancellation
+ok 4 - resident command recovery: a failed receipt lookup preserves both errors and a paused retry recovers the missed cancellation
+  ---
+  duration_ms: 2263.544041
+  type: 'test'
+  ...
+# Subtest: resident command recovery: a receipt lookup delayed across resume cancels only the old revision and preserves the new poll
+ok 5 - resident command recovery: a receipt lookup delayed across resume cancels only the old revision and preserves the new poll
+  ---
+  duration_ms: 2764.3335
+  type: 'test'
+  ...
+# Subtest: resident controls: pause persists pending events across reopen, resume uses the same session, and stop cannot be resumed
+not ok 6 - resident controls: pause persists pending events across reopen, resume uses the same session, and stop cannot be resumed
+  ---
+  duration_ms: 3276.961792
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/resident-missions-controls.test.js:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      {
+    +   controlRevision: 5,
+    -   controlRevision: 3,
+        cursor: 1,
+        events: [
+          {
+            digest: '697726e8cc4d8503f1140e63645e6e727ae730dc886021cde1593c5e96e1c066',
+            id: 'before-pause',
+    ...
+        sessionId: '96311f5a-3c0f-49d4-92ed-820d68cf7bb3',
+    +   stateRevision: 12,
+    -   stateRevision: 10,
+        status: 'active',
+        workId: 'work-9a00016c3d5b87ff2f648f7f012ee112131ac4d3928af9d382c34871f05fc00c'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    workId: 'work-9a00016c3d5b87ff2f648f7f012ee112131ac4d3928af9d382c34871f05fc00c'
+    stateRevision: 10
+    controlRevision: 3
+    sessionId: '96311f5a-3c0f-49d4-92ed-820d68cf7bb3'
+    rule:
+      id: 'same-rule'
+      sourceId: 'observations'
+      resourceId: 'same-resource'
+      pollIntervalMs: 1000
+      maxResumes: 8
+      maxIdlePolls: 8
+      maxNoProgress: 3
+    status: 'active'
+    reason: ~
+    cursor: 1
+    nextPollAt: 1788908327538
+    events:
+      0:
+        id: 'before-pause'
+        digest: '697726e8cc4d8503f1140e63645e6e727ae730dc886021cde1593c5e96e1c066'
+        workId: 'work-b4cf04a490e6cba52d2969a84bfe3b2a8f79c0329d170aa027952e4350ea49cc'
+    pending:
+      0:
+        eventId: 'after-pause'
+        workId: ~
+  actual:
+    workId: 'work-9a00016c3d5b87ff2f648f7f012ee112131ac4d3928af9d382c34871f05fc00c'
+    stateRevision: 12
+    controlRevision: 5
+    sessionId: '96311f5a-3c0f-49d4-92ed-820d68cf7bb3'
+    rule:
+      id: 'same-rule'
+      sourceId: 'observations'
+      resourceId: 'same-resource'
+      pollIntervalMs: 1000
+      maxResumes: 8
+      maxIdlePolls: 8
+      maxNoProgress: 3
+    status: 'active'
+    reason: ~
+    cursor: 1
+    nextPollAt: 1788908327538
+    events:
+      0:
+        id: 'before-pause'
+        digest: '697726e8cc4d8503f1140e63645e6e727ae730dc886021cde1593c5e96e1c066'
+        workId: 'work-b4cf04a490e6cba52d2969a84bfe3b2a8f79c0329d170aa027952e4350ea49cc'
+    pending:
+      0:
+        eventId: 'after-pause'
+        workId: ~
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/resident-missions-controls.test.js:105:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: resident controls: an explicitly changed goal after original intake is detached without automatic execution and remains explicitly resumable
+ok 7 - resident controls: an explicitly changed goal after original intake is detached without automatic execution and remains explicitly resumable
+  ---
+  duration_ms: 3403.004791
+  type: 'test'
+  ...
+# Subtest: resident controls: explicitly paused or cancelled accepted event work is not reexecuted while the next event remains independent
+ok 8 - resident controls: explicitly paused or cancelled accepted event work is not reexecuted while the next event remains independent
+  ---
+  duration_ms: 5274.344625
+  type: 'test'
+  ...
+# Subtest: resident controls: pause during a gated source poll rejects its late page and resume reads the same cursor once
+ok 9 - resident controls: pause during a gated source poll rejects its late page and resume reads the same cursor once
+  ---
+  duration_ms: 1788.977542
+  type: 'test'
+  ...
+# Subtest: resident controls: an actual goal change during workflow stops automatic continuation until an explicit user resume
+ok 10 - resident controls: an actual goal change during workflow stops automatic continuation until an explicit user resume
+  ---
+  duration_ms: 2158.7835
+  type: 'test'
+  ...
+# Subtest: mission entry: the ordinary model tool loop reads a newly observed event and reports it without creating personal memory or evidence
+ok 11 - mission entry: the ordinary model tool loop reads a newly observed event and reports it without creating personal memory or evidence
+  ---
+  duration_ms: 2098.62275
+  type: 'test'
+  ...
+# Subtest: resident entry: event tasks share only their persistent conversation while the controller never executes
+ok 12 - resident entry: event tasks share only their persistent conversation while the controller never executes
+  ---
+  duration_ms: 2119.565
+  type: 'test'
+  ...
+# Subtest: resident entry: independent directories and original event receipts survive reopen and reject changed redelivery
+ok 13 - resident entry: independent directories and original event receipts survive reopen and reject changed redelivery
+  ---
+  duration_ms: 3908.375208
+  type: 'test'
+  ...
+# Subtest: resident entry: accepted intake interrupted before its controller receipt reuses the same work after real compact and reopen
+ok 14 - resident entry: accepted intake interrupted before its controller receipt reuses the same work after real compact and reopen
+  ---
+  duration_ms: 6595.757959
+  type: 'test'
+  ...
+# Subtest: resident entry: a question remains explicitly resumable without repeated inference on an empty poll
+ok 15 - resident entry: a question remains explicitly resumable without repeated inference on an empty poll
+  ---
+  duration_ms: 3249.573833
+  type: 'test'
+  ...
+# Subtest: resident entry: stopping a gated poll preserves its controller and prevents late event intake or inference
+ok 16 - resident entry: stopping a gated poll preserves its controller and prevents late event intake or inference
+  ---
+  duration_ms: 1124.587458
+  type: 'test'
+  ...
+# Subtest: resident poll control pause ends before raw release and leaves another controller on the same source running
+ok 17 - resident poll control pause ends before raw release and leaves another controller on the same source running
+  ---
+  duration_ms: 684.265375
+  type: 'test'
+  ...
+# Subtest: resident poll control stop ends before raw release and leaves another controller on the same source running
+ok 18 - resident poll control stop ends before raw release and leaves another controller on the same source running
+  ---
+  duration_ms: 618.510292
+  type: 'test'
+  ...
+# Subtest: resident poll control drive caller abort releases its claim while the owner remains live
+ok 19 - resident poll control drive caller abort releases its claim while the owner remains live
+  ---
+  duration_ms: 617.903917
+  type: 'test'
+  ...
+# Subtest: resident poll control driver close releases only its own claim and leaves late raw rejection to the source owner drain
+ok 20 - resident poll control driver close releases only its own claim and leaves late raw rejection to the source owner drain
+  ---
+  duration_ms: 948.892583
+  type: 'test'
+  ...
+# Subtest: resident poll control profile authority closure preserves the original claim without an unauthorized cleanup write
+ok 21 - resident poll control profile authority closure preserves the original claim without an unauthorized cleanup write
+  ---
+  duration_ms: 912.710833
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 20
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 50522.626958

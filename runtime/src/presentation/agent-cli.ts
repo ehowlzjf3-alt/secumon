@@ -21,6 +21,7 @@ const help = `secumon-agent · 담당 디렉터리 설정
   version     설치 엔진 버전 표시
   work <명령> 담당의 합성 작업 실행·지속 대화 접수/이력 (work help로 옵션 확인)
   chat <명령> 일반 원문 요청·후속 대화 (chat help; synthetic 또는 registered 제공자 명시)
+  mission <명령> 등록된 상시 임무의 상태·일시정지·재개·종료 (mission help)
   memory-migrate <명령> 기존 SQLite 개인 기억의 명시적 문서 이관 (memory-migrate help)
   lifecycle <명령> 오프라인 설치·엔진 핀·업데이트·자료 백업/복원 (lifecycle help)
   dispatch --directory 담당 -- <명령> …  지정 엔진에 원 옵션 전달; 내부 기본 담당은 외곽 경로
@@ -45,6 +46,13 @@ export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOpt
     const { createLocalContractHost } = await import('./local-contract-model.js');
     const chatArgs = args.slice(1);
     await runAgentTurnCli(chatArgs, { ...createLocalContractHost(), ...hostOptions }, defaultDirectory).catch(error => reportAgentTurnCliFailure(error, chatArgs.includes('--json'))); return;
+  }
+  if (args[0] === 'mission') {
+    const { runAgentMissionCli, reportAgentMissionCliFailure } = await import('./agent-mission-cli.js');
+    const { createLocalContractHost } = await import('./local-contract-model.js');
+    const missionArgs = args.slice(1);
+    await runAgentMissionCli(missionArgs, { ...createLocalContractHost(), ...hostOptions }, defaultDirectory)
+      .catch(error => reportAgentMissionCliFailure(error, missionArgs.includes('--json'))); return;
   }
   if (args[0] === 'memory-migrate') {
     const { runMemoryMigrationCli } = await import('./memory-migration-cli.js');

@@ -3,6 +3,7 @@ import type { WorkView, WorkViewLevel, WorkViewResult } from '../../domain/work-
 import type { WebAcceptInput, WebAcceptResult, WebAttachResult, WebCommandInput, WebCommandResult, WebCompactStatus, WebCompactResult, WebConversation, WebInput, WebGoalBasis, WorkbenchConfig, WorkCard, WorkList } from '../web-contracts.js';
 import { BrowserReadQueue, BrowserRequestIdentity, compactStatusText, receiveCompactStatus, coalescedRefresh, goalDraftFromView, goalDraftIsStale, goalForSubmission, messageKey, nearConversationEnd, needsResultRecheck, newBrowserWork, receiveWorkView, unavailableWork, type BrowserGoalDraft, type BrowserWorkState } from './view-state.js';
 import { installPersonalMemoryUI } from './personal-memory.js';
+import { installResidentMissionsUI } from './resident-missions.js';
 import { requestGoalDraft, requestGoalForSubmission, sourceReadFailure, type BrowserRequestGoalDraft } from './view-state.js';
 
 function element<T extends HTMLElement>(id: string): T {
@@ -110,6 +111,7 @@ function expireSession() {
   connection('연결 필요', false); clearVisibleWork();
   element('history-list').replaceChildren(); element('persistent-conversation').hidden = true; historyCursor = null; persistentSessionId = null; contextStates.clear();
   memoryUI.clear();
+  residentUI.clear();
 }
 function discardProtectedForms() {
   element<HTMLDialogElement>('goal-dialog').close(); element<HTMLDialogElement>('mode-dialog').close(); goalDraft = null; modeDraft = null;
@@ -377,6 +379,8 @@ async function sendCommand(id: string, command: WebCommandInput) {
   } finally { if (command.kind === 'run') { runs.delete(id); if (current()?.workId === id) renderWork(current()!); } }
 }
 function nextRequestId() { return crypto.randomUUID(); }
+const residentUI = installResidentMissionsUI({ request, epoch: () => sessionEpoch, nextId: nextRequestId, errorText,
+  errorCode: error => error instanceof RequestError ? error.code : null });
 const memoryUI = installPersonalMemoryUI({ request, current, workId: () => selectedId, epoch: () => sessionEpoch, errorText,
   sessionId: () => persistentSessionId, documentDrafts: () => config?.memoryDrafts === true,
   refresh: async () => { const view = await readView('conversation', true); if (view && selectedId === view.workId && !stream) connectStream(view.workId); await loadHistory(); await loadWorks(); } });
@@ -631,6 +635,7 @@ async function start() {
       const token = connectionToken; connectionToken = null; session = await request('/api/session', { token }, true);
     }
     connectionToken = null; csrf = session.csrf; config = session.config; persistentSessionId = config.persistentSession?.sessionId ?? null; connection('연결됨', true);
+    residentUI.configure(config.residentMissions === true);
     element('request-text-field').hidden = !config.persistentSession; element<HTMLTextAreaElement>('request-text').required = Boolean(config.persistentSession);
     element('persistent-conversation').hidden = !config.persistentSession;
     element('personal-memory').hidden = !config.persistentSession;

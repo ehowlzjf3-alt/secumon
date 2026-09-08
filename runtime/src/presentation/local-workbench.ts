@@ -28,6 +28,7 @@ import { createMemoryDraft, applyMemoryDraft, resumeMemoryDraft, memoryDraftStat
 import type { AgentTurnProfile } from './agent-turn-profile.js';
 import { WebGeneralRequestSchema, type WebGeneralRequest } from './web-contracts.js';
 import type { WebGoalBasis } from './web-contracts.js';
+import { WebResidentMissionCommandSchema, type WebResidentMissionCommandInput } from './web-contracts.js';
 
 export type LocalWorkbenchProfile = LocalProfile & { general?: AgentTurnProfile };
 export function agentTurnWorkbenchProfile(profile: AgentTurnProfile): LocalWorkbenchProfile {
@@ -56,6 +57,7 @@ export class LocalWorkbench {
   readonly #sessionOptions: { sessionId?: string; newSession?: boolean };
   #session: Promise<SessionRecord | null> | null = null;
   #selectedSession: SessionRecord | null = null;
+  #residentDriver: ReturnType<AgentTurnProfile['createResidentMissions']> | null = null;
   #draining = false;
   constructor(profile: LocalWorkbenchProfile, actor: WorkActor = fixedActor, conversationId = 'web', sessionOptions: { sessionId?: string; newSession?: boolean } = {}) {
     idSchema.parse(conversationId); idSchema.parse(actor.tenantId); idSchema.parse(actor.principalId);
@@ -95,16 +97,52 @@ export class LocalWorkbench {
     if (this.#profile.general) return { profile: this.#profile.general.provider === 'registered' ? 'local-registered' : 'local-synthetic', generalRequests: true, conversationId: this.#conversationId,
       persistentSession: { agentId: this.#profile.general.agentId, ...(this.#selectedSession ? { sessionId: this.#selectedSession.scope.sessionId } : {}) },
       memoryDrafts: Boolean(this.#profile.memoryDrafts), personalMemoryBackend: this.#profile.general.personalMemoryBackend,
+      residentMissions: Boolean(this.#profile.general.missions),
       scenarios: [], modes: ['auto', 'fast', 'deep'], allowDiagnostics: true,
       model: this.#profile.general.provider === 'registered' ? 'registered-agent-turn' : 'synthetic-agent-turn', modelInfo: this.#profile.general.modelInfo,
       compactProvider: this.#profile.compactProvider, deliveryMeaning: 'local-channel-storage', pageSize: 20 };
     return { profile: 'local-synthetic', conversationId: this.#conversationId, ...(this.#profile.agentId ? { persistentSession: {
       agentId: this.#profile.agentId, ...(this.#selectedSession ? { sessionId: this.#selectedSession.scope.sessionId } : {}) } } : {}),
-      memoryDrafts: Boolean(this.#profile.memoryDrafts), ...(this.#profile.personalMemoryBackend ? { personalMemoryBackend: this.#profile.personalMemoryBackend } : {}), scenarios: [
+      memoryDrafts: Boolean(this.#profile.memoryDrafts), residentMissions: false, ...(this.#profile.personalMemoryBackend ? { personalMemoryBackend: this.#profile.personalMemoryBackend } : {}), scenarios: [
       { id: 'documents-simple', title: '문서 근거 확인', description: '합성 문서에서 현행 보존기간을 확인합니다.' },
       { id: 'observations-simple', title: '관측 범위 확인', description: '합성 관측의 수집 완료 여부를 확인합니다.' },
       { id: 'documents-question', title: '질문에 답한 뒤 문서 확인', description: '답변 저장으로 문서 선택을 확인한 뒤 명시 실행하는 합성 예제입니다.' },
     ], modes: ['auto', 'fast', 'deep'], allowDiagnostics: true, model: 'disabled', compactProvider: this.#profile.compactProvider, deliveryMeaning: 'local-channel-storage', pageSize: 20 };
+  }
+  /** Controller work uses its own peer session; the host verifies the selected user's session and exact binding separately. */
+  private assertResidentScreen(state: WorkState) {
+    const policy: Policy = structuredClone(state.policy);
+    if (policy.tenantId !== this.#actor.tenantId || policy.principalId !== this.#actor.principalId) throw new Error('work_view_denied');
+    policy.allowedLabels = policy.allowedLabels.filter(label => this.#actor.allowedLabels === undefined || this.#actor.allowedLabels.includes(label));
+    policy.allowedDestinations = policy.allowedDestinations.filter(destination => this.#actor.allowedDestinations === undefined || this.#actor.allowedDestinations.includes(destination));
+    if (!allowsDisclosure(policy, 'local', 'screen', disclosureLabels(state))) throw new Error('work_view_denied');
+  }
+  private async resident(workId: string) {
+    scopeOf(workId, idSchema);
+    const profile = this.#profile.general;
+    if (!profile?.missions) throw new Error('agent_mission_registration_required');
+    const session = await this.session(); if (!session) throw new Error('session_unavailable');
+    this.assertResidentScreen(await this.#profile.runtime.state(workId));
+    this.#residentDriver ??= profile.createResidentMissions({ binding: {
+      tenantId: this.#actor.tenantId, principalId: this.#actor.principalId, channel: 'web', conversationId: this.#conversationId,
+      destination: 'local', recipientId: this.#actor.principalId,
+    }, policy: profile.policy, limits: profile.limits });
+    return { driver: this.#residentDriver, sessionId: session.scope.sessionId };
+  }
+  residentStatus(workId: string) { return this.track(async () => {
+    const { driver, sessionId } = await this.resident(workId);
+    const status = await driver.status(workId, sessionId);
+    this.assertResidentScreen(await this.#profile.runtime.state(workId));
+    return status;
+  }); }
+  residentCommand(workId: string, value: WebResidentMissionCommandInput) {
+    const input = WebResidentMissionCommandSchema.parse(value);
+    return this.track(async () => {
+      const { driver, sessionId } = await this.resident(workId);
+      const result = await driver.control(workId, input, sessionId);
+      this.assertResidentScreen(await this.#profile.runtime.state(workId));
+      return result;
+    });
   }
   async compactStatus(workId: string) {
     scopeOf(workId, idSchema); await this.session(); this.assertState(await this.#profile.runtime.state(workId));
@@ -414,6 +452,7 @@ export class LocalWorkbench {
     this.#draining = true;
     this.#listCursors.clear();
     while (this.#pending.size) await Promise.allSettled([...this.#pending]);
+    await this.#residentDriver?.close();
     await Promise.all(this.#profile.runtime.pendingExecutions().map(attemptId => this.#profile.runtime.settlePending(attemptId)));
     await this.#profile.compactPlanning?.settlePending();
   }

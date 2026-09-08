@@ -6,6 +6,7 @@ import type { SessionSummaryRef } from '../domain/session-compact.js';
 import type { AgentTurnModelInfo } from './host-models.js';
 import { SessionInputBasisSchema } from '../application/session-base-contracts.js';
 import type { SessionInputBasis } from '../domain/session.js';
+import { ResidentControlCommandSchema, type ResidentMissions, type ResidentControlCommand } from '../application/resident-missions.js';
 
 const id = z.string().min(1).max(256);
 const revision = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
@@ -17,6 +18,10 @@ export const WebAcceptSchema = z.strictObject({ requestId: id, scenarioId: z.enu
   title: z.string().trim().min(1).max(160).optional(), rawText: rawText.optional() });
 export const WebGeneralRequestSchema = z.strictObject({ requestId: id, mode, rawText });
 export type WebGeneralRequest = z.infer<typeof WebGeneralRequestSchema>;
+export const WebResidentMissionCommandSchema = ResidentControlCommandSchema;
+export type WebResidentMissionCommandInput = ResidentControlCommand;
+export type WebResidentMissionStatus = Awaited<ReturnType<ResidentMissions['status']>>;
+export type WebResidentMissionCommandResult = Awaited<ReturnType<ResidentMissions['control']>>;
 export const WebInputSchema = z.strictObject({ requestId: id, expectedGoalRevision: revision, rawText });
 export const WebCompactSchema = z.strictObject({ requestId: id, expectedGoalRevision: revision });
 export type WebCompactInput = z.infer<typeof WebCompactSchema>;
@@ -57,6 +62,7 @@ export interface WorkbenchConfig {
   conversationId: string;
   persistentSession?: { agentId: string; sessionId?: string };
   memoryDrafts?: boolean;
+  residentMissions?: boolean;
   personalMemoryBackend?: 'sqlite' | 'documents' | 'postgres';
   compactProvider?: 'synthetic' | 'registered' | null;
   modelInfo?: AgentTurnModelInfo;

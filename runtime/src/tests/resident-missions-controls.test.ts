@@ -78,8 +78,10 @@ test('resident controls: pause persists pending events across reopen, resume use
   const resumedController = await record(f.current(), registered.workId);
   assert.deepEqual(await f.driver().resume(registered.workId), active); await retained(f.current(), resumedController, true);
   for (let cycle = 0; cycle < 2; cycle++) {
+    const beforeCycle = await f.driver().status(registered.workId);
     assert.equal((await f.driver().pause(registered.workId)).status, 'paused');
-    assert.deepEqual(await f.driver().resume(registered.workId), active);
+    const afterCycle = await f.driver().resume(registered.workId);
+    assert.deepEqual(afterCycle, { ...active, controlRevision: beforeCycle.controlRevision + 2, stateRevision: beforeCycle.stateRevision + 2 });
     assert.ok((await f.current().runtime.state(registered.workId)).revision > resumedController.state.revision);
   }
   assert.deepEqual(f.observed.inputs, inputs); assert.deepEqual(f.observed.polls, polls);

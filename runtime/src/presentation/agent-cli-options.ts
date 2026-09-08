@@ -22,6 +22,14 @@ export function agentTurnCliOptions(cwd: string) {
   } satisfies ParseArgsOptionsConfig;
 }
 
+export function agentMissionCliOptions(cwd: string) {
+  return {
+    directory: { type: 'string', default: cwd }, provider: { type: 'string' }, work: { type: 'string' }, session: { type: 'string' },
+    conversation: { type: 'string', default: 'terminal' }, 'command-id': { type: 'string' }, 'control-revision': { type: 'string' },
+    json: { type: 'boolean', default: false }, help: { type: 'boolean', short: 'h' },
+  } satisfies ParseArgsOptionsConfig;
+}
+
 export function localCliOptions() {
   return {
     'data-dir': { type: 'string' }, directory: { type: 'string' }, 'state-backend': { type: 'string' }, conversation: { type: 'string', default: 'terminal' }, json: { type: 'boolean', default: false },
@@ -58,6 +66,12 @@ export function agentCliRoute(args: string[], cwd: string): AgentCliRoute {
   try {
     // Match runAgentCli's first-token dispatch before parsing each route's options.
     if (args[0] === 'lifecycle' || args[0] === 'dispatch') return { kind: 'bootstrap' };
+    if (args[0] === 'mission') {
+      const { values, positionals } = parseArgs({ args: args.slice(1), allowPositionals: true, strict: true, options: agentMissionCliOptions(cwd) });
+      if (values.help || (positionals[0] ?? 'help') === 'help') return { kind: 'help' };
+      if (positionals.length !== 1 || !['status', 'pause', 'resume', 'stop'].includes(positionals[0]!)) return { kind: 'invalid' };
+      return { kind: 'agent', directory: values.directory };
+    }
     if (args[0] === 'chat') {
       const { values, positionals } = parseArgs({ args: args.slice(1), allowPositionals: true, strict: true, options: agentTurnCliOptions(cwd) });
       if (values.help || (positionals[0] ?? 'help') === 'help') return { kind: 'help' };
@@ -124,7 +138,7 @@ export function parseAgentSetupCommand(args: string[], cwd: string) {
 /** Only commands which open a general agent can prepare its first installation. */
 export function agentPreparationDirectory(args: string[], cwd: string): string | null {
   const route = agentCliRoute(args, cwd); if (route.kind !== 'agent') return null;
-  if (args[0] === 'memory-migrate') return null;
+  if (args[0] === 'memory-migrate' || args[0] === 'mission') return null;
   if (args[0] === 'chat' || args[0] === 'work') return route.directory;
   const parsed = parseAgentSetupCommand(args, cwd);
   return parsed.kind === 'setup' && ['open', 'init'].includes(parsed.command) ? parsed.values.directory : null;

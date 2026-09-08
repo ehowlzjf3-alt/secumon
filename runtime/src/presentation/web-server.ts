@@ -9,11 +9,11 @@ import { WebAcceptSchema, WebAttachSchema, WebCommandSchema, WebInputSchema, Web
 import { runtimeRoot } from './local-profile.js';
 import { PersonalRememberSchema, PersonalReviseSchema, PersonalForgetSchema, PersonalRecallSchema } from './local-personal-memory.js';
 import { MemoryDraftCreateSchema, MemoryDraftApplySchema, MemoryDraftResumeSchema } from '../application/personal-memory-draft-contracts.js';
-import { WebGeneralRequestSchema } from './web-contracts.js';
+import { WebGeneralRequestSchema, WebResidentMissionCommandSchema } from './web-contracts.js';
 
 export type WebWorkbench = Pick<LocalWorkbench, 'config' | 'list' | 'view' | 'accept' | 'attach' | 'command' | 'drain'> & Partial<Pick<LocalWorkbench, 'history' | 'input' | 'compactStatus' | 'compact' |
   'memorySearch' | 'memoryGet' | 'memoryRemember' | 'memoryRevise' | 'memoryForget' | 'memorySelected' | 'memoryRecall' |
-  'memoryDraftCreate' | 'memoryDraftApply' | 'memoryDraftResume' | 'memoryDraftStatus' | 'generalAccept' | 'goalBasis'>>;
+  'memoryDraftCreate' | 'memoryDraftApply' | 'memoryDraftResume' | 'memoryDraftStatus' | 'generalAccept' | 'goalBasis' | 'residentStatus' | 'residentCommand'>>;
 interface WebOptions {
   port?: number;
   /** Shorter limits are only for deterministic local transport tests. */
@@ -72,6 +72,10 @@ const safeCodes: Record<string, number> = {
   personal_memory_draft_invalid: 400, personal_memory_draft_conflict: 409,
   personal_memory_draft_source_conflict: 409, personal_memory_draft_outcome_unknown: 409,
   personal_memory_draft_contention: 409, personal_memory_draft_limit_exceeded: 413,
+  agent_mission_registration_required: 409, resident_control_invalid: 400, resident_control_stale: 409, resident_control_conflict: 409,
+  resident_selection_mismatch: 403, resident_access_denied: 403, resident_mission_closed: 409, mission_source_unavailable: 403,
+  resident_controller_not_idle: 409, resident_not_registered: 404, resident_checkpoint_unavailable: 409, resident_mission_changed: 409,
+  resident_control_recovery_failed: 409, journal_commit_unknown: 409,
 };
 function publicFailure(error: unknown): HttpFailure {
   if (error instanceof HttpFailure) return error;
@@ -136,6 +140,7 @@ export async function startWebServer(workbench: WebWorkbench, options: WebOption
     ['/assets/client.js', { path: join(runtimeRoot, 'dist/presentation/web/client.js'), type: 'text/javascript; charset=utf-8' }],
     ['/assets/view-state.js', { path: join(runtimeRoot, 'dist/presentation/web/view-state.js'), type: 'text/javascript; charset=utf-8' }],
     ['/assets/personal-memory.js', { path: join(runtimeRoot, 'dist/presentation/web/personal-memory.js'), type: 'text/javascript; charset=utf-8' }],
+    ['/assets/resident-missions.js', { path: join(runtimeRoot, 'dist/presentation/web/resident-missions.js'), type: 'text/javascript; charset=utf-8' }],
   ]);
   function authenticated(req: IncomingMessage): { id: string; session: Session } {
     const cookies = (singleton(req, 'cookie') ?? '').split(';').map(v => v.trim()).filter(v => v.startsWith(`${cookieName}=`));
@@ -299,6 +304,23 @@ export async function startWebServer(workbench: WebWorkbench, options: WebOption
         reply(await readBounded(() => workbench.memoryGet!(id))); return;
       }
       if (url.pathname === '/api/attach' && method === 'POST') { query(url, []); const input = WebAttachSchema.parse(await body(req)); currentSession(); reply(await workbench.attach(input)); return; }
+      const resident = /^\/api\/resident-missions\/([^/]+)\/(status|commands)$/.exec(url.pathname);
+      if (resident) {
+        let workId: string;
+        try { workId = decodeURIComponent(resident[1]!); } catch { throw new HttpFailure(400, 'invalid_work_id'); }
+        if (!workId || workId.length > 256 || /[\x00-\x1f\x7f/]/.test(workId)) throw new HttpFailure(400, 'invalid_work_id');
+        query(url, []);
+        if (resident[2] === 'status' && method === 'GET') {
+          if (!workbench.residentStatus) throw new HttpFailure(404, 'route_not_found');
+          reply(await readBounded(() => workbench.residentStatus!(workId))); return;
+        }
+        if (resident[2] === 'commands' && method === 'POST') {
+          if (!workbench.residentCommand) throw new HttpFailure(404, 'route_not_found');
+          const input = WebResidentMissionCommandSchema.parse(await body(req)); currentSession();
+          reply(await workbench.residentCommand(workId, input)); return;
+        }
+        throw new HttpFailure(405, 'method_not_allowed');
+      }
       const match = /^\/api\/works\/([^/]+)\/(view|events|commands|inputs|compact|context-status|memories|goal-basis)$/.exec(url.pathname);
       if (!match) throw new HttpFailure(404, 'route_not_found');
       let workId: string;

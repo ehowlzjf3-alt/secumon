@@ -1,4 +1,4 @@
-import { ResidentMissions, type ResidentMission, type ResidentMissionDependencies, type ResidentDriveOptions } from '../application/resident-missions.js';
+import { ResidentMissions, type ResidentMission, type ResidentMissionDependencies, type ResidentDriveOptions, type ResidentControlCommand } from '../application/resident-missions.js';
 import type { MissionRule } from '../application/mission-contracts.js';
 import type { Policy, Limits } from '../domain/model.js';
 import type { AgentTurnRequest } from '../application/agent-turn-service.js';
@@ -26,7 +26,12 @@ export function createHostResidentMissions(dependencies: ResidentMissionDependen
       return driver.register({ rule: input.rule, instruction: input.instruction, sessionId: session.scope.sessionId, binding: selected.binding,
         policy: selected.policy, limits: selected.limits, mode: selected.mode ?? 'auto' });
     }); },
-    status(workId: string) { return track(() => driver.status(workId)); },
+    status(workId: string, sessionId?: string) { return track(() => driver.status(workId,
+      sessionId === undefined ? undefined : { sessionId, binding: selected.binding })); },
+    control(workId: string, command: ResidentControlCommand, sessionId?: string) {
+      const input = structuredClone(command);
+      return track(() => driver.control(workId, input, sessionId === undefined ? undefined : { sessionId, binding: selected.binding }));
+    },
     pause(workId: string) { return track(() => driver.pause(workId)); },
     resume(workId: string) { return track(() => driver.resume(workId)); },
     tick(workId: string, options?: Parameters<ResidentMissions['tick']>[1]) { return track(() => driver.tick(workId, options)); },

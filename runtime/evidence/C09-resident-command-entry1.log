@@ -1,0 +1,93 @@
+TAP version 13
+# Subtest: sqlite: native mission CLI controls only the resident and replays an old pause without changing a newer resume
+ok 1 - sqlite: native mission CLI controls only the resident and replays an old pause without changing a newer resume
+  ---
+  duration_ms: 6988.798417
+  type: 'test'
+  ...
+# Subtest: file-journal: native mission CLI controls only the resident and replays an old pause without changing a newer resume
+ok 2 - file-journal: native mission CLI controls only the resident and replays an old pause without changing a newer resume
+  ---
+  duration_ms: 8455.998083
+  type: 'test'
+  ...
+# Subtest: native mission CLI reports stale commands, payload conflicts, foreign selection and disabled registration without changing the controller
+ok 3 - native mission CLI reports stale commands, payload conflicts, foreign selection and disabled registration without changing the controller
+  ---
+  duration_ms: 6100.8325
+  type: 'test'
+  ...
+# Subtest: mission CLI validates options before profile access and launches an existing selected engine without preparing a new agent
+not ok 4 - mission CLI validates options before profile access and launches an existing selected engine without preparing a new agent
+  ---
+  duration_ms: 4.412666
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-mission-cli.test.js:135:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    TypeError [ERR_PARSE_ARGS_INVALID_OPTION_VALUE]: Option '--control-revision' argument is ambiguous.
+    Did you forget to specify the option argument for '--control-revision'?
+    To specify an option argument starting with a dash use '--control-revision=-XYZ'.
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-mission-cli.test.js:148:9)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: resident web controls keep a lost-response command through fresh status reads and controller switches
+ok 5 - resident web controls keep a lost-response command through fresh status reads and controller switches
+  ---
+  duration_ms: 0.843333
+  type: 'test'
+  ...
+# Subtest: resident web controls distinguish an unresolved response from a confirmed rejection before a new command
+ok 6 - resident web controls distinguish an unresolved response from a confirmed rejection before a new command
+  ---
+  duration_ms: 0.198667
+  type: 'test'
+  ...
+# Subtest: resident web controls retain only display summaries and discard protected state when the connection expires
+ok 7 - resident web controls retain only display summaries and discard protected state when the connection expires
+  ---
+  duration_ms: 0.459125
+  type: 'test'
+  ...
+# Subtest: resident mission Web: stable commands replay across resume and reopen without cancelling a newer poll
+ok 8 - resident mission Web: stable commands replay across resume and reopen without cancelling a newer poll
+  ---
+  duration_ms: 2211.832041
+  type: 'test'
+  ...
+# Subtest: resident mission Web: authentication, CSRF and exact user selection reject commands without changing the controller
+ok 9 - resident mission Web: authentication, CSRF and exact user selection reject commands without changing the controller
+  ---
+  duration_ms: 968.76175
+  type: 'test'
+  ...
+# Subtest: resident mission Web: disabled mission registration is advertised and cannot create a controller
+ok 10 - resident mission Web: disabled mission registration is advertised and cannot create a controller
+  ---
+  duration_ms: 1741.398334
+  type: 'test'
+  ...
+# Subtest: resident mission Web: matching user selection does not bypass screen disclosure
+ok 11 - resident mission Web: matching user selection does not bypass screen disclosure
+  ---
+  duration_ms: 991.151083
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 10
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27807.15125
