@@ -117,24 +117,32 @@ export function createRuntimePeerAgent(options: RuntimePeerOptions): PeerAgent {
     responseSchema: z.toJSONSchema(PeerReviewSchema, { target: 'draft-7' }),
   });
   const routing = (request: PeerRequest) => {
-    const key = [identity.agentId, request.from.agentId, request.kind,
+    const key = [identity.agentId, request.from.tenantId, request.from.principalId, request.from.agentId, request.kind,
       request.kind === 'review' || identity.role === 'temporary' ? request.id : 'resident'];
-    return { sessionId: `peer-session-${digest(key)}`, conversationId: `peer-${digest(key)}` };
+    return { conversationId: `peer-${digest(key)}` };
   };
   const read = async (request: PeerRequest, ticket: PeerTicket): Promise<WorkState> => {
-    if (ticket.requestId !== request.id || ticket.requestDigest !== digest(request) || ticket.sessionId !== routing(request).sessionId) throw unavailable();
+    if (ticket.requestId !== request.id || ticket.requestDigest !== digest(request)) throw unavailable();
     const state = await services.state.get(ticket.workId);
-    if (!state || state.policy.tenantId !== actor.tenantId || state.policy.principalId !== actor.principalId || state.goal.scope !== scope ||
+    const binding = state?.conversation?.bindings.find(value => value.id === state.conversation!.primaryBindingId);
+    const session = state?.conversation?.session?.scope;
+    if (!state || state.id !== ticket.workId || state.policy.tenantId !== actor.tenantId || state.policy.principalId !== actor.principalId || state.goal.scope !== scope ||
       state.goal.revision !== ticket.goalRevision || state.goal.description !== body(request) || state.policy.allowWrites ||
       state.goal.responseRequirement?.requestMessageId !== request.id || state.goal.responseRequirement.requestTextDigest !== services.digester.digest(body(request)) ||
-      state.conversation?.session?.scope.sessionId !== ticket.sessionId || state.conversation.session.scope.agentId !== identity.agentId) throw unavailable();
+      !session || session.sessionId !== ticket.sessionId || session.agentId !== identity.agentId ||
+      session.tenantId !== actor.tenantId || session.principalId !== actor.principalId ||
+      !binding || binding.channel !== 'peer' || binding.conversationId !== routing(request).conversationId || binding.destination !== 'local' ||
+      binding.tenantId !== actor.tenantId || binding.principalId !== actor.principalId || binding.recipientId !== actor.principalId ||
+      digest(binding.session) !== digest(session)) throw unavailable();
     return state;
   };
   return Object.freeze({ identity, destination: 'local', allowedLabels: Object.freeze([...policy.allowedLabels]),
     async request(value: PeerRequest, signal: AbortSignal): Promise<PeerTicket> {
       const request = checked(value, signal); if (services.clock.now() >= request.deadlineAt) throw unavailable();
       const route = routing(request), text = body(request);
-      await sessions.open(actor, { channel: 'peer', ...route }); if (signal.aborted) throw unavailable();
+      // Let the session repository create or resume its owner/route alias; an explicit ID only resumes.
+      const session = await sessions.open(actor, { channel: 'peer', ...route }); if (signal.aborted) throw unavailable();
+      const sessionId = session.scope.sessionId;
       const selectedPolicy = { ...structuredClone(policy), allowedLabels: [...request.labels] };
       const selectedLimits = { ...limits, wallTimeMs: Math.min(limits.wallTimeMs, request.deadlineAt - services.clock.now()) };
       if (selectedLimits.wallTimeMs < 1) throw unavailable();
@@ -145,15 +153,15 @@ export function createRuntimePeerAgent(options: RuntimePeerOptions): PeerAgent {
           version: 1, requestMessageId: request.id, requestTextDigest: services.digester.digest(text), format: 'text' } },
       };
       let payload = AcceptRequestSchema.parse(requested);
-      const original = await sessions.repository.input({ ...actor, agentId: identity.agentId, sessionId: route.sessionId }, request.id);
+      const original = await sessions.repository.input(session.scope, request.id);
       if (original) {
         const saved = AcceptRequestSchema.parse(original.payload);
         if (original.kind !== 'work' || original.text !== text || digest({ ...saved, limits: payload.limits }) !== digest(payload) ||
           saved.limits.wallTimeMs > limits.wallTimeMs || digest({ ...saved.limits, wallTimeMs: limits.wallTimeMs }) !== digest(limits)) throw unavailable();
         payload = saved; // Retry keeps the first received deadline/budget, not a newly computed allocation.
       }
-      const accepted = await sessions.accept(actor, { sessionId: route.sessionId, rawText: text, request: payload });
-      return { requestId: request.id, requestDigest: digest(request), workId: accepted.workId, sessionId: route.sessionId, goalRevision: 1 };
+      const accepted = await sessions.accept(actor, { sessionId, rawText: text, request: payload });
+      return { requestId: request.id, requestDigest: digest(request), workId: accepted.workId, sessionId, goalRevision: 1 };
     },
     async run(value: PeerRequest, valueTicket: PeerTicket, signal: AbortSignal): Promise<PeerReply> {
       const request = checked(value, signal), ticket = PeerTicketSchema.parse(valueTicket);

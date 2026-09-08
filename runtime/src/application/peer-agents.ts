@@ -150,13 +150,14 @@ export class PeerAgents {
         const artifact = await this.store(state, `peer-response:${context.attemptId}`, 'peer_response_observed', response, guard, next => {
           if (reply.status === 'answer' && intent.request.kind === 'review') next.hypothesisAssessment = null;
         });
-        return { resultId: `${context.attemptId}:result`, attemptId: context.attemptId, status: 'success', coverage: 'unknown',
+        // The observed reply is complete; its waiting/answer status and assessment are not goal evidence.
+        return { resultId: `${context.attemptId}:result`, attemptId: context.attemptId, status: 'success', coverage: 'complete',
           effectState: 'none', evidence: [], artifacts: [artifact], cursor: null, error: null, output };
       },
       validateResult: async (state, result) => {
         try {
           if (['error', 'cancelled'].includes(result.status)) return result.artifacts.length === 0 && result.evidence.length === 0 && result.output === null && result.effectState === 'none';
-          if (result.status !== 'success' || result.coverage !== 'unknown' || result.effectState !== 'none' || result.effectReceipt || result.evidence.length ||
+          if (result.status !== 'success' || result.coverage !== 'complete' || result.effectState !== 'none' || result.effectReceipt || result.evidence.length ||
             result.artifacts.length !== 1 || result.cursor !== null || result.error || result.reuse || result.collection) return false;
           const attempt = state.attempts.find(value => value.id === result.attemptId);
           const dispatch = await this.services.state.receipt(state.id, `dispatch:${result.attemptId}`);

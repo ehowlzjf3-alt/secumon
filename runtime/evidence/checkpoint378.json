@@ -1,0 +1,205 @@
+{
+  "checkpoint": 378,
+  "date": "2026-09-08",
+  "baselineCommit": "c6a52258f8b8be4e24243c8c2dc98b5b45a477bf",
+  "previousGoalTurn": "progress: C07 scoped-source/progress/command-revision corrections, local350 selected records, documents and verified origin/main push",
+  "status": "C08_first_local_acceptance_unit_verified_ready_to_publish",
+  "goalComplete": false,
+  "plan": "design/chapters/C08-ordered-verification-plan.md",
+  "actualModelApi": "stopped_by_user",
+  "externalServiceConnectionsRun": false,
+  "baselineBuild": {
+    "manifest": "runtime/evidence/C07-ordered-build7-manifest.json",
+    "sourceDigest": "5a935be65c4bfc584c08a28d11f00721e4852889cbc00605c912b2f630eb92da"
+  },
+  "activeBuild": null,
+  "activeTests": [],
+  "builds": [
+    {
+      "id": "C08-ordered-build1",
+      "sessionId": 19734,
+      "exitCode": 2,
+      "status": "test_source_type_errors",
+      "log": "runtime/evidence/C08-ordered-build1.log",
+      "errors": 4
+    },
+    {
+      "id": "C08-ordered-build2",
+      "sessionId": 96610,
+      "exitCode": 0,
+      "status": "passed",
+      "log": "runtime/evidence/C08-ordered-build2.log",
+      "manifest": "runtime/evidence/C08-ordered-build2-manifest.json",
+      "sourceDigest": "1b00d30e1a9919446b748610254d4a6928078c8f80f52121dc278503fe82ee5a"
+    },
+    {
+      "id": "C08-ordered-build3",
+      "sessionId": 96965,
+      "exitCode": 0,
+      "status": "passed",
+      "log": "runtime/evidence/C08-ordered-build3.log",
+      "manifest": "runtime/evidence/C08-ordered-build3-manifest.json",
+      "sourceDigest": "fef366c96dbc54ba252fcaf8da5f1c6e05d4061c01dd345ce84b34c58e9e4337"
+    },
+    {
+      "id": "C08-ordered-build4",
+      "sessionId": 24958,
+      "exitCode": 0,
+      "status": "passed",
+      "log": "runtime/evidence/C08-ordered-build4.log",
+      "manifest": "runtime/evidence/C08-ordered-build4-manifest.json",
+      "sourceDigest": "708038da78bc2d554a6a6083f972ed93573b5cde464ba55d9ba0588a3d5cbc95"
+    },
+    {
+      "id": "C08-ordered-build5",
+      "sessionId": 39005,
+      "exitCode": 0,
+      "status": "passed",
+      "log": "runtime/evidence/C08-ordered-build5.log",
+      "manifest": "runtime/evidence/C08-ordered-build5-manifest.json",
+      "sourceDigest": "71297c2791e56723c18dcee539e79d9ccfa239df8d7db0bf9bda75f26a176feb"
+    }
+  ],
+  "tests": [
+    {
+      "id": "C08-ordered-target1",
+      "sessionId": 36910,
+      "status": "passed",
+      "exitCode": 0,
+      "build": "C07-ordered-build7",
+      "log": "runtime/evidence/C08-ordered-target1.log",
+      "files": [
+        "budget-delegation.test",
+        "budget-delegation-runtime.test",
+        "budget-delegation-crash.test"
+      ],
+      "tests": 152,
+      "pass": 152,
+      "fail": 0,
+      "durationMs": 22777.740084
+    },
+    {
+      "id": "C08-ordered-target2",
+      "sessionId": 97188,
+      "status": "failed",
+      "exitCode": 1,
+      "build": "C08-ordered-build2",
+      "log": "runtime/evidence/C08-ordered-target2.log",
+      "tests": 39,
+      "pass": 22,
+      "fail": 17,
+      "durationMs": 5744.3795
+    },
+    {
+      "id": "C08-ordered-target3",
+      "sessionId": 20266,
+      "status": "failed",
+      "exitCode": 1,
+      "build": "C08-ordered-build3",
+      "log": "runtime/evidence/C08-ordered-target3.log",
+      "tests": 26,
+      "pass": 21,
+      "fail": 5,
+      "durationMs": 21613.42725
+    },
+    {
+      "id": "C08-ordered-target4",
+      "sessionId": 48199,
+      "status": "failed",
+      "exitCode": 1,
+      "build": "C08-ordered-build4",
+      "log": "runtime/evidence/C08-ordered-target4.log",
+      "tests": 58,
+      "pass": 56,
+      "fail": 2,
+      "failures": [
+        "budget run permission reallow invokes an unnecessary new planner step and reaches no_progress_limit",
+        "hard-limit test expected thrown exception instead of WorkflowRunResult blocked"
+      ]
+    },
+    {
+      "id": "C08-ordered-target5",
+      "sessionId": 5177,
+      "status": "passed",
+      "exitCode": 0,
+      "build": "C08-ordered-build5",
+      "log": "runtime/evidence/C08-ordered-target5.log",
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "durationMs": 11465.591042
+    }
+  ],
+  "next": "C08 remaining split-ledger return/reallocation, active-grant compact/reopen, and accepted-recipient/before-caller-ticket crash recovery; then C09/C10 and existing C05/C06/platform/integration followups. Preserve actual model/API stop.",
+  "reproductions": [
+    {
+      "log": "runtime/evidence/C08-ledger-address-reproduction.log",
+      "exitCode": 1,
+      "result": "fixture_error: register strict owner rejects excess workId; corrected in reproduction2"
+    },
+    {
+      "log": "runtime/evidence/C08-ledger-address-reproduction2.log",
+      "exitCode": 1,
+      "result": "confirmed: requested-work get returned different-work within same owner, expected rejection absent",
+      "build": "C07-ordered-build7"
+    }
+  ],
+  "changes": [
+    "Budget ledger get, receipt and commit result check the exact requested work ID as well as tenant/principal/scope.",
+    "Native peer creation uses the owner/route session alias, saves actual sessionId and binds ticket reads to the exact local peer route and receiver session. Route includes sender tenant/principal/agent.",
+    "Budget schemas use input defaults and equivalent anyOf scalar unions under existing strict Ajv.",
+    "Complete peer exchange uses complete tool envelope coverage; peer claims remain assessments and evidence stays empty.",
+    "Native budget preparation identities credit actual registered targets, current allocations, requests and settlement changes; repeated IDs/revisions and sponsor polling costs do not reset no-progress3.",
+    "Only budget.run host authority denial is retryable within the original declared task maxAttempts and default backoff; each attempt checks current execution authority. No progress reset or extra planner call after approval."
+  ],
+  "remainingLocal": [
+    "Split-ledger explicit return and reallocation",
+    "Compact and reopen with an active split-ledger grant",
+    "Recipient accepted but caller ticket not committed recovery",
+    "C09/C10 ordered acceptance and existing C05/C06 followups"
+  ],
+  "diagnostics": [
+    "runtime/evidence/C08-budget-schema-diagnostic.log",
+    "runtime/evidence/C08-peer-result-diagnostic.log"
+  ],
+  "checks": [
+    {
+      "command": "npm run typecheck:core",
+      "sessionId": 33228,
+      "exitCode": 0,
+      "log": "runtime/evidence/C08-core-typecheck.log",
+      "build": "C08-ordered-build4"
+    },
+    {
+      "command": "node scripts/check-architecture.mjs",
+      "exitCode": 0,
+      "inspected": 193,
+      "failures": [],
+      "log": "runtime/evidence/C08-architecture.log",
+      "build": "C08-ordered-build4"
+    }
+  ],
+  "finalSource": {
+    "sourceDigest": "71297c2791e56723c18dcee539e79d9ccfa239df8d7db0bf9bda75f26a176feb",
+    "filesDigest": "6cc118352ccc659faa749314483e4ffe1b21f6935524e671d2c6eb0eec7b259d",
+    "fileCount": 2217
+  },
+  "verified": {
+    "existingBudget": 152,
+    "newLedgerBoundary": 14,
+    "newPeerServiceAndRegistration": 16,
+    "newIndependentPeerEntry": 5,
+    "newBudgetPreparation": 6,
+    "newSplitBudgetEntry": 6,
+    "selectedUnique": 199,
+    "relatedUnique": 47,
+    "allUnique": 246,
+    "mixedBuildEvidence": true,
+    "allRerunAtFinalSource": false
+  },
+  "review": {
+    "scope": "budget semantic progress and native adapter dispatch",
+    "kind": "read_only",
+    "findings": []
+  }
+}

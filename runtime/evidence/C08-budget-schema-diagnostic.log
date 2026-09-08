@@ -1,0 +1,553 @@
+{
+  "kind": "bounded_current_dist_schema_diagnostic",
+  "observedAt": "2026-09-08T01:26:37.067Z",
+  "node": "v25.8.0",
+  "distSha256": "72b3e72dcd32591620c0d59ed78090462f8d2b87469c001626d6c759c1232823",
+  "runtimeExecuted": false,
+  "results": [
+    {
+      "id": "core.budget.status",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.status",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.allocate",
+      "field": "inputSchema",
+      "compiled": false,
+      "error": "strict mode: use allowUnionTypes to allow union type keyword at \"#/properties/goal/properties/criteria/items/properties/equals\" (strictTypes)",
+      "schema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "goal": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100000
+              },
+              "scope": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "fast",
+                  "deep"
+                ]
+              },
+              "criteria": {
+                "maxItems": 100,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "description": {
+                      "type": "string",
+                      "maxLength": 100000
+                    },
+                    "key": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "operator": {
+                      "type": "string",
+                      "enum": [
+                        "equals",
+                        "present"
+                      ]
+                    },
+                    "equals": {
+                      "type": [
+                        "string",
+                        "number",
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "minIndependentSources": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    },
+                    "requireCompleteCoverage": {
+                      "type": "boolean"
+                    },
+                    "requireCollection": {
+                      "type": "object",
+                      "properties": {
+                        "queryDigest": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "snapshot": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 256
+                        }
+                      },
+                      "required": [
+                        "queryDigest"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "description",
+                    "key",
+                    "operator",
+                    "equals",
+                    "minIndependentSources",
+                    "requireCompleteCoverage"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "responseRequirement": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "number",
+                    "const": 1
+                  },
+                  "requestMessageId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "requestTextDigest": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "format": {
+                    "type": "string",
+                    "const": "text"
+                  }
+                },
+                "required": [
+                  "version",
+                  "requestMessageId",
+                  "requestTextDigest",
+                  "format"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "revision",
+              "description",
+              "scope",
+              "mode",
+              "criteria"
+            ],
+            "additionalProperties": false
+          },
+          "limits": {
+            "type": "object",
+            "properties": {
+              "toolCalls": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "modelCalls": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "tokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "replans": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "wallTimeMs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "toolCalls",
+              "modelCalls",
+              "tokens",
+              "replans",
+              "wallTimeMs"
+            ],
+            "additionalProperties": false
+          },
+          "recipientId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "required": [
+          "goal",
+          "limits"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "core.budget.allocate",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.run",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.run",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.increase",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.increase",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.request",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.request",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.return",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.return",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.revoke",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.revoke",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.reconcile",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "id": "core.budget.reconcile",
+      "field": "outputSchema",
+      "compiled": true
+    }
+  ]
+}
+{"kind":"diagnostic_harness_error","node":"v24.20.0","exitCode":1,"error":"SyntaxError: Unexpected end of input","cause":"First Node24 inline diagnostic omitted the outer loop closing brace; no source or dist was evaluated and no output was written."}
+{
+  "kind": "node24_before_after_schema_diagnostic",
+  "observedAt": "2026-09-08T01:28:21.732Z",
+  "node": "v24.20.0",
+  "configuration": {
+    "strict": true,
+    "allErrors": false,
+    "coerceTypes": false,
+    "useDefaults": false,
+    "removeAdditional": false,
+    "logger": false,
+    "addUsedSchema": false
+  },
+  "sourceSha256": "b7b016eeae6777e8acf52812a16c2eea09a8f38b6d1dac4e9a7332e27eb4b9fd",
+  "distSha256": "72b3e72dcd32591620c0d59ed78090462f8d2b87469c001626d6c759c1232823",
+  "evaluation": "new source type stripping in memory; dependency imports reference unchanged existing dist; no files built and no Tool.execute/profile/model invoked",
+  "results": [
+    {
+      "stage": "before_dist",
+      "id": "core.budget.status",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.status",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.allocate",
+      "field": "inputSchema",
+      "compiled": false,
+      "error": "strict mode: use allowUnionTypes to allow union type keyword at \"#/properties/goal/properties/criteria/items/properties/equals\" (strictTypes)"
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.allocate",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.run",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.run",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.increase",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.increase",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.request",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.request",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.return",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.return",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.revoke",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.revoke",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.reconcile",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "before_dist",
+      "id": "core.budget.reconcile",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.status",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.status",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.allocate",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.allocate",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.run",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.run",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.increase",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.increase",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.request",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.request",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.return",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.return",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.revoke",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.revoke",
+      "field": "outputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.reconcile",
+      "field": "inputSchema",
+      "compiled": true
+    },
+    {
+      "stage": "after_source_with_existing_dist_dependencies",
+      "id": "core.budget.reconcile",
+      "field": "outputSchema",
+      "compiled": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "allocate_equals_string",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "allocate_equals_number",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "allocate_equals_boolean",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "allocate_equals_null",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "allocate_equals_array",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "allocate_equals_object",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "status_defaults",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "status_explicit",
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "status_negative_offset",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "status_limit_overflow",
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "status_unknown_property",
+      "actual": false,
+      "expected": false
+    }
+  ]
+}

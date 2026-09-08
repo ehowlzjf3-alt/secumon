@@ -5,6 +5,7 @@ import { ArchiveDocumentSchema } from './archive-contracts.js';
 import { BoardReadPageSchema, BoardRequestPageSchema } from './board-contracts.js';
 import { collaborationToolKind } from './collaboration-tool-identity.js';
 import { toolAllowed } from './tool-contracts.js';
+import { budgetProgressKeys } from './budget-progress.js';
 
 const archiveCard = ArchiveDocumentSchema.omit({ body: true });
 const search = z.strictObject({ kind: z.literal('archive_reference'), provider: z.string(), documents: z.array(archiveCard).max(50), truncated: z.boolean() });
@@ -27,6 +28,7 @@ export function collaborationProgressKeys(state: WorkState, task: TaskSpec, resu
     return [key('board-command', { toolId: task.toolId, content: stable })];
   }
   if (task.effect !== 'read' || result.effectState !== 'none') return [];
+  if (kind === 'budget') return budgetProgressKeys(state, task, result, key);
   if (kind === 'archive-search' || kind === 'archive-get') {
     if (result.artifacts.length) return [];
     const cardKey = (document: z.infer<typeof archiveCard>) => {

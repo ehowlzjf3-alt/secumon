@@ -1,0 +1,223 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { BUDGET_DIMENSIONS, totalExposure } from '../domain/budget-delegation.js';
+import type { BudgetGrant } from '../domain/budget-delegation.js';
+import type { WorkState } from '../domain/model.js';
+import { BUDGET_ENTRY_CHILD_LIMITS, BUDGET_ENTRY_EXTRA, BUDGET_ENTRY_REQUEST, BUDGET_ENTRY_REQUEST_REASON, BUDGET_ENTRY_SECRET,
+  BUDGET_ENTRY_SOURCE, budgetAllocate, budgetIncrease, budgetObject, budgetRevoke, budgetRun, budgetStatus,
+  budgetToolsEntryFixture } from './budget-tools-entry-fixture.js';
+
+function settled(grant: BudgetGrant, child: WorkState) {
+  assert.equal(grant.status, 'settled'); assert.equal(grant.unmeasuredModelCalls, 0);
+  for (const dimension of BUDGET_DIMENSIONS) {
+    assert.equal(grant.accounted[dimension], child.budget.used[dimension], dimension);
+    assert.equal(grant.reserved[dimension], 0, dimension);
+  }
+}
+function originalBudget(state: WorkState) { return { goal: structuredClone(state.goal), limits: structuredClone(state.budget.limits), deadlineAt: state.deadlineAt }; }
+
+test('budget tools entry: observed recipient allocation and actual execution settle once across separate SQLite profiles without copying source or memory', { timeout: 180000 }, async t => {
+  const f = await budgetToolsEntryFixture(t);
+  f.controls.steps = [budgetStatus, budgetAllocate(), budgetRun];
+  assert.deepEqual(await f.memory('sponsor'), []); assert.deepEqual(await f.memory('recipient'), []);
+  const accepted = await f.accept(), sponsor = f.current('sponsor');
+  const original = originalBudget(await sponsor.runtime.state(accepted.workId));
+  assert.equal(original.goal.description, BUDGET_ENTRY_REQUEST);
+  const allocated = await f.through(accepted.workId, 2); assert.equal(allocated.result.status, 'success');
+  const first = await f.child(accepted.workId);
+  assert.equal(first.state.budgetParent?.phase, 'active'); assert.equal(first.grant.status, 'active');
+  assert.deepEqual(first.state.budget.limits, BUDGET_ENTRY_CHILD_LIMITS);
+  assert.equal(first.state.modelCalls.length, 0); assert.equal(first.state.attempts.length, 0);
+  const genesis = await f.current('recipient').services.state.receipt(first.state.id, 'budget.child-genesis'); assert.ok(genesis);
+  assert.equal((await f.through(accepted.workId, 3)).result.status, 'success');
+  const run = await sponsor.workflow.run(accepted.workId, sponsor.executionActor, { maxSteps: 12 });
+  assert.equal(run.control.kind, 'complete', JSON.stringify(run));
+  const done = await f.child(accepted.workId);
+  assert.equal(done.state.status, 'completed'); settled(done.grant, done.state);
+  assert.equal(done.state.budget.used.toolCalls, 1); assert.equal(done.state.budget.used.modelCalls, 1);
+  assert.equal(done.state.budget.used.tokens, 160);
+  assert.deepEqual(f.observed.reads.map(value => value.role), ['recipient']); assert.equal(f.observed.recipientInputs.length, 1);
+  assert.ok(done.state.attempts.every(value => value.toolId === BUDGET_ENTRY_SOURCE && value.adopted));
+  assert.equal(done.state.evidence.length, 1); assert.equal(done.state.evidence[0]!.facts['text'], BUDGET_ENTRY_SECRET);
+  assert.deepEqual(done.parent.evidence, []); assert.deepEqual(originalBudget(done.parent), original);
+  for (const dimension of BUDGET_DIMENSIONS)
+    assert.equal(totalExposure(done.parent)[dimension], done.parent.budget.used[dimension] + done.state.budget.used[dimension], dimension);
+  assert.equal(done.parent.obligations.find(value => value.id === done.grant.id)?.status, 'satisfied');
+  assert.ok(f.observed.approvals.some(value => value.purpose === 'allocation'));
+  assert.ok(f.observed.approvals.some(value => value.purpose === 'execution'));
+  assert.equal(JSON.stringify([done.parent, f.observed.sponsorInputs]).includes(BUDGET_ENTRY_SECRET), false);
+  assert.equal(await sponsor.services.artifacts.exists(f.raw('recipient')), false);
+  await assert.rejects(sponsor.services.artifacts.get(f.raw('recipient'), sponsor.policy));
+  assert.equal(await f.current('recipient').services.artifacts.exists(f.raw('sponsor')), false);
+  assert.deepEqual(await f.memory('sponsor'), []); assert.deepEqual(await f.memory('recipient'), []);
+  const receiptBytes = await f.current('recipient').services.artifacts.get(done.state.attempts[0]!.resultArtifact!, done.state.policy);
+  const modelCalls = f.observed.sponsorInputs.length + f.observed.recipientInputs.length;
+  await f.reopen();
+  const repeated = await f.accept(); assert.equal(repeated.workId, accepted.workId); assert.equal(repeated.sessionId, accepted.sessionId);
+  const reopened = f.current('sponsor');
+  const again = await reopened.runtime.budgets.reconcile(accepted.workId, done.grant.id, reopened.executionActor);
+  assert.deepEqual(again, done.grant);
+  assert.deepEqual(await f.current('recipient').services.state.receipt(done.state.id, 'budget.child-genesis'), genesis);
+  assert.deepEqual(await f.current('recipient').services.artifacts.get(done.state.attempts[0]!.resultArtifact!, done.state.policy), receiptBytes);
+  assert.equal(f.observed.sponsorInputs.length + f.observed.recipientInputs.length, modelCalls); assert.equal(f.observed.reads.length, 1);
+  assert.deepEqual(await f.memory('sponsor'), []); assert.deepEqual(await f.memory('recipient'), []);
+  const history = await reopened.sessions.history(reopened.actor, accepted.sessionId, reopened.policy, { limit: 50 });
+  assert.equal(history.entries.filter(value => value.kind === 'result').length, 1);
+});
+
+test('budget tools entry: allocation permission alone executes nothing and the same owner addresses resume the original grant after reopen', { timeout: 180000 }, async t => {
+  const f = await budgetToolsEntryFixture(t); f.controls.execution = false;
+  f.controls.steps = [budgetStatus, budgetAllocate(), { ...budgetRun, maxAttempts: 2 }];
+  const accepted = await f.accept(), original = originalBudget(await f.current('sponsor').runtime.state(accepted.workId));
+  await f.through(accepted.workId, 2);
+  const before = await f.child(accepted.workId), genesis = await f.current('recipient').services.state.receipt(before.state.id, 'budget.child-genesis');
+  assert.ok(genesis); assert.equal(before.grant.status, 'active');
+  const denied = await f.through(accepted.workId, 3);
+  assert.equal(denied.result.status, 'error'); assert.equal(denied.result.error?.code, 'budget_authority_denied');
+  assert.equal(denied.result.error?.retryable, true);
+  const held = await f.child(accepted.workId);
+  assert.equal(held.grant.status, 'active'); assert.deepEqual(held.state.budget.used, before.state.budget.used);
+  assert.equal(held.state.attempts.length, 0); assert.equal(held.state.modelCalls.length, 0);
+  assert.equal(f.observed.runs.length, 0); assert.equal(f.observed.recipientInputs.length, 0); assert.equal(f.observed.reads.length, 0);
+  assert.ok(f.observed.approvals.some(value => value.purpose === 'execution'));
+  assert.equal(held.parent.plan?.tasks.find(value => value.id === denied.attempt.taskId)?.maxAttempts, 2);
+  const failedReceipt = await f.current('sponsor').services.state.receipt(accepted.workId, 'receive:' + denied.attempt.id);
+  assert.ok(failedReceipt);
+  const sponsorInputs = f.observed.sponsorInputs.length, plan = structuredClone(held.parent.plan), modelCalls = structuredClone(held.parent.modelCalls);
+  await f.reopen(); f.controls.execution = true;
+  const reopened = f.current('sponsor'), pending = await reopened.runtime.state(accepted.workId);
+  assert.deepEqual(pending.progress, held.parent.progress, 'reopening and host approval do not manufacture progress credit');
+  const resumed = await f.through(accepted.workId, 3, 2); assert.equal(resumed.result.status, 'success');
+  const after = await f.child(accepted.workId);
+  assert.notEqual(resumed.attempt.id, denied.attempt.id); assert.equal(resumed.attempt.taskId, denied.attempt.taskId);
+  assert.equal(resumed.attempt.planRevision, denied.attempt.planRevision);
+  assert.deepEqual(after.parent.plan, plan); assert.deepEqual(after.parent.modelCalls, modelCalls);
+  assert.equal(f.observed.sponsorInputs.length, sponsorInputs, 'the same declared task retries without a new model call');
+  assert.equal(after.parent.attempts.filter(value => value.taskId === denied.attempt.taskId).length, 2);
+  assert.equal(after.parent.budget.used.toolCalls, held.parent.budget.used.toolCalls + 1);
+  assert.deepEqual(after.parent.attempts.find(value => value.id === denied.attempt.id), denied.attempt);
+  assert.deepEqual(await reopened.services.state.receipt(accepted.workId, 'receive:' + denied.attempt.id), failedReceipt);
+  assert.deepEqual(await reopened.services.artifacts.get(denied.attempt.resultArtifact!, after.parent.policy), denied.bytes);
+  assert.equal(after.grant.id, before.grant.id); assert.equal(after.state.id, before.state.id);
+  assert.deepEqual(after.state.budget.limits, before.state.budget.limits); assert.equal(after.state.deadlineAt, before.state.deadlineAt);
+  assert.deepEqual(originalBudget(after.parent), original); assert.equal(after.parent.budgetGrants!.length, 1);
+  assert.deepEqual(await f.current('recipient').services.state.receipt(after.state.id, 'budget.child-genesis'), genesis);
+  settled(after.grant, after.state); assert.equal(f.observed.reads.length, 1); assert.equal(f.observed.recipientInputs.length, 1);
+});
+
+test('budget tools entry: continued execution denial stops after the two declared attempts and preserves recipient escrow without new planning', { timeout: 180000 }, async t => {
+  const f = await budgetToolsEntryFixture(t); f.controls.execution = false;
+  f.controls.steps = [budgetStatus, budgetAllocate(), { ...budgetRun, maxAttempts: 2 }];
+  const accepted = await f.accept();
+  const first = await f.through(accepted.workId, 3), held = await f.child(accepted.workId);
+  assert.deepEqual(first.result.error, { code: 'budget_authority_denied', retryable: true });
+  const modelCalls = structuredClone(held.parent.modelCalls), sponsorInputs = f.observed.sponsorInputs.length;
+  const firstReceipt = await f.current('sponsor').services.state.receipt(accepted.workId, 'receive:' + first.attempt.id); assert.ok(firstReceipt);
+  const second = await f.through(accepted.workId, 3, 2);
+  assert.deepEqual(second.result.error, { code: 'budget_authority_denied', retryable: true });
+  assert.notEqual(second.attempt.id, first.attempt.id); assert.equal(second.attempt.taskId, first.attempt.taskId);
+  const sponsor = f.current('sponsor');
+  const stopped = await sponsor.workflow.run(accepted.workId, sponsor.executionActor, { maxSteps: 1 });
+  assert.equal(stopped.control.kind, 'blocked'); assert.equal(stopped.reason, 'no_progress_limit');
+  const after = await f.child(accepted.workId), attempts = after.parent.attempts.filter(value => value.taskId === first.attempt.taskId);
+  assert.equal(attempts.length, 2); assert.ok(attempts.every(value => value.status === 'failed' && !value.adopted));
+  assert.equal(after.parent.plan?.tasks.find(value => value.id === first.attempt.taskId)?.maxAttempts, 2);
+  assert.equal(after.parent.progress?.policy.maxUnproductiveSteps, 3);
+  assert.equal(after.parent.progress?.consecutiveUnproductive, 3);
+  assert.deepEqual(after.parent.modelCalls, modelCalls); assert.equal(f.observed.sponsorInputs.length, sponsorInputs);
+  assert.deepEqual(after.grant, held.grant); assert.equal(after.grant.status, 'active');
+  assert.deepEqual(after.state.budget, held.state.budget); assert.equal(after.state.budgetParent?.phase, 'active');
+  assert.equal(after.state.attempts.length, 0); assert.equal(after.state.modelCalls.length, 0);
+  assert.equal(f.observed.runs.length, 0); assert.equal(f.observed.recipientInputs.length, 0); assert.equal(f.observed.reads.length, 0);
+  assert.deepEqual(originalBudget(after.parent), originalBudget(held.parent));
+  assert.equal(after.parent.budget.used.toolCalls, held.parent.budget.used.toolCalls + 1);
+  assert.deepEqual(await sponsor.services.state.receipt(accepted.workId, 'receive:' + first.attempt.id), firstReceipt);
+  assert.deepEqual(await sponsor.services.artifacts.get(first.attempt.resultArtifact!, after.parent.policy), first.bytes);
+});
+
+test('budget tools entry: a recipient request exposes only numeric need and explicit increase preserves the sponsor limit before continuation', { timeout: 180000 }, async t => {
+  const f = await budgetToolsEntryFixture(t, { child: 'request' });
+  f.controls.steps = [budgetStatus, budgetAllocate(), budgetRun, budgetStatus, budgetIncrease, budgetRun];
+  const accepted = await f.accept(), original = originalBudget(await f.current('sponsor').runtime.state(accepted.workId));
+  assert.equal((await f.through(accepted.workId, 3)).result.status, 'success');
+  const requested = await f.child(accepted.workId), obligation = requested.state.obligations.find(value => value.id.startsWith('budget-request:'));
+  assert.ok(obligation); assert.equal(obligation.status, 'pending'); assert.match(obligation.reason, /RECIPIENT_PRIVATE_REASON/);
+  assert.deepEqual(requested.state.budget.limits, BUDGET_ENTRY_CHILD_LIMITS); assert.equal(requested.grant.status, 'active');
+  assert.equal(f.observed.reads.length, 0); assert.equal(requested.state.budget.used.toolCalls, 1);
+  const status = await f.through(accepted.workId, 4); assert.equal(status.result.status, 'success');
+  const publicRequests = budgetObject(status.result.output)['delegatedRequests']; assert.ok(Array.isArray(publicRequests));
+  assert.deepEqual(publicRequests, [{ grantId: requested.grant.id, requestId: obligation.id, extra: BUDGET_ENTRY_EXTRA }]);
+  assert.equal(JSON.stringify([status.result, f.observed.sponsorInputs]).includes(BUDGET_ENTRY_REQUEST_REASON), false);
+  const increased = await f.through(accepted.workId, 5); assert.equal(increased.result.status, 'success');
+  const funded = await f.child(accepted.workId);
+  assert.deepEqual(funded.state.budget.limits, { ...BUDGET_ENTRY_CHILD_LIMITS, toolCalls: BUDGET_ENTRY_CHILD_LIMITS.toolCalls + 1 });
+  assert.deepEqual(funded.grant.allocated, { toolCalls: 5, modelCalls: 3, tokens: 50000, replans: 3 });
+  assert.equal(funded.state.deadlineAt, requested.state.deadlineAt); assert.deepEqual(originalBudget(funded.parent), original);
+  assert.equal(funded.state.obligations.find(value => value.id === obligation.id)?.status, 'satisfied');
+  assert.equal(f.observed.reads.length, 0, 'increasing a grant does not itself execute a source');
+  await f.reopen();
+  assert.equal((await f.through(accepted.workId, 6)).result.status, 'success');
+  const after = await f.child(accepted.workId); settled(after.grant, after.state);
+  assert.equal(after.state.budget.used.toolCalls, 2); assert.equal(after.state.budget.used.modelCalls, 2);
+  assert.equal(f.observed.reads.length, 1); assert.deepEqual(originalBudget(after.parent), original);
+  assert.equal((await f.current('sponsor').services.state.events(accepted.workId, 0)).filter(value => value.type === 'budget_grant_increased').length, 1);
+  assert.equal((await f.current('recipient').services.state.events(after.state.id, 0)).filter(value => value.type === 'budget_child_limit_increased').length, 1);
+  assert.equal(JSON.stringify([after.parent, f.observed.sponsorInputs]).includes(BUDGET_ENTRY_SECRET), false);
+  assert.deepEqual(await f.memory('sponsor'), []); assert.deepEqual(await f.memory('recipient'), []);
+});
+
+test('budget tools entry: a locally injected lost model reply retains unknown usage through revoke, repeated reconciliation and reopen', { timeout: 180000 }, async t => {
+  const f = await budgetToolsEntryFixture(t, { child: 'unknown' });
+  f.controls.steps = [budgetStatus, budgetAllocate(), budgetRun, budgetRevoke];
+  const accepted = await f.accept(), original = originalBudget(await f.current('sponsor').runtime.state(accepted.workId));
+  assert.equal((await f.through(accepted.workId, 3)).result.status, 'success');
+  const unknown = await f.child(accepted.workId); assert.equal(unknown.state.modelCalls.length, 1);
+  assert.equal(unknown.state.modelCalls[0]!.inputTokens, null); assert.equal(unknown.state.modelCalls[0]!.outputTokens, null);
+  assert.equal(unknown.state.budget.used.unmeasuredModelCalls, 1); assert.ok(unknown.state.budget.reservedTokens > 0);
+  assert.equal(f.observed.recipientInputs.length, 1); assert.equal(f.observed.reads.length, 0);
+  assert.equal((await f.through(accepted.workId, 4)).result.status, 'success');
+  const held = await f.child(accepted.workId);
+  assert.equal(held.grant.status, 'draining'); assert.equal(held.grant.unmeasuredModelCalls, 1);
+  assert.equal(held.grant.reserved.tokens, held.state.budget.reservedTokens);
+  assert.equal(held.parent.obligations.find(value => value.id === held.grant.id)?.status, 'pending');
+  const call = held.state.modelCalls[0]!, receipt = await f.current('recipient').services.state.receipt(held.state.id, 'model-dispatch:' + call.id);
+  assert.ok(receipt); const inputBytes = await f.current('recipient').services.artifacts.get(call.inputArtifact, held.state.policy);
+  const beforeReopen = f.current('sponsor');
+  assert.deepEqual(await beforeReopen.runtime.budgets.reconcile(accepted.workId, held.grant.id, beforeReopen.executionActor), held.grant);
+  await f.reopen();
+  const reopened = f.current('sponsor');
+  assert.deepEqual(await reopened.runtime.budgets.reconcile(accepted.workId, held.grant.id, reopened.executionActor), held.grant);
+  const after = await f.child(accepted.workId);
+  assert.equal(after.grant.status, 'draining'); assert.deepEqual(after.grant.accounted, held.grant.accounted);
+  assert.deepEqual(after.grant.reserved, held.grant.reserved); assert.equal(after.grant.unmeasuredModelCalls, 1);
+  assert.deepEqual(after.state.modelCalls, held.state.modelCalls); assert.deepEqual(originalBudget(after.parent), original);
+  assert.deepEqual(await f.current('recipient').services.state.receipt(after.state.id, 'model-dispatch:' + call.id), receipt);
+  assert.deepEqual(await f.current('recipient').services.artifacts.get(call.inputArtifact, after.state.policy), inputBytes);
+  assert.equal(f.observed.recipientInputs.length, 1); assert.equal(f.observed.reads.length, 0);
+  assert.equal(after.parent.obligations.find(value => value.id === after.grant.id)?.status, 'pending');
+  assert.notEqual(after.parent.status, 'completed'); assert.equal(after.parent.generatedAnswer, undefined);
+});
+
+test('budget tools entry: an observed recipient cannot over-allocate the sponsor original hard limit or execute the unfunded pending child', { timeout: 180000 }, async t => {
+  const f = await budgetToolsEntryFixture(t), sponsor = f.current('sponsor');
+  f.controls.steps = [budgetStatus, budgetAllocate({ ...BUDGET_ENTRY_CHILD_LIMITS, toolCalls: sponsor.limits.toolCalls })];
+  const accepted = await f.accept(), original = originalBudget(await sponsor.runtime.state(accepted.workId));
+  const rejected = await f.through(accepted.workId, 2);
+  assert.equal(rejected.result.status, 'error'); assert.equal(rejected.result.error?.code, 'budget_allocation_exceeded');
+  assert.equal(rejected.result.error?.retryable, false);
+  assert.deepEqual(originalBudget(rejected.state), original); assert.equal(rejected.state.budgetGrants?.length ?? 0, 0);
+  const allocation = f.observed.approvals.find(value => value.purpose === 'allocation'); assert.ok(allocation);
+  const pending = await f.current('recipient').runtime.state(allocation.binding.child.workId);
+  assert.equal(pending.budgetParent?.phase, 'pending'); assert.equal(pending.statusReason, 'budget_child_pending');
+  assert.equal(await sponsor.services.state.get(pending.id), null);
+  const stopped = await f.current('recipient').workflow.run(pending.id, f.current('recipient').executionActor, { maxSteps: 1 });
+  assert.equal(stopped.control.kind, 'blocked'); assert.match(stopped.reason, /^(budget_child_pending|budget_grant_missing)$/);
+  assert.equal(stopped.control.reason, stopped.reason);
+  const latest = await f.current('recipient').runtime.state(pending.id), parent = await sponsor.runtime.state(accepted.workId);
+  assert.equal(latest.budgetParent?.phase, 'pending'); assert.deepEqual(latest.budget.used, pending.budget.used);
+  assert.deepEqual(latest.budget.limits, pending.budget.limits); assert.equal(latest.deadlineAt, pending.deadlineAt);
+  assert.deepEqual(originalBudget(parent), original); assert.equal(parent.budgetGrants?.length ?? 0, 0);
+  assert.equal(f.observed.runs.length, 0); assert.equal(f.observed.recipientInputs.length, 0); assert.equal(f.observed.reads.length, 0);
+  assert.equal(latest.attempts.length, 0); assert.equal(latest.modelCalls.length, 0);
+  assert.deepEqual(await f.memory('sponsor'), []); assert.deepEqual(await f.memory('recipient'), []);
+});

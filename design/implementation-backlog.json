@@ -1,5 +1,5 @@
 {
-  "revision": "v0.67",
+  "revision": "v0.68",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1922,7 +1922,7 @@
     "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
     "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
   },
-  "next_local_work_item": "C08 peer/counterargument workflows, isolated resource ledgers and model-visible allocation/settlement/return tools; reuse saved preparation and existing tests.",
+  "next_local_work_item": "C08 remaining split-ledger return/reallocation, active-grant compact/reopen, and accepted-recipient/before-caller-ticket crash recovery; then C09/C10 and existing C05/C06/platform/integration followups. Preserve actual model/API stop.",
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
   "execution_state": "ordered_verification_active",
@@ -4636,6 +4636,36 @@
         "evidence": "runtime/evidence/C01-windows-administrative-checkpoint.json",
         "detailed_verification": "not_run",
         "remaining_implementation": []
+      },
+      "ordered_verification": {
+        "checkpoint": 378,
+        "status": "first_local_acceptance_verified_remaining_boundaries",
+        "result": "design/chapters/C08-ordered-verification-result.md",
+        "evidence": "runtime/evidence/checkpoint378.json",
+        "existingBudget": 152,
+        "newLedgerBoundary": 14,
+        "newPeerServiceAndRegistration": 16,
+        "newIndependentPeerEntry": 5,
+        "newBudgetPreparation": 6,
+        "newSplitBudgetEntry": 6,
+        "selectedUnique": 199,
+        "relatedUnique": 47,
+        "allUnique": 246,
+        "mixedBuildEvidence": true,
+        "allRerunAtFinalSource": false,
+        "finalSource": {
+          "sourceDigest": "71297c2791e56723c18dcee539e79d9ccfa239df8d7db0bf9bda75f26a176feb",
+          "filesDigest": "6cc118352ccc659faa749314483e4ffe1b21f6935524e671d2c6eb0eec7b259d",
+          "fileCount": 2217
+        },
+        "remaining": [
+          "Split-ledger explicit return and reallocation",
+          "Compact and reopen with an active split-ledger grant",
+          "Recipient accepted but caller ticket not committed recovery",
+          "C09/C10 ordered acceptance and existing C05/C06 followups"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "goalComplete": false
       }
     },
     {
@@ -4879,13 +4909,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 377,
-      "status": "C07_selected_local_verified_C08_next",
+      "checkpoint": 378,
+      "status": "C08_first_local_unit_verified_remaining_C08_then_C09_C10",
       "plan": "design/chapters/C01-C10-ordered-verification.md",
       "nextChapter": "C08",
       "preparedIdentityTests": 22,
       "existingFixtureFilesAdapted": 4,
-      "result": "design/chapters/C07-ordered-verification-result.md",
+      "result": "design/chapters/C08-ordered-verification-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -5153,7 +5183,37 @@
           "Final integrated regression; local synthetic/model fixtures do not establish actual model or external service quality"
         ]
       },
-      "C08Preparation": "design/chapters/C08-ordered-verification-preparation.md"
+      "C08Preparation": "design/chapters/C08-ordered-verification-preparation.md",
+      "C08": {
+        "checkpoint": 378,
+        "status": "first_local_acceptance_verified_remaining_boundaries",
+        "result": "design/chapters/C08-ordered-verification-result.md",
+        "evidence": "runtime/evidence/checkpoint378.json",
+        "existingBudget": 152,
+        "newLedgerBoundary": 14,
+        "newPeerServiceAndRegistration": 16,
+        "newIndependentPeerEntry": 5,
+        "newBudgetPreparation": 6,
+        "newSplitBudgetEntry": 6,
+        "selectedUnique": 199,
+        "relatedUnique": 47,
+        "allUnique": 246,
+        "mixedBuildEvidence": true,
+        "allRerunAtFinalSource": false,
+        "finalSource": {
+          "sourceDigest": "71297c2791e56723c18dcee539e79d9ccfa239df8d7db0bf9bda75f26a176feb",
+          "filesDigest": "6cc118352ccc659faa749314483e4ffe1b21f6935524e671d2c6eb0eec7b259d",
+          "fileCount": 2217
+        },
+        "remaining": [
+          "Split-ledger explicit return and reallocation",
+          "Compact and reopen with an active split-ledger grant",
+          "Recipient accepted but caller ticket not committed recovery",
+          "C09/C10 ordered acceptance and existing C05/C06 followups"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "goalComplete": false
+      }
     }
   }
 }

@@ -2361,3 +2361,12 @@ C07 선택 고유261개와 관련 회귀89개를 확인했다. 원출처 명시 
 마지막 request 실패를 모델 제안 task_id_contract_changed와 필요한 revision 재조회로 구분했다. 시험 모델의 bounded-context 판단을 교정하고 실제 도구 결과를 활용했다. build7 source5a935be65c4bfc584c08a28d11f00721e4852889cbc00605c912b2f630eb92da, 최종 소스/산출물2,184개 일치, 마지막 선택46/46+영수증6/6이다. 이전 실행 결과를 최종 소스 재실행으로 합치지 않는다. [결과](chapters/C07-ordered-verification-result.md) · [증거](../runtime/evidence/checkpoint377.json).
 
 활성 실행은 없고 C08 준비와 기존 실제 연동/플랫폼·C05 재허용·C06 지연 잔여를 저장했다. 실제 모델/API 중단과 전체 goal 미완료를 유지하며 코드·문서·증거를 함께 커밋/푸시한다.
+
+
+### Checkpoint378 — 동료·반론·분리 원장 입구의 첫 인수
+
+C08 선택 고유199개(기존152+신규47)와 관련 공통 회귀47개를 확인했다. 정확한 작업 주소, 최초 동료 세션과 발신 사용자 분리, 도구 입력/응답 계약을 교정했다. 양방향 상담·반론 후 자체 판별·원 ticket 재개·내부 전달과 실제 분리 SQLite 자원 흐름을 확인했다. 준비 진전은 실제 원장 변화로 제한하고, 승인 거절 뒤 같은 task의 제한 재시도로 새 planner 호출 없이 이어간다. 계속 거절되면 기본 한도로 멈춘다.
+
+최종 build5 source71297c2791e56723c18dcee539e79d9ccfa239df8d7db0bf9bda75f26a176feb 및 산출물2,217개 일치, 마지막 예산입구·진전12/12. 앞선 타입/계약/무진전 실패와 fixture 교정은 원로그로 보존한다. 소스별 통과를 전체 최종 재실행으로 합치지 않는다. [결과](chapters/C08-ordered-verification-result.md) · [증거](../runtime/evidence/checkpoint378.json).
+
+분리 원장 반환/재배정·활성 grant compact·접수 중단 복구와 C09/C10, 기존 플랫폼·실제 연동 잔여를 저장했다. 활성 실행은 없으며 실제 모델/API 시험 중단과 전체 goal 미완료를 유지한다. 코드·문서·증거를 함께 커밋/푸시한다.

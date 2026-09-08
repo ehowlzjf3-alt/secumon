@@ -69,22 +69,22 @@ export class HostBudgetLedgerRouter implements BudgetWorkLedgers {
     const execute = run.bind(registration), stop = interrupt.bind(registration);
     const current = () => this.#ledgers.get(ownerKey) === ledger && services.state === source && services.artifacts === artifacts;
     const check = () => { if (!current()) throw unavailable(); };
-    const owned = (work: WorkState) => {
-      if (key(budgetWorkAddress(work)) !== ownerKey) throw new Error('budget_work_owner_mismatch');
+    const owned = (work: WorkState, workId = work.id) => {
+      if (key(budgetWorkAddress(work)) !== ownerKey || work.id !== workId) throw new Error('budget_work_owner_mismatch');
       return work;
     };
-    const read = async (workId: string) => { check(); const work = await get(workId); check(); return work ? owned(work) : null; };
+    const read = async (workId: string) => { check(); const work = await get(workId); check(); return work ? owned(work, workId) : null; };
     const denied = async (): Promise<never> => { throw new Error('budget_ledger_operation_denied'); };
     const state: StateRepository = {
       get: read,
-      async receipt(workId, commandId) { check(); const found = await receipt(workId, commandId); check(); if (found) owned(found.state); return found; },
+      async receipt(workId, commandId) { check(); const found = await receipt(workId, commandId); check(); if (found) owned(found.state, workId); return found; },
       async commit(request) {
         check(); owned(request.next);
         if (request.next.id !== request.workId || request.deliveries.length || !request.events.length || request.events.some(event => !event.type.startsWith('budget_')))
           throw new Error('budget_ledger_operation_denied');
         const prior = await read(request.workId); if (prior) owned(prior); check();
         const result = await commit(request); check();
-        if (result.kind === 'committed' || result.kind === 'duplicate') owned(result.state);
+        if (result.kind === 'committed' || result.kind === 'duplicate') owned(result.state, request.workId);
         return result;
       },
       events: denied, recentEventMetadata: denied, deliveries: denied, workIdsForConversation: denied,
