@@ -93,3 +93,19 @@ The current implementation and remaining consumer boundaries are recorded in [C0
 ## Remaining acceptance work
 
 Native Windows build/load; actual ACL rejection from a second ordinary account; protected/inherited/foreign ACL cases; sharing violations; junction and concurrent replacement tests; candidate/rename/close error injection; process termination and same-operation reconciliation; handle closure under failures; ARM64 packaging if required. File and namespace power-loss durability remain separate. The TS mutation scope now checks its trusted root and forbidden roots. Full consumer migration, application recovery semantics and native acceptance remain prerequisites for deployed agent support.
+
+## Same-parent directory retirement
+
+The existing addon now also exports `directoryRetirementCapabilities()` (independent API version 1) and `retireDirectoryNoReplace(parent, sourceLeaf, destinationLeaf, expectedParentIdentity, expectedSourceIdentity)`. Existing Windows file API version 4 remains unchanged. The host adapter is `src/infrastructure/host-directory-retirement.ts`; its availability check must precede a recovery operation gate. Inspection does not require the addon on POSIX, but applying a retirement does. There is no ordinary `rename` fallback and an absent or incompatible binary refuses the operation.
+
+macOS uses the locked `libc` binding to `renameatx_np(RENAME_EXCL)`; Linux uses `SYS_renameat2(RENAME_NOREPLACE)`. Both retain and compare the parent/source directory objects and fsync the parent after a successful rename or an exact already-retired retry. A kernel/filesystem without this no-replace operation is refused. These name-based POSIX calls do not provide atomic exclusion against arbitrary same-user source replacement; identity rechecks detect a mismatch and preserve the known/unknown movement outcome without deleting either path.
+
+Windows opens the source directory with DELETE access, keeps its parent/ancestors and private ACL checks, and calls the existing `FileRenameInfo` operation with replacement disabled. Caller-held references to the old root and its descendants must be closed first. Windows reports process-crash durability and `directorySynced: false`; no namespace barrier is claimed. A new directory at the old source path is left intact when the expected object is already at the destination. The API does not activate the new root, transfer leases, rebind identity, or clear an external-effects gate.
+
+Build on the host platform from this package with its existing cache and target paths:
+
+```sh
+CARGO_HOME="$PWD/.cargo-home" CARGO_TARGET_DIR="$PWD/target" cargo build --locked --offline
+```
+
+Install the resulting `target/debug/libsecumon_windows_files.dylib` (macOS), `target/debug/libsecumon_windows_files.so` (Linux), or `target/debug/secumon_windows_files.dll` (Windows) as `native/windows-files/secumon_windows_files.node` within the runtime. The runtime package `files` list and lifecycle engine bundle already include that exact binary path. No new binary download or install-time compilation is performed by the loader; each installed engine needs its matching host-built binary. Source/build checks and native platform execution remain distinct evidence.

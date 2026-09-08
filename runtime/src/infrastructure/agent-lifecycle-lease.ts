@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import { readdirSync, unlinkSync } from 'node:fs';
 import { z } from 'zod';
 import { SQLITE_RECOVERY_PENDING, SqliteRecoveryPendingSchema } from '../application/agent-sqlite-recovery-contracts.js';
+import { AGENT_RESTORE_RECOVERY_PENDING } from '../application/agent-restore-recovery-apply-contracts.js';
 import { openProfileMutationScope, profileDirectory, profileStat, publishProfileJson, readProfileJson, syncProfileDirectory } from './agent-profile-files.js';
 import { lifecycleFail, lifecycleRoot } from './agent-lifecycle-files.js';
 import { windowsLeaseRoot, windowsLeaseExists, windowsLeaseNames, removeWindowsLifecycleLease } from './windows-lifecycle-lease.js';
@@ -26,6 +27,7 @@ export interface SqliteRecoveryMaintenance { readonly operationId: string; reado
 export function assertAgentRuntimeAvailable(input: string) {
   const root = leaseRoot(input), metadata = join(root, '.secumon');
   profileDirectory(metadata, false, true);
+  if (leaseExists(join(root, AGENT_RESTORE_RECOVERY_PENDING))) lifecycleFail('agent_restore_recovery_apply_required');
   if (readProfileJson(join(metadata, SQLITE_RECOVERY_PENDING), SqliteRecoveryPendingSchema)) lifecycleFail('agent_sqlite_recovery_resume_required');
   if (leaseExists(join(metadata, 'lifecycle-maintenance.json'))) lifecycleFail('agent_maintenance_active');
 }
@@ -35,6 +37,7 @@ function acquire(input: string, maintenance: boolean, recovery?: SqliteRecoveryM
   const barrier = join(metadata, 'lifecycle-maintenance.json'), leases = join(metadata, 'runtime-leases');
   const path = maintenance ? barrier : join(leases, `${value.id}.json`); let published = false;
   const checkRecovery = () => {
+    if (!maintenance && leaseExists(join(root, AGENT_RESTORE_RECOVERY_PENDING))) lifecycleFail('agent_restore_recovery_apply_required');
     const pending = readProfileJson(join(metadata, SQLITE_RECOVERY_PENDING), SqliteRecoveryPendingSchema);
     if (pending && (!maintenance || !recovery || pending.operationId !== recovery.operationId || pending.preparedDigest !== recovery.preparedDigest))
       lifecycleFail('agent_sqlite_recovery_resume_required');

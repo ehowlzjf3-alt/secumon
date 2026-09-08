@@ -1,5 +1,7 @@
 # C10 복원 불일치 회복 준비 사용법
 
+2026-09-08 후속 구현 안내: checkpoint392에서 준비한 패키지의 실제 적용·현재 담당 보존 이동·신원 재등록을 연결하고, 새 외부 대조 뒤 원 업무 재개를 로컬에서 확인했다. 적용 방법은 [회복 패키지 적용 사용법](C10-restore-recovery-apply-usage.md), 검증과 잔여 범위는 [checkpoint392 결과](C10-restore-recovery-apply-result.md)를 따른다. 아래 checkpoint391의 “적용 후속·미구현” 표현은 준비 단위 당시 기록으로 보존한다.
+
 2026-09-08 · checkpoint391 구현 소스 기준. 같은 최종 build2에서 신규 API8개·CLI3개와 관련26개, 고유37개가 모두 통과했다. 별도 공개 CLI의 file-journal·documents 흐름도 원자료 보존과 준비 후 실행 차단을 확인했다. 실제 적용·교체·신원 재등록·새 대조는 필수 후속 단계로 남는다. [검증 결과](C10-restore-recovery-result.md) · [최종 소스 대조](../../runtime/evidence/checkpoint391-final-source.json). 실제 모델/API·현재 Linux/native Windows·PostgreSQL·설치 binary 실행은 이번에 수행하지 않았다.
 
 외부에 처리 결과가 남아 있지만 과거 백업을 복원한 담당에는 원 실행 기록이 없을 수 있다. 이때 실패 복원본을 보존하면서, 원 기록을 포함한다고 판단해 선택한 **완전한 담당 백업**을 회복 후보로 준비한다. 외부 영수증 하나로 사라진 세션·권한·사용량 이력을 만들어 넣지 않는다.

@@ -827,3 +827,6 @@ impl Scope {
         errors
     }
 }
+
+mod directory_retirement;
+pub(crate) use directory_retirement::retire as retire_directory;

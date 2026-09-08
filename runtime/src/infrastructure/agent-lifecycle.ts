@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { inspectEngineExtensions, type EngineExtensionCheckOptions } from '../application/engine-extension-contracts.js';
 import { AGENT_LOCAL_RESTORE_COMPLETION, AgentBackupSchema, AgentLocalRestoreMarkerSchema, EnginePinSchema, type EnginePin, type EngineRelease } from '../application/agent-lifecycle-contracts.js';
 import { AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING } from '../application/agent-restore-reconciliation-contracts.js';
+import { AGENT_RESTORE_RECOVERY_PENDING } from '../application/agent-restore-recovery-apply-contracts.js';
 import { AgentConfigSchema, AgentIdentitySchema, type AgentProfileStore, type AgentProfileStatus } from '../application/agent-profile-contracts.js';
 import { acquireAgentMaintenance } from './agent-lifecycle-lease.js';
 import { captureLifecycleTree, copyLifecycleTree, createLifecycleDirectory, disjoint, lifecycleDigest, lifecycleExists, lifecycleFail, lifecycleLimits, lifecycleNames, lifecycleRoot } from './agent-lifecycle-files.js';
@@ -37,6 +38,7 @@ export function checkAgentLifecycle(profiles: AgentProfileStore, directory: stri
 }
 export function backupAgent(profiles: AgentProfileStore, directory: string, destination: string, offline: boolean) {
   const profile = ready(profiles, directory), target = lifecycleRoot(destination, false); disjoint(profile.root, target);
+  if (lifecycleExists(join(profile.root, AGENT_RESTORE_RECOVERY_PENDING))) lifecycleFail('agent_restore_recovery_apply_required');
   const lease = acquireAgentMaintenance(profile.root, offline);
   try {
     const pin = readAgentEnginePin(profile.root);
@@ -54,7 +56,7 @@ export function inspectAgentBackup(input: string) {
     readWindowsLifecycleJson(join(directory, 'backup.json'), AgentBackupSchema, 32 * 1024 * 1024) :
     readProfileJson(join(directory, 'backup.json'), AgentBackupSchema, [1], 32 * 1024 * 1024);
   if (!manifest) return lifecycleFail('lifecycle_backup_missing'); const { digest, ...body } = manifest;
-  if (manifest.entries.some(entry => [AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING].some(path => entry.path === path || entry.path.startsWith(`${path}/`)))) lifecycleFail('lifecycle_restore_entries_invalid');
+  if (manifest.entries.some(entry => [AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING, AGENT_RESTORE_RECOVERY_PENDING].some(path => entry.path === path || entry.path.startsWith(`${path}/`)))) lifecycleFail('lifecycle_restore_entries_invalid');
   if (lifecycleDigest(body) !== digest || lifecycleDigest(captureLifecycleTree(join(directory, 'data'))) !== lifecycleDigest(manifest.entries)) lifecycleFail('lifecycle_backup_digest_mismatch');
   return { directory, manifest };
 }

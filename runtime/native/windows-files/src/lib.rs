@@ -6,6 +6,9 @@ use napi::bindgen_prelude::Buffer;
 use napi_derive::napi;
 
 mod request;
+mod directory_retirement;
+#[cfg(any(target_os = "macos", target_os = "linux"))]
+mod posix_retirement;
 #[cfg(windows)]
 mod windows;
 

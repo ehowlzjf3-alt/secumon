@@ -10,6 +10,7 @@ import { inspectAgentHostIdentity, type AgentHostIdentityOptions } from '../infr
 import { rebindRestoredAgentHostIdentity } from '../infrastructure/agent-host-identity-recovery.js';
 import { inspectAgentRestoreReconciliation, reconcileAgentRestore } from '../infrastructure/agent-restore-reconciliation.js';
 import { inspectAgentRestoreRecovery, prepareAgentRestoreRecovery } from '../infrastructure/agent-restore-recovery.js';
+import { applyAgentRestoreRecovery, readAgentRestoreRecoveryApplication } from '../infrastructure/agent-restore-recovery-apply.js';
 import { prepareAgentSqliteRecovery, applyAgentSqliteRecovery, readAgentSqliteRecovery } from '../infrastructure/agent-sqlite-recovery.js';
 import { registerAgentEngine } from '../infrastructure/agent-engine-registry.js';
 import type { EngineExtensionSelection } from '../application/engine-extension-contracts.js';
@@ -29,6 +30,8 @@ const help = `secumon-agent lifecycle <명령> [옵션]
   restore-reconcile --directory 담당 --offline 호스트에 등록된 읽기 전용 소스로 외부 효과 대조
   restore-recovery-prepare --directory 복원경로 --source 선택백업 --destination 새복구경로 --digest 백업SHA --previous 등록headSHA --operation UUID --offline
   restore-recovery-status --source 복구경로    보존한 원자료와 선택 백업의 준비 묶음 조회
+  restore-recovery-apply --source 준비패키지 --digest 준비SHA --offline
+  restore-recovery-apply-status --source 준비패키지 적용 진행·원 담당 보존 위치 조회
   recover-leases --directory 담당 --offline
   identity-status --directory 담당           호스트의 담당 ID 등록과 head 지문 조회
   identity-rebind --directory 복원경로 --source 원백업 --digest 백업SHA --previous 등록headSHA --operation 복원ID --kind local|postgres --offline
@@ -40,7 +43,8 @@ restore는 기존 담당 디렉터리를 덮어쓰지 않으며 원래 canonical
 파일 복원 완료만으로 실행을 재개하지 않습니다. restore-status로 대조 상태를 확인하세요.
 restore-reconcile은 외부 상태를 조회하며 원 동작을 다시 실행하지 않습니다. 미확인 효과가 있으면 재개를 보류합니다.
 restore-recovery-prepare는 미해결 복원 원자료와 선택 백업을 새 경로에 보존합니다.
-복구 준비는 원 담당에 적용하거나 실행을 재개하지 않습니다. 적용과 새 외부 기록 대조는 후속 절차입니다.
+복구 준비는 원 담당을 바꾸지 않습니다. restore-recovery-apply는 현재 담당을 보존 이동하고 선택 백업을 복원·신원 재등록합니다.
+적용 뒤에는 restore-reconcile로 새 복원의 외부 기록을 대조해야 실행을 재개할 수 있습니다. 적용 상태는 대조 완료 증명이 아닙니다.
 identity-rebind는 완료된 같은 백업 복원만 등록합니다. 일반 폴더 복사는 clone으로 새 ID를 만드세요.
 SQLite 회복은 원 main/journal을 보존하고 후보를 만든 뒤 명시 적용합니다. prepare는 정본을 바꾸지 않습니다.
 apply 중단 뒤에는 같은 operation/digest로 재개합니다. 상태 조회는 과거 영수증이며 현재 DB 검증이 아닙니다.
@@ -109,6 +113,14 @@ export async function runAgentLifecycleCli(args: string[], profiles: AgentProfil
       break;
     }
     case 'restore-recovery-status': result = recoverySummary(inspectAgentRestoreRecovery(required(values.source, 'source'))); break;
+    case 'restore-recovery-apply': {
+      if (!values.offline) throw new AgentLifecycleError('lifecycle_offline_confirmation_required');
+      result = await applyAgentRestoreRecovery(profiles, {
+        recoveryDirectory: required(values.source, 'source'), expectedDigest: required(values.digest, 'digest'), offline: true,
+      }, identityOptions);
+      break;
+    }
+    case 'restore-recovery-apply-status': result = await readAgentRestoreRecoveryApplication(required(values.source, 'source')); break;
     case 'recover-leases': result = recoverAgentLifecycleLeases(values.directory, values.offline); break;
     case 'identity-status': {
       const profile = profiles.inspect(values.directory);
