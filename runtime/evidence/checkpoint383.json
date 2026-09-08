@@ -1,0 +1,180 @@
+{
+  "checkpoint": 383,
+  "date": "2026-09-08",
+  "baselineCommit": "32739e5fab460fc9fd4e1de07bce6d21dae7b69a",
+  "previousGoalTurn": "progress: actual isolated profile comparison, composed board/mission correction, 115 source-specific local passes, documents and verified remote push",
+  "status": "C09_mission_terminal_local_unit_verified_ready_to_publish",
+  "goalComplete": false,
+  "chapterComplete": false,
+  "actualModelApi": "stopped_by_user",
+  "externalServiceConnectionsRun": false,
+  "plan": "design/chapters/C09-mission-terminal-recovery-plan.md",
+  "activeBuild": null,
+  "activeTests": [],
+  "builds": [
+    {
+      "name": "C09-terminal-build1",
+      "sessionId": 17006,
+      "log": "runtime/evidence/C09-terminal-build1.log",
+      "status": "completed",
+      "exitCode": 0,
+      "sourceDigest": "096484f297f28e88e0851cdb8969d6d29dd1ae315dfcc26e9768831a89b086f6",
+      "files": 2331
+    },
+    {
+      "name": "C09-terminal-build2",
+      "sessionId": 24690,
+      "log": "runtime/evidence/C09-terminal-build2.log",
+      "status": "completed",
+      "exitCode": 0,
+      "sourceDigest": "5e4c9dfa2a48478b712cc4c1650f111fdb0317a185a4c617d296a92fd917e9a4",
+      "files": 2331
+    },
+    {
+      "name": "C09-terminal-build3",
+      "sessionId": 63012,
+      "log": "runtime/evidence/C09-terminal-build3.log",
+      "status": "completed",
+      "exitCode": 0,
+      "sourceDigest": "bbb11a312e4f9def1dc71cdc13e569b5033c09a5c4aec84c89df8a85c71972d7",
+      "files": 2331
+    }
+  ],
+  "tests": [
+    {
+      "name": "C09-terminal-target1",
+      "sessionId": 31775,
+      "build": "build1",
+      "log": "runtime/evidence/C09-terminal-target1.log",
+      "exitCode": 1,
+      "pass": 0,
+      "fail": 7
+    },
+    {
+      "name": "C09-terminal-target2",
+      "sessionId": 46562,
+      "build": "build2",
+      "log": "runtime/evidence/C09-terminal-target2.log",
+      "status": "completed",
+      "exitCode": 0,
+      "pass": 11,
+      "fail": 0
+    },
+    {
+      "name": "C09-terminal-related1",
+      "sessionId": 54667,
+      "build": "build2",
+      "log": "runtime/evidence/C09-terminal-related1.log",
+      "status": "completed",
+      "exitCode": 0,
+      "pass": 22,
+      "fail": 0
+    },
+    {
+      "name": "C09-terminal-target3",
+      "sessionId": 54760,
+      "build": "build3",
+      "log": "runtime/evidence/C09-terminal-target3.log",
+      "status": "completed",
+      "exitCode": 0,
+      "pass": 34,
+      "fail": 0,
+      "newUnique": 12,
+      "relatedUnique": 22
+    }
+  ],
+  "writers": {
+    "root": "Mission terminal reconciliation and original completion proof, plan/checkpoint, builds/tests",
+    "windows_file_boundary": "Multiple-rule completion and in-process interrupted publication/invalid proof fixtures",
+    "linux_io_fixture_review": "Actual SIGKILL after workflow completion and same-profile recovery fixture",
+    "push_docs_review": "Read-only proof chain and idempotent recovery review"
+  },
+  "verifiedStartingState": "main at baseline commit; clean tree; no live build or test handle",
+  "staticFindings": [
+    "Execution completion closes all subscriptions but MissionRuntime finalizes only the selected rule",
+    "Terminal tick/refresh early return leaves post-completion unpublished checkpoints unrecovered",
+    "workflow.finish calls notifications.refresh before run returns, so recovery must remain in tick rather than changing this refresh path",
+    "Duplicate transact paths skip beforeCommit, requiring post-return proof and state checks",
+    "A journal_commit_unknown after publication is propagated as unknown; later tick/reopen checks the original completion and same checkpoint receipt, without presuming nonpublication or creating a new operation."
+  ],
+  "next": "C10 check/pin/backup/update/same-identity session and memory reopen using different valid releases. First confirm current main and remote; the snapshot precedes its containing commit/push. Preserve recorded C09/C05/C06/platform/final-integration followups.",
+  "sourceFreeze": {
+    "root": true,
+    "completionFixtures": true,
+    "crashFixture": true
+  },
+  "checks": [
+    {
+      "name": "C09-terminal-core1",
+      "sessionId": 34522,
+      "build": "build2",
+      "log": "runtime/evidence/C09-terminal-core1.log",
+      "status": "completed",
+      "exitCode": 0
+    },
+    {
+      "name": "C09-terminal-architecture1",
+      "build": "build2",
+      "log": "runtime/evidence/C09-terminal-architecture1.log",
+      "exitCode": 0,
+      "status": "completed",
+      "inspected": 198,
+      "violations": 0
+    },
+    {
+      "name": "C09-terminal-core2",
+      "sessionId": 90629,
+      "build": "build3",
+      "log": "runtime/evidence/C09-terminal-core2.log",
+      "status": "completed",
+      "exitCode": 0
+    },
+    {
+      "name": "C09-terminal-architecture2",
+      "build": "build3",
+      "log": "runtime/evidence/C09-terminal-architecture2.log",
+      "status": "completed",
+      "exitCode": 0,
+      "inspected": 198,
+      "violations": 0
+    }
+  ],
+  "result": "design/chapters/C09-mission-terminal-recovery-result.md",
+  "newUnique": 12,
+  "relatedUnique": 22,
+  "allUnique": 34,
+  "allRerunAtFinalSource": true,
+  "mixedBuildEvidence": false,
+  "finalSource": {
+    "build": "C09-terminal-build3",
+    "node": "v24.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "sourceDigest": "bbb11a312e4f9def1dc71cdc13e569b5033c09a5c4aec84c89df8a85c71972d7",
+    "filesDigest": "fecdb108222d1152aac9ee4135ca88d10ad703526757a52dd12ee4ffac76d28f",
+    "fileCount": 2331,
+    "allOutputsMatch": true
+  },
+  "finalSourceEvidence": "runtime/evidence/checkpoint383-final-source.json",
+  "reviewCorrection": "Remove no-mission-subscription early return before completion proof; add durable removal of all mission subscriptions as a rejection case.",
+  "countsFinal": true,
+  "remaining": [
+    "C10 different valid release update and same identity/session/memory reopen",
+    "C09 cancel/goal-change/pause terminal semantics; file-journal commit-unknown injection; long event-history read cost",
+    "C05 permission reallow and explicit resume through stored collection completion",
+    "C06 memory HTTP latency/permission usability and real browser rendering",
+    "Current Linux/native Windows, real PostgreSQL/corporate MCP/Knox/external A2A, deployment and final integration"
+  ],
+  "publish": {
+    "remote": "origin",
+    "branch": "main",
+    "status": "commit_and_push_pending_at_snapshot"
+  },
+  "review": {
+    "status": "one_early_return_corrected_and_regression_verified",
+    "filesChanged": [
+      "runtime/src/application/mission-runtime.ts",
+      "runtime/src/tests/mission-terminal-recovery.test.ts"
+    ]
+  }
+}

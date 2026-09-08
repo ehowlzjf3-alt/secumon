@@ -4,6 +4,20 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT383-START -->
+### Checkpoint383 — 여러 임무의 종료와 완료 직후 복구
+
+C09 다중 임무 종료·완료 직후 복구를 수정하고 같은 최종 build3에서 신규12개와 관련22개, 합계34/34를 확인했다. 실제 완료 후 SIGKILL/reopen, 부분 마감 중단, idle/기존 종료 보존, 완료 영수증 오류·무관한 예산/구독 삭제 거절, 동시 tick의 규칙별 1회 마감을 포함한다. 원 사건·ACK·모델/도구 사용량·답변을 유지하고 복구에서 모델·도구·poll·전송을 추가 호출하지 않는다.
+
+Node v24.20.0 darwin arm64, build3·core2 exit0, 구조198개/위반0, 소스/산출물2,331파일 일치다. sourceDigest bbb11a312e4f9def1dc71cdc13e569b5033c09a5c4aec84c89df8a85c71972d7. [결과](chapters/C09-mission-terminal-recovery-result.md) · [체크포인트](../runtime/evidence/checkpoint383.json) · [최종 소스 대조](../runtime/evidence/checkpoint383-final-source.json).
+
+수정 전 build1은 당시 준비한7개가0/7로 실패했다. build2 신규11·관련22 통과 후, 검토에서 발견한 구독없음 조기반환을 제거하고 구독 삭제 거절을 추가했다. 최종 build3은 전체34개를 실행했으며 앞선 결과를 중복 합산하지 않는다.
+
+다음은 **C10의 서로 다른 유효 release를 이용한 check→pin→backup→update→동일 신원·세션·기억 재열기**다. 같은 release의 경로 변경은 no-op이며 업데이트 인수로 세지 않는다. C09 취소·목표 변경·일시정지 의미/파일 저널 응답 불명 주입/장기 사건 조회 비용, C05/C06 잔여와 현재 Linux/native Windows·실제 연동·운영 설치·최종 통합은 남아 있다. C09와 전체 goal은 미완료이며 실제 모델/API 중단·외부 연결0회를 유지한다.
+
+메인 프롬프트는 [공통 범용 지침](../runtime/src/infrastructure/agent-turn-prompt.ts)에 구현돼 모델 어댑터에 연결돼 있다. 이번에 다시 만들거나 수정하지 않았으며 실제 모델의 응답·추론 품질은 미검증이다. 활성 빌드·시험은 없다. 아래 checkpoint382 이하는 당시 이력이다.
+<!-- CHECKPOINT383-END -->
+
 <!-- CHECKPOINT382-START -->
 ### Checkpoint382 — 같은 문제의 독립 담당 비교와 게시판/임무 결합
 
