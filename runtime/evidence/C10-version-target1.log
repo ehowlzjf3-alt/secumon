@@ -1,0 +1,164 @@
+✖ engine update sqlite: backup and runtime boundaries preserve data, and rollback changes only the engine pin (169669.489667ms)
+✖ engine update file-journal: backup and runtime boundaries preserve data, and rollback changes only the engine pin (76549.624708ms)
+✔ compatible full offline engine releases update an existing SQLite agent and resume its original adopted read with identity, session, memory and receipts preserved (179676.57925ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 246325.959791
+
+✖ failing tests:
+
+test at dist/tests/agent-engine-update-boundaries.test.js:14:5
+✖ engine update sqlite: backup and runtime boundaries preserve data, and rollback changes only the engine pin (169669.489667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        kind: 'directory',
+        path: '.secumon'
+      },
+  ...
+      {
+  +     bytes: 32768,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: '.secumon/channel.sqlite-shm',
+  +     sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb'
+  +   },
+  +   {
+  +     bytes: 0,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: '.secumon/channel.sqlite-wal',
+  +     sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+  +   },
+  +   {
+        kind: 'directory',
+        path: '.secumon/engine-pins'
+      },
+      {
+        bytes: 399,
+  ...
+      {
+  +     bytes: 32768,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: '.secumon/runtime.sqlite-shm',
+  +     sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb'
+  +   },
+  +   {
+  +     bytes: 0,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: '.secumon/runtime.sqlite-wal',
+  +     sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+  +   },
+  +   {
+        bytes: 265,
+        executable: false,
+        kind: 'file',
+        path: '.secumon/setup-operation.json',
+        sha256: '4bd165512ce8fc62b1ecfed3476ce35fe3ca314eeb5aafb44599c0d8c7edd0a3'
+  ...
+      {
+  +     bytes: 32768,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: 'memory/memory.sqlite-shm',
+  +     sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb'
+  +   },
+  +   {
+  +     bytes: 0,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: 'memory/memory.sqlite-wal',
+  +     sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+  +   },
+  +   {
+        kind: 'directory',
+        path: 'skills'
+      },
+      {
+        kind: 'directory',
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-engine-update-boundaries.test.js:86:20)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { kind: 'directory', path: '.secumon' }, { kind: 'directory', path: '.secumon/artifacts' }, { kind: 'file', path: '.secumon/channel.sqlite', bytes: 90112, sha256: '73ff80cee98e01b2a4786803b7533a4fcd450ccb006a306cafaf398836be5c38', executable: false }, { kind: 'file', path: '.secumon/channel.sqlite-shm', bytes: 32768, sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb', executable: false }, { kind: 'file', path: '.secumon/channel.sqlite-wal', bytes: 0, sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', executable: false }, { kind: 'directory', path: '.secumon/engine-pins' }, { kind: 'file', path: '.secumon/engine-pins/00000001.json', bytes: 399, sha256: '440b7a1653b9d5cd44163013cc4bf6d2eb043cabe66a37250cdcb70b0574b5da', executable: false }, { kind: 'file', path: '.secumon/identity.json', bytes: 108, sha256: '9fca5fc7fd236970bdd914dcd9650b746b8c01fe398ed6252f315e5f12538fae', executable: false }, { kind: 'file', path: '.secumon/personal-memory-profile.json', bytes: 101, sha256: 'f0680bd20b10faed196dc1a89a55a6e0603989b827856f44b350618ca4fdcfd2', executable: false }, { kind: 'directory', path: '.secumon/runtime-leases' }, { kind: 'file', path: '.secumon/runtime.sqlite', bytes: 77824, sha256: '9153672eccb86ced9493c9f9a4fa3ed90a7d26431496d05ab5f7770824ce125a', executable: false }, { kind: 'file', path: '.secumon/runtime.sqlite-shm', bytes: 32768, sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb', executable: false }, { kind: 'file', path: '.secumon/runtime.sqlite-wal', bytes: 0, sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', executable: false }, { kind: 'file', path: '.secumon/setup-operation.json', bytes: 265, sha256: '4bd165512ce8fc62b1ecfed3476ce35fe3ca314eeb5aafb44599c0d8c7edd0a3', executable: false }, { kind: 'file', path: '.secumon/setup.json', bytes: 78, sha256: 'e18d10cbfc609fead42a16fa4cb94b6f2726b8b1173a86716ee6e74a261539e3', executable: false }, { kind: 'file', path: '.secumon/state-profile.json', bytes: 106, sha256: '6186e834303322da2eef50cca3874ace88edd5e7a073cf879c82075934b7ee03', executable: false }, { kind: 'file', path: '.secumon/storage-selection.json', bytes: 98, sha256: '106482f8b0f77e6cc3ea91e41805b9ec6873a8fa66d267d7fd2a288b468afb69', executable: false }, { kind: 'file', path: 'after-backup.txt', bytes: 115, sha256: '29725289ace897889eaa914d5a027f34a47f6e939e38e100ab57468839dc5e75', executable: false }, { kind: 'file', path: 'config.json', bytes: 406, sha256: '0555adf741cffbf4ae291bda914467c6bad65d0490691202223ee78eb5270326', executable: false }, { kind: 'directory', path: 'memory' }, { kind: 'file', path: 'memory/memory.sqlite', bytes: 53248, sha256: '959354c9a8c6d605f1c188e8154e14c836593bfa250c702dc54bfccff6cb7773', executable: false }, { kind: 'file', path: 'memory/memory.sqlite-shm', bytes: 32768, sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb', executable: false }, { kind: 'file', path: 'memory/memory.sqlite-wal', bytes: 0, sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', executable: false }, { kind: 'directory', path: 'skills' }, { kind: 'directory', path: 'workspace' } ],
+    expected: [ { kind: 'directory', path: '.secumon' }, { kind: 'directory', path: '.secumon/artifacts' }, { kind: 'file', path: '.secumon/channel.sqlite', bytes: 90112, sha256: '73ff80cee98e01b2a4786803b7533a4fcd450ccb006a306cafaf398836be5c38', executable: false }, { kind: 'directory', path: '.secumon/engine-pins' }, { kind: 'file', path: '.secumon/engine-pins/00000001.json', bytes: 399, sha256: '440b7a1653b9d5cd44163013cc4bf6d2eb043cabe66a37250cdcb70b0574b5da', executable: false }, { kind: 'file', path: '.secumon/identity.json', bytes: 108, sha256: '9fca5fc7fd236970bdd914dcd9650b746b8c01fe398ed6252f315e5f12538fae', executable: false }, { kind: 'file', path: '.secumon/personal-memory-profile.json', bytes: 101, sha256: 'f0680bd20b10faed196dc1a89a55a6e0603989b827856f44b350618ca4fdcfd2', executable: false }, { kind: 'directory', path: '.secumon/runtime-leases' }, { kind: 'file', path: '.secumon/runtime.sqlite', bytes: 77824, sha256: '9153672eccb86ced9493c9f9a4fa3ed90a7d26431496d05ab5f7770824ce125a', executable: false }, { kind: 'file', path: '.secumon/setup-operation.json', bytes: 265, sha256: '4bd165512ce8fc62b1ecfed3476ce35fe3ca314eeb5aafb44599c0d8c7edd0a3', executable: false }, { kind: 'file', path: '.secumon/setup.json', bytes: 78, sha256: 'e18d10cbfc609fead42a16fa4cb94b6f2726b8b1173a86716ee6e74a261539e3', executable: false }, { kind: 'file', path: '.secumon/state-profile.json', bytes: 106, sha256: '6186e834303322da2eef50cca3874ace88edd5e7a073cf879c82075934b7ee03', executable: false }, { kind: 'file', path: '.secumon/storage-selection.json', bytes: 98, sha256: '106482f8b0f77e6cc3ea91e41805b9ec6873a8fa66d267d7fd2a288b468afb69', executable: false }, { kind: 'file', path: 'after-backup.txt', bytes: 115, sha256: '29725289ace897889eaa914d5a027f34a47f6e939e38e100ab57468839dc5e75', executable: false }, { kind: 'file', path: 'config.json', bytes: 406, sha256: '0555adf741cffbf4ae291bda914467c6bad65d0490691202223ee78eb5270326', executable: false }, { kind: 'directory', path: 'memory' }, { kind: 'file', path: 'memory/memory.sqlite', bytes: 53248, sha256: '959354c9a8c6d605f1c188e8154e14c836593bfa250c702dc54bfccff6cb7773', executable: false }, { kind: 'directory', path: 'skills' }, { kind: 'directory', path: 'workspace' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at dist/tests/agent-engine-update-boundaries.test.js:14:5
+✖ engine update file-journal: backup and runtime boundaries preserve data, and rollback changes only the engine pin (76549.624708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        kind: 'directory',
+        path: '.secumon'
+      },
+  ...
+      {
+  +     bytes: 32768,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: '.secumon/channel.sqlite-shm',
+  +     sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb'
+  +   },
+  +   {
+  +     bytes: 0,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: '.secumon/channel.sqlite-wal',
+  +     sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+  +   },
+  +   {
+        bytes: 157,
+        executable: false,
+        kind: 'file',
+        path: '.secumon/document-memory-ready.json',
+        sha256: '70c78aedce1779db9c383910eecf35b4c82bbd995f18721ab6ee246a9dff539b'
+  ...
+      {
+  +     bytes: 32768,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: 'memory/memory.sqlite-shm',
+  +     sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb'
+  +   },
+  +   {
+  +     bytes: 0,
+  +     executable: false,
+  +     kind: 'file',
+  +     path: 'memory/memory.sqlite-wal',
+  +     sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+  +   },
+  +   {
+        kind: 'directory',
+        path: 'skills'
+      },
+      {
+        kind: 'directory',
+  
+      at TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-engine-update-boundaries.test.js:86:20)
+      at async Test.run (node:internal/test_runner/test:1404:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:969:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { kind: 'directory', path: '.secumon' }, { kind: 'directory', path: '.secumon/artifacts' }, { kind: 'file', path: '.secumon/channel.sqlite', bytes: 90112, sha256: 'a872d87e4da6ada5a4b793187fb6ca99f2ebbbd63171c33d6d2a76dd98034b10', executable: false }, { kind: 'file', path: '.secumon/channel.sqlite-shm', bytes: 32768, sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb', executable: false }, { kind: 'file', path: '.secumon/channel.sqlite-wal', bytes: 0, sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', executable: false }, { kind: 'file', path: '.secumon/document-memory-ready.json', bytes: 157, sha256: '70c78aedce1779db9c383910eecf35b4c82bbd995f18721ab6ee246a9dff539b', executable: false }, { kind: 'directory', path: '.secumon/engine-pins' }, { kind: 'file', path: '.secumon/engine-pins/00000001.json', bytes: 399, sha256: '2fe9d45274030064a0fbe4344cf2647f56ca638061a008ba16837de4689af854', executable: false }, { kind: 'file', path: '.secumon/identity.json', bytes: 108, sha256: 'ce04bfa36068916a2b2cef25a5abb6e757a3671fd651632f004d38c1da73dd9d', executable: false }, { kind: 'file', path: '.secumon/personal-memory-profile.json', bytes: 157, sha256: '70c78aedce1779db9c383910eecf35b4c82bbd995f18721ab6ee246a9dff539b', executable: false }, { kind: 'directory', path: '.secumon/runtime-leases' }, { kind: 'file', path: '.secumon/setup-operation.json', bytes: 380, sha256: '3532bcd07fc196b247ad8a33b948633bbe42339134418196cd59cd15e81f151d', executable: false }, { kind: 'file', path: '.secumon/setup.json', bytes: 78, sha256: '08e6864422ee0ca8157d63e78cc2b1b024a7ce4f693c756c123bcf6c025b25e2', executable: false }, { kind: 'directory', path: '.secumon/state-journal' }, { kind: 'file', path: '.secumon/state-journal/format.json', bytes: 177, sha256: 'a4bb13d56ace601e76b725f5abd501dea79327a09154b72cccb9231dbbfafbb5', executable: false }, { kind: 'file', path: '.secumon/state-profile.json', bytes: 112, sha256: '748dcfbac5c96b35ca373760c998af3c1ed573ea79cca4d6a562544ce1b27a48', executable: false }, { kind: 'file', path: '.secumon/storage-selection.json', bytes: 98, sha256: 'fe7ff185dc1d34cd23b1f64ceaf416d823e75f5b318e79339c772418ffe1fcd8', executable: false }, { kind: 'file', path: 'after-backup.txt', bytes: 115, sha256: '29725289ace897889eaa914d5a027f34a47f6e939e38e100ab57468839dc5e75', executable: false }, { kind: 'file', path: 'config.json', bytes: 529, sha256: '7bc4e791f1e4e639518bb1f897b756ba25f3e01611a4012726e9daf5de5cfa80', executable: false }, { kind: 'directory', path: 'memory' }, { kind: 'directory', path: 'memory/documents' }, { kind: 'file', path: 'memory/documents/format.json', bytes: 62, sha256: '0c825cf474c3a82a9211030c523275de42dd28c9fff5a70d2302e14249aadafe', executable: false }, { kind: 'file', path: 'memory/documents/owner.json', bytes: 145, sha256: 'c40c08f3cae7e5a6bd9f68fb65ee7bc0f8603702d511b1e3e6f75839c1f93ccc', executable: false }, { kind: 'file', path: 'memory/memory.sqlite', bytes: 53248, sha256: '0f73daa6a9b6786a653e083e42b8a3d357c2b0c5a96144ad2df414ebe3257bce', executable: false }, { kind: 'file', path: 'memory/memory.sqlite-shm', bytes: 32768, sha256: 'fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb', executable: false }, { kind: 'file', path: 'memory/memory.sqlite-wal', bytes: 0, sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', executable: false }, { kind: 'directory', path: 'skills' }, { kind: 'directory', path: 'workspace' } ],
+    expected: [ { kind: 'directory', path: '.secumon' }, { kind: 'directory', path: '.secumon/artifacts' }, { kind: 'file', path: '.secumon/channel.sqlite', bytes: 90112, sha256: 'a872d87e4da6ada5a4b793187fb6ca99f2ebbbd63171c33d6d2a76dd98034b10', executable: false }, { kind: 'file', path: '.secumon/document-memory-ready.json', bytes: 157, sha256: '70c78aedce1779db9c383910eecf35b4c82bbd995f18721ab6ee246a9dff539b', executable: false }, { kind: 'directory', path: '.secumon/engine-pins' }, { kind: 'file', path: '.secumon/engine-pins/00000001.json', bytes: 399, sha256: '2fe9d45274030064a0fbe4344cf2647f56ca638061a008ba16837de4689af854', executable: false }, { kind: 'file', path: '.secumon/identity.json', bytes: 108, sha256: 'ce04bfa36068916a2b2cef25a5abb6e757a3671fd651632f004d38c1da73dd9d', executable: false }, { kind: 'file', path: '.secumon/personal-memory-profile.json', bytes: 157, sha256: '70c78aedce1779db9c383910eecf35b4c82bbd995f18721ab6ee246a9dff539b', executable: false }, { kind: 'directory', path: '.secumon/runtime-leases' }, { kind: 'file', path: '.secumon/setup-operation.json', bytes: 380, sha256: '3532bcd07fc196b247ad8a33b948633bbe42339134418196cd59cd15e81f151d', executable: false }, { kind: 'file', path: '.secumon/setup.json', bytes: 78, sha256: '08e6864422ee0ca8157d63e78cc2b1b024a7ce4f693c756c123bcf6c025b25e2', executable: false }, { kind: 'directory', path: '.secumon/state-journal' }, { kind: 'file', path: '.secumon/state-journal/format.json', bytes: 177, sha256: 'a4bb13d56ace601e76b725f5abd501dea79327a09154b72cccb9231dbbfafbb5', executable: false }, { kind: 'file', path: '.secumon/state-profile.json', bytes: 112, sha256: '748dcfbac5c96b35ca373760c998af3c1ed573ea79cca4d6a562544ce1b27a48', executable: false }, { kind: 'file', path: '.secumon/storage-selection.json', bytes: 98, sha256: 'fe7ff185dc1d34cd23b1f64ceaf416d823e75f5b318e79339c772418ffe1fcd8', executable: false }, { kind: 'file', path: 'after-backup.txt', bytes: 115, sha256: '29725289ace897889eaa914d5a027f34a47f6e939e38e100ab57468839dc5e75', executable: false }, { kind: 'file', path: 'config.json', bytes: 529, sha256: '7bc4e791f1e4e639518bb1f897b756ba25f3e01611a4012726e9daf5de5cfa80', executable: false }, { kind: 'directory', path: 'memory' }, { kind: 'directory', path: 'memory/documents' }, { kind: 'file', path: 'memory/documents/format.json', bytes: 62, sha256: '0c825cf474c3a82a9211030c523275de42dd28c9fff5a70d2302e14249aadafe', executable: false }, { kind: 'file', path: 'memory/documents/owner.json', bytes: 145, sha256: 'c40c08f3cae7e5a6bd9f68fb65ee7bc0f8603702d511b1e3e6f75839c1f93ccc', executable: false }, { kind: 'file', path: 'memory/memory.sqlite', bytes: 53248, sha256: '0f73daa6a9b6786a653e083e42b8a3d357c2b0c5a96144ad2df414ebe3257bce', executable: false }, { kind: 'directory', path: 'skills' }, { kind: 'directory', path: 'workspace' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

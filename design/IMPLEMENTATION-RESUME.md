@@ -4,6 +4,20 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT384-START -->
+### Checkpoint384 — 호환 배포본 전환과 담당 연속성
+
+C10의 실제 코드가 다른 두 호환 시험 release 설치/전환과 기존 업무 재개를 확인했다. 신규3개·관련11개, 합계14개가 통과했다. build1 통합1/관련11, build2 교정2의 소스별 기록이며 전체14개를 최종 소스에서 재실행한 것은 아니다. 제품 코드는 재사용했고 신규 시험과 문서를 추가했다.
+
+설치 A의 원 사용자 입력·명시 개인 기억·미완료 조회를 보존하고 check→pin→backup→B update→동일 신원/세션/기억 재열기→B CLI 원 업무 resume을 실행했다. 실제 B formatter 표시를 확인했고 모델1→2회·도구1→1회로 조회를 반복하지 않았다. SQLite와 file-journal+documents의 백업/lease/호환 거절, 현재 자료 백업을 요구하는 엔진 되돌리기와 자료 보존도 확인했다.
+
+최종 build2 exit0·Node v24.20.0 darwin arm64·2,343파일 대조 일치, sourceDigest ceb819314182bc90259dab9a79c636fc31a6dff2ab276068c3af57e70702cd2a다. core1 exit0·구조198개/위반0은 build1 기록이며 이후 제품 변경 없이 경계 시험 한 파일만 교정했다. [결과](chapters/C10-version-transition-result.md) · [체크포인트](../runtime/evidence/checkpoint384.json) · [소스 대조](../runtime/evidence/checkpoint384-final-source.json).
+
+최초 경계2개 실패는 읽기 전용 SQLite가 만든 SHM/빈WAL을 불변 업무 파일로 오인한 fixture였다. 정확한 관리 파일만 정규화하고 DB본문·내용 있는WAL·원문 비교를 유지했다. 두 담당의 공통 설치본 재사용으로 반복 복사도 줄였다. 빌드/실패 원로그를 보존하며 성능 개선이나 실제 모델 품질로 확대하지 않는다.
+
+다음은 **전역 명령의 담당별 고정 엔진 선택과 공통 확장 호환 선언/기동·check/pin/update 검사 연결**이다. 현재 설치 CLI 직접 실행을 전역 자동 선택의 완료로 보지 않는다. 저장 schema 이행·compact 세션의 버전 전환·미확정 외부 효과 복구·현재 Linux/native Windows·실제 PostgreSQL/사내 서비스·운영 배포·최종 통합은 남아 있다. C09/C05/C06 후속도 보존하며 C10과 전체 goal은 미완료다. 실제 모델/API 중단과 외부 서비스 연결0회를 유지한다. 활성 빌드·시험은 없다. 아래 checkpoint383 이하는 당시 이력이다.
+<!-- CHECKPOINT384-END -->
+
 <!-- CHECKPOINT383-START -->
 ### Checkpoint383 — 여러 임무의 종료와 완료 직후 복구
 
