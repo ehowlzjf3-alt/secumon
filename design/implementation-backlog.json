@@ -1,5 +1,5 @@
 {
-  "revision": "v0.76",
+  "revision": "v0.77",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1922,7 +1922,7 @@
     "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
     "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
   },
-  "next_local_work_item": "C09 complete and verify cancel, goal-change and pause controls for persistent assignments; preserve session context and distinguish stopping work from ending an agent",
+  "next_local_work_item": "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
   "execution_state": "ordered_verification_active",
@@ -4756,46 +4756,71 @@
         "firstUnit": "A2A off/on registration, acknowledgement then explicit execution, redelivery and caller isolation"
       },
       "ordered_verification": {
-        "checkpoint": 383,
-        "status": "C09_terminal_recovery_local_verified_C10_next",
-        "baselineCommit": "32739e5fab460fc9fd4e1de07bce6d21dae7b69a",
-        "result": "design/chapters/C09-mission-terminal-recovery-result.md",
-        "evidence": "runtime/evidence/checkpoint383.json",
-        "newUnique": 12,
-        "relatedUnique": 22,
-        "allUnique": 34,
+        "checkpoint": 393,
+        "status": "C09_mission_controls_local_verified",
+        "baselineCommit": "bf61a44ea229edd554d5842d4c72513b17638ffe",
+        "plan": "design/chapters/C09-mission-controls-plan.md",
+        "result": "design/chapters/C09-mission-controls-result.md",
+        "usage": "design/chapters/C09-mission-controls-usage.md",
+        "evidence": "runtime/evidence/checkpoint393.json",
+        "newUnique": 11,
+        "relatedUnique": 31,
+        "allUnique": 42,
         "mixedBuildEvidence": false,
         "allRerunAtFinalSource": true,
-        "finalBuild": "C09-terminal-build3",
-        "finalTarget": "C09-terminal-target3",
+        "finalBuild": "C09-mission-controls-build2",
         "finalSource": {
-          "build": "C09-terminal-build3",
+          "build": "C09-mission-controls-build2",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "bbb11a312e4f9def1dc71cdc13e569b5033c09a5c4aec84c89df8a85c71972d7",
-          "filesDigest": "fecdb108222d1152aac9ee4135ca88d10ad703526757a52dd12ee4ffac76d28f",
-          "fileCount": 2331,
-          "allOutputsMatch": true
+          "sourceDigest": "9b047577ef2c8fb4daea2747d2420dcfa4bf826da27dc54c715c11bb8474feca",
+          "filesDigest": "f7d975c3eabeefee37151b976eda5575398db11f93439943932be0eca6bc0069",
+          "fileCount": 2493
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint383-final-source.json",
+        "finalSourceEvidence": "runtime/evidence/checkpoint393-final-source.json",
         "checks": {
+          "buildExitCode": 0,
           "coreExitCode": 0,
-          "architectureInspected": 198,
-          "architectureViolations": 0
+          "coreBuild": "build2",
+          "coreLog": "runtime/evidence/C09-mission-controls-core2.log",
+          "architectureInspected": 202,
+          "architectureViolations": 0,
+          "architectureLog": "runtime/evidence/C09-mission-controls-architecture1.log",
+          "architectureBuild": "build1",
+          "architectureReuse": "Only an optional resident counter and repeated-cycle test changed after build1; import graph unchanged"
         },
+        "verifiedScope": [
+          "Actual local profiles and SQLite with deterministic callbacks: resident pause/reopen/resume/repeated transitions preserve pending events and conversation, stop is permanent and paused polling/model invocation is zero",
+          "Explicitly saved personal memory card retains full content, source metadata and identity after reopen/resume/stop; other agent cannot read it",
+          "Original event intake before controller receipt plus later goal change reopens as the same work without inference; explicit workflow processes the new goal and later events retain the same session",
+          "In-flight goal changes stop the old resident workflow after the observed command; late gated poll pages are rejected and resume uses the same cursor",
+          "Actual per-work commands pause/cancel/goal in real workflow.onStep; pause retains events/ACK/claim-null and explicit resume executes existing work, cancel/goal preserve old originals without extra calls",
+          "Idle pause/resume chains then goal change, untouched host-closed rules, new rule at new goal, and altered command receipt/current authority refusal",
+          "Existing mission runtime, native read ACK, resident session/compact/intake and terminal recovery regression on the same final source"
+        ],
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
-        "mainPrompt": "implemented_and_wired_actual_model_quality_unverified",
+        "notRun": [
+          "Actual model/API quality: stopped by user",
+          "SIGKILL in this unit; prior crash evidence remains historical",
+          "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
+        ],
         "remaining": [
-          "C10 different valid release update and same identity/session/memory reopen",
-          "C09 cancel/goal-change/pause terminal semantics; file-journal commit-unknown injection; long event-history read cost",
-          "C05 permission reallow and explicit resume through stored collection completion",
-          "C06 memory HTTP latency/permission usability and real browser rendering",
-          "Current Linux/native Windows, real PostgreSQL/corporate MCP/Knox/external A2A, deployment and final integration"
+          "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+          "C09 file-journal commit-unknown injection, long history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+          "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
         ],
         "goalComplete": false,
-        "chapterComplete": false
+        "chapterComplete": false,
+        "next": "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+        "notImplementedThisUnit": [
+          "New resident pause/resume CLI/Web/Knox commands; the host composition API is implemented",
+          "Durable work controls immediately aborting a noncooperative outstanding source poll",
+          "Retired rule ID reuse across repeated goal revisions"
+        ]
       },
       "mission_verification": {
         "checkpoint": 381,
@@ -5082,6 +5107,73 @@
         ],
         "goalComplete": false,
         "chapterComplete": false
+      },
+      "mission_controls_verification": {
+        "checkpoint": 393,
+        "status": "C09_mission_controls_local_verified",
+        "baselineCommit": "bf61a44ea229edd554d5842d4c72513b17638ffe",
+        "plan": "design/chapters/C09-mission-controls-plan.md",
+        "result": "design/chapters/C09-mission-controls-result.md",
+        "usage": "design/chapters/C09-mission-controls-usage.md",
+        "evidence": "runtime/evidence/checkpoint393.json",
+        "newUnique": 11,
+        "relatedUnique": 31,
+        "allUnique": 42,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-mission-controls-build2",
+        "finalSource": {
+          "build": "C09-mission-controls-build2",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "9b047577ef2c8fb4daea2747d2420dcfa4bf826da27dc54c715c11bb8474feca",
+          "filesDigest": "f7d975c3eabeefee37151b976eda5575398db11f93439943932be0eca6bc0069",
+          "fileCount": 2493
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint393-final-source.json",
+        "checks": {
+          "buildExitCode": 0,
+          "coreExitCode": 0,
+          "coreBuild": "build2",
+          "coreLog": "runtime/evidence/C09-mission-controls-core2.log",
+          "architectureInspected": 202,
+          "architectureViolations": 0,
+          "architectureLog": "runtime/evidence/C09-mission-controls-architecture1.log",
+          "architectureBuild": "build1",
+          "architectureReuse": "Only an optional resident counter and repeated-cycle test changed after build1; import graph unchanged"
+        },
+        "verifiedScope": [
+          "Actual local profiles and SQLite with deterministic callbacks: resident pause/reopen/resume/repeated transitions preserve pending events and conversation, stop is permanent and paused polling/model invocation is zero",
+          "Explicitly saved personal memory card retains full content, source metadata and identity after reopen/resume/stop; other agent cannot read it",
+          "Original event intake before controller receipt plus later goal change reopens as the same work without inference; explicit workflow processes the new goal and later events retain the same session",
+          "In-flight goal changes stop the old resident workflow after the observed command; late gated poll pages are rejected and resume uses the same cursor",
+          "Actual per-work commands pause/cancel/goal in real workflow.onStep; pause retains events/ACK/claim-null and explicit resume executes existing work, cancel/goal preserve old originals without extra calls",
+          "Idle pause/resume chains then goal change, untouched host-closed rules, new rule at new goal, and altered command receipt/current authority refusal",
+          "Existing mission runtime, native read ACK, resident session/compact/intake and terminal recovery regression on the same final source"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Actual model/API quality: stopped by user",
+          "SIGKILL in this unit; prior crash evidence remains historical",
+          "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
+        ],
+        "remaining": [
+          "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+          "C09 file-journal commit-unknown injection, long history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+          "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+        "notImplementedThisUnit": [
+          "New resident pause/resume CLI/Web/Knox commands; the host composition API is implemented",
+          "Durable work controls immediately aborting a noncooperative outstanding source poll",
+          "Retired rule ID reuse across repeated goal revisions"
+        ]
       }
     },
     {
@@ -5794,13 +5886,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 392,
-      "status": "C10_restore_recovery_application_local_verified",
-      "plan": "design/chapters/C10-restore-recovery-apply-plan.md",
+      "checkpoint": 393,
+      "status": "C09_mission_controls_local_verified",
+      "plan": "design/chapters/C09-mission-controls-plan.md",
       "nextChapter": "C09",
       "preparedIdentityTests": 22,
       "existingFixtureFilesAdapted": 4,
-      "result": "design/chapters/C10-restore-recovery-apply-result.md",
+      "result": "design/chapters/C09-mission-controls-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -5915,11 +6007,11 @@
         ]
       },
       "remaining": [
-        "C09 complete and verify cancel, goal-change and pause controls for persistent assignments; preserve session context and distinguish stopping work from ending an agent",
-        "C09 journal commit-unknown and history/context cost; C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
-        "C10 earliest interruption before a trustworthy application intent or restore marker remains preserved but unidentified; verify the remaining recovery/installation acceptance without adopting unrelated directories",
-        "C10 current Linux/native Windows runtime, real PostgreSQL restore/recovery, installed native addon availability and platform packaging efficiency",
-        "Actual corporate MCP/Knox/external A2A, deployment/final integration; actual model/API trials remain stopped"
+        "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+        "C09 file-journal commit-unknown injection, long history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+        "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+        "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+        "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
       ],
       "history": [
         {
@@ -5987,6 +6079,12 @@
           "nextChapter": "C07",
           "C06UniqueTests": 16,
           "result": "design/chapters/C06-ordered-verification-result.md"
+        },
+        {
+          "checkpoint": 392,
+          "status": "C10_restore_recovery_application_local_verified",
+          "nextChapter": "C09",
+          "evidence": "runtime/evidence/checkpoint392.json"
         }
       ],
       "C03": {
@@ -6102,46 +6200,71 @@
       },
       "C09Preparation": "design/chapters/C09-ordered-verification-preparation.md",
       "C09": {
-        "checkpoint": 383,
-        "status": "C09_terminal_recovery_local_verified_C10_next",
-        "baselineCommit": "32739e5fab460fc9fd4e1de07bce6d21dae7b69a",
-        "result": "design/chapters/C09-mission-terminal-recovery-result.md",
-        "evidence": "runtime/evidence/checkpoint383.json",
-        "newUnique": 12,
-        "relatedUnique": 22,
-        "allUnique": 34,
+        "checkpoint": 393,
+        "status": "C09_mission_controls_local_verified",
+        "baselineCommit": "bf61a44ea229edd554d5842d4c72513b17638ffe",
+        "plan": "design/chapters/C09-mission-controls-plan.md",
+        "result": "design/chapters/C09-mission-controls-result.md",
+        "usage": "design/chapters/C09-mission-controls-usage.md",
+        "evidence": "runtime/evidence/checkpoint393.json",
+        "newUnique": 11,
+        "relatedUnique": 31,
+        "allUnique": 42,
         "mixedBuildEvidence": false,
         "allRerunAtFinalSource": true,
-        "finalBuild": "C09-terminal-build3",
-        "finalTarget": "C09-terminal-target3",
+        "finalBuild": "C09-mission-controls-build2",
         "finalSource": {
-          "build": "C09-terminal-build3",
+          "build": "C09-mission-controls-build2",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "bbb11a312e4f9def1dc71cdc13e569b5033c09a5c4aec84c89df8a85c71972d7",
-          "filesDigest": "fecdb108222d1152aac9ee4135ca88d10ad703526757a52dd12ee4ffac76d28f",
-          "fileCount": 2331,
-          "allOutputsMatch": true
+          "sourceDigest": "9b047577ef2c8fb4daea2747d2420dcfa4bf826da27dc54c715c11bb8474feca",
+          "filesDigest": "f7d975c3eabeefee37151b976eda5575398db11f93439943932be0eca6bc0069",
+          "fileCount": 2493
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint383-final-source.json",
+        "finalSourceEvidence": "runtime/evidence/checkpoint393-final-source.json",
         "checks": {
+          "buildExitCode": 0,
           "coreExitCode": 0,
-          "architectureInspected": 198,
-          "architectureViolations": 0
+          "coreBuild": "build2",
+          "coreLog": "runtime/evidence/C09-mission-controls-core2.log",
+          "architectureInspected": 202,
+          "architectureViolations": 0,
+          "architectureLog": "runtime/evidence/C09-mission-controls-architecture1.log",
+          "architectureBuild": "build1",
+          "architectureReuse": "Only an optional resident counter and repeated-cycle test changed after build1; import graph unchanged"
         },
+        "verifiedScope": [
+          "Actual local profiles and SQLite with deterministic callbacks: resident pause/reopen/resume/repeated transitions preserve pending events and conversation, stop is permanent and paused polling/model invocation is zero",
+          "Explicitly saved personal memory card retains full content, source metadata and identity after reopen/resume/stop; other agent cannot read it",
+          "Original event intake before controller receipt plus later goal change reopens as the same work without inference; explicit workflow processes the new goal and later events retain the same session",
+          "In-flight goal changes stop the old resident workflow after the observed command; late gated poll pages are rejected and resume uses the same cursor",
+          "Actual per-work commands pause/cancel/goal in real workflow.onStep; pause retains events/ACK/claim-null and explicit resume executes existing work, cancel/goal preserve old originals without extra calls",
+          "Idle pause/resume chains then goal change, untouched host-closed rules, new rule at new goal, and altered command receipt/current authority refusal",
+          "Existing mission runtime, native read ACK, resident session/compact/intake and terminal recovery regression on the same final source"
+        ],
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
-        "mainPrompt": "implemented_and_wired_actual_model_quality_unverified",
+        "notRun": [
+          "Actual model/API quality: stopped by user",
+          "SIGKILL in this unit; prior crash evidence remains historical",
+          "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
+        ],
         "remaining": [
-          "C10 different valid release update and same identity/session/memory reopen",
-          "C09 cancel/goal-change/pause terminal semantics; file-journal commit-unknown injection; long event-history read cost",
-          "C05 permission reallow and explicit resume through stored collection completion",
-          "C06 memory HTTP latency/permission usability and real browser rendering",
-          "Current Linux/native Windows, real PostgreSQL/corporate MCP/Knox/external A2A, deployment and final integration"
+          "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+          "C09 file-journal commit-unknown injection, long history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+          "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
         ],
         "goalComplete": false,
-        "chapterComplete": false
+        "chapterComplete": false,
+        "next": "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+        "notImplementedThisUnit": [
+          "New resident pause/resume CLI/Web/Knox commands; the host composition API is implemented",
+          "Durable work controls immediately aborting a noncooperative outstanding source poll",
+          "Retired rule ID reuse across repeated goal revisions"
+        ]
       },
       "C09A2A": {
         "checkpoint": 380,
@@ -6605,6 +6728,73 @@
         "goalComplete": false,
         "chapterComplete": false,
         "next": "C10 apply a verified complete recovery package: recheck the current basis, preserve the exact original directory with host-supported custody and interruption recovery, restore the selected backup at its original root, rebind identity and require fresh external reconciliation before ordinary resume"
+      },
+      "C09MissionControls": {
+        "checkpoint": 393,
+        "status": "C09_mission_controls_local_verified",
+        "baselineCommit": "bf61a44ea229edd554d5842d4c72513b17638ffe",
+        "plan": "design/chapters/C09-mission-controls-plan.md",
+        "result": "design/chapters/C09-mission-controls-result.md",
+        "usage": "design/chapters/C09-mission-controls-usage.md",
+        "evidence": "runtime/evidence/checkpoint393.json",
+        "newUnique": 11,
+        "relatedUnique": 31,
+        "allUnique": 42,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-mission-controls-build2",
+        "finalSource": {
+          "build": "C09-mission-controls-build2",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "9b047577ef2c8fb4daea2747d2420dcfa4bf826da27dc54c715c11bb8474feca",
+          "filesDigest": "f7d975c3eabeefee37151b976eda5575398db11f93439943932be0eca6bc0069",
+          "fileCount": 2493
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint393-final-source.json",
+        "checks": {
+          "buildExitCode": 0,
+          "coreExitCode": 0,
+          "coreBuild": "build2",
+          "coreLog": "runtime/evidence/C09-mission-controls-core2.log",
+          "architectureInspected": 202,
+          "architectureViolations": 0,
+          "architectureLog": "runtime/evidence/C09-mission-controls-architecture1.log",
+          "architectureBuild": "build1",
+          "architectureReuse": "Only an optional resident counter and repeated-cycle test changed after build1; import graph unchanged"
+        },
+        "verifiedScope": [
+          "Actual local profiles and SQLite with deterministic callbacks: resident pause/reopen/resume/repeated transitions preserve pending events and conversation, stop is permanent and paused polling/model invocation is zero",
+          "Explicitly saved personal memory card retains full content, source metadata and identity after reopen/resume/stop; other agent cannot read it",
+          "Original event intake before controller receipt plus later goal change reopens as the same work without inference; explicit workflow processes the new goal and later events retain the same session",
+          "In-flight goal changes stop the old resident workflow after the observed command; late gated poll pages are rejected and resume uses the same cursor",
+          "Actual per-work commands pause/cancel/goal in real workflow.onStep; pause retains events/ACK/claim-null and explicit resume executes existing work, cancel/goal preserve old originals without extra calls",
+          "Idle pause/resume chains then goal change, untouched host-closed rules, new rule at new goal, and altered command receipt/current authority refusal",
+          "Existing mission runtime, native read ACK, resident session/compact/intake and terminal recovery regression on the same final source"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Actual model/API quality: stopped by user",
+          "SIGKILL in this unit; prior crash evidence remains historical",
+          "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
+        ],
+        "remaining": [
+          "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+          "C09 file-journal commit-unknown injection, long history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+          "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+        "notImplementedThisUnit": [
+          "New resident pause/resume CLI/Web/Knox commands; the host composition API is implemented",
+          "Durable work controls immediately aborting a noncooperative outstanding source poll",
+          "Retired rule ID reuse across repeated goal revisions"
+        ]
       }
     }
   }

@@ -20,7 +20,8 @@ export const ResidentMissionSchema = z.strictObject({ rule: MissionRuleSchema, s
 export type ResidentMission = z.infer<typeof ResidentMissionSchema>;
 const CheckpointSchema = z.strictObject({ schemaVersion: z.literal(1), workId: id, agentId: id, controllerSessionId: id, createdAt: count, generation: count,
   definition: ResidentMissionSchema, cursor: count, snapshotDigest: z.string().max(256).nullable(), nextPollAt: count, idlePolls: count,
-  status: z.enum(['active', 'closed']), reason: z.string().max(256).nullable(), claim: z.strictObject({ owner: id, until: count }).nullable(),
+  status: z.enum(['active', 'closed']), suspended: z.boolean().optional(), controlRevision: count.optional(),
+  reason: z.string().max(256).nullable(), claim: z.strictObject({ owner: id, until: count }).nullable(),
   seen: z.array(z.strictObject({ id, digest: hash, workId: id })).max(512),
   pending: z.array(z.strictObject({ event: MissionEventSchema, workId: id.nullable(), started: z.boolean() })).max(32) });
 type Checkpoint = z.infer<typeof CheckpointSchema>;
@@ -159,13 +160,35 @@ export class ResidentMissions {
   }
   async status(workId: string) {
     const { checkpoint } = await this.read(workId);
-    return { workId, sessionId: checkpoint.definition.sessionId, rule: checkpoint.definition.rule, status: checkpoint.status, reason: checkpoint.reason,
+    return { workId, sessionId: checkpoint.definition.sessionId, rule: checkpoint.definition.rule,
+      status: checkpoint.status === 'closed' ? 'closed' as const : checkpoint.suspended ? 'paused' as const : 'active' as const, reason: checkpoint.reason,
       cursor: checkpoint.cursor, nextPollAt: checkpoint.nextPollAt, events: checkpoint.seen, pending: checkpoint.pending.map(item => ({ eventId: item.event.id, workId: item.workId })) };
+  }
+  /** Observation control is separate from commands on already accepted event work. */
+  async pause(workId: string) {
+    const { state, checkpoint } = await this.read(workId);
+    if (checkpoint.status === 'closed') throw new Error('resident_mission_closed');
+    if (!checkpoint.suspended) {
+      checkpoint.controlRevision = (checkpoint.controlRevision ?? 0) + 1;
+      checkpoint.suspended = true; checkpoint.reason = 'host_paused'; checkpoint.claim = null; await this.save(state, checkpoint);
+    }
+    return this.status(workId);
+  }
+  async resume(workId: string) {
+    const { state, checkpoint } = await this.read(workId);
+    if (checkpoint.status === 'closed') throw new Error('resident_mission_closed');
+    if (checkpoint.suspended) {
+      // Returning to the same visible state is a new control, not a replay of an earlier checkpoint publication.
+      checkpoint.controlRevision = (checkpoint.controlRevision ?? 0) + 1;
+      delete checkpoint.suspended; checkpoint.reason = null; checkpoint.claim = null; await this.save(state, checkpoint);
+    }
+    return this.status(workId);
   }
   async close(workId: string) { const { state, checkpoint } = await this.read(workId); checkpoint.status = 'closed'; checkpoint.reason = 'host_closed'; checkpoint.claim = null; await this.save(state, checkpoint); }
   async tick(workId: string, options: Pick<WorkflowRunOptions, 'maxSteps' | 'onStep'> = {}) {
     let { state, checkpoint } = await this.read(workId); const now = this.deps.services.clock.now();
     if (checkpoint.status === 'closed') return { kind: 'closed' as const, reason: checkpoint.reason };
+    if (checkpoint.suspended) return { kind: 'paused' as const, reason: 'host_paused' };
     if (checkpoint.claim && checkpoint.claim.until > now) return { kind: 'wait' as const, reason: 'resident_claim_active', wakeAt: checkpoint.claim.until };
     if (!checkpoint.pending.length && checkpoint.nextPollAt > now) return { kind: 'wait' as const, reason: 'resident_poll_wait', wakeAt: checkpoint.nextPollAt };
     const owner = this.deps.services.ids.next('resident-claim'); checkpoint.claim = { owner, until: now + 60000 }; state = await this.save(state, checkpoint);
@@ -206,19 +229,36 @@ export class ResidentMissions {
         this.remember(checkpoint, pending.event, accepted.workId);
         state = await this.save(state, checkpoint);
       }
-      const current = checkpoint.pending[0]!, eventWorkId = current.workId!; let eventState = await this.state(eventWorkId);
-      if (eventState.conversation?.session?.scope.sessionId !== checkpoint.definition.sessionId ||
-        eventState.goal.responseRequirement?.requestMessageId !== this.messageId(workId, current.event) ||
-        eventState.goal.description !== this.eventText(checkpoint.definition, current.event)) throw new Error('resident_event_work_mismatch');
+      let current = checkpoint.pending[0]!; const eventWorkId = current.workId!;
+      // An event's immutable intake owns its identity. A later user goal is not a corrupt event or a new observation.
+      if (await this.historicalEvent(workId, checkpoint, current.event) !== eventWorkId) throw new Error('resident_event_work_mismatch');
+      await refresh();
+      current = checkpoint.pending[0]!;
+      if (current.workId !== eventWorkId) throw new Error('resident_event_work_mismatch');
+      let eventState = await this.state(eventWorkId);
+      const originalGoalRevision = 1;
+      let goalChanged = eventState.goal.revision !== originalGoalRevision;
       const alreadyRun = current.started && eventState.status === 'waiting';
       let result: Awaited<ReturnType<WorkflowRuntime['run']>> | null = null;
-      if (!terminal(eventState) && !alreadyRun) {
+      if (!goalChanged && !terminal(eventState) && !alreadyRun) {
         current.started = true; state = await this.save(state, checkpoint);
-        result = await this.deps.workflow.run(eventWorkId, this.#actor, options); eventState = await this.state(eventWorkId); await refresh();
+        const onStep = async () => {
+          await options.onStep?.();
+          if ((await this.state(eventWorkId)).goal.revision !== originalGoalRevision) throw new Error('resident_event_goal_changed');
+        };
+        await refresh();
+        try { result = await this.deps.workflow.run(eventWorkId, this.#actor, { ...options, expectedGoalRevision: originalGoalRevision, onStep }); }
+        catch (error) {
+          // Only an observed goal change explains this stop; unrelated workflow failures remain failures.
+          if (!(error instanceof Error) || !['resident_event_goal_changed', 'stale_user_command'].includes(error.message) ||
+            (await this.state(eventWorkId)).goal.revision === originalGoalRevision) throw error;
+        }
+        eventState = await this.state(eventWorkId); goalChanged = eventState.goal.revision !== originalGoalRevision; await refresh();
       }
       // Waiting work remains independently resumable; it is not repeatedly inferred merely because the driver polls.
       checkpoint.pending.shift(); state = await this.save(state, checkpoint);
-      return { kind: 'event' as const, eventId: current.event.id, workId: eventWorkId, sessionId: checkpoint.definition.sessionId, status: eventState.status, result };
+      return { kind: 'event' as const, eventId: current.event.id, workId: eventWorkId, sessionId: checkpoint.definition.sessionId, status: eventState.status, result,
+        continuation: goalChanged ? 'explicit_resume_required' as const : 'event_work' as const };
     } catch (error) { primary = { error }; throw error; }
     finally {
       try {
@@ -250,7 +290,7 @@ export class ResidentMissions {
         const result = await runner.tick(workId, { ...(options.maxSteps === undefined ? {} : { maxSteps: options.maxSteps }),
           onStep: async () => { signal.throwIfAborted(); await options.onStep?.(); signal.throwIfAborted(); } });
         ticks++;
-        if (result.kind === 'closed') return { kind: 'closed' as const, ticks, reason: result.reason };
+        if (result.kind === 'closed' || result.kind === 'paused') return { kind: result.kind, ticks, reason: result.reason };
         if (limits.maxTicks !== undefined && ticks >= limits.maxTicks) break;
         const current = result.kind === 'event' ? await runner.status(workId) : null;
         const wakeAt = result.kind === 'wait' ? result.wakeAt : current!.pending.length ? this.deps.services.clock.now() : current!.nextPollAt;

@@ -1,5 +1,7 @@
 # 범용 롱 호라이즌 런타임
 
+2026-09-08 checkpoint393: 상시 관측 pause/resume과 개별 업무 pause/cancel/goal 변경을 구분해 연결했다. 원 세션·사건·개인 기억은 유지하며 변경한 목표는 명시 재개한다. 같은 최종 build2 신규11+관련31=42개 로컬 통과; 실제 모델/API·사내 연동·이번 플랫폼/설치형 인수는 미실행이다. [사용법](../design/chapters/C09-mission-controls-usage.md) · [결과](../design/chapters/C09-mission-controls-result.md) · [다음 작업](../design/NEXT-STEPS.md). 아래 이전 체크포인트는 당시 이력이다.
+
 최종 정리: 추출한 시험 fixture의 마지막 빈 줄만 제거하고 build4를 생성했다. 2,487개 컴파일 파일의 전체 지문이 시험한 build3과 정확히 같아 시험을 반복하지 않았다. 실행한60개 시험은 build3 기록이며 최종 소스·동일 바이너리 대조는 checkpoint392-final-source.json에 구분해 저장했다.
 
 2026-09-08 · checkpoint392 · 기준선 `955b1de`. 준비한 전체 회복 후보를 실제 담당 경로에 적용하는 API·CLI를 연결했다. 기존 담당은 같은 부모의 새 경로에 원 디렉터리 객체로 보존하고, 선택 백업 복원과 기존 신원 재등록을 이어간다. 적용 중 차단 표식과 별도 진행 기록을 유지하며 완료 후에도 새 외부 기록 대조가 필요하다.

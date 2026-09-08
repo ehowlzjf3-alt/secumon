@@ -1,0 +1,167 @@
+{
+  "checkpoint": 393,
+  "status": "C09_mission_controls_local_verified",
+  "baselineCommit": "bf61a44ea229edd554d5842d4c72513b17638ffe",
+  "previousGoalTurn": "no_progress_status_question_only; current checkout revalidated and implementation resumed",
+  "plan": "design/chapters/C09-mission-controls-plan.md",
+  "result": "design/chapters/C09-mission-controls-result.md",
+  "usage": "design/chapters/C09-mission-controls-usage.md",
+  "inProgress": [],
+  "testsExecuted": [
+    {
+      "id": "target1",
+      "build": "build1",
+      "exitCode": 1,
+      "total": 11,
+      "pass": 9,
+      "fail": 2,
+      "log": "runtime/evidence/C09-mission-controls-target1.log"
+    },
+    {
+      "id": "regression1",
+      "build": "build1",
+      "exitCode": 0,
+      "total": 31,
+      "pass": 31,
+      "fail": 0,
+      "log": "runtime/evidence/C09-mission-controls-regression1.log"
+    },
+    {
+      "id": "target2",
+      "build": "build2",
+      "exitCode": 0,
+      "total": 11,
+      "pass": 11,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 13482.480916,
+      "log": "runtime/evidence/C09-mission-controls-target2.log",
+      "files": [
+        "resident-missions-controls.test.js",
+        "mission-controls.test.js"
+      ]
+    },
+    {
+      "id": "regression2",
+      "build": "build2",
+      "exitCode": 0,
+      "total": 31,
+      "pass": 31,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 33735.704666,
+      "log": "runtime/evidence/C09-mission-controls-regression2.log",
+      "files": [
+        "mission-runtime.test.js",
+        "mission-read-ack.test.js",
+        "resident-missions-entry.test.js",
+        "mission-terminal-recovery.test.js"
+      ]
+    }
+  ],
+  "actualModelApi": "stopped_by_user",
+  "externalServiceConnectionsRun": false,
+  "goalComplete": false,
+  "chapterComplete": false,
+  "builds": [
+    {
+      "id": "build1",
+      "exitCode": 0,
+      "log": "runtime/evidence/C09-mission-controls-build1.log",
+      "source": {
+        "build": "C09-mission-controls-build1",
+        "node": "v24.20.0",
+        "platform": "darwin",
+        "arch": "arm64",
+        "sourceDigest": "d21bdb3f9fcd4b3d0e9378c33e4b3bbf88cf0dbd232340d92336da63ce519bc4",
+        "filesDigest": "5d8f26b9ef19bdbd2ed44aae3b9b7df6e4216993c61ecde594f0c64ae1ceea41",
+        "fileCount": 2493
+      }
+    },
+    {
+      "id": "build2",
+      "exitCode": 0,
+      "log": "runtime/evidence/C09-mission-controls-build2.log",
+      "source": {
+        "build": "C09-mission-controls-build2",
+        "node": "v24.20.0",
+        "platform": "darwin",
+        "arch": "arm64",
+        "sourceDigest": "9b047577ef2c8fb4daea2747d2420dcfa4bf826da27dc54c715c11bb8474feca",
+        "filesDigest": "f7d975c3eabeefee37151b976eda5575398db11f93439943932be0eca6bc0069",
+        "fileCount": 2493
+      }
+    }
+  ],
+  "checks": {
+    "buildExitCode": 0,
+    "coreExitCode": 0,
+    "coreBuild": "build2",
+    "coreLog": "runtime/evidence/C09-mission-controls-core2.log",
+    "architectureInspected": 202,
+    "architectureViolations": 0,
+    "architectureLog": "runtime/evidence/C09-mission-controls-architecture1.log",
+    "architectureBuild": "build1",
+    "architectureReuse": "Only an optional resident counter and repeated-cycle test changed after build1; import graph unchanged"
+  },
+  "activeRuns": [],
+  "failureHistory": [
+    {
+      "kind": "product_defect",
+      "detail": "Resuming reconstructed an earlier active checkpoint; SHA-keyed command replay preserved paused state. Added a monotonically increasing controlRevision for each pause/resume transition and repeated-cycle assertions."
+    }
+  ],
+  "implemented": [
+    "Resident observation pause/resume preserves cursor, pending event queue and persistent session",
+    "Resident event identity follows original intake receipt rather than a later mutable user goal",
+    "Changed event goals require explicit independent work resume; old event driver stops advancing them",
+    "Per-work mission pause retains original events/read ACK/pending state and releases its claim for explicit resume",
+    "Per-work cancel/goal-change cleanup authenticates original checkpoint and actual user command receipts while preserving old events",
+    "A monotonic resident control revision distinguishes returning to an earlier visible state from replaying a prior publication"
+  ],
+  "newUnique": 11,
+  "relatedUnique": 31,
+  "allUnique": 42,
+  "mixedBuildEvidence": false,
+  "allRerunAtFinalSource": true,
+  "finalBuild": "C09-mission-controls-build2",
+  "finalSource": {
+    "build": "C09-mission-controls-build2",
+    "node": "v24.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "sourceDigest": "9b047577ef2c8fb4daea2747d2420dcfa4bf826da27dc54c715c11bb8474feca",
+    "filesDigest": "f7d975c3eabeefee37151b976eda5575398db11f93439943932be0eca6bc0069",
+    "fileCount": 2493
+  },
+  "finalSourceEvidence": "runtime/evidence/checkpoint393-final-source.json",
+  "verifiedScope": [
+    "Actual local profiles and SQLite with deterministic callbacks: resident pause/reopen/resume/repeated transitions preserve pending events and conversation, stop is permanent and paused polling/model invocation is zero",
+    "Explicitly saved personal memory card retains full content, source metadata and identity after reopen/resume/stop; other agent cannot read it",
+    "Original event intake before controller receipt plus later goal change reopens as the same work without inference; explicit workflow processes the new goal and later events retain the same session",
+    "In-flight goal changes stop the old resident workflow after the observed command; late gated poll pages are rejected and resume uses the same cursor",
+    "Actual per-work commands pause/cancel/goal in real workflow.onStep; pause retains events/ACK/claim-null and explicit resume executes existing work, cancel/goal preserve old originals without extra calls",
+    "Idle pause/resume chains then goal change, untouched host-closed rules, new rule at new goal, and altered command receipt/current authority refusal",
+    "Existing mission runtime, native read ACK, resident session/compact/intake and terminal recovery regression on the same final source"
+  ],
+  "notRun": [
+    "Actual model/API quality: stopped by user",
+    "SIGKILL in this unit; prior crash evidence remains historical",
+    "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
+  ],
+  "remaining": [
+    "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+    "C09 file-journal commit-unknown injection, long history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+    "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+    "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+    "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+  ],
+  "next": "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+  "notImplementedThisUnit": [
+    "New resident pause/resume CLI/Web/Knox commands; the host composition API is implemented",
+    "Durable work controls immediately aborting a noncooperative outstanding source poll",
+    "Retired rule ID reuse across repeated goal revisions"
+  ]
+}

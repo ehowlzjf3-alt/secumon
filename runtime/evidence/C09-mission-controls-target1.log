@@ -1,0 +1,108 @@
+TAP version 13
+# Subtest: mission control pause releases the actual workflow claim and retains the event until explicit resume
+ok 1 - mission control pause releases the actual workflow claim and retains the event until explicit resume
+  ---
+  duration_ms: 448.972292
+  type: 'test'
+  ...
+# Subtest: mission control cancel stops the old workflow and closes its original checkpoint without another call
+ok 2 - mission control cancel stops the old workflow and closes its original checkpoint without another call
+  ---
+  duration_ms: 225.109958
+  type: 'test'
+  ...
+# Subtest: mission control goal stops the old workflow and closes its original checkpoint without another call
+ok 3 - mission control goal stops the old workflow and closes its original checkpoint without another call
+  ---
+  duration_ms: 207.2145
+  type: 'test'
+  ...
+# Subtest: mission control idle pause and resume before a goal change closes the old wait while preserving host-closed heads
+ok 4 - mission control idle pause and resume before a goal change closes the old wait while preserving host-closed heads
+  ---
+  duration_ms: 158.463916
+  type: 'test'
+  ...
+# Subtest: mission control pause preserves exact native read acknowledgments and pages for both rules across reopen
+ok 5 - mission control pause preserves exact native read acknowledgments and pages for both rules across reopen
+  ---
+  duration_ms: 1427.803291
+  type: 'test'
+  ...
+# Subtest: mission control cleanup rejects altered command receipts and current authority without changing original records
+ok 6 - mission control cleanup rejects altered command receipts and current authority without changing original records
+  ---
+  duration_ms: 130.728708
+  type: 'test'
+  ...
+# Subtest: resident controls: pause persists pending events across reopen, resume uses the same session, and stop cannot be resumed
+not ok 7 - resident controls: pause persists pending events across reopen, resume uses the same session, and stop cannot be resumed
+  ---
+  duration_ms: 1250.288583
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/resident-missions-controls.test.js:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'paused' !== 'active'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'active'
+  actual: 'paused'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/resident-missions-controls.test.js:97:12)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: resident controls: an explicitly changed goal after original intake is detached without automatic execution and remains explicitly resumable
+ok 8 - resident controls: an explicitly changed goal after original intake is detached without automatic execution and remains explicitly resumable
+  ---
+  duration_ms: 1980.91425
+  type: 'test'
+  ...
+# Subtest: resident controls: explicitly paused or cancelled accepted event work is not reexecuted while the next event remains independent
+ok 9 - resident controls: explicitly paused or cancelled accepted event work is not reexecuted while the next event remains independent
+  ---
+  duration_ms: 4016.4515
+  type: 'test'
+  ...
+# Subtest: resident controls: pause during a gated source poll rejects its late page and resume reads the same cursor once
+not ok 10 - resident controls: pause during a gated source poll rejects its late page and resume reads the same cursor once
+  ---
+  duration_ms: 528.583041
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/resident-missions-controls.test.js:247:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'paused' !== 'event'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'event'
+  actual: 'paused'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/resident-missions-controls.test.js:269:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: resident controls: an actual goal change during workflow stops automatic continuation until an explicit user resume
+ok 11 - resident controls: an actual goal change during workflow stops automatic continuation until an explicit user resume
+  ---
+  duration_ms: 1259.311708
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 9
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11890.160709

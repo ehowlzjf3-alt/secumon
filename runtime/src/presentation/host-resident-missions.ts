@@ -27,6 +27,8 @@ export function createHostResidentMissions(dependencies: ResidentMissionDependen
         policy: selected.policy, limits: selected.limits, mode: selected.mode ?? 'auto' });
     }); },
     status(workId: string) { return track(() => driver.status(workId)); },
+    pause(workId: string) { return track(() => driver.pause(workId)); },
+    resume(workId: string) { return track(() => driver.resume(workId)); },
     tick(workId: string, options?: Parameters<ResidentMissions['tick']>[1]) { return track(() => driver.tick(workId, options)); },
     drive(workId: string, options: Omit<ResidentDriveOptions, 'signal'> & { signal?: AbortSignal } = {}) {
       return track(() => driver.drive(workId, { ...options, signal: options.signal ?? signal }));
