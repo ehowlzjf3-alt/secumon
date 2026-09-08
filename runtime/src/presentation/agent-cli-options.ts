@@ -1,4 +1,5 @@
 import { parseArgs, type ParseArgsOptionsConfig } from 'node:util';
+import { AgentProfileError, AgentSetupOptionsSchema } from '../application/agent-profile-contracts.js';
 
 export function agentCliOptions(cwd: string) {
   return {
@@ -96,4 +97,35 @@ export function agentCliRoute(args: string[], cwd: string): AgentCliRoute {
 export function agentLaunchDirectory(args: string[], cwd: string): string | null {
   const route = agentCliRoute(args, cwd);
   return route.kind === 'agent' ? route.directory : null;
+}
+
+/** Shared setup validation runs before local package preparation and again in the selected CLI. */
+export function parseAgentSetupCommand(args: string[], cwd: string) {
+  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: agentCliOptions(cwd) });
+  if (values.help || positionals.length === 1 && positionals[0] === 'help') return { kind: 'help' as const };
+  const command = values.version ? 'version' : positionals[0] ?? 'open';
+  if (positionals.length > 1 || !['open', 'init', 'status', 'repair', 'clone', 'version'].includes(command)) throw new AgentProfileError('agent_command_invalid');
+  const personalMemory = values['personal-memory'];
+  if (personalMemory !== undefined && command !== 'init') throw new AgentProfileError('agent_option_not_supported');
+  if (personalMemory !== undefined && personalMemory !== 'sqlite' && personalMemory !== 'documents') throw new AgentProfileError('agent_setup_options_invalid');
+  const stateBackend = values['state-backend'];
+  if (stateBackend !== undefined && !['init', 'repair'].includes(command)) throw new AgentProfileError('agent_option_not_supported');
+  if (stateBackend !== undefined && stateBackend !== 'sqlite' && stateBackend !== 'file-journal') throw new AgentProfileError('agent_setup_options_invalid');
+  if ((!['open', 'init', 'repair', 'clone'].includes(command) && values.name !== undefined) ||
+    (!['open', 'init', 'repair'].includes(command) && values.purpose !== undefined) ||
+    (command !== 'clone' && (values.destination !== undefined || values.resume !== undefined))) throw new AgentProfileError('agent_option_not_supported');
+  if (command === 'clone' && !values.destination) throw new AgentProfileError('agent_clone_destination_required');
+  if (['open', 'init', 'repair'].includes(command) && !AgentSetupOptionsSchema.safeParse({
+    repair: command === 'repair', name: values.name, purpose: values.purpose, personalMemory, stateBackend,
+  }).success) throw new AgentProfileError('agent_setup_options_invalid');
+  return { kind: 'setup', command, values, personalMemory, stateBackend } as const;
+}
+
+/** Only commands which open a general agent can prepare its first installation. */
+export function agentPreparationDirectory(args: string[], cwd: string): string | null {
+  const route = agentCliRoute(args, cwd); if (route.kind !== 'agent') return null;
+  if (args[0] === 'memory-migrate') return null;
+  if (args[0] === 'chat' || args[0] === 'work') return route.directory;
+  const parsed = parseAgentSetupCommand(args, cwd);
+  return parsed.kind === 'setup' && ['open', 'init'].includes(parsed.command) ? parsed.values.directory : null;
 }

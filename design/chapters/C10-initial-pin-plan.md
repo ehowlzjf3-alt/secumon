@@ -1,5 +1,7 @@
 # C10 신규 담당의 자동 최초 pin 계획
 
+**현재 포인터 — 2026-09-08 · checkpoint388:** 지원 npm·개발 경로의 로컬 release 준비와 새 담당 자동 최초 pin 연결은 [사용법](C10-engine-preparation-usage.md)과 [확정 결과](C10-engine-preparation-result.md)를 따른다. 아래 본문은 checkpoint385~387 당시의 계획을 보존한 기록이다. 그 안의 “다음 materialization 단위”는 현재 미구현 항목을 뜻하지 않으며, 운영·플랫폼·사내 연동 등 남은 범위는 최신 결과에서 구분한다.
+
 2026-09-08 · checkpoint387에서 설치 release의 신규 setup 단위를 구현하고 로컬 확인을 진행했다. 실제 확인 범위는 [결과](C10-initial-pin-result.md)와 [체크포인트](../../runtime/evidence/checkpoint387.json)를 따른다. **아래 npm 준비와 미실행 검증 계획까지 완료로 읽지 않는다.** 원 계획은 checkpoint385 소스 지문 `85f45154e47f3dae10ab15a7e57f741f6f69ff4cc949561b9ca30d082a7e17d9`를 읽어 작성했고, 기준선 checkpoint386은 `27e59a3707f605b3d881b8629de8f8b0266a7c63`이다. 실제 모델/API 시험 중단을 유지한다.
 
 이번 단위는 실제 `release.json`을 가진 호출 엔진의 새 담당을 기본 자동 pin 대상으로 삼는다. `FileAgentProfileStore`가 공통 연결점이므로 설치 CLI의 init/open/chat/work가 같은 규칙을 사용한다. 임시 시험은 `engineRegistryDirectory` 호스트 옵션 또는 기존 home 격리 preload를 사용한다. manifest 없는 개발/npm 경로는 원본을 건드리지 않고 기존 동작을 유지하며, 다음 materialization 단위에서 연결한다.

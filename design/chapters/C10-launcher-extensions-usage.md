@@ -1,6 +1,6 @@
 # 담당별 엔진 선택과 확장 호환 사용법
 
-2026-09-08 · 구현 사용법. 엔진 선택·확장 호환은 checkpoint385, 고정 CLI 전달·compact 세션 전환은 [checkpoint386 결과](C10-launch-envelope-result.md)를 따른다. checkpoint387의 설치형 자동 최초 pin은 [현재 사용법](C10-initial-pin-usage.md)과 그 검증 상태를 별도로 확인한다.
+2026-09-08 · 구현 사용법. 엔진 선택·확장 호환은 checkpoint385, 고정 CLI 전달·compact 세션 전환은 [checkpoint386 결과](C10-launch-envelope-result.md)를 따른다. checkpoint387의 설치형 자동 최초 pin은 [사용법](C10-initial-pin-usage.md), checkpoint388의 npm·개발 경로 준비는 [사용법](C10-engine-preparation-usage.md)과 [결과](C10-engine-preparation-result.md)를 확인한다.
 
 ## 같은 전역 명령으로 다른 버전 사용
 
@@ -52,4 +52,4 @@ const host = {
 
 자식 엔진은 shell 없이 동일 argv와 작업 디렉터리, 표준 입력/출력으로 실행된다. 부모에 온 종료 신호를 전달하며 실제 자식 종료까지 기다린다. 등록·배포·pin 재검사는 하지만 동일 OS 계정이 검사 이후 파일을 바꾸는 행위까지 원자적으로 막는 실행 샌드박스는 아니다. Windows는 기존 ACL/파일 handle 경계를 재사용하며 실제 Windows 종료 동작과 이번 전체 Linux 실행은 별도 인수다.
 
-설치형 자동 최초 pin은 checkpoint387에서 연결했고, manifest 없는 개발/npm 패키지의 로컬 release 준비는 다음 단위다. 저장 형식 이행, 장기 임무의 미확정 외부 효과, 실제 PostgreSQL·사내 연결·운영 설치와 최종 통합은 남아 있다. 완료된 dispatch·compact 전환의 로컬 인수를 이 전체 범위의 검증으로 확대하지 않는다. 실제 모델/API 시험 중단을 유지한다.
+설치형 자동 최초 pin은 checkpoint387, 지원하는 manifest 없는 개발/npm 경로의 로컬 release 준비는 checkpoint388에서 연결하고 로컬에서 확인했다. 준비 경로의 자체 의존성·소유권·입구 조건은 [해당 사용법](C10-engine-preparation-usage.md)을 따른다. 저장 형식 이행, 장기 임무의 미확정 외부 효과, 실제 PostgreSQL·사내 연결·운영 설치와 최종 통합은 남아 있다. dispatch·compact 전환·로컬 준비의 인수를 이 전체 범위의 검증으로 확대하지 않는다. 실제 모델/API 시험 중단을 유지한다.

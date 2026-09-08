@@ -1,5 +1,19 @@
 # 구현 이어가기
 
+## CHECKPOINT 388 — npm/개발 패키지의 실행 설치본 준비
+
+2026-09-08 · checkpoint388. npm/개발 패키지에서 호스트 소유 설치본을 준비하고 그 실제 CLI로 새 담당의 첫 엔진 고정을 연결했다. 같은 원본의 두 담당은 설치본을 재사용하고 각자의 자료를 유지한다. 신규16개는 최종 build3, 관련·확장 기존32개는 build2에서 통과했다. 고유48개를 최종 소스에서 모두 재실행한 것은 아니다. 최종 build3 exit0·2,421파일 대조 일치, 코어 타입 exit0·계층199/위반0은 build2 기록이다.
+
+[결과](chapters/C10-engine-preparation-result.md) · [사용법](chapters/C10-engine-preparation-usage.md) · [체크포인트](../runtime/evidence/checkpoint388.json)
+
+다음은 기존 저장 형식 이행과 읽기 전용 호환 확인 코드를 확인한 뒤 백업→엔진 변경→최초 저장소 열기의 연결에서 빠진 부분을 정하는 일이다. SQLite 상태·지식 저장소의 기존 이행 코드를 재사용하며 완료된 설치 준비를 반복하지 않는다.
+
+미확정 외부 효과·C09 종료/저널/이력 비용·C05 권한 재허용 완주·C06 기억 HTTP/권한/브라우저·현재 Linux/native Windows/실제PG/사내 연동·패키지 효율·운영/최종통합은 남는다. 실제 모델/API 시험 중단과 외부 서비스 연결0을 유지하며 전체 C10/goal은 미완료다. 활성 build/test는 없다.
+
+공통 메인 프롬프트는 agent-turn-prompt.ts에 구현돼 StructuredAgentTurnAdapter에 연결되어 있다. 실제 모델의 지침 준수·추론·응답 품질은 미검증이다.
+
+아래 checkpoint387 이하는 당시 기록이다.
+
 ## CHECKPOINT 387 — 설치형 자동 최초 pin과 원 초기화 복구
 
 2026-09-08 · checkpoint387. 검증된 설치 release에서 새 담당의 최초 엔진을 자동 고정하고, 원 operation·ID·pin을 유지하는 중단 복구를 연결했다. 신규20개·관련79개, 합계99개가 같은 최종 build2에서 통과했다. 빌드·코어 타입 exit0, 계층199/위반0, 최종2,403파일 대조 일치다.

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { parseArgs } from 'node:util';
 import { readFileSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { FileAgentProfileStore } from '../infrastructure/file-agent-profile.js';
@@ -9,7 +8,7 @@ import type { AgentProfileStatus } from '../application/agent-profile-contracts.
 import { PersonalMemoryMigrationError } from '../application/personal-memory-migration-contracts.js';
 import { AgentLifecycleError } from '../application/agent-lifecycle-contracts.js';
 import { EngineExtensionError, type EngineExtensionCheckOptions } from '../application/engine-extension-contracts.js';
-import { agentCliOptions } from './agent-cli-options.js';
+import { parseAgentSetupCommand } from './agent-cli-options.js';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const help = `secumon-agent · 담당 디렉터리 설정
@@ -55,20 +54,9 @@ export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOpt
     const { runLocalCli, reportCliFailure } = await import('./cli.js');
     await runLocalCli(args.slice(1), defaultDirectory, hostOptions).catch(reportCliFailure); return;
   }
-  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: agentCliOptions(defaultDirectory) });
-  if (values.help || positionals.length === 1 && positionals[0] === 'help') { process.stdout.write(help); return; }
-  const command = values.version ? 'version' : positionals[0] ?? 'open';
-  if (positionals.length > 1 || !['open', 'init', 'status', 'repair', 'clone', 'version'].includes(command)) throw new AgentProfileError('agent_command_invalid');
-  const personalMemory = values['personal-memory'];
-  if (personalMemory !== undefined && command !== 'init') throw new AgentProfileError('agent_option_not_supported');
-  if (personalMemory !== undefined && personalMemory !== 'sqlite' && personalMemory !== 'documents') throw new AgentProfileError('agent_setup_options_invalid');
-  const stateBackend = values['state-backend'];
-  if (stateBackend !== undefined && !['init', 'repair'].includes(command)) throw new AgentProfileError('agent_option_not_supported');
-  if (stateBackend !== undefined && stateBackend !== 'sqlite' && stateBackend !== 'file-journal') throw new AgentProfileError('agent_setup_options_invalid');
-  if ((!['open', 'init', 'repair', 'clone'].includes(command) && values.name !== undefined) ||
-    (!['open', 'init', 'repair'].includes(command) && values.purpose !== undefined) ||
-    (command !== 'clone' && (values.destination !== undefined || values.resume !== undefined))) throw new AgentProfileError('agent_option_not_supported');
-  if (command === 'clone' && !values.destination) throw new AgentProfileError('agent_clone_destination_required');
+  const parsed = parseAgentSetupCommand(args, defaultDirectory);
+  if (parsed.kind === 'help') { process.stdout.write(help); return; }
+  const { command, values, personalMemory, stateBackend } = parsed;
   const version = (JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')) as { version: string }).version;
   if (command === 'version') { process.stdout.write(values.json ? JSON.stringify({ version, configSchema: 1, defaultConfigSchema: 1, configSchemas: [1, 2], setupSchemas: [1, 2, 3] }) + '\n' : `secumon-agent ${version}\n`); return; }
   const store = new FileAgentProfileStore(root);

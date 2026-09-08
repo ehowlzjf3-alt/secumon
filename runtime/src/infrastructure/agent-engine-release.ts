@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { ENGINE_EXTENSION_SUPPORT } from '../application/engine-extension-contracts.js';
 import { AgentCloneSetupSchema, AgentConfigSchema, AgentInitialSetupReceiptSchema, AgentSetupOperationSchema, AgentSetupReceiptSchema } from '../application/agent-profile-contracts.js';
@@ -8,6 +8,7 @@ import { captureLifecycleTree, copyLifecycleTree, createLifecycleDirectory, disj
 import { openProfileMutationScope, profileDirectory, publishProfileJson, readProfileBytes, readProfileJson, syncProfileDirectory } from './agent-profile-files.js';
 import { publishWindowsLifecycleJson, readWindowsLifecycleJson } from './windows-lifecycle-files.js';
 import { initialEnginePinHistoryNames } from './agent-initial-pin-files.js';
+import { assertAgentEngineDependencies } from './agent-engine-dependencies.js';
 
 export const engineCompatibility = Object.freeze({ config: [1, 2], state: [1, 2, 3], knowledge: [1, 2, 3], session: [1], journal: [2], documents: [1, 2], setup: [1, 2, 3],
   extensions: ENGINE_EXTENSION_SUPPORT,
@@ -36,18 +37,27 @@ export function inspectEngineRelease(input: string, verify = true): EngineReleas
   if (verify && lifecycleDigest(captureLifecycleTree(root, path => path !== 'release.json')) !== lifecycleDigest(value.entries)) lifecycleFail('engine_release_files_changed');
   return value;
 }
-export function bundleAgentEngine(input: string, destination: string) {
-  const root = lifecycleRoot(input), target = lifecycleRoot(destination, false); disjoint(root, target);
-  const raw = process.platform === 'win32' ? readProfileBytes(join(root, 'package.json'), 1024 * 1024) : readFileSync(join(root, 'package.json'));
+/** The release fingerprint covers actual included files, not the package version or source path. */
+export function inspectAgentEngineBuild(input: string): EngineRelease {
+  const root = lifecycleRoot(input);
+  const raw = readProfileBytes(join(root, 'package.json'), 1024 * 1024, false);
   if (!raw) return lifecycleFail('engine_build_required');
   const pkg = JSON.parse(raw.toString('utf8')) as { name?: string; version?: string; engines?: { node?: string } };
   if (pkg.name !== 'long-horizon-runtime' || typeof pkg.version !== 'string' || pkg.engines?.node !== '>=24.20.0 <25' || !lifecycleExists(join(root, 'dist/presentation/agent-cli.js')) || !lifecycleExists(join(root, 'node_modules/zod/package.json'))) lifecycleFail('engine_build_required');
   if (process.platform === 'win32' && !lifecycleExists(join(root, 'native/windows-files/secumon_windows_files.node'))) lifecycleFail('engine_native_build_required');
   const entries = captureLifecycleTree(root, releaseInclude);
+  const packageEntry = entries.find(entry => entry.path === 'package.json');
+  if (packageEntry?.kind !== 'file' || packageEntry.bytes !== raw.length ||
+    packageEntry.sha256 !== createHash('sha256').update(raw).digest('hex')) lifecycleFail('lifecycle_source_changed');
+  assertAgentEngineDependencies(root, entries);
   const body = { schemaVersion: 1 as const, kind: 'secumon-engine-release' as const, version: pkg.version, node: '>=24.20.0 <25' as const, platform: process.platform, arch: process.arch, compatibility: engineCompatibility, entries };
-  const release = EngineReleaseSchema.parse({ ...body, digest: lifecycleDigest(body) }); assertManifest(release);
-  createLifecycleDirectory(target); copyLifecycleTree(root, target, entries);
-  if (lifecycleDigest(captureLifecycleTree(root, releaseInclude)) !== lifecycleDigest(entries)) lifecycleFail('lifecycle_source_changed');
+  const release = EngineReleaseSchema.parse({ ...body, digest: lifecycleDigest(body) }); assertManifest(release); return release;
+}
+export function bundleAgentEngine(input: string, destination: string) {
+  const root = lifecycleRoot(input), target = lifecycleRoot(destination, false); disjoint(root, target);
+  const release = inspectAgentEngineBuild(root);
+  createLifecycleDirectory(target); copyLifecycleTree(root, target, release.entries);
+  if (lifecycleDigest(captureLifecycleTree(root, releaseInclude)) !== lifecycleDigest(release.entries)) lifecycleFail('lifecycle_source_changed');
   publishLifecycleManifest(target, 'release.json', release); return { directory: target, release };
 }
 export function installAgentEngine(bundle: string, destination: string, expectedDigest: string) {

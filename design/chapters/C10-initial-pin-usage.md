@@ -55,8 +55,8 @@ secumon-agent open --directory ./agent1
 
 `version-b`는 정상 설치·호스트 등록을 마친 경로이고 `CURRENT_RELEASE_SHA256`은 실제 현재 pin의 지문이다. `--offline`은 기존 실행기와 직접 DB 접근을 중지했다는 운영자의 확인이다. 자세한 설치·등록·확장 호환 조건은 [기존 사용법](C10-launcher-extensions-usage.md)을 따른다.
 
-## 다음 범위
+## 연결된 준비 경로와 남은 범위
 
-`release.json`이 없는 개발 체크아웃이나 현재 npm 패키지를 실행하면 기존 초기화 방식을 유지한다. 패키지의 로컬 파일로 검증 가능한 release를 준비하는 `materialization`(설치 가능한 배포본 만들기)과 그 뒤의 자동 최초 pin 연결은 다음 구현 단위다. 이번 기능이 임의의 엔진을 다운로드하거나 개발 파일을 자동으로 배포본이라고 등록하지 않는다.
+checkpoint388에서 `release.json`이 없는 지원 npm 설치·빌드된 개발 경로의 새 담당 CLI를 로컬 release 준비와 자동 최초 pin에 연결했다. `materialization`은 원본을 바꾸지 않고 설치 가능한 배포본을 만드는 과정이며, 네트워크 다운로드나 의존성 설치를 수행하지 않는다. 적용 명령·자체 의존성 조건·프로그램 API의 경계는 [준비 사용법](C10-engine-preparation-usage.md), 빌드별 확인 범위는 [결과](C10-engine-preparation-result.md)를 따른다. 과거 무핀 담당과 직접 API를 새 CLI 초기화 대상으로 자동 전환하지 않는다.
 
 새 CLI 옵션을 선택 엔진에 전달하는 `dispatch`와 실제 compact 세션의 설치 엔진 전환은 [checkpoint386 결과](C10-launch-envelope-result.md)와 [전달 사용법](C10-launch-envelope-usage.md)을 참고한다. 이번 초기 pin의 검증 상태와 구분한다. 저장 schema 이행, 미확정 외부 효과, 현재 Linux/native Windows·실제 PostgreSQL·사내 서비스·운영 설치와 최종 통합은 별도 범위로 남아 있다. 실제 모델/API 시험 중단을 유지한다.

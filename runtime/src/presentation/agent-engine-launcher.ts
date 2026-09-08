@@ -3,7 +3,10 @@ import { constants } from 'node:os';
 import { join } from 'node:path';
 import { AgentLifecycleError } from '../application/agent-lifecycle-contracts.js';
 import { resolveAgentEngine } from '../infrastructure/agent-engine-registry.js';
-import { agentLaunchDirectory } from './agent-cli-options.js';
+import { prepareAgentEngine } from '../infrastructure/agent-engine-preparation.js';
+import { FileAgentProfileStore } from '../infrastructure/file-agent-profile.js';
+import { lifecycleExists } from '../infrastructure/agent-lifecycle-files.js';
+import { agentLaunchDirectory, agentPreparationDirectory } from './agent-cli-options.js';
 import { parseAgentDispatch, validateAgentDispatch } from './agent-dispatch.js';
 
 export type AgentLaunchResult = { kind: 'local'; args: string[]; defaultDirectory?: string } | { kind: 'exited'; code: number };
@@ -13,11 +16,23 @@ export async function launchPinnedAgent(args: string[], currentEngine: string): 
   const dispatch = parseAgentDispatch(args, process.cwd());
   const directory = dispatch?.directory ?? agentLaunchDirectory(args, process.cwd());
   if (directory === null) return { kind: 'local', args };
-  const selection = resolveAgentEngine(directory, currentEngine);
-  if (selection.source === 'current') return dispatch
+  let selection = resolveAgentEngine(directory, currentEngine);
+  if (selection.source !== 'current') return { kind: 'exited', code: await executeSelectedAgentEngine(args, selection.directory) };
+  const local: AgentLaunchResult = dispatch
     ? { kind: 'local', args: dispatch.args, defaultDirectory: validateAgentDispatch(dispatch, currentEngine) }
     : { kind: 'local', args };
-  return { kind: 'exited', code: await executeSelectedAgentEngine(args, selection.directory) };
+  if (!lifecycleExists(join(currentEngine, 'release.json')) && agentPreparationDirectory(local.args, local.defaultDirectory ?? process.cwd()) !== null) {
+    const profiles = new FileAgentProfileStore(currentEngine), profile = profiles.inspect(directory);
+    if (profile.status === 'uninitialized') {
+      if (process.env['SECUMON_ENGINE_LAUNCH_DEPTH'] !== undefined) throw new AgentLifecycleError('engine_launch_changed');
+      const prepared = prepareAgentEngine(currentEngine, profile.root);
+      // Preparation grants no ownership of the agent. A concurrent initializer may already have selected another engine.
+      selection = resolveAgentEngine(profile.root, currentEngine);
+      if (selection.source !== 'current') return { kind: 'exited', code: await executeSelectedAgentEngine(args, selection.directory) };
+      if (profiles.inspect(profile.root).status === 'uninitialized') return { kind: 'exited', code: await executeSelectedAgentEngine(args, prepared.directory) };
+    }
+  }
+  return local;
 }
 
 /** Terminal transport for an already selected installation; only trusted launcher code calls this. */

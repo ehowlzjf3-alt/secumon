@@ -38,13 +38,14 @@ test('chosen-engine classification distinguishes parser errors and prohibited co
 });
 
 test('dispatch defaults every agent route to the outer root and refuses cross-root or management commands before data changes',
-  { timeout: 90000, skip: process.platform === 'win32' ? 'Local POSIX process fixture; native Windows remains separate.' : false }, async () => {
+  { timeout: 180000, skip: process.platform === 'win32' ? 'Local POSIX process fixture; native Windows remains separate.' : false }, async () => {
     const base = realpathSync(mkdtempSync(join(tmpdir(), 'agent-dispatch-')));
     const home = join(base, 'home'), temporary = join(base, 'tmp');
     mkdirSync(home, { mode: 0o700 }); mkdirSync(temporary, { mode: 0o700 });
     const env: NodeJS.ProcessEnv = { PATH: `${dirname(process.execPath)}:/usr/bin:/bin`, TMPDIR: temporary, LANG: 'C.UTF-8',
       NODE_OPTIONS: `--import=${pathToFileURL(preloader).href}`, SECUMON_INSTALLATION_HOME: home };
-    const command = (args: string[]) => execute(process.execPath, [entry, ...args], { cwd: base, env, timeout: 15000, maxBuffer: 4 * 1024 * 1024 });
+    // The first development entry now prepares one verified installation; later calls reuse its original pin.
+    const command = (args: string[]) => execute(process.execPath, [entry, ...args], { cwd: base, env, timeout: 60000, killSignal: 'SIGKILL', maxBuffer: 4 * 1024 * 1024 });
     const dispatch = (args: string[]) => command(['dispatch', '--directory', './selected agent', '--', ...args]);
     const json = async (args: string[]) => JSON.parse((await dispatch([...args, '--json'])).stdout) as Record<string, unknown>;
     const reject = (args: string[], code: string) => assert.rejects(dispatch(args), error => {
