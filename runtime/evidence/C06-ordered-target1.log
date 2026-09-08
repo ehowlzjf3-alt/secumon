@@ -1,0 +1,810 @@
+TAP version 13
+# Subtest: sqlite: Knox acknowledges before execution and preserves a quiet persistent session across redelivery and reopen
+ok 1 - sqlite: Knox acknowledges before execution and preserves a quiet persistent session across redelivery and reopen
+  ---
+  duration_ms: 1893.261166
+  type: 'test'
+  ...
+# Subtest: sqlite: Knox unknown delivery is reconciled explicitly without status side effects or duplicate transcript entries
+ok 2 - sqlite: Knox unknown delivery is reconciled explicitly without status side effects or duplicate transcript entries
+  ---
+  duration_ms: 2196.921375
+  type: 'test'
+  ...
+# Subtest: file-journal: Knox acknowledges before execution and preserves a quiet persistent session across redelivery and reopen
+ok 3 - file-journal: Knox acknowledges before execution and preserves a quiet persistent session across redelivery and reopen
+  ---
+  duration_ms: 14736.285417
+  type: 'test'
+  ...
+# Subtest: file-journal: Knox unknown delivery is reconciled explicitly without status side effects or duplicate transcript entries
+ok 4 - file-journal: Knox unknown delivery is reconciled explicitly without status side effects or duplicate transcript entries
+  ---
+  duration_ms: 3891.2695
+  type: 'test'
+  ...
+# Subtest: Knox run rejects an unbound work before applying pending commands from its own session
+not ok 5 - Knox run rejects an unbound work before applying pending commands from its own session
+  ---
+  duration_ms: 845.725042
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/knox-entry.test.js:104:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a rejected work cannot apply an unrelated pending command
+    + actual - expected
+    ... Skipped lines
+    
+      {
+        deliveries: [
+          {
+            context: {
+              artifact: null,
+    ...
+          },
+    +     {
+    +       at: 1788826248062,
+    +       commandId: 'session-command:15985e6a01f1ea066ebeaff4944565ec78692068e8035de88209676d62533010',
+    +       data: {
+    +         payload: {
+    +           actor: {
+    +             allowWrites: false,
+    +             allowedDestinations: [
+    +               'local',
+    +               'knox-local-fixture'
+    +             ],
+    +             allowedLabels: [
+    +               'internal',
+    +               'public'
+    +             ],
+    +             allowedTools: [
+    +               'company.document.read',
+    +               'core.catalog.search',
+    +               'core.catalog.get',
+    +               'core.evidence.find',
+    +               'core.evidence.get',
+    +               'core.calls.find',
+    +               'core.calls.get',
+    +               'core.guidance.find',
+    +               'core.guidance.load'
+    +             ],
+    +             principalId: 'operator',
+    +             tenantId: 'company'
+    +           },
+    +           command: {
+    +             kind: 'pause',
+    +             reason: 'pending-command'
+    +           },
+    +           expectedGoalRevision: 1,
+    +           sessionInput: {
+    +             input: {
+    +               digest: '4a5ed5ff7a6c9d6d34b5f0b80df49539c781672c4a209390ff6ea5559a708d2a',
+    +               messageId: 'pending-pause',
+    +               sequence: 3
+    +             },
+    +             scope: {
+    +               agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce',
+    +               principalId: 'operator',
+    +               sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9',
+    +               tenantId: 'company'
+    +             }
+    +           }
+    +         }
+    +       },
+    +       revision: 4,
+    +       sequence: 4,
+    +       type: 'user_command',
+    +       workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+    +     }
+        ],
+        history: {
+          entries: [
+            {
+              artifact: null,
+    ...
+        },
+    +   pending: [],
+    -   pending: [
+    -     {
+    -       digest: '4a5ed5ff7a6c9d6d34b5f0b80df49539c781672c4a209390ff6ea5559a708d2a',
+    -       kind: 'command',
+    -       labels: [
+    -         'internal',
+    -         'public'
+    -       ],
+    -       messageId: 'pending-pause',
+    -       payload: {
+    -         command: {
+    -           kind: 'pause',
+    -           reason: 'pending-command'
+    -         },
+    -         expectedGoalRevision: 1
+    -       },
+    -       receivedAt: 1788826247990,
+    -       rejection: null,
+    -       scope: {
+    -         agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce',
+    -         principalId: 'operator',
+    -         sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9',
+    -         tenantId: 'company'
+    -       },
+    -       sequence: 3,
+    -       status: 'pending',
+    -       text: '재시작 뒤 적용해야 할 일시정지 지시',
+    -       workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+    -     }
+    -   ],
+        session: {
+    +     activeInputSequence: 3,
+    -     activeInputSequence: 1,
+          activeWorkId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc',
+          createdAt: 1788826247792,
+          head: null,
+          lastSequence: 3,
+    +     revision: 6,
+    -     revision: 5,
+          scope: {
+            agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce',
+            principalId: 'operator',
+            sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9',
+            tenantId: 'company'
+    ...
+              input: {
+    +           digest: '4a5ed5ff7a6c9d6d34b5f0b80df49539c781672c4a209390ff6ea5559a708d2a',
+    +           messageId: 'pending-pause',
+    +           sequence: 3
+    -           digest: '7da343410d579ff598b4ed05a08d03587b7120fd12cf16d748d6a8fc3171e1b9',
+    -           messageId: 'own-work',
+    -           sequence: 1
+              },
+              scope: {
+                agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce',
+                principalId: 'operator',
+                sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9',
+    ...
+          },
+    +     retryWakeAt: null,
+    +     revision: 4,
+    -     revision: 3,
+          schemaVersion: 1,
+    +     status: 'paused',
+    +     statusReason: 'pending-command',
+    +     updatedAt: 1788826248062
+    -     status: 'ready',
+    -     statusReason: 'request_accepted',
+    -     updatedAt: 1788826247806
+        }
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    state:
+      schemaVersion: 1
+      id: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+      revision: 3
+      goal:
+        revision: 1
+        description: '이 담당에게 연결한 원본 문서의 내용을 확인해 알려 줘.'
+        scope: 'agent:7e52c445-625f-49b5-9e16-081c39c2d7ce'
+        mode: 'auto'
+        criteria:
+        responseRequirement:
+          version: 1
+          requestMessageId: 'own-work'
+          requestTextDigest: '822cbbe55535a96e5c44328430acacee0f882191b914ce18b30ad262ec430e13'
+          format: 'text'
+      policy:
+        tenantId: 'company'
+        principalId: 'operator'
+        allowedTools:
+          0: 'company.document.read'
+          1: 'core.catalog.search'
+          2: 'core.catalog.get'
+          3: 'core.evidence.find'
+          4: 'core.evidence.get'
+          5: 'core.calls.find'
+          6: 'core.calls.get'
+          7: 'core.guidance.find'
+          8: 'core.guidance.load'
+        allowedLabels:
+          0: 'internal'
+          1: 'public'
+        allowedDestinations:
+          0: 'local'
+          1: 'knox-local-fixture'
+        allowWrites: false
+      executionControl:
+        revision: 1
+        requestedMode: 'auto'
+        strategy: 'direct'
+        policy:
+          version: 'local-v1'
+          fast:
+            toolCalls: 2
+            modelCalls: 2
+            replans: 0
+            maxPendingTasks: 1
+            maxHypotheses: 0
+        pending: ~
+        lastReason: 'mode_auto'
+      status: 'ready'
+      statusReason: 'request_accepted'
+      budget:
+        limits:
+          toolCalls: 8
+          modelCalls: 8
+          tokens: 1000000
+          replans: 4
+          wallTimeMs: 600000
+        used:
+          toolCalls: 0
+          modelCalls: 0
+          tokens: 0
+          replans: 0
+          unmeasuredModelCalls: 0
+        reservedToolCalls: 0
+        reservedModelCalls: 0
+        reservedTokens: 0
+      plan: ~
+      attempts:
+      modelCalls:
+      evidence:
+      hypotheses:
+      hypothesisAssessment: ~
+      obligations:
+        0:
+          id: 'response-delivery:1'
+          kind: 'delivery'
+          reason: 'result_delivery_required'
+          status: 'pending'
+          wakeKey: 'response-delivery:1'
+          dueAt: 1788826847797
+      artifacts:
+      conversation:
+        bindings:
+          0:
+            id: 'binding-f35f8059c4e78b8ed2a7b084ca7e3ad262c891b828504aa1e6043609be4c2166'
+            channel: 'knox'
+            conversationId: 'conversation-a'
+            recipientId: 'operator'
+            destination: 'knox-local-fixture'
+            tenantId: 'company'
+            principalId: 'operator'
+            session:
+              tenantId: 'company'
+              agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+              principalId: 'operator'
+              sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+        primaryBindingId: 'binding-f35f8059c4e78b8ed2a7b084ca7e3ad262c891b828504aa1e6043609be4c2166'
+        completionRequiresDelivery: true
+        result: ~
+        session:
+          scope:
+            tenantId: 'company'
+            agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+            principalId: 'operator'
+            sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+          input:
+            messageId: 'own-work'
+            sequence: 1
+            digest: '7da343410d579ff598b4ed05a08d03587b7120fd12cf16d748d6a8fc3171e1b9'
+      createdAt: 1788826247797
+      updatedAt: 1788826247806
+      deadlineAt: 1788826847797
+    events:
+      0:
+        type: 'request_accepted'
+        at: 1788826247797
+        data:
+          messageId: 'own-work'
+          bindingId: 'binding-f35f8059c4e78b8ed2a7b084ca7e3ad262c891b828504aa1e6043609be4c2166'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        revision: 1
+        sequence: 1
+        commandId: 'conversation.accept'
+      1:
+        type: 'delivery_claimed'
+        at: 1788826247801
+        data:
+          payload:
+            deliveryId: 'ack'
+            status: 'sending'
+            externalId: ~
+            attempt: 1
+            owner: 'agent-turn-worker-698d05ac-f4f5-4a54-9fbc-1335387e16dd'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        revision: 2
+        sequence: 2
+        commandId: 'delivery-claim:ack:1'
+      2:
+        type: 'delivery_settled'
+        at: 1788826247806
+        data:
+          payload:
+            deliveryId: 'ack'
+            status: 'delivered'
+            externalId: 'fixture-message-1'
+            attempt: 1
+            owner: 'agent-turn-worker-698d05ac-f4f5-4a54-9fbc-1335387e16dd'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        revision: 3
+        sequence: 3
+        commandId: 'delivery-settle:ack:1:delivered:2'
+    deliveries:
+      0:
+        id: 'ack'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        goalRevision: 1
+        destination: 'knox-local-fixture'
+        kind: 'ack'
+        text: '[work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc] 요청을 접수했습니다.'
+        status: 'delivered'
+        externalId: 'fixture-message-1'
+        context:
+          binding:
+            id: 'binding-f35f8059c4e78b8ed2a7b084ca7e3ad262c891b828504aa1e6043609be4c2166'
+            channel: 'knox'
+            conversationId: 'conversation-a'
+            recipientId: 'operator'
+            destination: 'knox-local-fixture'
+            tenantId: 'company'
+            principalId: 'operator'
+            session:
+              tenantId: 'company'
+              agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+              principalId: 'operator'
+              sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+          labels:
+          sourceRevision: 1
+          dataGeneration: 0
+          responseId: ~
+          evidenceIds:
+          evidenceDigest: ~
+          obligationIds:
+          artifact: ~
+        dispatch:
+          owner: 'agent-turn-worker-698d05ac-f4f5-4a54-9fbc-1335387e16dd'
+          leaseUntil: 0
+          attempts: 1
+          lastError: ~
+    session:
+      scope:
+        tenantId: 'company'
+        agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+        principalId: 'operator'
+        sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+      createdAt: 1788826247792
+      revision: 5
+      lastSequence: 3
+      activeWorkId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+      activeInputSequence: 1
+      head: ~
+    pending:
+      0:
+        scope:
+          tenantId: 'company'
+          agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+          principalId: 'operator'
+          sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+        messageId: 'pending-pause'
+        digest: '4a5ed5ff7a6c9d6d34b5f0b80df49539c781672c4a209390ff6ea5559a708d2a'
+        text: '재시작 뒤 적용해야 할 일시정지 지시'
+        payload:
+          expectedGoalRevision: 1
+          command:
+            kind: 'pause'
+            reason: 'pending-command'
+        kind: 'command'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        labels:
+          0: 'internal'
+          1: 'public'
+        receivedAt: 1788826247990
+        sequence: 3
+        status: 'pending'
+        rejection: ~
+    history:
+      entries:
+        0:
+          sequence: 1
+          role: 'user'
+          sourceId: 'own-work'
+          workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+          text: '이 담당에게 연결한 원본 문서의 내용을 확인해 알려 줘.'
+          labels:
+            0: 'internal'
+            1: 'public'
+          artifact: ~
+          status: 'received'
+          kind: 'work'
+        1:
+          sequence: 2
+          role: 'assistant'
+          sourceId: 'ack'
+          workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+          text: '[work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc] 요청을 접수했습니다.'
+          labels:
+          artifact: ~
+          status: 'delivered'
+          kind: 'ack'
+        2:
+          sequence: 3
+          role: 'user'
+          sourceId: 'pending-pause'
+          workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+          text: '재시작 뒤 적용해야 할 일시정지 지시'
+          labels:
+            0: 'internal'
+            1: 'public'
+          artifact: ~
+          status: 'received'
+          kind: 'command'
+      nextCursor: ~
+  actual:
+    state:
+      schemaVersion: 1
+      id: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+      revision: 4
+      goal:
+        revision: 1
+        description: '이 담당에게 연결한 원본 문서의 내용을 확인해 알려 줘.'
+        scope: 'agent:7e52c445-625f-49b5-9e16-081c39c2d7ce'
+        mode: 'auto'
+        criteria:
+        responseRequirement:
+          version: 1
+          requestMessageId: 'own-work'
+          requestTextDigest: '822cbbe55535a96e5c44328430acacee0f882191b914ce18b30ad262ec430e13'
+          format: 'text'
+      policy:
+        tenantId: 'company'
+        principalId: 'operator'
+        allowedTools:
+          0: 'company.document.read'
+          1: 'core.catalog.search'
+          2: 'core.catalog.get'
+          3: 'core.evidence.find'
+          4: 'core.evidence.get'
+          5: 'core.calls.find'
+          6: 'core.calls.get'
+          7: 'core.guidance.find'
+          8: 'core.guidance.load'
+        allowedLabels:
+          0: 'internal'
+          1: 'public'
+        allowedDestinations:
+          0: 'local'
+          1: 'knox-local-fixture'
+        allowWrites: false
+      executionControl:
+        revision: 1
+        requestedMode: 'auto'
+        strategy: 'direct'
+        policy:
+          version: 'local-v1'
+          fast:
+            toolCalls: 2
+            modelCalls: 2
+            replans: 0
+            maxPendingTasks: 1
+            maxHypotheses: 0
+        pending: ~
+        lastReason: 'mode_auto'
+      retryWakeAt: ~
+      status: 'paused'
+      statusReason: 'pending-command'
+      budget:
+        limits:
+          toolCalls: 8
+          modelCalls: 8
+          tokens: 1000000
+          replans: 4
+          wallTimeMs: 600000
+        used:
+          toolCalls: 0
+          modelCalls: 0
+          tokens: 0
+          replans: 0
+          unmeasuredModelCalls: 0
+        reservedToolCalls: 0
+        reservedModelCalls: 0
+        reservedTokens: 0
+      plan: ~
+      attempts:
+      modelCalls:
+      evidence:
+      hypotheses:
+      hypothesisAssessment: ~
+      obligations:
+        0:
+          id: 'response-delivery:1'
+          kind: 'delivery'
+          reason: 'result_delivery_required'
+          status: 'pending'
+          wakeKey: 'response-delivery:1'
+          dueAt: 1788826847797
+      artifacts:
+      conversation:
+        bindings:
+          0:
+            id: 'binding-f35f8059c4e78b8ed2a7b084ca7e3ad262c891b828504aa1e6043609be4c2166'
+            channel: 'knox'
+            conversationId: 'conversation-a'
+            recipientId: 'operator'
+            destination: 'knox-local-fixture'
+            tenantId: 'company'
+            principalId: 'operator'
+            session:
+              tenantId: 'company'
+              agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+              principalId: 'operator'
+              sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+        primaryBindingId: 'binding-f35f8059c4e78b8ed2a7b084ca7e3ad262c891b828504aa1e6043609be4c2166'
+        completionRequiresDelivery: true
+        result: ~
+        session:
+          scope:
+            tenantId: 'company'
+            agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+            principalId: 'operator'
+            sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+          input:
+            messageId: 'pending-pause'
+            sequence: 3
+            digest: '4a5ed5ff7a6c9d6d34b5f0b80df49539c781672c4a209390ff6ea5559a708d2a'
+      createdAt: 1788826247797
+      updatedAt: 1788826248062
+      deadlineAt: 1788826847797
+    events:
+      0:
+        type: 'request_accepted'
+        at: 1788826247797
+        data:
+          messageId: 'own-work'
+          bindingId: 'binding-f35f8059c4e78b8ed2a7b084ca7e3ad262c891b828504aa1e6043609be4c2166'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        revision: 1
+        sequence: 1
+        commandId: 'conversation.accept'
+      1:
+        type: 'delivery_claimed'
+        at: 1788826247801
+        data:
+          payload:
+            deliveryId: 'ack'
+            status: 'sending'
+            externalId: ~
+            attempt: 1
+            owner: 'agent-turn-worker-698d05ac-f4f5-4a54-9fbc-1335387e16dd'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        revision: 2
+        sequence: 2
+        commandId: 'delivery-claim:ack:1'
+      2:
+        type: 'delivery_settled'
+        at: 1788826247806
+        data:
+          payload:
+            deliveryId: 'ack'
+            status: 'delivered'
+            externalId: 'fixture-message-1'
+            attempt: 1
+            owner: 'agent-turn-worker-698d05ac-f4f5-4a54-9fbc-1335387e16dd'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        revision: 3
+        sequence: 3
+        commandId: 'delivery-settle:ack:1:delivered:2'
+      3:
+        type: 'user_command'
+        at: 1788826248062
+        data:
+          payload:
+            actor:
+              tenantId: 'company'
+              principalId: 'operator'
+              allowedTools:
+                0: 'company.document.read'
+                1: 'core.catalog.search'
+                2: 'core.catalog.get'
+                3: 'core.evidence.find'
+                4: 'core.evidence.get'
+                5: 'core.calls.find'
+                6: 'core.calls.get'
+                7: 'core.guidance.find'
+                8: 'core.guidance.load'
+              allowedLabels:
+                0: 'internal'
+                1: 'public'
+              allowedDestinations:
+                0: 'local'
+                1: 'knox-local-fixture'
+              allowWrites: false
+            expectedGoalRevision: 1
+            command:
+              kind: 'pause'
+              reason: 'pending-command'
+            sessionInput:
+              scope:
+                tenantId: 'company'
+                agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+                principalId: 'operator'
+                sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+              input:
+                messageId: 'pending-pause'
+                sequence: 3
+                digest: '4a5ed5ff7a6c9d6d34b5f0b80df49539c781672c4a209390ff6ea5559a708d2a'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        revision: 4
+        sequence: 4
+        commandId: 'session-command:15985e6a01f1ea066ebeaff4944565ec78692068e8035de88209676d62533010'
+    deliveries:
+      0:
+        id: 'ack'
+        workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+        goalRevision: 1
+        destination: 'knox-local-fixture'
+        kind: 'ack'
+        text: '[work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc] 요청을 접수했습니다.'
+        status: 'delivered'
+        externalId: 'fixture-message-1'
+        context:
+          binding:
+            id: 'binding-f35f8059c4e78b8ed2a7b084ca7e3ad262c891b828504aa1e6043609be4c2166'
+            channel: 'knox'
+            conversationId: 'conversation-a'
+            recipientId: 'operator'
+            destination: 'knox-local-fixture'
+            tenantId: 'company'
+            principalId: 'operator'
+            session:
+              tenantId: 'company'
+              agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+              principalId: 'operator'
+              sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+          labels:
+          sourceRevision: 1
+          dataGeneration: 0
+          responseId: ~
+          evidenceIds:
+          evidenceDigest: ~
+          obligationIds:
+          artifact: ~
+        dispatch:
+          owner: 'agent-turn-worker-698d05ac-f4f5-4a54-9fbc-1335387e16dd'
+          leaseUntil: 0
+          attempts: 1
+          lastError: ~
+    session:
+      scope:
+        tenantId: 'company'
+        agentId: '7e52c445-625f-49b5-9e16-081c39c2d7ce'
+        principalId: 'operator'
+        sessionId: 'f43fa72e-2979-4fec-82b0-5f2f15b87fb9'
+      createdAt: 1788826247792
+      revision: 6
+      lastSequence: 3
+      activeWorkId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+      activeInputSequence: 3
+      head: ~
+    pending:
+    history:
+      entries:
+        0:
+          sequence: 1
+          role: 'user'
+          sourceId: 'own-work'
+          workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+          text: '이 담당에게 연결한 원본 문서의 내용을 확인해 알려 줘.'
+          labels:
+            0: 'internal'
+            1: 'public'
+          artifact: ~
+          status: 'received'
+          kind: 'work'
+        1:
+          sequence: 2
+          role: 'assistant'
+          sourceId: 'ack'
+          workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+          text: '[work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc] 요청을 접수했습니다.'
+          labels:
+          artifact: ~
+          status: 'delivered'
+          kind: 'ack'
+        2:
+          sequence: 3
+          role: 'user'
+          sourceId: 'pending-pause'
+          workId: 'work-15f97b685764f8b103f40c24bacfb70523f3f41f89cdde1391de8ed3a9b320dc'
+          text: '재시작 뒤 적용해야 할 일시정지 지시'
+          labels:
+            0: 'internal'
+            1: 'public'
+          artifact: ~
+          status: 'received'
+          kind: 'command'
+      nextCursor: ~
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/knox-entry.test.js:119:12)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: Knox lookup absent retries only on a later flush with idempotentSend=false
+ok 6 - Knox lookup absent retries only on a later flush with idempotentSend=false
+  ---
+  duration_ms: 594.501584
+  type: 'test'
+  ...
+# Subtest: Knox lookup absent retries only on a later flush with idempotentSend=true
+ok 7 - Knox lookup absent retries only on a later flush with idempotentSend=true
+  ---
+  duration_ms: 628.380834
+  type: 'test'
+  ...
+# Subtest: Knox binds work operations to the authenticated agent, recipient, conversation and session
+ok 8 - Knox binds work operations to the authenticated agent, recipient, conversation and session
+  ---
+  duration_ms: 1497.315666
+  type: 'test'
+  ...
+# Subtest: Knox control, followup and goal change preserve explicit versions and original messages without implicit execution
+ok 9 - Knox control, followup and goal change preserve explicit versions and original messages without implicit execution
+  ---
+  duration_ms: 732.374042
+  type: 'test'
+  ...
+# Subtest: Knox can resume its own durable request when intake stopped before creating the work
+ok 10 - Knox can resume its own durable request when intake stopped before creating the work
+  ---
+  duration_ms: 1180.483417
+  type: 'test'
+  ...
+# Subtest: Knox rejects a simultaneous run and releases the local reservation when it finishes
+ok 11 - Knox rejects a simultaneous run and releases the local reservation when it finishes
+  ---
+  duration_ms: 1087.883708
+  type: 'test'
+  ...
+# Subtest: Knox rejects new inbound work from the start of close before stores finish draining
+not ok 12 - Knox rejects new inbound work from the start of close before stores finish draining
+  ---
+  duration_ms: 556.687916
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/knox-entry.test.js:245:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /messenger_closed/. Input:
+    
+    'Error: execution_authority_denied'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'execution_authority_denied'
+  stack: |-
+    assertExecutionAuthority (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/execution-authority.js:45:15)
+    OutboxDispatcher.flush (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/outbox.js:155:13)
+    async KnoxConversation.accept (file:///Users/seunghanee/Documents/secumon/runtime/dist/presentation/agent-knox.js:39:9)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/knox-entry.test.js:261:9)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/knox-entry.test.js:261:9)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 10
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 30000.360834

@@ -4,6 +4,18 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT376-START -->
+### Checkpoint376 — Knox 입구 교정·격리 설치·두 담당 배치
+
+C06 선택 고유16개를 확인했다. Knox12는 build3, 설정·도구·선택 스킬 배치1과 설치2는 build2, 같은 ID의 개인 기억 분리1은 build6의 결과다. 실패 후 재실행을 중복 집계하지 않으며 이전 C03 243·C04 158·C05 682개는 재실행 없이 해당 소스의 기록을 유지한다. 이전 게시 기준선은 `591e311`이다. [C06 결과](chapters/C06-ordered-verification-result.md) · [실행 기록](../runtime/evidence/checkpoint376.json).
+
+Knox는 실행 대상의 권한을 pending 세션 복구 전에 확인하고 종료 시작 뒤 새 호출을 거절한다. 원 npm 패키지의 격리 전역 설치·제거·재설치와 실제 bundle 명령을 확인했으며 사용자 설치는 변경하지 않았다. 두 담당은 별도 디렉터리·저장소·신원으로 대화와 개인 기억을 유지한다. 기억 선택 시험은 기존 호스트 권한을 명시했으며 쓰기 도구 실행은 허용하지 않았다.
+
+최종 build6 exit0, sourceDigest `bd6d79657c11b1cf6f17d6bb6a863267834fb64564287e235e7460fcbad4ea99`, [최종 소스/산출물 대조](../runtime/evidence/checkpoint376-final-source.json) 2,151파일이다. 같은 build6의 개인 기억 target8은1/1 통과, 전체 시험 시간31.325초다. 앞선 target7의 HTTP20초 TimeoutError를 보존했고 기억 작업 명령만 대기60초로 확인했다. 이는 지연 개선이 아니며 응답시간 검토는 남긴다.
+
+메인 프롬프트 구현·어댑터 연결을 소스로 확인하고 [현재 설명](chapters/prompt-generality-review.md)을 추가했다. 실제 모델/API 품질 시험 중단을 유지한다. 다음은 [C07 게시판·아카이브](chapters/C07-ordered-verification-preparation.md)이며 C06 브라우저·현재 Linux/native Windows·최종 통합, 실제 연동, C05 정책 재허용 후 전체 재개는 [다음 작업](NEXT-STEPS.md)에 남겼다. 활성 빌드·시험은 없고 전체 goal은 미완료다. 아래 checkpoint375 이하는 당시 이력이다.
+<!-- CHECKPOINT376-END -->
+
 <!-- CHECKPOINT375-START -->
 ### Checkpoint375 — 원문 조회 재사용·수집 권한 차단·CLI 안내, 복구 인수
 

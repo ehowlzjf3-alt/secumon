@@ -1,0 +1,51 @@
+TAP version 13
+# Subtest: two business deployments use one engine through HTTP with distinct configuration, tools and selected skills, and isolated work/session reopen
+ok 1 - two business deployments use one engine through HTTP with distinct configuration, tools and selected skills, and isolated work/session reopen
+  ---
+  duration_ms: 14192.795834
+  type: 'test'
+  ...
+# Subtest: two deployments keep same-ID personal memories separate through HTTP recall and later work without collaboration or automatic evidence promotion
+not ok 2 - two deployments keep same-ID personal memories separate through HTTP recall and later work without collaboration or automatic evidence promotion
+  ---
+  duration_ms: 2276.132542
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-deployment-entry.test.js:116:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /knowledge_unavailable/. Input:
+    
+    'Error: session_unavailable'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'session_unavailable'
+  stack: |-
+    #record (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-sessions.js:101:19)
+    SqliteSessionRepository.input (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-sessions.js:170:21)
+    #inspect (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/session-knowledge-sources.js:33:47)
+    SessionKnowledgeSources.capture (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/session-knowledge-sources.js:76:36)
+    KnowledgeService.remember (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/knowledge-service.js:676:50)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-deployment-entry.test.js:139:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/agent-deployment-entry.test.js:139:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16622.525834

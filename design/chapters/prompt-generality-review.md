@@ -1,5 +1,18 @@
 # 프롬프트 범용성 검토
 
+2026-09-08 현재 상태 추가 · 소스 확인
+
+**현재는 범용 에이전트의 공통 메인 턴 프롬프트가 구현되어 어댑터에 연결돼 있다.** [agent-turn-prompt.ts](/Users/seunghanee/Documents/secumon/runtime/src/infrastructure/agent-turn-prompt.ts)의 `createAgentTurnPrompt`가 공통 지침·담당 목적·스킬 모드·응답 schema를 구성한다. [StructuredAgentTurnAdapter](/Users/seunghanee/Documents/secumon/runtime/src/infrastructure/structured-agent-turn.ts)는 이를 생성하고 요청의 프롬프트·담당 신원을 대조한 뒤 호스트 전송 입력에 포함한다.
+
+- 결과는 `answer`(직접 답변·작성), `question`(필요한 추가 질문), `plan`(허용된 도구 작업 제안) 중 하나다. 간단한 요청에 도구나 가설을 억지로 만들지 않는다.
+- 이전 합의·정정·미해결 질문을 이어가되 이전 업무의 계획·결과를 현재 업무와 합치지 않는다. 세션 원문과 요약을 구분하며, 조사에는 가설·지지 근거·반증·대안 설명을 사용한다. `counterarguments`는 검토한 반론, `missing`은 미해결 사항이며 모델 자기검토는 독립 검증이나 완료 허가가 아니다.
+- 제공된 도구 계약과 현재 식별자만 사용하고 필요할 때 발견·조회를 제안한다. 명시된 저장 완료 수집의 재개 제안 예외도 원 checkpoint·권한을 런타임이 다시 확인한다. 스킬은 `off`/`explicit`/`on-demand`를 따르며 방법론을 제공할 뿐 권한을 늘리지 않는다.
+- 프롬프트는 행동 지침이다. 실행·계획 및 응답 채택·상태 변경·완료 판정·compact 적용은 [PlanningRuntime](/Users/seunghanee/Documents/secumon/runtime/src/application/planning-runtime.ts), [WorkflowRuntime](/Users/seunghanee/Documents/secumon/runtime/src/application/workflow-runtime.ts), [SessionCompactRuntime](/Users/seunghanee/Documents/secumon/runtime/src/application/session-compact-runtime.ts) 등 코드의 검사를 거친다.
+
+이는 **구현·연결 상태**의 확인이다. 실제 모델의 범용 추론·반론·도구 선택·한국어 응답 품질은 검증하지 않았으며 모델/API 시험 중단을 유지한다. 아래 2026-09-06 본문은 당시 계획용 프롬프트만 확인했던 역사 기록으로 보존한다. 그때의 “전체 메인 프롬프트 미완성” 판단을 현재 구현 상태로 읽지 않는다.
+
+---
+
 2026-09-06 계획 통합: 이 문서의 요구/검토 결과는 [통합 플랜 C01~C10](/Users/seunghanee/Documents/secumon/design/03-migration-plan.md)에 반영했다. 아래 과거 구현 순서 후보보다 최신 통합 플랜을 우선하며, 기능 구현 완료를 의미하지 않는다.
 
 2026-09-06 · 현재 소스 확인 · 제품 구현 보류 유지

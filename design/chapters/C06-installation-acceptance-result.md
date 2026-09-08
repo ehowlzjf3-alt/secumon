@@ -1,0 +1,14 @@
+# C06 — 설치·재설치 로컬 인수 결과
+
+2026-09-08 · checkpoint376 · V06-04. macOS에서 Node **v24.20.0**, build2 소스 `761d1e11dbb55e55a1d0095a4fc683b6242353c8509ecfae05cbf6e063e16fdb`로 설치 시험 **2/2 통과**, 실패·취소·skip 0, 실제 exit0과 **66995.849666 ms**를 확인했다. 근거는 [target3 원로그](../../runtime/evidence/C06-ordered-target3.log), [build2 manifest](../../runtime/evidence/C06-ordered-build2-manifest.json), [종료 관측 checkpoint](../../runtime/evidence/checkpoint376.json)의 build2(session69715)·target3(session71076) 기록이다. 첫 build1의 TS7022는 시험 helper의 `Response` 명시 타입으로 교정했으며 제품 변경은 없었다. 이후 Knox 교정 build3는 이 설치 시험의 재실행 결과가 아니다.
+
+[시험](../../runtime/src/tests/agent-installation.test.ts)은 수정하지 않은 제품에서 `npm pack`을 실행하고, 실제 `npm install --global --prefix <임시경로>`가 만든 `secumon-agent` 명령으로 version·최초 SQLite setup·기존 업무 재개를 확인했다. 필요한 의존성은 기존 npm 캐시를 읽어 lock의 tarball integrity와 해당 버전의 패키지 메타데이터를 대조한 다음, 원 bytes와 메타데이터를 **별도 임시 캐시**에 복사했다. npm에는 `--offline --ignore-scripts`, 임시 prefix/cache와 빈 user/global 설정을 명시했다. 사용자 전역 설치·원 캐시 쓰기는 하지 않았고, 실제 CLI의 기본 등록표만 [프로세스 한정 homedir preloader](../../runtime/src/tests/helpers/agent-installation-home.ts)로 임시 home에 격리했다. `HOME` 환경변수는 재정의하지 않았다.
+
+| 경로 | 실제 assertion으로 확인한 결과 |
+| --- | --- |
+| 원본 npm 배포물·전역 명령 | tarball SHA-1/SHA-512, 필수 실행 코드·fixtures·guidance·Web·예제 포함, 시험·node_modules·evidence 제외, package/lock 불변. 설치된 필수 파일의 bytes가 원본과 같고 직접 의존성이 설치 prefix 안에서 해석됨. npm이 생성한 bin 링크의 실제 대상과 version 출력, setup ready·SQLite 기본값·모델 미호출 상태 확인. |
+| npm 제거·재설치 후 같은 업무 | 합성 요청을 2단계에서 멈춰 모델 응답 1개가 `received`, 도구 시도 0인 상태를 보존. 실제 npm uninstall로 엔진·bin이 사라져도 담당/임시 host 파일 트리의 내용 지문이 같고, 재설치 직후에도 같음. open 후 identity·업무 상태·대화 이력·원 artifact bytes의 SHA가 유지됨. 같은 workId/sessionId의 명시 resume에서 완료, 누적 모델 2회·도구 1회, `doc-current`의 30일 근거 확인. 사용자 원문·접수 안내·결과는 각각 1개이며 사용자 메모 파일도 보존됨. |
+| 기존 오프라인 bundle 경로 | 실제 `bundleAgentEngine` → `installAgentEngine`의 release digest와 의존성/자산 포함, 반환 command를 Node 24로 실행한 version·setup 확인. 시험이 설치 엔진 디렉터리만 제거한 뒤 같은 bundle로 재설치하여 담당/host 파일 트리와 재열기 identity 보존. 이 경로에 제품의 자동 전역 등록·제거 프로그램이 있다는 뜻은 아님. |
+| 설치 자산의 실제 소비 | [설치 엔진에서 동적 import한 probe](../../runtime/src/tests/helpers/agent-installation-probe.ts)가 guidance 본문의 길이·SHA·validate를 확인. 설치된 일반 Web 입구를 127.0.0.1에 열고 HTML·CSS·JS 3개, 총 5경로의 HTTP 200·Content-Type·응답 bytes와 설치 파일의 일치를 확인한 뒤 닫음. npm 경로의 실제 합성 읽기 완료가 설치된 fixture 소비를 함께 확인함. |
+
+이는 **필요한 패키지가 이미 캐시에 있는 조건의 원 tarball 설치**와 **현재 의존성을 포함한 로컬 bundle 설치** 인수다. 빈 캐시에서 네트워크 없이 npm 설치되는지는 검증하지 않았으며, 외부 registry 게시·실제 사용자 전역 환경 변경·버전 간 업그레이드 인수도 포함하지 않는다. Web 확인은 HTTP 자산 제공까지이며 브라우저 렌더링·사용자 조작은 미검증이다. 실제 Windows 시험은 별도이고 이 POSIX 시험은 Windows에서 skip하도록 정의했다. Linux 설치 실행과 실제 모델/API·사내 서비스 품질도 이번 결과에 포함하지 않는다. C06 전체 완료나 C10 전체 배포 지원으로 확대하지 않으며, 요구 범위는 [C06 순차 검증 준비](C06-ordered-verification-preparation.md)와 [V06-04 계획](C06-C10-verification-plan.md#c06)을 따른다.
