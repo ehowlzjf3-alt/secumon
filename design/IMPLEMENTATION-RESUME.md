@@ -4,6 +4,18 @@
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
 
+<!-- CHECKPOINT380-START -->
+### Checkpoint380 — A2A 접수·왕복·격리와 도구 진전
+
+C09 A2A 로컬 단위의 신규 고유39개와 직접 관련 회귀59개, 합계98개를 확인했다. 첫 접수에서 모델 실행0→명시 실행→원 결과 조회, 같은 메시지 재전달·다른 caller 격리·후속 질문·취소와 등록/전송 경계를 확인했다. 실제 모델/API 시험은 중단 상태이며 이번 외부 서비스 연결은 0회다. [결과](chapters/C09-a2a-ordered-result.md) · [체크포인트](../runtime/evidence/checkpoint380.json).
+
+신규39개는 transport18개가 build3, 일반 입구5개·등록10개가 build4, A2A 진전6개가 build5에서 통과했다. 관련59개는 예산 도구 입구6개가 build3, 공통 진전53개가 build5 기록이다. 최종 build5 exit0, sourceDigest `37894d96703ada4ff913021bb32d165cfc1b35fa21f34814550631d9ae9bc325`, [소스/산출물 대조](../runtime/evidence/checkpoint380-final-source.json) 2,256파일 일치이며, 코어 타입 검사 exit0·구조195개/위반0이다. 서로 다른 소스의 결과이며 전체98개를 최종 소스에서 재실행한 것은 아니다. 앞선 실패·진단과 시험 기대값 교정은 원로그에 보존했다.
+
+A2A 도구의 엄격한 입력 스키마, 현재 등록의 수명·늦은 응답 처리와 조회/취소의 원 task ID 검사를 교정했다. 실제 send→plan→get에서 재현된 무진전 중단을 native A2A 준비 진전에 연결했다. send는 요청 text/data 의미로 중복을 억제하고 get/cancel은 실제 요청한 원격 작업별 응답 의미를 구분한다. 같은 작업 응답의 메시지·산출물 ID와 시각·메타데이터 변화는 추가 진전이 아니며 기본 무진전 한도3과 근거/목표 완료의 분리는 유지한다.
+
+다음 실행은 **C09 사건 원문·업무 재개→상시 담당의 사건별 격리·중단 복구→단독/협업 비교→C10**이다. [준비 문서](chapters/C09-ordered-verification-preparation.md)의 남은 인수를 이어간다. C05 정책 재허용 후 완주, C06 기억 HTTP 지연·권한 사용성과 브라우저, 현재 Linux/native Windows·PostgreSQL·실제 사내 서비스/외부 A2A·최종 통합은 남아 있다. [공통 메인 프롬프트](../runtime/src/infrastructure/agent-turn-prompt.ts)는 [등록 모델 어댑터](../runtime/src/infrastructure/structured-agent-turn.ts)에 연결돼 있으며 실제 모델의 응답 품질은 미검증이다. C09 전체와 전체 goal은 미완료다. 활성 빌드·시험은 없으며 아래 checkpoint379 이하는 당시 이력이다.
+<!-- CHECKPOINT380-END -->
+
 <!-- CHECKPOINT379-START -->
 ### Checkpoint379 — 반환·배정·압축과 실제 동료 접수 중단
 

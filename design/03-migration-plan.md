@@ -2,7 +2,7 @@
 
 ## 현재 실행 방침 — 2026-09-08
 
-최신 checkpoint379: C08 반환·활성 배정·접수 중단의 신규5개와 직접 영향 회귀11개를 확인했다. 실제 세션 요약 후 원 배정으로 이어가기, 자진 반환 뒤 새 배정, 실제 SIGKILL 후 원 동료 요청의 명시 재개를 확인했다. 제품 변경 없이 시험을 보완했고, 실제 모델/API·운영 인수와 전체 goal은 미완료다. [결과](chapters/C08-remaining-boundaries-result.md)에 소스별 통과와 실패 교정을 기록했다. 다음은 [C09 A2A·사건/상시 임무·비교](chapters/C09-ordered-verification-preparation.md), 이어 C10이다. 현재 OS·브라우저·최종 통합, 기억 HTTP 지연, C05 정책 재허용 완주와 실제 연동은 남긴다. [인수인계](IMPLEMENTATION-RESUME.md) · [다음 작업](NEXT-STEPS.md). 아래 이전 checkpoint 설명은 당시 이력이다.
+최신 checkpoint380: C09 A2A 로컬 단위의 신규 고유39개와 직접 관련59개, 합계98개를 확인했다. 신규 transport18개·관련 예산 입구6개는 build3, 신규 입구5개·등록10개는 build4, 신규 진전6개·관련 공통 진전53개는 build5 기록이며 전체를 최종 소스에서 재실행한 것은 아니다. 최종 build5 exit0·2,256파일 대조 일치, 코어 타입 exit0·구조195개/위반0이다. 첫 접수와 명시 실행, 왕복·재전달·caller 격리 및 native A2A 준비 진전을 확인했고 기본 무진전 한도3을 유지한다. [결과](chapters/C09-a2a-ordered-result.md)에 실패 교정과 소스별 근거를 기록했다. 다음은 [C09 사건/상시 임무·협업 비교](chapters/C09-ordered-verification-preparation.md), 이어 C10이다. 공통 메인 프롬프트는 구현·연결돼 있으나 실제 모델 품질은 미검증이며 실제 모델/API 중단·이번 외부 연결0회를 유지한다. C09 전체와 전체 goal, 현재 Linux/native Windows·브라우저·최종 통합, 기억 HTTP 지연, C05 정책 재허용 완주와 실제 연동은 미완료다. [인수인계](IMPLEMENTATION-RESUME.md) · [다음 작업](NEXT-STEPS.md). 아래 이전 checkpoint 설명은 당시 이력이다.
 
 이전 Checkpoint375: C03의 명시 복구 중단·실제 로컬 도구 기록5개를 추가해 선택 고유243개, C05의 원문 조회 재사용·수집 권한 차단·CLI 안내20개를 추가해 선택 고유682개를 확인했다. 각 실행의 소스 지문과 실패 후 교정을 구분하며 전체를 최종 소스에서 재실행한 것으로 표시하지 않는다. [현재 인수인계](IMPLEMENTATION-RESUME.md)와 [다음 작업](NEXT-STEPS.md)을 따른다. C06 직접 입구·설치·두 담당 배치부터 이어가며, 정책 재허용 후 전체 재개·최종 통합·현재 Linux/native Windows 및 실제 환경 인수는 별도다. 아래 checkpoint374 이전의 상태·다음 작업은 이력이다.
 

@@ -1922,7 +1922,7 @@
     "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
     "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
   },
-  "next_local_work_item": "C09 local A2A off/on registration, first acknowledgement and explicit execution, redelivery and caller isolation, then event/resident recovery and evaluation; retain C05/C06/platform/C10/integration followups and actual model/API stop.",
+  "next_local_work_item": "C09 event original retention and wake/recovery, resident mission isolation and restart, local single-agent versus collaboration evaluation; then C10. Preserve C05/C06/platform/integration followups.",
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
   "execution_state": "ordered_verification_active",
@@ -4754,6 +4754,75 @@
         "status": "prepared_not_run",
         "document": "design/chapters/C09-ordered-verification-preparation.md",
         "firstUnit": "A2A off/on registration, acknowledgement then explicit execution, redelivery and caller isolation"
+      },
+      "ordered_verification": {
+        "checkpoint": 380,
+        "status": "C09_a2a_local_unit_verified_remaining_event_resident_evaluation",
+        "result": "design/chapters/C09-a2a-ordered-result.md",
+        "evidence": "runtime/evidence/checkpoint380.json",
+        "newUnique": 39,
+        "relatedUnique": 59,
+        "allUnique": 98,
+        "mixedBuildEvidence": true,
+        "allRerunAtFinalSource": false,
+        "byBuild": [
+          {
+            "build": "C09-a2a-build3",
+            "newTransport": 18,
+            "relatedBudgetToolEntry": 6
+          },
+          {
+            "build": "C09-a2a-build4",
+            "newEntry": 5,
+            "newRegistration": 10
+          },
+          {
+            "build": "C09-a2a-build5",
+            "newProgress": 6,
+            "relatedProgress": 53
+          }
+        ],
+        "finalSource": {
+          "sourceDigest": "37894d96703ada4ff913021bb32d165cfc1b35fa21f34814550631d9ae9bc325",
+          "filesDigest": "9ccd2ff1631ae6c668e6b9ecc494fd31db72f584526885ed179d19dceeb06fe0",
+          "fileCount": 2256
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint380-final-source.json",
+        "finalBuild": {
+          "log": "runtime/evidence/C09-a2a-build5.log",
+          "exitCode": 0
+        },
+        "checks": [
+          {
+            "id": "core1",
+            "exitCode": 0,
+            "log": "runtime/evidence/C09-a2a-core1.log"
+          },
+          {
+            "id": "architecture1",
+            "exitCode": 0,
+            "inspected": 195,
+            "violations": 0,
+            "log": "runtime/evidence/C09-a2a-architecture1.log"
+          }
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "mainPrompt": {
+          "source": "runtime/src/infrastructure/agent-turn-prompt.ts",
+          "adapter": "runtime/src/infrastructure/structured-agent-turn.ts",
+          "implementation": "connected",
+          "actualModelQuality": "not_verified"
+        },
+        "remaining": [
+          "Actual model/API testing stopped by user",
+          "External A2A interoperability and listener authentication",
+          "Current Linux/native Windows and final integrated regression",
+          "PostgreSQL, corporate MCP/Knox, actual operational capacity and deployment",
+          "C09 event/resident recovery and collaboration evaluation",
+          "C10 lifecycle/version/recovery acceptance and existing C05/C06 followups"
+        ],
+        "goalComplete": false
       }
     },
     {
@@ -4940,13 +5009,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 378,
-      "status": "C08_first_local_unit_verified_remaining_C08_then_C09_C10",
+      "checkpoint": 380,
+      "status": "C09_a2a_local_unit_verified_remaining_event_resident_evaluation",
       "plan": "design/chapters/C01-C10-ordered-verification.md",
-      "nextChapter": "C08",
+      "nextChapter": "C09",
       "preparedIdentityTests": 22,
       "existingFixtureFilesAdapted": 4,
-      "result": "design/chapters/C08-ordered-verification-result.md",
+      "result": "design/chapters/C09-a2a-ordered-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -5243,6 +5312,76 @@
           "C09/C10 ordered acceptance and existing C05/C06 followups"
         ],
         "actualModelApi": "stopped_by_user",
+        "goalComplete": false
+      },
+      "C09Preparation": "design/chapters/C09-ordered-verification-preparation.md",
+      "C09": {
+        "checkpoint": 380,
+        "status": "C09_a2a_local_unit_verified_remaining_event_resident_evaluation",
+        "result": "design/chapters/C09-a2a-ordered-result.md",
+        "evidence": "runtime/evidence/checkpoint380.json",
+        "newUnique": 39,
+        "relatedUnique": 59,
+        "allUnique": 98,
+        "mixedBuildEvidence": true,
+        "allRerunAtFinalSource": false,
+        "byBuild": [
+          {
+            "build": "C09-a2a-build3",
+            "newTransport": 18,
+            "relatedBudgetToolEntry": 6
+          },
+          {
+            "build": "C09-a2a-build4",
+            "newEntry": 5,
+            "newRegistration": 10
+          },
+          {
+            "build": "C09-a2a-build5",
+            "newProgress": 6,
+            "relatedProgress": 53
+          }
+        ],
+        "finalSource": {
+          "sourceDigest": "37894d96703ada4ff913021bb32d165cfc1b35fa21f34814550631d9ae9bc325",
+          "filesDigest": "9ccd2ff1631ae6c668e6b9ecc494fd31db72f584526885ed179d19dceeb06fe0",
+          "fileCount": 2256
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint380-final-source.json",
+        "finalBuild": {
+          "log": "runtime/evidence/C09-a2a-build5.log",
+          "exitCode": 0
+        },
+        "checks": [
+          {
+            "id": "core1",
+            "exitCode": 0,
+            "log": "runtime/evidence/C09-a2a-core1.log"
+          },
+          {
+            "id": "architecture1",
+            "exitCode": 0,
+            "inspected": 195,
+            "violations": 0,
+            "log": "runtime/evidence/C09-a2a-architecture1.log"
+          }
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "mainPrompt": {
+          "source": "runtime/src/infrastructure/agent-turn-prompt.ts",
+          "adapter": "runtime/src/infrastructure/structured-agent-turn.ts",
+          "implementation": "connected",
+          "actualModelQuality": "not_verified"
+        },
+        "remaining": [
+          "Actual model/API testing stopped by user",
+          "External A2A interoperability and listener authentication",
+          "Current Linux/native Windows and final integrated regression",
+          "PostgreSQL, corporate MCP/Knox, actual operational capacity and deployment",
+          "C09 event/resident recovery and collaboration evaluation",
+          "C10 lifecycle/version/recovery acceptance and existing C05/C06 followups"
+        ],
         "goalComplete": false
       }
     }

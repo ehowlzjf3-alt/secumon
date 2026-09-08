@@ -1,10 +1,12 @@
 import { z } from 'zod';
-import { A2aMessageSchema, A2aReplySchema, A2aTaskSchema, type A2aPeer } from '../application/a2a-contracts.js';
+import { A2aMessageSchema, A2aReplySchema, A2aTaskSchema, type A2aCall, type A2aMessage, type A2aPeer } from '../application/a2a-contracts.js';
 import type { Tool } from '../application/ports.js';
 import type { ToolResult } from '../domain/model.js';
 import type { WorkActor } from '../application/work-resources.js';
 import { asJson } from '../application/plan-validator.js';
 import { frozen } from '../application/resource-contracts.js';
+import { toolInputSchema } from '../application/tool-input-schema.js';
+import { markCollaborationTool } from '../application/collaboration-tool-identity.js';
 import { A2aJsonRpcPeer, type A2aJsonRpcOptions } from '../infrastructure/a2a-json-rpc.js';
 import { a2aReplyMissionSource } from '../infrastructure/mission-sources.js';
 import type { MissionEventSource } from '../application/mission-contracts.js';
@@ -39,20 +41,57 @@ export async function openHostA2a(registration: HostA2aRegistration | undefined,
     const sourceClose = opened.close;
     if (typeof sourceClose !== 'function') throw new Error('a2a_registration_invalid');
     let closing: Promise<void> | undefined;
-    close = () => { lifetime.abort(); return closing ??= Promise.resolve().then(() => sourceClose.call(opened)); };
-    const source = opened.peer, { id, protocolVersion, destination, labels, send, get, cancel } = source;
+    const pending = new Set<Promise<unknown>>();
+    close = () => {
+      lifetime.abort();
+      // Source cleanup may itself release pending I/O. Start it before draining the accepted entries.
+      return closing ??= Promise.allSettled([Promise.resolve().then(() => sourceClose.call(opened)), ...pending]).then(([result]) => {
+        if (result!.status === 'rejected') throw result!.reason;
+      });
+    };
+    const source = opened.peer, { id, protocolVersion, destination, labels: sourceLabels, send, get, cancel } = source;
     if (!/^[a-z][a-z0-9_-]{0,63}$/.test(id) || id === 'core' || protocolVersion !== '1.0' || !destination ||
-      !Array.isArray(labels) || labels.some(value => typeof value !== 'string' || !actor.allowedLabels?.includes(value)) ||
+      !Array.isArray(sourceLabels) || sourceLabels.some(value => typeof value !== 'string' || !actor.allowedLabels?.includes(value)) ||
       !actor.allowedDestinations?.includes(destination) || [send, get, cancel].some(value => typeof value !== 'function')) throw new Error('a2a_registration_invalid');
-    const peer: A2aPeer = Object.freeze({ id, protocolVersion, destination, labels: Object.freeze([...labels]),
-      send: send.bind(source), get: get.bind(source), cancel: cancel.bind(source), close });
+    const labels = Object.freeze([...sourceLabels]);
+    const invoke = <T>(call: A2aCall, read: boolean, operation: (selected: A2aCall) => Promise<T>): Promise<T> => {
+      const combined = AbortSignal.any([signal, call.signal]), check = call.authorize;
+      if (combined.aborted) return Promise.reject(combined.reason);
+      if (!read && !allowWrites) return Promise.reject(new Error('a2a_access_denied'));
+      const authorize = async () => {
+        combined.throwIfAborted(); await check?.call(call); combined.throwIfAborted();
+      };
+      const selected = Object.freeze({ requestId: call.requestId, signal: combined, authorize });
+      const result = Promise.resolve().then(async () => {
+        await authorize(); combined.throwIfAborted(); const value = await operation(selected);
+        if (read) await authorize();
+        // A confirmed write reply survives later cancellation; receiving it does not authorize local adoption.
+        return value;
+      });
+      pending.add(result);
+      void result.then(() => { pending.delete(result); }, () => { pending.delete(result); });
+      return result;
+    };
+    const peer: A2aPeer = Object.freeze({ id, protocolVersion, destination, labels,
+      send: async (message: A2aMessage, call: A2aCall) => {
+        const captured = A2aMessageSchema.parse(structuredClone(message));
+        return invoke(call, false, async selected => A2aReplySchema.parse(await send.call(source, captured, selected)));
+      },
+      get: (taskId: string, call: A2aCall) => invoke(call, true, async selected => {
+        const requestedId = A2aTaskSchema.shape.id.parse(taskId), task = A2aTaskSchema.parse(await get.call(source, requestedId, selected));
+        if (task.id !== requestedId) throw new Error('a2a_task_identity'); return task;
+      }),
+      cancel: (taskId: string, call: A2aCall) => invoke(call, false, async selected => {
+        const requestedId = A2aTaskSchema.shape.id.parse(taskId), task = A2aTaskSchema.parse(await cancel.call(source, requestedId, selected));
+        if (task.id !== requestedId) throw new Error('a2a_task_identity'); return task;
+      }), close });
     const digester = new Sha256Digester();
     const tools: Tool[] = (allowWrites ? ['get', 'send', 'cancel'] as const : ['get'] as const).map(operation => {
       const toolId = `${id}.${operation}`, schema = operation === 'send' ? SendSchema : GetSchema;
-      return { definition: { provider: id, id: toolId, version: '1.0', destination, labels: [...labels], effect: operation === 'get' ? 'read' : 'write',
+      return markCollaborationTool({ definition: { provider: id, id: toolId, version: '1.0', destination, labels: [...labels], effect: operation === 'get' ? 'read' : 'write',
         description: operation === 'get' ? 'Read an A2A task as unreviewed external reference material; its remote status does not complete this work.' :
           `Explicit A2A ${operation}. Requires host write permission. Remote acknowledgement is not local goal completion. Unknown outcomes require reconciliation, never automatic replay.`,
-        inputSchema: asJson(z.toJSONSchema(schema, { target: 'draft-7' })), outputSchema: { type: 'object' } },
+        inputSchema: toolInputSchema(schema), outputSchema: { type: 'object' } },
         async execute(task, invocation): Promise<ToolResult> {
           const combined = AbortSignal.any([signal, invocation.signal]);
           const authorize = async () => {
@@ -73,7 +112,7 @@ export async function openHostA2a(registration: HostA2aRegistration | undefined,
           return { resultId: `${invocation.attemptId}:result`, attemptId: invocation.attemptId, status: 'success', coverage: 'complete',
             effectState: operation === 'get' ? 'none' : 'confirmed', output: asJson({ kind: 'unreviewed_a2a_reply', peer: id, reply }),
             evidence: [], artifacts: [], cursor: null, error: null };
-        } };
+        } }, 'a2a');
     });
     signal.throwIfAborted();
     return Object.freeze({ peer, tools: Object.freeze(tools), sources: Object.freeze([a2aReplyMissionSource(peer)]),

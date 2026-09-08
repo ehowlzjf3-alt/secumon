@@ -3,7 +3,6 @@ import { GoalSchema, BudgetSchema } from './contracts.js';
 import { BudgetVectorSchema } from './budget-delegation-contracts.js';
 import { budgetSummary, ownExposure } from '../domain/budget-delegation.js';
 import { effectiveExecutionLimits } from '../domain/execution-policy.js';
-import type { Json } from '../domain/model.js';
 import type { Tool } from './ports.js';
 import type { RuntimeServices } from './services.js';
 import type { ExecutionRuntime } from './execution-runtime.js';
@@ -12,6 +11,7 @@ import { authorizedWork } from './work-resources.js';
 import { asJson } from './plan-validator.js';
 import { transact } from './work-transactions.js';
 import { markCollaborationTool } from './collaboration-tool-identity.js';
+import { toolInputSchema } from './tool-input-schema.js';
 
 export const BUDGET_TOOL_IDS = ['core.budget.status', 'core.budget.allocate', 'core.budget.run', 'core.budget.increase',
   'core.budget.request', 'core.budget.return', 'core.budget.revoke', 'core.budget.reconcile'] as const;
@@ -37,26 +37,11 @@ const descriptions = {
   reconcile: 'Refresh actual delegated usage and return unused resources when the task is drained. Unknown usage remains held.',
 };
 
-function inputSchema(schema: z.ZodType): Json {
-  // Zod compacts scalar unions into type arrays; strict Ajv requires anyOf for non-null unions.
-  const strictUnions = (value: Json): Json => {
-    if (Array.isArray(value)) return value.map(strictUnions);
-    if (value === null || typeof value !== 'object') return value;
-    const result = Object.fromEntries(Object.entries(value).map(([key, item]) => [key, strictUnions(item)]));
-    if (Array.isArray(result.type) && result.type.filter(type => type !== 'null').length > 1) {
-      result.anyOf = result.type.map(type => ({ type }));
-      delete result.type;
-    }
-    return result;
-  };
-  return strictUnions(asJson(z.toJSONSchema(schema, { target: 'draft-7', io: 'input' })));
-}
-
 /** Internal scheduling tools reuse the execution ledger; they do not grant access to another agent memory. */
 export function createBudgetTools(deps: { services: RuntimeServices; execution: () => ExecutionRuntime; workflow: () => WorkflowRuntime }): Tool[] {
   return Object.entries(schemas).map(([operation, schema]): Tool => markCollaborationTool({
     definition: { provider: 'core', id: `core.budget.${operation}`, version: '1', description: descriptions[operation as keyof typeof descriptions],
-      effect: 'read', destination: 'local', labels: [], inputSchema: inputSchema(schema), outputSchema: { type: 'object' } },
+      effect: 'read', destination: 'local', labels: [], inputSchema: toolInputSchema(schema), outputSchema: { type: 'object' } },
     async execute(task, context) {
       const base = { resultId: `${context.attemptId}:result`, attemptId: context.attemptId, effectState: 'none' as const,
         evidence: [], artifacts: [], cursor: null };

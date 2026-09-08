@@ -6,6 +6,7 @@ import { BoardReadPageSchema, BoardRequestPageSchema } from './board-contracts.j
 import { collaborationToolKind } from './collaboration-tool-identity.js';
 import { toolAllowed } from './tool-contracts.js';
 import { budgetProgressKeys } from './budget-progress.js';
+import { a2aProgressKeys } from './a2a-progress.js';
 
 const archiveCard = ArchiveDocumentSchema.omit({ body: true });
 const search = z.strictObject({ kind: z.literal('archive_reference'), provider: z.string(), documents: z.array(archiveCard).max(50), truncated: z.boolean() });
@@ -18,6 +19,7 @@ export function collaborationProgressKeys(state: WorkState, task: TaskSpec, resu
   if (!kind || !tool || tool.definition.id !== task.toolId || tool.definition.version !== task.toolVersion ||
     tool.definition.effect !== task.effect || !toolAllowed(tool.definition, state.policy) || result.evidence.length ||
     !['complete', 'partial'].includes(result.coverage)) return [];
+  if (kind === 'a2a') return a2aProgressKeys(task, result, tool, key);
   if (kind === 'board-command') {
     if (task.effect !== 'write' || result.status !== 'success' || result.effectState !== 'confirmed' ||
       result.effectReceipt?.provider !== 'board' || result.effectReceipt.outcome !== 'applied' || result.effectReceipt.origin !== 'execution') return [];
