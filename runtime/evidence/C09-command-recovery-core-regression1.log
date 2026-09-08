@@ -1,0 +1,322 @@
+TAP version 13
+# Subtest: sqlite: lost receive ACK preserves the committed reconciliation response and settles without another lookup
+ok 1 - sqlite: lost receive ACK preserves the committed reconciliation response and settles without another lookup
+  ---
+  duration_ms: 756.67175
+  type: 'test'
+  ...
+# Subtest: sqlite: pause during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation
+ok 2 - sqlite: pause during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation
+  ---
+  duration_ms: 637.605333
+  type: 'test'
+  ...
+# Subtest: sqlite: goal during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation
+ok 3 - sqlite: goal during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation
+  ---
+  duration_ms: 583.376959
+  type: 'test'
+  ...
+# Subtest: file-journal: lost receive ACK preserves the committed reconciliation response and settles without another lookup
+ok 4 - file-journal: lost receive ACK preserves the committed reconciliation response and settles without another lookup
+  ---
+  duration_ms: 4128.865625
+  type: 'test'
+  ...
+# Subtest: file-journal: pause during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation
+ok 5 - file-journal: pause during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation
+  ---
+  duration_ms: 2859.209959
+  type: 'test'
+  ...
+# Subtest: file-journal: goal during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation
+ok 6 - file-journal: goal during an actual driver lookup fences its late receipt while retaining the read charge and effect obligation
+  ---
+  duration_ms: 3259.640292
+  type: 'test'
+  ...
+# Subtest: documents-simple: validated plan executes to verified completion without additional planner calls
+ok 7 - documents-simple: validated plan executes to verified completion without additional planner calls
+  ---
+  duration_ms: 23.225542
+  type: 'test'
+  ...
+# Subtest: observations-simple: validated plan executes to verified completion without additional planner calls
+ok 8 - observations-simple: validated plan executes to verified completion without additional planner calls
+  ---
+  duration_ms: 7.873584
+  type: 'test'
+  ...
+# Subtest: invalid plans fail before budget or execution: stale, cyclic, missing deps, schema, effects, permission and IDs
+ok 9 - invalid plans fail before budget or execution: stale, cyclic, missing deps, schema, effects, permission and IDs
+  ---
+  duration_ms: 4.704125
+  type: 'test'
+  ...
+# Subtest: plan commands deduplicate after later state changes; task IDs cannot hide changed inputs
+ok 10 - plan commands deduplicate after later state changes; task IDs cannot hide changed inputs
+  ---
+  duration_ms: 6.4385
+  type: 'test'
+  ...
+# Subtest: discarded unexecuted task ID still cannot acquire a different contract
+ok 11 - discarded unexecuted task ID still cannot acquire a different contract
+  ---
+  duration_ms: 3.573625
+  type: 'test'
+  ...
+# Subtest: scripted planner proposal enters the real validator and executor only when control requests a plan
+ok 12 - scripted planner proposal enters the real validator and executor only when control requests a plan
+  ---
+  duration_ms: 5.80875
+  type: 'test'
+  ...
+# Subtest: dependencies execute in order; partial observations require another source, not false completion
+ok 13 - dependencies execute in order; partial observations require another source, not false completion
+  ---
+  duration_ms: 8.066125
+  type: 'test'
+  ...
+# Subtest: empty queue is replan; wake conditions, tool budget, deadline and cancellation produce distinct controls
+ok 14 - empty queue is replan; wake conditions, tool budget, deadline and cancellation produce distinct controls
+  ---
+  duration_ms: 4.820792
+  type: 'test'
+  ...
+# Subtest: only authorized current-goal commands mutate state; duplicate cancellation is stable
+ok 15 - only authorized current-goal commands mutate state; duplicate cancellation is stable
+  ---
+  duration_ms: 2.940458
+  type: 'test'
+  ...
+# Subtest: competing executors cannot both reserve or replay dispatch
+ok 16 - competing executors cannot both reserve or replay dispatch
+  ---
+  duration_ms: 4.941958
+  type: 'test'
+  ...
+# Subtest: late tool result after cancel is recorded without adopting or reversing the command
+ok 17 - late tool result after cancel is recorded without adopting or reversing the command
+  ---
+  duration_ms: 4.361667
+  type: 'test'
+  ...
+# Subtest: late tool result after goal is recorded without adopting or reversing the command
+ok 18 - late tool result after goal is recorded without adopting or reversing the command
+  ---
+  duration_ms: 4.079458
+  type: 'test'
+  ...
+# Subtest: expired dispatched read has bounded retry or explicit unknown effect
+ok 19 - expired dispatched read has bounded retry or explicit unknown effect
+  ---
+  duration_ms: 3.895083
+  type: 'test'
+  ...
+# Subtest: expired dispatched write has bounded retry or explicit unknown effect
+ok 20 - expired dispatched write has bounded retry or explicit unknown effect
+  ---
+  duration_ms: 3.44725
+  type: 'test'
+  ...
+# Subtest: invalid result identity, labels, references and output cannot become accepted evidence
+ok 21 - invalid result identity, labels, references and output cannot become accepted evidence
+  ---
+  duration_ms: 26.03725
+  type: 'test'
+  ...
+# Subtest: stored received result resumes in reopened SQLite and artifact stores without invoking tool again
+ok 22 - stored received result resumes in reopened SQLite and artifact stores without invoking tool again
+  ---
+  duration_ms: 42.497667
+  type: 'test'
+  ...
+# Subtest: tool JSON schema validation compiles once, rejects unsupported schema and preserves inputs
+ok 23 - tool JSON schema validation compiles once, rejects unsupported schema and preserves inputs
+  ---
+  duration_ms: 2.533333
+  type: 'test'
+  ...
+# Subtest: successful dependency chain follows DAG order even when task array is reversed
+ok 24 - successful dependency chain follows DAG order even when task array is reversed
+  ---
+  duration_ms: 6.304708
+  type: 'test'
+  ...
+# Subtest: pause before dispatch releases reservation; resume and repeated old pause do not cancel new execution
+ok 25 - pause before dispatch releases reservation; resume and repeated old pause do not cancel new execution
+  ---
+  duration_ms: 4.801417
+  type: 'test'
+  ...
+# Subtest: tool failures retry only within attempt budget and repeated empty replans exhaust their own budget
+ok 26 - tool failures retry only within attempt budget and repeated empty replans exhaust their own budget
+  ---
+  duration_ms: 7.389875
+  type: 'test'
+  ...
+# Subtest: unconfirmed write is unknown and cannot satisfy the goal or be retried by a renamed task
+ok 27 - unconfirmed write is unknown and cannot satisfy the goal or be retried by a renamed task
+  ---
+  duration_ms: 4.284791
+  type: 'test'
+  ...
+# Subtest: lease timeout yields even for a tool that ignores cancellation; late result cannot finish the goal
+ok 28 - lease timeout yields even for a tool that ignores cancellation; late result cannot finish the goal
+  ---
+  duration_ms: 25.952584
+  type: 'test'
+  ...
+# Subtest: permission revocation after reservation is rechecked before dispatch and durably blocks execution
+ok 29 - permission revocation after reservation is rechecked before dispatch and durably blocks execution
+  ---
+  duration_ms: 3.310209
+  type: 'test'
+  ...
+# Subtest: memory: waiting execution wakes only for expired lease or received result
+ok 30 - memory: waiting execution wakes only for expired lease or received result
+  ---
+  duration_ms: 6.93225
+  type: 'test'
+  ...
+# Subtest: sqlite: waiting execution wakes only for expired lease or received result
+ok 31 - sqlite: waiting execution wakes only for expired lease or received result
+  ---
+  duration_ms: 52.34025
+  type: 'test'
+  ...
+# Subtest: cancel during input artifact read prevents transport invocation and releases the known unused token reservation
+ok 32 - cancel during input artifact read prevents transport invocation and releases the known unused token reservation
+  ---
+  duration_ms: 27.824875
+  type: 'test'
+  ...
+# Subtest: goal during input artifact read prevents transport invocation and releases the known unused token reservation
+ok 33 - goal during input artifact read prevents transport invocation and releases the known unused token reservation
+  ---
+  duration_ms: 8.742667
+  type: 'test'
+  ...
+# Subtest: destination during input artifact read prevents transport invocation and releases the known unused token reservation
+ok 34 - destination during input artifact read prevents transport invocation and releases the known unused token reservation
+  ---
+  duration_ms: 7.640417
+  type: 'test'
+  ...
+# Subtest: labels during input artifact read prevents transport invocation and releases the known unused token reservation
+ok 35 - labels during input artifact read prevents transport invocation and releases the known unused token reservation
+  ---
+  duration_ms: 6.482375
+  type: 'test'
+  ...
+# Subtest: cancelling an active model sends its signal, yields promptly and settles late usage once without adopting the old plan
+ok 36 - cancelling an active model sends its signal, yields promptly and settles late usage once without adopting the old plan
+  ---
+  duration_ms: 7.457709
+  type: 'test'
+  ...
+# Subtest: input byte limit rejects before a durable reservation or transport call
+ok 37 - input byte limit rejects before a durable reservation or transport call
+  ---
+  duration_ms: 3.479792
+  type: 'test'
+  ...
+# Subtest: token budget rejects before a durable reservation or transport call
+ok 38 - token budget rejects before a durable reservation or transport call
+  ---
+  duration_ms: 3.999917
+  type: 'test'
+  ...
+# Subtest: model call budget rejects before a durable reservation or transport call
+ok 39 - model call budget rejects before a durable reservation or transport call
+  ---
+  duration_ms: 3.347333
+  type: 'test'
+  ...
+# Subtest: model context capacity and destination policy reject input without invoking the planner
+ok 40 - model context capacity and destination policy reject input without invoking the planner
+  ---
+  duration_ms: 5.629541
+  type: 'test'
+  ...
+# Subtest: concurrent reservations have one winner and duplicate execution performs one dispatch and one transport call
+ok 41 - concurrent reservations have one winner and duplicate execution performs one dispatch and one transport call
+  ---
+  duration_ms: 10.727583
+  type: 'test'
+  ...
+# Subtest: a replacement owner waits for a reserved lease, then releases it and creates a fresh intent without repeating a transport call
+ok 42 - a replacement owner waits for a reserved lease, then releases it and creates a fresh intent without repeating a transport call
+  ---
+  duration_ms: 10.599208
+  type: 'test'
+  ...
+# Subtest: a recovered running lease retains uncertain cost and accepts only late accounting, never its expired plan
+ok 43 - a recovered running lease retains uncertain cost and accepts only late accounting, never its expired plan
+  ---
+  duration_ms: 5.078084
+  type: 'test'
+  ...
+# Subtest: a reply without usage keeps its reservation and prevents a further model call after rejection
+ok 44 - a reply without usage keeps its reservation and prevents a further model call after rejection
+  ---
+  duration_ms: 4.785958
+  type: 'test'
+  ...
+# Subtest: sqlite: completed X and restarted Y share raw conversation but not work/evidence/budget
+ok 45 - sqlite: completed X and restarted Y share raw conversation but not work/evidence/budget
+  ---
+  duration_ms: 892.893375
+  type: 'test'
+  ...
+# Subtest: file-journal: completed X and restarted Y share raw conversation but not work/evidence/budget
+ok 46 - file-journal: completed X and restarted Y share raw conversation but not work/evidence/budget
+  ---
+  duration_ms: 2503.4355
+  type: 'test'
+  ...
+# Subtest: same message retransmission recovers stable work; conflicting raw text is rejected before extra work
+ok 47 - same message retransmission recovers stable work; conflicting raw text is rejected before extra work
+  ---
+  duration_ms: 402.571958
+  type: 'test'
+  ...
+# Subtest: input/work linkage recovers after a failure following the durable work commit
+ok 48 - input/work linkage recovers after a failure following the durable work commit
+  ---
+  duration_ms: 489.814292
+  type: 'test'
+  ...
+# Subtest: agents/users/new sessions cannot access or inject another session even with a known session ID
+ok 49 - agents/users/new sessions cannot access or inject another session even with a known session ID
+  ---
+  duration_ms: 855.941041
+  type: 'test'
+  ...
+# Subtest: new applied text invalidates old context and requires review; a rejected command does not block the next input
+ok 50 - new applied text invalidates old context and requires review; a rejected command does not block the next input
+  ---
+  duration_ms: 578.883042
+  type: 'test'
+  ...
+# Subtest: Y can prepare before X without trapping X or regressing the active session head
+ok 51 - Y can prepare before X without trapping X or regressing the active session head
+  ---
+  duration_ms: 500.066708
+  type: 'test'
+  ...
+# Subtest: context capacity is explicit and preserves the received original for later compact
+ok 52 - context capacity is explicit and preserves the received original for later compact
+  ---
+  duration_ms: 317.964583
+  type: 'test'
+  ...
+1..52
+# tests 52
+# suites 0
+# pass 52
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19544.938834

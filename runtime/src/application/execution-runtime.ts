@@ -54,7 +54,7 @@ export const UserCommandSchema = z.discriminatedUnion('kind', [
 ]);
 export type UserCommand = z.infer<typeof UserCommandSchema>;
 type Actor = { tenantId: string; principalId: string };
-type Change = { state: WorkState; committed: boolean };
+type Change = { state: WorkState; committed: boolean; commandRevision: number };
 
 export class ExecutionRuntime {
   readonly budgets: BudgetDelegationService;
@@ -65,7 +65,7 @@ export class ExecutionRuntime {
   private readonly storedUsages: StoredToolUsages;
   private readonly storedReadUsages: StoredReadUsages;
   #restoring = new Map<string, Promise<WorkState>>();
-  #signals = new Map<string, { workId: string; controller: AbortController }>();
+  #signals = new Map<string, { workId: string; controller: AbortController; basisRevision: number }>();
   #pending = new Map<string, Promise<{ error: string | null }>>();
   #backgroundFailures = new Map<string, string>();
   #closing = false;
@@ -106,13 +106,18 @@ export class ExecutionRuntime {
   hasStoredResultCandidate(state: WorkState): boolean {
     return state.attempts.some(attempt => this.storedResults.candidate(state, attempt.id));
   }
-  registerCancellation(workId: string, operationId: string, controller: AbortController): () => void {
+  registerCancellation(workId: string, operationId: string, controller: AbortController, basisRevision: number): () => void {
+    if (!Number.isSafeInteger(basisRevision) || basisRevision < 1) throw new Error('invalid_cancellation_revision');
     if (this.#closing) { controller.abort(); return () => {}; }
     if (this.#signals.has(operationId)) throw new Error('operation_signal_registered');
-    this.#signals.set(operationId, { workId, controller });
+    this.#signals.set(operationId, { workId, controller, basisRevision });
     return () => { if (this.#signals.get(operationId)?.controller === controller) this.#signals.delete(operationId); };
   }
-  interrupt(workId: string): void { for (const value of this.#signals.values()) if (value.workId === workId) value.controller.abort(); }
+  interrupt(workId: string, beforeRevision?: number): void {
+    if (beforeRevision !== undefined && (!Number.isSafeInteger(beforeRevision) || beforeRevision < 1)) throw new Error('invalid_cancellation_revision');
+    for (const value of this.#signals.values()) if (value.workId === workId &&
+      (beforeRevision === undefined || value.basisRevision < beforeRevision)) value.controller.abort();
+  }
   beginClose(): void {
     this.#closing = true;
     for (const value of this.#signals.values()) value.controller.abort();
@@ -179,7 +184,10 @@ export class ExecutionRuntime {
       if (actor.tenantId !== state.policy.tenantId || actor.principalId !== state.policy.principalId) throw new Error('actor_not_authorized');
     };
     authorized(await this.state(workId));
-    const result = await this.change(workId, commandId, asJson({ actor, expectedGoalRevision, command, ...(sessionInput ? { sessionInput } : {}) }), 'user_command', state => {
+    const data = asJson({ actor, expectedGoalRevision, command, ...(sessionInput ? { sessionInput } : {}) });
+    const interrupts = command.kind === 'cancel' || command.kind === 'pause' || command.kind === 'goal' || command.kind === 'input';
+    let result: Change;
+    try { result = await this.change(workId, commandId, data, 'user_command', state => {
       authorized(state);
       if (command.kind === 'goal') {
         // Check the edited basis inside each CAS attempt, before replacing it with this command's input.
@@ -257,10 +265,17 @@ export class ExecutionRuntime {
           record.status = 'failed'; record.finishedAt ??= this.services.clock.now(); record.reason = 'user_control_changed';
         }
       }
-    });
-    if (result.committed && (command.kind === 'cancel' || command.kind === 'pause' || command.kind === 'goal' || command.kind === 'input')) {
-      for (const value of this.#signals.values()) if (value.workId === workId) value.controller.abort();
+    }); } catch (error) {
+      if (interrupts) try {
+        const receipt = await this.services.state.receipt(workId, commandId);
+        if (receipt?.state.id === workId && receipt.digest === this.services.digester.digest({ type: 'user_command', data })) {
+          authorized(receipt.state); this.interrupt(workId, receipt.state.revision);
+        }
+      } catch { /* Unavailable proof leaves the original error unresolved for an explicit receipt-based retry. */ }
+      throw error;
     }
+    // A duplicate refers to its original publication, not the current state returned by the transaction.
+    if (interrupts) this.interrupt(workId, result.commandRevision);
     if ((command.kind === 'cancel' || command.kind === 'goal') && result.state.budgetGrants?.some(g => g.status !== 'settled')) return this.budgets.refresh(workId);
     return result.state;
   }
@@ -381,7 +396,7 @@ export class ExecutionRuntime {
     if (this.#closing) throw new Error('executor_closed');
     if (!(await this.dispatch(workId, attemptId))) return;
     const state = await this.state(workId); const attempt = this.attempt(state, attemptId); const task = this.currentTask(state, attempt);
-    const controller = new AbortController(); this.#signals.set(attemptId, { workId, controller });
+    const controller = new AbortController(); this.#signals.set(attemptId, { workId, controller, basisRevision: state.revision });
     const authoritySignal = this.services.executionAuthority?.signal;
     const revoke = () => controller.abort();
     authoritySignal?.addEventListener('abort', revoke, { once: true });

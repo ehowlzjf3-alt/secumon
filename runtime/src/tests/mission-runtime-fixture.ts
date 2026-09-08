@@ -12,6 +12,7 @@ import { createExecutionAuthority } from '../application/execution-authority.js'
 import { asJson } from '../application/plan-validator.js';
 import { transact } from '../application/work-transactions.js';
 import { FileArtifactStore } from '../infrastructure/file-artifacts.js';
+import { FileJournalStateRepository, type JournalOptions } from '../infrastructure/file-journal-state.js';
 import { LocalChannel } from '../infrastructure/local-channel.js';
 import { AjvSchemas } from '../infrastructure/ajv-schemas.js';
 import { Sha256Digester } from '../infrastructure/digest.js';
@@ -38,9 +39,10 @@ const checkpointView = z.object({ schemaVersion: z.literal(1), workId: z.string(
   seen: z.array(z.object({ id: z.string(), digest: z.string() })), events: z.array(MissionEventSchema) });
 
 /** The same C01 repository/artifact/FakeClock primitives as board-wake; real isolated session intake, no profile or HOME writes. */
-export async function missionFixture(t: TestContext, sourceIds = ['observations']) {
+export async function missionFixture(t: TestContext, sourceIds = ['observations'], options: { stateBackend?: 'sqlite' | 'file-journal'; journalOptions?: JournalOptions } = {}) {
   const directory = await mkdtemp(join(tmpdir(), 'mission-runtime-'));
-  let state = openRepository('sqlite', directory), channel = new LocalChannel(join(directory, 'channel.sqlite'), 'mission-agent');
+  const openState = () => options.stateBackend === 'file-journal' ? new FileJournalStateRepository(join(directory, 'journal'), options.journalOptions) : openRepository('sqlite', directory);
+  let state = openState(), channel = new LocalChannel(join(directory, 'channel.sqlite'), 'mission-agent');
   const artifacts = new FileArtifactStore(join(directory, 'artifacts')), clock = new FakeClock(1100), ids = new SequenceIds(), digester = new Sha256Digester();
   const template = initial(), actor = { ...template.policy }, lifetime = new AbortController(), host = new AbortController();
   const authority = createExecutionAuthority({ actor, scope: template.goal.scope, signal: host.signal });
@@ -96,7 +98,7 @@ export async function missionFixture(t: TestContext, sourceIds = ['observations'
     poll(sourceId: string, handler: Poll) { handlers.set(sourceId, handler); },
     page(sourceId: string, page: MissionPage) { handlers.set(sourceId, async () => structuredClone(page)); },
     async edit(change: (work: WorkState) => void) { return (await transact(bundle.services, workId, `host-edit-${++sequence}`, 'fixture_host_control', {}, change)).state; },
-    async reopen() { await close(); state = openRepository('sqlite', directory); channel = new LocalChannel(join(directory, 'channel.sqlite'), 'mission-agent');
+    async reopen() { await close(); state = openState(); channel = new LocalChannel(join(directory, 'channel.sqlite'), 'mission-agent');
       bundle = await compose(); missions = makeDriver(); bundle.services.notifications = missions; },
   };
 }

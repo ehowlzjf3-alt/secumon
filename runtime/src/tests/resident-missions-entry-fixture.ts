@@ -36,12 +36,12 @@ function answer(text: string): AgentTurnResult {
     rationale: 'Echo the current unreviewed event or explicit answer.', missing: [], counterarguments: ['The observation is not independently verified.'] } };
 }
 
-/** Actual separate profiles and SQLite stores; deterministic local model and observation callbacks only. */
-export async function residentEntryFixture(t: TestContext, compact = false, options: { base?: string } = {}) {
+/** Actual separate profiles, SQLite by default; deterministic local model and observation callbacks only. */
+export async function residentEntryFixture(t: TestContext, compact = false, options: { base?: string; stateBackend?: 'sqlite' | 'file-journal' } = {}) {
   const base = realpathSync(options.base ?? mkdtempSync(join(tmpdir(), 'resident-entry-'))), runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
   const profiles = new FileAgentProfileStore(runtimeRoot), roles = ['first', 'second'] as const;
   for (const role of roles) {
-    const ready = profiles.initialize(join(base, role), { purpose: 'Handle generic incoming events continuously.', stateBackend: 'sqlite', personalMemory: 'sqlite' });
+    const ready = profiles.initialize(join(base, role), { purpose: 'Handle generic incoming events continuously.', stateBackend: options.stateBackend ?? 'sqlite', personalMemory: 'sqlite' });
     writeFileSync(join(base, role, 'config.json'), JSON.stringify({ ...ready.config, model: { profile: 'resident-entry' },
       features: { ...ready.config.features, missions: true }, skills: { mode: 'off' } }), { mode: 0o600 });
   }

@@ -420,15 +420,17 @@ export class MissionRuntime {
     } catch { return false; }
   }
   async refresh(workId: string, options: { signal?: AbortSignal } = {}): Promise<WorkState> {
+    const lifetime = this.signal(options.signal); lifetime.throwIfAborted();
+    const initial = await this.state(workId);
     const control = new AbortController();
     const unregister = this.deps.services.workCancellation?.register(workId,
-      JSON.stringify(['mission-observation', this.#owner, this.deps.services.ids.next('mission-observation')]), control);
-    const signal = this.signal(AbortSignal.any([control.signal, ...(options.signal ? [options.signal] : [])]));
-    try { signal.throwIfAborted(); return await this.refreshObserved(workId, signal); }
+      JSON.stringify(['mission-observation', this.#owner, this.deps.services.ids.next('mission-observation')]), control, initial.revision);
+    const signal = AbortSignal.any([control.signal, lifetime]);
+    try { signal.throwIfAborted(); return await this.refreshObserved(workId, signal, initial); }
     finally { unregister?.(); }
   }
-  private async refreshObserved(workId: string, signal: AbortSignal): Promise<WorkState> {
-    let state = await this.settleControls(await this.state(workId), signal); signal.throwIfAborted(); if (terminal(state)) return state;
+  private async refreshObserved(workId: string, signal: AbortSignal, initial: WorkState): Promise<WorkState> {
+    let state = await this.settleControls(initial, signal); signal.throwIfAborted(); if (terminal(state)) return state;
     state = await this.acknowledgeReads(state, signal);
     for (const id of (state.subscriptions ?? []).filter(value => value.provider === 'mission' && value.status === 'active').map(value => value.id)) {
       state = await this.state(workId); signal.throwIfAborted();

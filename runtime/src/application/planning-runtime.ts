@@ -431,14 +431,15 @@ export class PlanningRuntime {
   }
   async execute(workId: string, callId: string) {
     if (!(await this.dispatch(workId, callId))) return;
-    const abort = new AbortController(); const unregister = this.execution.registerCancellation(workId, callId, abort);
+    const state = await this.execution.state(workId);
+    const abort = new AbortController(); const unregister = this.execution.registerCancellation(workId, callId, abort, state.revision);
     const authoritySignal = this.services.executionAuthority?.signal;
     const revoke = () => abort.abort();
     authoritySignal?.addEventListener('abort', revoke, { once: true });
     if (authoritySignal?.aborted) revoke();
     let preflightTimer: ReturnType<typeof setTimeout> | undefined;
     try {
-    const state = await this.execution.state(workId); const call = this.call(state, callId);
+    const call = this.call(state, callId);
     if (!this.allowed(state, call) || this.digest(state, call.semanticVersion ?? 1) !== call.semanticDigest || call.expired) { await this.receive(workId, callId, { status: 'cancelled', code: 'model_not_sent', inputTokens: 0, outputTokens: 0 }); return; }
     preflightTimer = setTimeout(() => abort.abort(), Math.max(1, Math.min(2147483647, call.leaseUntil - this.services.clock.now())));
     const compactInput = call.purpose === 'session_compact' ? await this.compacts.load(state, call) : null;

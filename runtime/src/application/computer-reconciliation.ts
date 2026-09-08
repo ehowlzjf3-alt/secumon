@@ -246,7 +246,7 @@ export class ComputerReconciliations {
         state.budget.reservedToolCalls--; state.budget.used.toolCalls++;
       }, async () => { await this.guard(workId, id, actor); });
       if (!dispatched.committed) return this.record(dispatched.state, id);
-      unregister = this.runtime.registerCancellation(workId, JSON.stringify([workId, id]), controller);
+      unregister = this.runtime.registerCancellation(workId, JSON.stringify([workId, id]), controller, dispatched.state.revision);
       timer = setTimeout(() => controller.abort(), Math.max(1, Math.min(2147483647, record.leaseUntil - this.services.clock.now())));
       const current = await this.guard(workId, id, actor, controller.signal); binding = this.selected(current.view, record.sourceAttemptId).binding;
       const acquiredBinding = binding;

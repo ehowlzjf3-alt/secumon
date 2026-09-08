@@ -1,0 +1,169 @@
+{
+  "checkpoint": 395,
+  "recordedAt": "2026-09-09",
+  "status": "C09_command_recovery_local_verified",
+  "baselineCommit": "b783902946488ecef951d341b8debb6b68807c66",
+  "previousGoalTurn": "progress: checkpoint394 implementation, 49 same-build local passes, commit and exact remote match; current checkout revalidated clean",
+  "plan": "design/chapters/C09-command-recovery-plan.md",
+  "result": "design/chapters/C09-command-recovery-result.md",
+  "usage": "design/chapters/C09-command-recovery-usage.md",
+  "inProgress": [],
+  "testsExecuted": [
+    {
+      "id": "target1",
+      "files": [
+        "mission-command-recovery.test.js",
+        "resident-missions-command-recovery.test.js"
+      ],
+      "build": "build2",
+      "exitCode": 0,
+      "total": 12,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 19514.845375,
+      "log": "runtime/evidence/C09-command-recovery-target1.log"
+    },
+    {
+      "id": "missions1",
+      "files": [
+        "mission-poll-controls.test.js",
+        "resident-missions-poll-controls.test.js",
+        "mission-controls.test.js",
+        "resident-missions-controls.test.js",
+        "mission-runtime.test.js",
+        "mission-read-ack.test.js",
+        "resident-missions-entry.test.js"
+      ],
+      "build": "build2",
+      "exitCode": 0,
+      "total": 43,
+      "pass": 43,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 41721.332209,
+      "log": "runtime/evidence/C09-command-recovery-missions1.log"
+    },
+    {
+      "id": "core-regression1",
+      "files": [
+        "execution.test.js",
+        "model-boundaries.test.js",
+        "session-flow.test.js",
+        "computer-reconciliation-authority.test.js"
+      ],
+      "build": "build2",
+      "exitCode": 0,
+      "total": 52,
+      "pass": 52,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 19544.938834,
+      "log": "runtime/evidence/C09-command-recovery-core-regression1.log"
+    }
+  ],
+  "activeRuns": [],
+  "actualModelApi": "stopped_by_user",
+  "externalServiceConnectionsRun": false,
+  "notImplementedThisUnit": [
+    "Cross-process immediate control delivery",
+    "Automatic forced termination of a noncooperative source callback",
+    "A stable command identity/CAS extension for bare resident pause(workId) retries after a separate resume"
+  ],
+  "goalComplete": false,
+  "chapterComplete": false,
+  "failureHistory": [
+    {
+      "kind": "type_error",
+      "log": "runtime/evidence/C09-command-recovery-core1.log",
+      "detail": "TS18047 in resident read(): receipt possibly null at return; explicit missing-receipt throw preserves existing error contract and narrows the type."
+    },
+    {
+      "kind": "test_type_error",
+      "log": "runtime/evidence/C09-command-recovery-build1.log",
+      "detail": "TS2345: generic outcome inferred void for pause/stop promise union; explicit unknown type accepts either actual result without changing assertions."
+    }
+  ],
+  "checks": {
+    "initialCoreExitCode": 2,
+    "architectureInspected": 202,
+    "architectureViolations": 0,
+    "architectureLog": "runtime/evidence/C09-command-recovery-architecture1.log",
+    "coreExitCode": 0,
+    "coreLog": "runtime/evidence/C09-command-recovery-core2.log",
+    "buildExitCode": 0,
+    "coreSource": "same product source as build2; only one test type annotation changed after core2",
+    "architectureSource": "same import graph; subsequent changes were explicit null narrowing and a test type annotation"
+  },
+  "builds": [
+    {
+      "id": "build1",
+      "exitCode": 2,
+      "log": "runtime/evidence/C09-command-recovery-build1.log",
+      "source": null
+    },
+    {
+      "id": "build2",
+      "exitCode": 0,
+      "log": "runtime/evidence/C09-command-recovery-build2.log",
+      "source": {
+        "build": "C09-command-recovery-build2",
+        "node": "v24.20.0",
+        "platform": "darwin",
+        "arch": "arm64",
+        "sourceDigest": "b856f973e5c9bdfc205aa47bae1d31b83cb9117c83cc9d7fa101b2861699e109",
+        "filesDigest": "0d6c194a1c72e7a687d91cf87a9540c520480255c351809d4410944b2b17dbbf",
+        "fileCount": 2505
+      }
+    }
+  ],
+  "implemented": [
+    "Cancellation registrations retain the work revision used to start their operation",
+    "Transactions return original command publication revision separately from current work state",
+    "New and duplicate controls abort only registrations older than their original publication",
+    "A failed command can verify its exact recorded receipt to interrupt prior operations while preserving the original error",
+    "Mission, model, tool and computer-reconciliation registrations supply their existing state basis",
+    "Resident controls authenticate the exact original checkpoint publication, preserve primary/proof errors, and recover missed interruption without affecting newer registrations"
+  ],
+  "newUnique": 12,
+  "relatedUnique": 95,
+  "allUnique": 107,
+  "mixedBuildEvidence": false,
+  "allRerunAtFinalSource": true,
+  "finalBuild": "C09-command-recovery-build2",
+  "finalSource": {
+    "build": "C09-command-recovery-build2",
+    "node": "v24.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "sourceDigest": "b856f973e5c9bdfc205aa47bae1d31b83cb9117c83cc9d7fa101b2861699e109",
+    "filesDigest": "0d6c194a1c72e7a687d91cf87a9540c520480255c351809d4410944b2b17dbbf",
+    "fileCount": 2505
+  },
+  "finalSourceEvidence": "runtime/evidence/checkpoint395-final-source.json",
+  "verifiedScope": [
+    "Actual local file-journal publication faults for pause/cancel/goal/input preserve original errors, original event history and raw journal records; pending session inputs recover once without extra inference or tool execution",
+    "First post-publication receipt lookup failure leaves the poll live until original pending input recovery confirms the recorded command; pre-publication failure cannot cancel an observation",
+    "Exact original runtime.command replay and same-ID conflicting payload after explicit resume leave the newer poll and current state unchanged",
+    "An ordinary file-journal profile receives a one-shot POSIX namespace fsync EIO after the exact real record link, recovers its pending session input and reopens unchanged; explicit resume reads the original cursor",
+    "Resident pause/stop confirm exact checkpoint publication before interruption; failed proof reads preserve original/proof errors and a paused retry recovers missed cancellation without rewriting the receipt",
+    "Delaying original resident receipt retrieval across a separate resume and new poll interrupts only the original registration and leaves the new claim and poll intact",
+    "Existing mission/poll controls, original read ACK, resident intake/compact, execution/model cancellation, persistent session commands and computer reconciliation authority regressions pass on the same final source"
+  ],
+  "notRun": [
+    "Actual model/API quality: stopped by user",
+    "Whole suite, SIGKILL, power-loss durability or hardware disk failure in this unit; journal faults are injected into actual temporary local storage operations",
+    "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
+  ],
+  "remaining": [
+    "C09 long event-history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+    "C09 cross-process immediate control delivery and resident control CLI/Web/Knox entry points with stable retry identity/expected state",
+    "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+    "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+    "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+  ],
+  "next": "C09 long event-history/context retrieval cost and repeated goal changes with retired rule identities/capacity"
+}

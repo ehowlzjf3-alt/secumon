@@ -51,8 +51,9 @@ export interface ComputerContinuationService {
 export interface RuntimeServices {
   /** Local execution lifetime only; registration neither grants authority nor proves an operation stopped. */
   workCancellation?: {
-    register(workId: string, operationId: string, controller: AbortController): () => void;
-    interrupt(workId: string): void;
+    register(workId: string, operationId: string, controller: AbortController, basisRevision: number): () => void;
+    /** A recorded control only interrupts operations based on an earlier work revision. */
+    interrupt(workId: string, beforeRevision?: number): void;
   } | undefined;
   executionAuthority?: ExecutionAuthority | undefined;
   generatedAnswers?: { current(state: WorkState, input: AgentTurnInput, options: ModelCallOptions): Promise<boolean> } | undefined;
