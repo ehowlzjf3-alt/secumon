@@ -1,3 +1,4 @@
+import { captureEngineApi, type EngineApiRegistration } from '../application/engine-extension-contracts.js';
 import { z } from 'zod';
 import type { Limits, Policy, WorkState } from '../domain/model.js';
 import { allowsDisclosure, disclosureLabels } from '../domain/disclosure.js';
@@ -21,14 +22,16 @@ export interface OpenedHostPeers {
   readonly allowedTools: readonly string[];
   close(): Promise<void>;
 }
-export interface HostPeerRegistration { open(context: HostPeerContext): Promise<OpenedHostPeers> }
+export interface HostPeerRegistration extends EngineApiRegistration { open(context: HostPeerContext): Promise<OpenedHostPeers> }
 const id = z.string().min(1).max(256);
 const invalid = () => new Error('peer_registration_invalid');
 const unavailable = () => new Error('peer_unavailable');
 function captureRegistration(value: unknown): HostPeerRegistration {
   if (!value || typeof value !== 'object') throw invalid();
   const open = (value as HostPeerRegistration).open; if (typeof open !== 'function') throw invalid();
-  return Object.freeze({ open: open.bind(value) });
+  const api = captureEngineApi(value as HostPeerRegistration);
+  return Object.freeze({ ...(api.engineApi ? { engineApi: api.engineApi } : {}),
+    open(...args: Parameters<HostPeerRegistration['open']>) { api.assertCurrent(); return open.apply(value, args); } });
 }
 export function resolveHostPeerRegistration(host: { readonly peers?: HostPeerRegistration } | undefined): HostPeerRegistration | null {
   if (host === undefined) return null;

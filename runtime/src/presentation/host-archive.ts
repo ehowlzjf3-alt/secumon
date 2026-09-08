@@ -1,3 +1,4 @@
+import { captureEngineApi, type EngineApiRegistration } from '../application/engine-extension-contracts.js';
 import type { ArchiveDescriptor, ArchiveOwner, ArchiveProvider } from '../application/archive-contracts.js';
 import { ArchiveOwnerSchema } from '../application/archive-contracts.js';
 import { ArchiveService } from '../application/archive-service.js';
@@ -13,10 +14,20 @@ export interface HostArchiveContext {
   readonly agentId: string; readonly root: string; readonly scope: string; readonly actor: WorkActor; readonly signal: AbortSignal;
 }
 export interface OpenedArchiveProvider { readonly provider: ArchiveProvider; close(): Promise<void> }
-export interface HostArchiveRegistration {
+export interface HostArchiveRegistration extends EngineApiRegistration {
   /** Explicit host grant, independent of provider mutation capability. Omission denies model and management writes. */
   readonly allowWrites?: boolean;
   open(context: Readonly<HostArchiveContext>): Promise<OpenedArchiveProvider>;
+}
+export function captureHostArchiveRegistration(registration: HostArchiveRegistration | undefined): HostArchiveRegistration | undefined {
+  if (registration === undefined) return undefined;
+  const open = registration.open;
+  const allowWrites = registration.allowWrites;
+  if (typeof open !== 'function' || allowWrites !== undefined && typeof allowWrites !== 'boolean') throw new Error('archive_registration_invalid');
+  const api = captureEngineApi(registration);
+  return Object.freeze({ ...(api.engineApi ? { engineApi: api.engineApi } : {}),
+    ...(allowWrites === undefined ? {} : { allowWrites }),
+    open(...args: Parameters<HostArchiveRegistration['open']>) { api.assertCurrent(); return open.apply(registration, args); } });
 }
 export interface OpenedHostArchive {
   readonly service: ArchiveService; readonly tools: readonly Tool[];
@@ -26,6 +37,7 @@ export interface OpenedHostArchive {
 
 /** Optional host injection only; an absent registration performs no I/O and enables no tools. */
 export async function openHostArchive(registration: HostArchiveRegistration | undefined, context: HostArchiveContext): Promise<OpenedHostArchive | null> {
+  registration = captureHostArchiveRegistration(registration);
   if (registration === undefined) return null;
   const open = registration.open;
   const requestedWrites = registration.allowWrites;

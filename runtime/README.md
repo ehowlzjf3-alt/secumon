@@ -1,5 +1,7 @@
 # 범용 롱 호라이즌 런타임
 
+2026-09-08 checkpoint385: 담당별 고정 설치를 같은 전역 명령에서 선택하고 확장 엔진 API 호환을 검사한다. [사용법](../design/chapters/C10-launcher-extensions-usage.md) · [로컬187개 결과](../design/chapters/C10-launcher-extensions-result.md). 실제 모델/사내 연동과 이번 Linux/native Windows 인수는 미검증이다.
+
 최신 Checkpoint379: C08 반환·활성 배정·접수 중단의 신규5개와 직접 영향 회귀11개를 확인했다. 실제 세션 요약 후 원 배정으로 이어가기, 자진 반환 뒤 새 배정, 실제 SIGKILL 후 원 동료 요청의 명시 재개를 확인했다. 제품 변경 없이 시험을 보완했고, 실제 모델/API·운영 인수와 전체 goal은 미완료다. [현재 결과와 남은 범위](../design/chapters/C08-remaining-boundaries-result.md) · [다음 작업](../design/NEXT-STEPS.md). 아래 이전 단위 수치와 당시 다음 작업은 이력이다. 각 빌드 기록을 최종 한 소스의 전체 재실행으로 합치지 않는다.
 
 <!-- C05-MCP-COLLECTIONS-FINAL-PROOF: 1ef802e5b3473c96de38f364f62815584f8f1206d441a473be8666c1ecb61fd9 -->

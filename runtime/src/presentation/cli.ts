@@ -15,6 +15,7 @@ import type { Mode, TaskSpec } from '../domain/model.js';
 import type { WorkViewLevel } from '../domain/work-view.js';
 import type { UserCommand } from '../application/execution-runtime.js';
 import type { AgentStoreHostOptions } from '../infrastructure/agent-stores.js';
+import { localCliOptions } from './agent-cli-options.js';
 
 const help = `범용 런타임 CLI · 합성 자료/로컬 채널 profile
 사용법: cli <명령> [work-id] [옵션]
@@ -90,16 +91,7 @@ async function jsonFile(path: string | undefined) {
 }
 /** Trusted host options apply only to the C01 agent stores; the normal bin keeps its default registry. */
 export async function runLocalCli(args = process.argv.slice(2), defaultAgentDirectory?: string, hostOptions: AgentStoreHostOptions = {}) {
-  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: {
-    'data-dir': { type: 'string' }, directory: { type: 'string' }, 'state-backend': { type: 'string' }, conversation: { type: 'string', default: 'terminal' }, json: { type: 'boolean', default: false },
-    session: { type: 'string' }, 'new-session': { type: 'boolean', default: false }, text: { type: 'string' }, limit: { type: 'string', default: '50' }, 'compact-provider': { type: 'string' },
-    scenario: { type: 'string', default: 'documents-simple' }, 'request-id': { type: 'string' }, 'goal-revision': { type: 'string' }, 'control-revision': { type: 'string' },
-    'memory-id': { type: 'string' }, 'memory-revision': { type: 'string' }, 'state-revision': { type: 'string' }, 'source-session': { type: 'string' },
-    'source-message': { type: 'string' }, quote: { type: 'string' }, title: { type: 'string' }, query: { type: 'string' },
-    'draft-id': { type: 'string' }, 'apply-id': { type: 'string' },
-    mode: { type: 'string' }, reason: { type: 'string' }, level: { type: 'string' }, cursor: { type: 'string' },
-    file: { type: 'string' }, 'resume-file': { type: 'string' }, obligation: { type: 'string' }, steps: { type: 'string', default: '40' }, 'analysis-only': { type: 'boolean', default: false }, help: { type: 'boolean', short: 'h' },
-  } });
+  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: localCliOptions() });
   const command = positionals[0] ?? 'help'; if (values.help || command === 'help') { process.stdout.write(help); return; }
   const draftCommands = ['memory-draft-create', 'memory-draft-apply', 'memory-draft-resume', 'memory-draft-status'];
   const memoryCommands = ['memory-remember', 'memory-search', 'memory-get', 'memory-recall', 'memory-clear', 'memory-selected', 'memory-revise', 'memory-forget', ...draftCommands];

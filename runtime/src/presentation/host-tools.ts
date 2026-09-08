@@ -1,3 +1,4 @@
+import { captureEngineApi, EngineExtensionError, type EngineApiRegistration } from '../application/engine-extension-contracts.js';
 import { z } from 'zod';
 import { BudgetSchema, PolicySchema } from '../application/contracts.js';
 import type { ReadCollectionBinding, SchemaCompiler, Tool } from '../application/ports.js';
@@ -46,8 +47,13 @@ export interface OpenedHostTools {
 }
 /** Reads/reconciles original effects; callbacks must never retry the original write. */
 export interface HostEffectReader { readonly provider: string; readonly reader: EffectProofValidator }
-export interface HostToolRegistration { open(context: Readonly<HostToolContext>, assembly?: HostToolAssembly): Promise<OpenedHostTools> }
+export interface HostToolRegistration extends EngineApiRegistration { open(context: Readonly<HostToolContext>, assembly?: HostToolAssembly): Promise<OpenedHostTools> }
+export interface HostBudgetRegistration extends EngineApiRegistration {
+  readonly authority?: BudgetAuthority; readonly children?: BudgetChildRuntime; readonly ledgers?: BudgetWorkLedgers;
+}
 export interface AgentExecutionHost extends AgentTurnHost {
+  /** Host policy only; legacy registrations otherwise remain explicitly unverified. */
+  readonly requireDeclaredExtensions?: boolean;
   /** One trusted registry location shared by all agents on this host; absent uses the host default. */
   readonly identityRegistryDirectory?: string;
   readonly postgres?: import('../infrastructure/agent-postgres-storage.js').AgentPostgresHost;
@@ -55,7 +61,7 @@ export interface AgentExecutionHost extends AgentTurnHost {
   readonly knox?: KnoxRegistration;
   readonly board?: HostBoardRegistration;
   readonly archive?: HostArchiveRegistration;
-  readonly budget?: { readonly authority?: BudgetAuthority; readonly children?: BudgetChildRuntime; readonly ledgers?: BudgetWorkLedgers };
+  readonly budget?: HostBudgetRegistration;
   readonly peers?: HostPeerRegistration;
   readonly a2a?: HostA2aRegistration;
   /** Host-authenticated inbound handlers may be enabled without an outbound peer registration. */
@@ -71,13 +77,15 @@ function invalid(cause?: unknown): Error {
   return new Error('agent_tool_registration_invalid', cause === undefined ? undefined : { cause });
 }
 function failure(error: unknown): Error {
-  return error instanceof Error && error.message === 'agent_tool_registration_invalid' ? error : invalid(error);
+  return error instanceof EngineExtensionError || error instanceof Error && error.message === 'agent_tool_registration_invalid' ? error : invalid(error);
 }
 function captureRegistration(value: unknown): HostToolRegistration {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw invalid();
   const open = (value as HostToolRegistration).open;
   if (typeof open !== 'function') throw invalid();
-  return Object.freeze({ open: open.bind(value) });
+  const api = captureEngineApi(value as HostToolRegistration);
+  return Object.freeze({ ...(api.engineApi ? { engineApi: api.engineApi } : {}),
+    open(...args: Parameters<HostToolRegistration['open']>) { api.assertCurrent(); return open.apply(value, args); } });
 }
 function captureAssembly(value: HostToolAssembly): HostToolAssembly {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw invalid();

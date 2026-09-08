@@ -1,3 +1,4 @@
+import { captureEngineApi, type EngineApiRegistration } from '../application/engine-extension-contracts.js';
 import type { AgentTurnProfile as PromptProfile, AgentTurnPrompt } from '../application/agent-turn-types.js';
 import { AgentTurnProfileSchema, AgentTurnPromptSchema } from '../application/agent-turn-base-contracts.js';
 import { ModelIdentitySchema } from '../application/model-contracts.js';
@@ -20,7 +21,7 @@ export interface OpenedHostModel {
   inputLimits: ModelInputRuntimeLimits;
   close(): Promise<void>;
 }
-export interface HostModelRegistration {
+export interface HostModelRegistration extends EngineApiRegistration {
   execution: 'deterministic_fixture' | 'host_transport';
   open(profile: PromptProfile): Promise<OpenedHostModel>;
 }
@@ -47,7 +48,9 @@ export function resolveHostModelRegistration(host: AgentTurnHost | undefined, na
   if (registration === undefined) throw new Error('agent_turn_provider_unavailable');
   if (!registration || !['deterministic_fixture', 'host_transport'].includes(registration.execution) || typeof registration.open !== 'function') throw invalid();
   // Capture selection and method before an asynchronous open; later map edits do not redirect this lease.
-  return Object.freeze({ execution: registration.execution, open: registration.open.bind(registration) });
+  const api = captureEngineApi(registration), open = registration.open;
+  return Object.freeze({ execution: registration.execution, ...(api.engineApi ? { engineApi: api.engineApi } : {}),
+    open(profile: PromptProfile) { api.assertCurrent(); return open.call(registration, profile); } });
 }
 
 function snapshotPlanner(source: RegisteredTurnPlanner, profile: PromptProfile, limits: ModelInputRuntimeLimits): RegisteredTurnPlanner {
@@ -80,6 +83,7 @@ export async function closeAgentTurnResources(closers: readonly (() => Promise<v
 /** The factory receives no authority or stored originals. Only the runtime invokes its captured methods. */
 export async function openRegisteredHostModel(registration: HostModelRegistration, profile: PromptProfile): Promise<OpenedHostModel> {
   const expected = frozen(AgentTurnProfileSchema.parse(structuredClone(profile)));
+  const api = captureEngineApi(registration); api.assertCurrent();
   const opened = await registration.open(expected);
   let close: (() => Promise<void>) | undefined;
   try {

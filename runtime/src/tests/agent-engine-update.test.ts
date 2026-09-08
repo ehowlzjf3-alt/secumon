@@ -78,7 +78,7 @@ test('compatible full offline engine releases update an existing SQLite agent an
       const pinnedTree = captureLifecycleTree(directory);
       const duplicate = await life<PinResult>(b, ['update', '--engine', b.directory, '--previous', b.release.digest, '--backup', backup.directory, '--offline']);
       assert.equal(duplicate.applied, false); assert.deepEqual(duplicate.pin, updated.pin); assert.deepEqual(captureLifecycleTree(directory), pinnedTree);
-      await rejectCli(a, ['open', '--directory', directory], 'agent_engine_update_required');
+      await rejectCli(a, ['open', '--directory', directory], 'engine_installation_unregistered');
       const reopened = await cli<Setup>(b, ['open', '--directory', directory]); assert.deepEqual(reopened.identity, setup.identity);
       assert.deepEqual(await snapshot(b, before), before, 'installed B reopens all original ledgers without executing the unfinished work');
       const resumed = await cli<{ workId: string; sessionId: string; snapshot: { status: string; usage: { modelCalls: number; toolCalls: number } }; messages: { kind: string; text: string }[] }>(b,

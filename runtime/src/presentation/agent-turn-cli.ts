@@ -8,6 +8,7 @@ import { closeAgentTurnResources } from './host-models.js';
 import type { AgentExecutionHost } from './host-tools.js';
 import { createLocalContractHost } from './local-contract-model.js';
 import { agentTurnModelNotice, syntheticTurnNotice } from './agent-model-notice.js';
+import { agentTurnCliOptions } from './agent-cli-options.js';
 
 const help = `secumon-agent chat · 일반 요청 진입
 사용법: secumon-agent chat <명령> --directory 담당경로 --provider synthetic|registered [옵션]
@@ -83,14 +84,7 @@ async function view(profile: AgentTurnProfile, workId: string, scope: SessionSco
 }
 
 export async function runAgentTurnCli(args: string[], host: AgentExecutionHost = createLocalContractHost()) {
-  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: {
-    directory: { type: 'string', default: process.cwd() }, provider: { type: 'string' }, 'compact-provider': { type: 'string' },
-    session: { type: 'string' }, 'new-session': { type: 'boolean', default: false }, conversation: { type: 'string', default: 'terminal' },
-    'message-id': { type: 'string' }, text: { type: 'string' }, work: { type: 'string' }, 'goal-revision': { type: 'string' },
-    'control-revision': { type: 'string' }, obligation: { type: 'string' },
-    mode: { type: 'string' }, steps: { type: 'string' }, limit: { type: 'string' }, cursor: { type: 'string' },
-    json: { type: 'boolean', default: false }, help: { type: 'boolean', short: 'h' },
-  } });
+  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: agentTurnCliOptions(process.cwd()) });
   const command = positionals[0] ?? 'help';
   if (values.help || command === 'help') { process.stdout.write(help); return; }
   if (positionals.length !== 1 || !['session', 'ask', 'followup', 'goal', 'resume', 'pause', 'cancel', 'status', 'history'].includes(command)) throw new Error('chat_command_invalid');
@@ -127,11 +121,11 @@ export async function runAgentTurnCli(args: string[], host: AgentExecutionHost =
       ...(values.session === undefined ? {} : { sessionId: values.session }), ...(values['new-session'] ? { newSession: true } : {}) });
     const sessionId = session.scope.sessionId;
     if (command === 'session') {
-      process.stdout.write(values.json ? JSON.stringify({ provider: profile.provider, modelInfo: profile.modelInfo, notice, session }) + '\n' : `${notice}\n대화: ${sessionId}\n`); return;
+      process.stdout.write(values.json ? JSON.stringify({ provider: profile.provider, modelInfo: profile.modelInfo, extensions: profile.extensions, notice, session }) + '\n' : `${notice}\n대화: ${sessionId}\n`); return;
     }
     if (command === 'history') {
       const page = await profile.sessions.history(profile.actor, sessionId, profile.policy, { limit, ...(values.cursor === undefined ? {} : { cursor: values.cursor }) });
-      process.stdout.write(values.json ? JSON.stringify({ provider: profile.provider, modelInfo: profile.modelInfo, notice, sessionId, ...page }) + '\n' :
+      process.stdout.write(values.json ? JSON.stringify({ provider: profile.provider, modelInfo: profile.modelInfo, extensions: profile.extensions, notice, sessionId, ...page }) + '\n' :
         `${notice}\n${page.entries.map(entry => `${entry.role === 'user' ? '사용자' : '담당'}: ${clean(entry.text)}`).join('\n\n')}${page.nextCursor ? `\n다음 이력: --cursor ${page.nextCursor}` : ''}\n`); return;
     }
     let workId = values.work, accepted: boolean | undefined, created: boolean | undefined, run: WorkflowRunResult | undefined, noticePrinted = false;
@@ -185,7 +179,7 @@ export async function runAgentTurnCli(args: string[], host: AgentExecutionHost =
     if (executes && newInput) run = await profile.workflow.run(workId!, profile.actor, { maxSteps: steps,
       ...(goalRevision === undefined ? {} : { expectedGoalRevision: command === 'goal' ? goalRevision + 1 : goalRevision }) });
     const current = await view(profile, workId!, session.scope, values.conversation);
-    if (values.json) process.stdout.write(JSON.stringify({ provider: profile.provider, modelInfo: profile.modelInfo, notice, sessionId, workId, ...current,
+    if (values.json) process.stdout.write(JSON.stringify({ provider: profile.provider, modelInfo: profile.modelInfo, extensions: profile.extensions, notice, sessionId, workId, ...current,
       ...(accepted === undefined ? {} : { accepted }), ...(created === undefined ? {} : { created }), ...(run === undefined ? {} : { run }) }) + '\n');
     else {
       if (!noticePrinted) process.stdout.write(notice + '\n');
@@ -195,6 +189,7 @@ export async function runAgentTurnCli(args: string[], host: AgentExecutionHost =
       const wait = run?.control.kind === 'wait' && run.control.reason === 'model_call_pending' ? ' · 진행 중인 호출의 응답 또는 실행권 만료 대기' : '';
       process.stdout.write(`[${workId}] ${names[current.snapshot.status] ?? current.snapshot.status}${wait} · 대화 ${sessionId}\n`);
       if (command === 'status') process.stdout.write(`목표 버전 ${current.snapshot.goalRevision} · 제어 버전 ${current.snapshot.execution.revision}\n`);
+      if (command === 'status' && profile.extensions.status === 'unverified') process.stdout.write('확장 호환: 미검증 선언이 있습니다. 호스트의 확장 등록 설정을 확인하세요.\n');
     }
   } catch (error) { failure = { error }; throw error; }
   finally { await closeAgentTurnResources([profile.close], failure); }

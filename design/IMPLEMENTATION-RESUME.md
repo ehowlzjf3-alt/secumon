@@ -1,8 +1,16 @@
 # 구현 이어가기
 
+## CHECKPOINT 385 — 전역 엔진 선택과 확장 호환
+
+Checkpoint385: 직전 단위는 결과 저장·242d0b1 커밋/원격 일치로 progress다. 이번에는 동일 전역 bin의 담당별 등록 엔진 선택, 별도 호스트 설치 등록표와 install/register, 공통 확장 API/필수 기능 선언·기동/로컬 및 PG check/pin/update 검사를 연결했다. 같은 최종 build2에서 신규26/관련161, 합계187개 통과·core exit0·계층199/위반0. 실제 A bin이 B formatter로 원 업무를 완료하며 세션/기억/원문/영수증과 도구1회를 유지했다. 등록표 변경 중 조회 거절, 실제 parent-only SIGTERM/stdio/종료코드도 확인했다. 최초 build1은 시험 삼항식 오류 exit2였고 원로그를 보존했다. 최종 source 85f45154e47f3dae10ab15a7e57f741f6f69ff4cc949561b9ca30d082a7e17d9/2376파일 대조 일치. 실제 모델/API·외부 서비스 연결0, 이번 Linux/native Windows/실제PG/브라우저/운영 미검증. 활성 build/test 없음. 다음은 고정 전달 형식+실제 compact 세션 버전전환, 그 뒤 신규 setup 자동 최초pin/npm release 준비다. 기존 무핀 담당의 자동채택·offline 확인 대행은 하지 않는다. C09/C05/C06/플랫폼·최종통합 잔여와 전체 goal 미완료를 유지한다.
+
+[결과](chapters/C10-launcher-extensions-result.md) · [사용법](chapters/C10-launcher-extensions-usage.md) · [다음 계획](chapters/C10-launch-envelope-plan.md) · [증거](../runtime/evidence/checkpoint385.json)
+
 ## 현재 진행 단위 — C06~C10 구현 정리, 상세 검증 별도
 
 **지속 적용할 게시 규칙:** 작업 단위가 완료될 때마다 관련 코드·문서·검증 결과·남은 작업을 함께 커밋하고 `origin`에 푸시한다. 별도 재승인 없이 진행하고 원격 커밋 일치를 확인한다. [저장소 규칙](../AGENTS.md).
+
+아래 checkpoint384 이하의 다음 행동은 당시 기록이다. 현재 작업은 위 checkpoint385를 따른다.
 
 <!-- CHECKPOINT384-START -->
 ### Checkpoint384 — 호환 배포본 전환과 담당 연속성

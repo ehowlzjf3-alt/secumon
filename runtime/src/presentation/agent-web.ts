@@ -46,7 +46,7 @@ export async function openAgentWeb(args: string[], host: AgentExecutionHost = cr
     await workbench.initializeSession();
     const server = await startWebServer(workbench, { port: Number(values.port) });
     let closing: Promise<void> | undefined;
-    return { profile, workbench, server, notice: general ? agentTurnModelNotice(general.modelInfo) : '로컬 학습환경 · 합성 자료 · 실제 모델 미연결',
+    return { profile, workbench, server, extensions: general?.extensions ?? null, notice: general ? agentTurnModelNotice(general.modelInfo) : '로컬 학습환경 · 합성 자료 · 실제 모델 미연결',
       close: () => closing ??= closeAgentTurnResources([server.close, profile.close]) };
   } catch (error) { await closeAgentTurnResources([profile.close], { error }); throw error; }
 }

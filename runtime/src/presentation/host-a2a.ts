@@ -1,3 +1,4 @@
+import { captureEngineApi, type EngineApiRegistration } from '../application/engine-extension-contracts.js';
 import { z } from 'zod';
 import { A2aMessageSchema, A2aReplySchema, A2aTaskSchema, type A2aCall, type A2aMessage, type A2aPeer } from '../application/a2a-contracts.js';
 import type { Tool } from '../application/ports.js';
@@ -16,9 +17,19 @@ import { closeAgentTurnResources } from './host-models.js';
 export interface HostA2aContext {
   readonly agentId: string; readonly root: string; readonly scope: string; readonly actor: WorkActor; readonly signal: AbortSignal;
 }
-export interface HostA2aRegistration {
+export interface HostA2aRegistration extends EngineApiRegistration {
   readonly allowWrites?: boolean;
   open(context: Readonly<HostA2aContext>): Promise<{ peer: A2aPeer; close(): Promise<void> }>;
+}
+export function captureHostA2aRegistration(registration: HostA2aRegistration | undefined): HostA2aRegistration | undefined {
+  if (registration === undefined) return undefined;
+  const open = registration.open;
+  const allowWrites = registration.allowWrites;
+  if (typeof open !== 'function' || allowWrites !== undefined && typeof allowWrites !== 'boolean') throw new Error('a2a_registration_invalid');
+  const api = captureEngineApi(registration);
+  return Object.freeze({ ...(api.engineApi ? { engineApi: api.engineApi } : {}),
+    ...(allowWrites === undefined ? {} : { allowWrites }),
+    open(...args: Parameters<HostA2aRegistration['open']>) { api.assertCurrent(); return open.apply(registration, args); } });
 }
 export interface OpenedHostA2a {
   readonly peer: A2aPeer; readonly tools: readonly Tool[]; readonly sources: readonly MissionEventSource[];
@@ -30,6 +41,7 @@ const SendSchema = A2aMessageSchema.omit({ role: true, messageId: true }).strict
 
 /** Host injection only. Endpoint, authentication and remote identity never come from model input. */
 export async function openHostA2a(registration: HostA2aRegistration | undefined, context: HostA2aContext): Promise<OpenedHostA2a | null> {
+  registration = captureHostA2aRegistration(registration);
   if (registration === undefined) return null;
   const open = registration.open, allowWrites = registration.allowWrites;
   if (typeof open !== 'function' || allowWrites !== undefined && typeof allowWrites !== 'boolean') throw new Error('a2a_registration_invalid');

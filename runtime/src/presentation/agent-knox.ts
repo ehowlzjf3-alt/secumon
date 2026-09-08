@@ -116,6 +116,6 @@ export async function openAgentKnox(directory: string, route: KnoxRoute,
     const session = await profile.sessions.open(profile.actor, { channel: 'knox', conversationId: binding.conversationId,
       ...(binding.sessionId === undefined ? {} : { sessionId: binding.sessionId }) });
     const conversation = new KnoxConversation(profile, Object.freeze(binding), session.scope, profile.knoxDestination);
-    return { conversation, close: () => conversation.close(), modelInfo: profile.modelInfo };
+    return { conversation, close: () => conversation.close(), modelInfo: profile.modelInfo, extensions: profile.extensions };
   } catch (error) { await closeAgentTurnResources([profile.close], { error }); throw error; }
 }

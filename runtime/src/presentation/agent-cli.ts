@@ -8,6 +8,8 @@ import { AgentProfileError } from '../application/agent-profile-contracts.js';
 import type { AgentProfileStatus } from '../application/agent-profile-contracts.js';
 import { PersonalMemoryMigrationError } from '../application/personal-memory-migration-contracts.js';
 import { AgentLifecycleError } from '../application/agent-lifecycle-contracts.js';
+import { EngineExtensionError, type EngineExtensionCheckOptions } from '../application/engine-extension-contracts.js';
+import { agentCliOptions } from './agent-cli-options.js';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const help = `secumon-agent · 담당 디렉터리 설정
@@ -33,7 +35,7 @@ documents는 개인 기억의 정본을 문서로 저장합니다. 업무 근거
 기본 경로는 현재 디렉터리입니다. 설정 명령은 작업을 실행하지 않습니다. 실제 모델은 연결하지 않습니다.
 `;
 /** Trusted setup/lifecycle/work/chat host configuration; normal bin startup uses the default host registry. */
-export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOptions = {}) {
+export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOptions & EngineExtensionCheckOptions = {}) {
   if (args[0] === 'lifecycle') {
     const { runAgentLifecycleCli } = await import('./agent-lifecycle-cli.js');
     await runAgentLifecycleCli(args.slice(1), new FileAgentProfileStore(root), root, hostOptions); return;
@@ -52,13 +54,7 @@ export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOpt
     const { runLocalCli, reportCliFailure } = await import('./cli.js');
     await runLocalCli(args.slice(1), process.cwd(), hostOptions).catch(reportCliFailure); return;
   }
-  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: {
-    directory: { type: 'string', default: process.cwd() }, name: { type: 'string' }, purpose: { type: 'string' },
-    json: { type: 'boolean', default: false }, help: { type: 'boolean', short: 'h' }, version: { type: 'boolean' },
-    destination: { type: 'string' }, resume: { type: 'boolean' },
-    'personal-memory': { type: 'string' },
-    'state-backend': { type: 'string' },
-  } });
+  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: agentCliOptions(process.cwd()) });
   if (values.help || positionals.length === 1 && positionals[0] === 'help') { process.stdout.write(help); return; }
   const command = values.version ? 'version' : positionals[0] ?? 'open';
   if (positionals.length > 1 || !['open', 'init', 'status', 'repair', 'clone', 'version'].includes(command)) throw new AgentProfileError('agent_command_invalid');
@@ -96,9 +92,14 @@ export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOpt
   else process.stdout.write(`기존 담당의 복구가 필요합니다: ${status.missing.join(', ')}\n${status.recovery === 'clone' ? '원본을 지정해 secumon-agent clone --directory 원본 --destination 대상 --resume으로 이어갈 수 있습니다.' : status.recoverable ? 'secumon-agent repair로 기존 ID를 유지하여 복구할 수 있습니다.' : '기존 설정/ID의 복원 자료가 필요합니다.'}\n`);
 }
 export function reportAgentCliFailure(error: unknown) {
-  const message = error instanceof AgentProfileError || error instanceof PersonalMemoryMigrationError || error instanceof AgentLifecycleError ? error.code : 'agent_setup_failed';
+  const message = error instanceof AgentProfileError || error instanceof PersonalMemoryMigrationError || error instanceof AgentLifecycleError || error instanceof EngineExtensionError ? error.code : 'agent_setup_failed';
   process.stderr.write(message + '\n'); process.exitCode = 1;
 }
 if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
-  try { await runAgentCli(process.argv.slice(2)); } catch (error) { reportAgentCliFailure(error); }
+  try {
+    const args = process.argv.slice(2);
+    const { launchPinnedAgent } = await import('./agent-engine-launcher.js');
+    const status = await launchPinnedAgent(args, root);
+    if (status === null) await runAgentCli(args); else process.exitCode = status;
+  } catch (error) { reportAgentCliFailure(error); }
 }

@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import { z } from 'zod';
+import { inspectEngineExtensions, type EngineExtensionCheckOptions } from '../application/engine-extension-contracts.js';
 import { AGENT_LOCAL_RESTORE_COMPLETION, type EnginePin, type EngineRelease } from '../application/agent-lifecycle-contracts.js';
 import { AgentPostgresSelectionSchema, type AgentPostgresSelection, type AgentProfileStatus, type AgentProfileStore } from '../application/agent-profile-contracts.js';
 import { inspectAgentPostgresBackup } from './agent-postgres-backup.js';
@@ -16,7 +17,7 @@ import { exportPostgresAgent } from './postgres-transfer.js';
 import { TRANSFER_TABLES } from './postgres-transfer-tables.js';
 
 type Ready = Extract<AgentProfileStatus, { status: 'ready' }>;
-export interface AgentPostgresLifecycleOptions { offline: boolean; operationId: string }
+export interface AgentPostgresLifecycleOptions extends EngineExtensionCheckOptions { offline: boolean; operationId: string }
 export interface AgentPostgresEnginePinOptions extends AgentPostgresLifecycleOptions {
   expectedPrevious: string | null;
   backup?: string;
@@ -69,6 +70,7 @@ interface LifecycleContext {
   release: EngineRelease;
   pin: EnginePin | null;
   storage: ReturnType<typeof inspectAgentLocalStorageCompatibility> & { postgres: ReturnType<typeof postgresCompatibility> };
+  extensions: ReturnType<typeof inspectEngineExtensions>;
   pool: PostgresPool;
   bindings: readonly PostgresBinding[];
   operationId: string;
@@ -100,9 +102,11 @@ async function withLifecycle<T>(profiles: AgentProfileStore, directory: string, 
     const lease = readProfileBytes(maintenancePath, 65536, true, scope);
     if (!lease) return lifecycleFail('lifecycle_lease_changed');
     const pin = readAgentEnginePin(profile.root), release = inspectEngineRelease(engine);
+    const extensions = inspectEngineExtensions(release.compatibility.extensions, options);
     const postgres = postgresCompatibility(release, bindings);
     const storage = { ...inspectAgentLocalStorageCompatibility(profile, release), postgres };
     const assertLocal = () => {
+      if (!same(inspectEngineExtensions(release.compatibility.extensions, options), extensions)) lifecycleFail('engine_extension_declaration_changed');
       scope!.check(); engineScope!.check();
       const currentLease = readProfileBytes(maintenancePath, 65536, true, scope);
       if (!currentLease || !currentLease.equals(lease) || lifecycleNames(join(profile.paths.metadata, 'runtime-leases')).length !== 0)
@@ -127,7 +131,7 @@ async function withLifecycle<T>(profiles: AgentProfileStore, directory: string, 
       await postgresTransaction(pool, false, client => assertPostgresBindings(client, bindings, { maintenanceId: operationId }));
       assertLocal();
     };
-    result = await action({ profile, selection, engine, release, pin, storage, pool, bindings, operationId, assertLocal, assertDatabase });
+    result = await action({ profile, selection, engine, release, pin, storage, extensions, pool, bindings, operationId, assertLocal, assertDatabase });
   } catch (error) { failures.push(error); }
   // An unknown write commit can have installed a fence; never blindly clear that operation.
   if (fence && !failures.some(error => uncertain(error))) try { await fence.release(); } catch (error) { failures.push(error); }
@@ -145,7 +149,7 @@ export async function checkAgentPostgresLifecycle(profiles: AgentProfileStore, d
     if (!same(inspectEngineRelease(context.engine), context.release)) lifecycleFail('lifecycle_source_changed');
     context.assertLocal();
     return { agentId: context.profile.identity.agentId, root: context.profile.root, release: context.release, pin: context.pin,
-      storage: context.storage, effects: 'preserved; existing runtime recovery required before new execution' };
+      storage: context.storage, extensions: context.extensions, effects: 'preserved; existing runtime recovery required before new execution' };
   });
 }
 
@@ -161,13 +165,13 @@ export async function pinAgentPostgresEngine(profiles: AgentProfileStore, direct
       await context.assertDatabase();
       if (!same(inspectEngineRelease(engine), release)) lifecycleFail('lifecycle_source_changed');
       context.assertLocal();
-      return { pin: current, applied: false, storage: context.storage, recoveryRequired: true as const };
+      return { pin: current, applied: false, storage: context.storage, extensions: context.extensions, recoveryRequired: true as const };
     }
     if (current && current.sequence >= 1024) lifecycleFail('engine_pin_limit');
     let backupDigest: string | null = null;
     let archiveScope: ReturnType<typeof openProfileMutationScope> | undefined;
     const failures: unknown[] = [];
-    let result: { pin: EnginePin; applied: boolean; storage: LifecycleContext['storage']; recoveryRequired: true } | undefined;
+    let result: { pin: EnginePin; applied: boolean; storage: LifecycleContext['storage']; extensions: LifecycleContext['extensions']; recoveryRequired: true } | undefined;
     try {
       let saved: Awaited<ReturnType<typeof inspectAgentPostgresBackup>> | undefined;
       if (current) {
@@ -194,7 +198,7 @@ export async function pinAgentPostgresEngine(profiles: AgentProfileStore, direct
       if (saved && !same(captureLifecycleTree(profile.root, backupInclude), saved.manifest.entries)) lifecycleFail('engine_update_backup_stale');
       archiveScope?.check(); context.assertLocal();
       const pin = publishAgentEnginePin(profile, engine, release, current, backupDigest);
-      result = { pin, applied: true, storage: context.storage, recoveryRequired: true };
+      result = { pin, applied: true, storage: context.storage, extensions: context.extensions, recoveryRequired: true };
     } catch (error) { failures.push(error); }
     if (archiveScope) try { archiveScope.close(); } catch (error) { failures.push(error); }
     if (failures.length === 1) throw failures[0];

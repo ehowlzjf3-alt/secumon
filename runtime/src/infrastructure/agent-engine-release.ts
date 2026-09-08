@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { ENGINE_EXTENSION_SUPPORT } from '../application/engine-extension-contracts.js';
 import { AgentConfigSchema } from '../application/agent-profile-contracts.js';
 import { EnginePinSchema, EngineReleaseSchema, type EngineRelease } from '../application/agent-lifecycle-contracts.js';
 import { captureLifecycleTree, copyLifecycleTree, createLifecycleDirectory, disjoint, lifecycleDigest, lifecycleExists, lifecycleFail, lifecycleNames, lifecycleRoot } from './agent-lifecycle-files.js';
@@ -7,6 +8,7 @@ import { openProfileMutationScope, profileDirectory, publishProfileJson, readPro
 import { publishWindowsLifecycleJson, readWindowsLifecycleJson } from './windows-lifecycle-files.js';
 
 export const engineCompatibility = Object.freeze({ config: [1, 2], state: [1, 2, 3], knowledge: [1, 2, 3], session: [1], journal: [2], documents: [1, 2],
+  extensions: ENGINE_EXTENSION_SUPPORT,
   postgres: { installation: [2], binding: [1], state: [1], knowledge: [1], channel: [1] },
 });
 const nativeReleaseFiles = ['native', 'native/windows-files', 'native/windows-files/secumon_windows_files.node'];

@@ -7,10 +7,13 @@ import { recoverAgentLifecycleLeases } from '../infrastructure/agent-lifecycle-l
 import { inspectAgentHostIdentity, type AgentHostIdentityOptions } from '../infrastructure/agent-host-identities.js';
 import { rebindRestoredAgentHostIdentity } from '../infrastructure/agent-host-identity-recovery.js';
 import { prepareAgentSqliteRecovery, applyAgentSqliteRecovery, readAgentSqliteRecovery } from '../infrastructure/agent-sqlite-recovery.js';
+import { registerAgentEngine } from '../infrastructure/agent-engine-registry.js';
+import type { EngineExtensionSelection } from '../application/engine-extension-contracts.js';
 
 const help = `secumon-agent lifecycle <명령> [옵션]
   bundle --destination 새경로                 현재 빌드+의존성의 오프라인 배포 묶음
   install --source 묶음 --destination 새경로 --digest SHA256
+  register --engine 기존설치 --digest SHA256   검증된 설치를 호스트 실행 목록에 등록
   status --directory 담당                    핀·유지보수 상태만 조회
   check --directory 담당 --engine 설치경로    배포 지문과 설정/저장 호환 검사
   pin --directory 담당 --engine 설치경로 --offline
@@ -33,7 +36,7 @@ apply 중단 뒤에는 같은 operation/digest로 재개합니다. 상태 조회
 배포 묶음은 현 OS/CPU 및 Node >=24.20.0 <25용입니다. 네트워크 설치·자동 업데이트는 없습니다.
 `;
 export async function runAgentLifecycleCli(args: string[], profiles: AgentProfileStore, currentEngine: string,
-  hostOptions: { readonly identityRegistryDirectory?: string } = {}) {
+  hostOptions: { readonly identityRegistryDirectory?: string; readonly extensions?: readonly EngineExtensionSelection[]; readonly requireDeclaredExtensions?: boolean } = {}) {
   const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: {
     directory: { type: 'string', default: process.cwd() }, destination: { type: 'string' }, source: { type: 'string' }, engine: { type: 'string' },
     digest: { type: 'string' }, previous: { type: 'string' }, backup: { type: 'string' }, offline: { type: 'boolean', default: false }, json: { type: 'boolean', default: false }, help: { type: 'boolean', short: 'h' },
@@ -50,11 +53,16 @@ export async function runAgentLifecycleCli(args: string[], profiles: AgentProfil
   let result: unknown;
   switch (positionals[0]) {
     case 'bundle': result = bundleAgentEngine(currentEngine, required(values.destination, 'destination')); break;
-    case 'install': result = installAgentEngine(required(values.source, 'source'), required(values.destination, 'destination'), required(values.digest, 'digest')); break;
+    case 'install': {
+      const installed = installAgentEngine(required(values.source, 'source'), required(values.destination, 'destination'), required(values.digest, 'digest'));
+      const registration = registerAgentEngine(installed.directory, installed.release.digest);
+      result = { ...installed, ...registration }; break;
+    }
+    case 'register': result = registerAgentEngine(required(values.engine, 'engine'), required(values.digest, 'digest')); break;
     case 'status': { const profile = profiles.inspect(values.directory); result = profile.status === 'ready' ? { agentId: profile.identity.agentId, ...lifecycleInventory(profile.root) } : profile; break; }
-    case 'check': result = checkAgentLifecycle(profiles, values.directory, required(values.engine, 'engine')); break;
-    case 'pin': result = pinAgentEngine(profiles, values.directory, required(values.engine, 'engine'), { offline: values.offline, expectedPrevious: null }); break;
-    case 'update': result = pinAgentEngine(profiles, values.directory, required(values.engine, 'engine'), { offline: values.offline, expectedPrevious: required(values.previous, 'previous'), backup: required(values.backup, 'backup') }); break;
+    case 'check': result = checkAgentLifecycle(profiles, values.directory, required(values.engine, 'engine'), hostOptions); break;
+    case 'pin': result = pinAgentEngine(profiles, values.directory, required(values.engine, 'engine'), { ...hostOptions, offline: values.offline, expectedPrevious: null }); break;
+    case 'update': result = pinAgentEngine(profiles, values.directory, required(values.engine, 'engine'), { ...hostOptions, offline: values.offline, expectedPrevious: required(values.previous, 'previous'), backup: required(values.backup, 'backup') }); break;
     case 'backup': result = backupAgent(profiles, values.directory, required(values.destination, 'destination'), values.offline); break;
     case 'verify-backup': result = inspectAgentBackup(required(values.source, 'source')); break;
     case 'restore': result = restoreAgentBackup(profiles, required(values.source, 'source'), values.directory, required(values.digest, 'digest'), values.offline); break;

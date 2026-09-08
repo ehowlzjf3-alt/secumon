@@ -1,3 +1,4 @@
+import { captureEngineApi, type EngineApiRegistration } from '../application/engine-extension-contracts.js';
 import { z } from 'zod';
 import { MissionRuntime } from '../application/mission-runtime.js';
 import type { MissionEventSource } from '../application/mission-contracts.js';
@@ -17,8 +18,16 @@ export interface HostMissionContext {
   readonly agentId: string; readonly root: string; readonly scope: string; readonly actor: WorkActor; readonly signal: AbortSignal;
 }
 export interface HostMissionAssembly { readonly services: RuntimeServices; readonly contracts?: ToolContracts }
-export interface HostMissionRegistration {
+export interface HostMissionRegistration extends EngineApiRegistration {
   open(context: Readonly<HostMissionContext>, assembly: Readonly<HostMissionAssembly>): Promise<{ sources: readonly MissionEventSource[]; close(): Promise<void> }>;
+}
+export function captureHostMissionRegistration(registration: HostMissionRegistration | undefined): HostMissionRegistration | undefined {
+  if (registration === undefined) return undefined;
+  const open = registration.open;
+  if (typeof open !== 'function') throw new Error('mission_registration_invalid');
+  const api = captureEngineApi(registration);
+  return Object.freeze({ ...(api.engineApi ? { engineApi: api.engineApi } : {}),
+    open(...args: Parameters<HostMissionRegistration['open']>) { api.assertCurrent(); return open.apply(registration, args); } });
 }
 export interface OpenedHostMissions {
   readonly missions: MissionRuntime; readonly tools: readonly Tool[]; readonly allowedTools: readonly string[]; readonly allowWrites: false;
@@ -29,6 +38,7 @@ export interface OpenedHostMissions {
 /** Passing A2A sources does not enable missions by itself: the host must separately register/enable missions. */
 export async function openHostMissions(registration: HostMissionRegistration | undefined, context: HostMissionContext,
   assembly: HostMissionAssembly, additionalSources: readonly MissionEventSource[] = []): Promise<OpenedHostMissions | null> {
+  registration = captureHostMissionRegistration(registration);
   if (registration === undefined) return null;
   const open = registration.open;
   if (typeof open !== 'function') throw new Error('mission_registration_invalid');

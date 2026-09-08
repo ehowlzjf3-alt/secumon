@@ -1,3 +1,4 @@
+import { captureEngineApi, EngineExtensionError, type EngineApiRegistration } from '../application/engine-extension-contracts.js';
 import { isAbsolute } from 'node:path';
 import { z } from 'zod';
 import { PolicySchema } from '../application/contracts.js';
@@ -34,7 +35,7 @@ export interface OpenedHostBoard {
   readonly workSources?: BoardWorkSources | undefined;
   close(): Promise<void>;
 }
-export interface HostBoardRegistration { open(context: HostBoardContext): Promise<OpenedHostBoard> }
+export interface HostBoardRegistration extends EngineApiRegistration { open(context: HostBoardContext): Promise<OpenedHostBoard> }
 export interface LocalHostBoardOptions {
   readonly backend: 'sqlite' | 'file';
   /** A trusted absolute database path, or directory for the file provider. */
@@ -60,7 +61,9 @@ function captureRegistration(value: unknown): HostBoardRegistration {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw invalid();
   const open = (value as HostBoardRegistration).open;
   if (typeof open !== 'function') throw invalid();
-  return Object.freeze({ open: open.bind(value) });
+  const api = captureEngineApi(value as HostBoardRegistration);
+  return Object.freeze({ ...(api.engineApi ? { engineApi: api.engineApi } : {}),
+    open(...args: Parameters<HostBoardRegistration['open']>) { api.assertCurrent(); return open.apply(value, args); } });
 }
 function selectedTools(value: readonly string[], allowWrites: boolean) {
   if (typeof allowWrites !== 'boolean') throw invalid();
@@ -139,7 +142,7 @@ export function resolveHostBoardRegistration(host: { readonly board?: HostBoardR
     if (!host || typeof host !== 'object' || Array.isArray(host)) throw invalid();
     const registration = host.board;
     return registration === undefined ? null : captureRegistration(registration);
-  } catch (error) { throw error instanceof Error && error.message === 'agent_board_registration_invalid' ? error : invalid(error); }
+  } catch (error) { throw error instanceof EngineExtensionError || error instanceof Error && error.message === 'agent_board_registration_invalid' ? error : invalid(error); }
 }
 
 /** Capture one owned lease while preserving dynamic identity/grant checks on the existing board ports. */
@@ -151,7 +154,7 @@ export async function openRegisteredHostBoard(registration: HostBoardRegistratio
     if (!(signal instanceof AbortSignal)) throw invalid();
     expected = Object.freeze({ ...frozen(ContextSchema.parse(structuredClone(metadata))), signal });
     if (signal.aborted) throw new Error('agent_board_unavailable');
-  } catch (error) { throw invalid(error); }
+  } catch (error) { throw error instanceof EngineExtensionError ? error : invalid(error); }
   // The registration owns partial acquisition until it returns its closer. Preserve factory errors as-is.
   const opened = await selected.open(expected);
   let close: (() => Promise<void>) | undefined;

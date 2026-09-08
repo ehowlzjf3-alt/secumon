@@ -1,5 +1,6 @@
 import { dirname, join } from 'node:path';
 import { z } from 'zod';
+import type { EngineApiRegistration } from '../application/engine-extension-contracts.js';
 import { AgentPostgresSelectionSchema, AgentProfileError, type AgentPostgresSelection, type AgentProfileStatus, type AgentProfileStore } from '../application/agent-profile-contracts.js';
 import { agentDatabaseExists } from './agent-database-owner.js';
 import { openProfileMutationScope, profileDirectory, profileStat, publishProfileJson, readProfileJson, syncProfileDirectory } from './agent-profile-files.js';
@@ -12,7 +13,7 @@ import { sha256 } from './digest.js';
 import { effectiveAgentPostgresSelection, readAgentPostgresMigration, postgresMigrationDigest } from './agent-postgres-migration-profile.js';
 
 type Ready = Extract<AgentProfileStatus, { status: 'ready' }>;
-export interface AgentPostgresHost { readonly selection: AgentPostgresSelection; readonly pool: PostgresPool }
+export interface AgentPostgresHost extends EngineApiRegistration { readonly selection: AgentPostgresSelection; readonly pool: PostgresPool }
 const SelectionSchema = z.strictObject({ schemaVersion: z.literal(1), agentId: z.uuid(), postgres: AgentPostgresSelectionSchema.nullable() });
 const fail = (code: string): never => { throw new AgentProfileError(code); };
 function selected(value: AgentPostgresSelection | undefined) {

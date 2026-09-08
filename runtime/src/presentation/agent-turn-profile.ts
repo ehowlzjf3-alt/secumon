@@ -5,6 +5,7 @@ import { AgentTurnService } from '../application/agent-turn-service.js';
 import type { ExecutionRuntime } from '../application/execution-runtime.js';
 import { composeRuntime } from '../application/compose-runtime.js';
 import { createExecutionAuthority } from '../application/execution-authority.js';
+import { ENGINE_EXTENSION_SUPPORT, inspectEngineExtensions, type EngineExtensionSelection } from '../application/engine-extension-contracts.js';
 import { validateScenario } from '../application/fixtures.js';
 import type { GuidanceSource } from '../application/guidance.js';
 import { KNOWLEDGE_TOOL_IDS } from '../application/knowledge-tools.js';
@@ -18,6 +19,7 @@ import type { Limits, Policy, ContextPacket, WorkState } from '../domain/model.j
 import type { TrustedKnowledgeActor } from '../domain/knowledge.js';
 import type { SessionCompactLimits } from '../domain/session-compact.js';
 import { openAgentStores } from '../infrastructure/agent-stores.js';
+import { effectiveAgentPostgresSelection } from '../infrastructure/agent-postgres-migration-profile.js';
 import { captureKnoxRegistration, KnoxChannel } from '../infrastructure/knox-channel.js';
 import { AjvSchemas } from '../infrastructure/ajv-schemas.js';
 import { RandomIds, Sha256Digester } from '../infrastructure/digest.js';
@@ -31,14 +33,15 @@ import { closeAgentTurnResources, openRegisteredHostModel, resolveHostModelRegis
   type AgentTurnModelInfo, type OpenedHostModel } from './host-models.js';
 import { openRegisteredHostTools, resolveHostToolRegistration, type AgentExecutionHost, type OpenedHostTools } from './host-tools.js';
 import { openRegisteredHostBoard, resolveHostBoardRegistration, type OpenedHostBoard } from './host-board.js';
-import { openHostArchive, type OpenedHostArchive } from './host-archive.js';
+import { captureHostArchiveRegistration, openHostArchive, type OpenedHostArchive } from './host-archive.js';
 import { BUDGET_TOOL_IDS } from '../application/budget-tools.js';
 import { openRegisteredHostPeers, resolveHostPeerRegistration, type OpenedHostPeers } from './host-peers.js';
-import { openHostA2a, type OpenedHostA2a } from './host-a2a.js';
-import { openHostMissions, type OpenedHostMissions } from './host-missions.js';
+import { captureHostA2aRegistration, openHostA2a, type OpenedHostA2a } from './host-a2a.js';
+import { captureHostMissionRegistration, openHostMissions, type OpenedHostMissions } from './host-missions.js';
 import { createHostResidentMissions, type HostResidentMissionDefaults } from './host-resident-missions.js';
 import { openA2aRequestHandler, type A2aRequestHost } from './host-a2a-server.js';
 import { createHostWorkspaceRecovery } from './host-workspace-recovery.js';
+import { captureHostBudgetRegistration, captureHostPostgresRegistration } from './host-engine-extensions.js';
 
 export interface AgentTurnProfileOptions {
   provider?: 'synthetic' | 'registered';
@@ -100,16 +103,27 @@ export async function openAgentTurnProfile(directory: string, options: AgentTurn
   const knoxRegistration = captureKnoxRegistration(host?.knox);
   const boardRegistration = ready.config.features.board ? resolveHostBoardRegistration(host) : null;
   if (ready.config.features.board && !boardRegistration) throw new Error('agent_board_registration_required');
-  const archiveRegistration = ready.config.features.archive ? host?.archive : undefined;
+  const archiveRegistration = ready.config.features.archive ? captureHostArchiveRegistration(host?.archive) : undefined;
   if (ready.config.features.archive && !archiveRegistration) throw new Error('agent_archive_registration_required');
   const peerRegistration = ready.config.features.peers === true ? resolveHostPeerRegistration(host) : null;
   if (ready.config.features.peers === true && !peerRegistration) throw new Error('agent_peer_registration_required');
-  const a2aRegistration = ready.config.features.a2a === true ? host?.a2a : undefined;
-  const missionRegistration = ready.config.features.missions === true ? host?.missions : undefined;
+  const a2aRegistration = ready.config.features.a2a === true ? captureHostA2aRegistration(host?.a2a) : undefined;
+  const missionRegistration = ready.config.features.missions === true ? captureHostMissionRegistration(host?.missions) : undefined;
   const a2aInbound = ready.config.features.a2a === true && host?.a2aInbound === true;
   if (ready.config.features.a2a === true && !a2aRegistration && !a2aInbound) throw new Error('agent_a2a_registration_required');
   if (ready.config.features.missions === true && !missionRegistration) throw new Error('agent_mission_registration_required');
-  const stores = await openAgentStores(profiles, ready.root, host?.postgres,
+  const budgetRegistration = ready.config.features.peers === true ? captureHostBudgetRegistration(host?.budget) : undefined;
+  const postgresSelected = effectiveAgentPostgresSelection(ready);
+  const postgresRegistration = postgresSelected ? captureHostPostgresRegistration(host?.postgres) : undefined;
+  const extensionSelections: EngineExtensionSelection[] = [];
+  for (const [kind, candidate] of [['model', registration], ['tools', toolRegistration], ['knox', knoxRegistration],
+    ['board', boardRegistration], ['archive', archiveRegistration], ['peers', peerRegistration], ['a2a', a2aRegistration], ['missions', missionRegistration],
+    ['budget', budgetRegistration], ['postgres', postgresRegistration]] as const)
+    if (candidate) extensionSelections.push({ kind, name: kind === 'model' ? profileName! : kind,
+      ...(candidate.engineApi ? { engineApi: candidate.engineApi } : {}) });
+  const extensions = inspectEngineExtensions(ENGINE_EXTENSION_SUPPORT, { extensions: extensionSelections,
+    ...(host?.requireDeclaredExtensions === undefined ? {} : { requireDeclaredExtensions: host.requireDeclaredExtensions }) });
+  const stores = await openAgentStores(profiles, ready.root, postgresSelected ? postgresRegistration : host?.postgres,
     host?.identityRegistryDirectory === undefined ? {} : { identityRegistryDirectory: host.identityRegistryDirectory });
   let openedModel: OpenedHostModel | null = null;
   let openedTools: OpenedHostTools | null = null;
@@ -211,7 +225,7 @@ export async function openAgentTurnProfile(directory: string, options: AgentTurn
           return openedMissions.missions.refresh(workId);
         },
       } } : {}),
-      ...(config.features.peers === true && host?.budget ? { budgetAuthority: host.budget.authority, budgetChildren: host.budget.children, budgetLedgers: host.budget.ledgers } : {}) }, schemas,
+      ...(budgetRegistration ? { budgetAuthority: budgetRegistration.authority, budgetChildren: budgetRegistration.children, budgetLedgers: budgetRegistration.ledgers } : {}) }, schemas,
       enableBudgetTools: config.features.peers === true,
       ...(openedPeers ? { peers: { agents: openedPeers.peers, agentId } } : {}),
       executionAuthority: createExecutionAuthority({ actor: policy, scope, signal: lifetime.signal,
@@ -258,6 +272,7 @@ export async function openAgentTurnProfile(directory: string, options: AgentTurn
     return { ...composed, sessions: composed.sessions, turns: new AgentTurnService(composed.sessions, digester),
       services: { ...composed.services, sink }, agentId, actor, executionActor, policy, scope, limits, provider: selected.provider,
       knoxDestination: knoxRegistration?.destination ?? null,
+      extensions,
       archive: openedArchive?.service ?? null,
       missions: openedMissions?.missions ?? null, missionSources: openedMissions?.sources ?? [], a2a: openedA2a?.peer ?? null,
       createResidentMissions(defaults: HostResidentMissionDefaults) {

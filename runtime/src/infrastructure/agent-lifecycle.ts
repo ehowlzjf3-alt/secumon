@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import { unlinkSync } from 'node:fs';
 import { z } from 'zod';
+import { inspectEngineExtensions, type EngineExtensionCheckOptions } from '../application/engine-extension-contracts.js';
 import { AGENT_LOCAL_RESTORE_COMPLETION, AgentBackupSchema, AgentLocalRestoreMarkerSchema, EnginePinSchema, type EnginePin, type EngineRelease } from '../application/agent-lifecycle-contracts.js';
 import { AgentConfigSchema, AgentIdentitySchema, type AgentProfileStore, type AgentProfileStatus } from '../application/agent-profile-contracts.js';
 import { acquireAgentMaintenance } from './agent-lifecycle-lease.js';
@@ -60,9 +61,10 @@ function inspectCompatibility(profile: Ready, release: Pick<EngineRelease, 'comp
   if (effectiveAgentPostgresSelection(profile) || profile.postgresMigration?.phase === 'pending') lifecycleFail('lifecycle_external_storage_snapshot_required');
   return inspectAgentLocalStorageCompatibility(profile, release);
 }
-export function checkAgentLifecycle(profiles: AgentProfileStore, directory: string, engineDirectory: string) {
+export function checkAgentLifecycle(profiles: AgentProfileStore, directory: string, engineDirectory: string, options: EngineExtensionCheckOptions = {}) {
   const profile = ready(profiles, directory), release = inspectEngineRelease(engineDirectory);
-  return { agentId: profile.identity.agentId, root: profile.root, release, pin: readAgentEnginePin(profile.root), storage: inspectCompatibility(profile, release), effects: 'preserved; existing runtime recovery required before new execution' };
+  const extensions = inspectEngineExtensions(release.compatibility.extensions, options);
+  return { agentId: profile.identity.agentId, root: profile.root, release, pin: readAgentEnginePin(profile.root), storage: inspectCompatibility(profile, release), extensions, effects: 'preserved; existing runtime recovery required before new execution' };
 }
 export function backupAgent(profiles: AgentProfileStore, directory: string, destination: string, offline: boolean) {
   const profile = ready(profiles, directory), target = lifecycleRoot(destination, false); disjoint(profile.root, target);
@@ -86,15 +88,17 @@ export function inspectAgentBackup(input: string) {
   if (lifecycleDigest(body) !== digest || lifecycleDigest(captureLifecycleTree(join(directory, 'data'))) !== lifecycleDigest(manifest.entries)) lifecycleFail('lifecycle_backup_digest_mismatch');
   return { directory, manifest };
 }
-export function pinAgentEngine(profiles: AgentProfileStore, directory: string, engineDirectory: string, options: { offline: boolean; expectedPrevious: string | null; backup?: string }) {
+export function pinAgentEngine(profiles: AgentProfileStore, directory: string, engineDirectory: string, options: EngineExtensionCheckOptions & { offline: boolean; expectedPrevious: string | null; backup?: string }) {
   const profile = ready(profiles, directory), engine = lifecycleRoot(engineDirectory); disjoint(profile.root, engine);
   const lease = acquireAgentMaintenance(profile.root, options.offline);
   try {
     const current = readAgentEnginePin(profile.root);
     if (current && current.sequence >= 1024) lifecycleFail('engine_pin_limit');
     if ((current?.releaseDigest ?? null) !== options.expectedPrevious) lifecycleFail('engine_pin_conflict');
-    const release = inspectEngineRelease(engine); const storage = inspectCompatibility(profile, release);
-    if (current?.releaseDigest === release.digest) return { pin: current, applied: false, storage, recoveryRequired: true };
+    const release = inspectEngineRelease(engine);
+    const extensions = inspectEngineExtensions(release.compatibility.extensions, options);
+    const storage = inspectCompatibility(profile, release);
+    if (current?.releaseDigest === release.digest) return { pin: current, applied: false, storage, extensions, recoveryRequired: true };
     let backupDigest: string | null = null;
     if (current) {
       if (!options.backup) lifecycleFail('engine_update_backup_required');
@@ -103,7 +107,7 @@ export function pinAgentEngine(profiles: AgentProfileStore, directory: string, e
       backupDigest = saved.manifest.digest;
     }
     const pin = publishAgentEnginePin(profile, engine, release, current, backupDigest);
-    return { pin, applied: true, storage, recoveryRequired: true };
+    return { pin, applied: true, storage, extensions, recoveryRequired: true };
   } finally { lease.close(); }
 }
 /** Shared no-replace publication. The caller retains its local and, when applicable, PG maintenance fence. */

@@ -3,6 +3,7 @@ import type { AgentProfileStore } from '../application/agent-profile-contracts.j
 import { PersonalMemoryMigrationError, PersonalMemoryMigrationOptionsSchema } from '../application/personal-memory-migration-contracts.js';
 import { previewPersonalMemoryMigration, applyPersonalMemoryMigration, resumePersonalMemoryMigration,
   personalMemoryMigrationStatus } from '../infrastructure/personal-memory-migration.js';
+import { memoryMigrationCliOptions } from './agent-cli-options.js';
 
 const help = `개인 기억 이관 · SQLite → 문서 (명시적 오프라인 관리)
 memory-migrate preview|apply --directory <담당> --from sqlite --source <memory.sqlite>
@@ -19,13 +20,7 @@ preview는 파일을 생성하지 않습니다. apply 전에 해당 담당의 �
 source fence 뒤에는 취소/SQLite 자동 복귀가 없으며 같은 operation의 resume을 사용합니다.
 `;
 export async function runMemoryMigrationCli(args: string[], profiles: AgentProfileStore, forbiddenRoots: readonly string[]) {
-  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: {
-    directory: { type: 'string', default: process.cwd() }, from: { type: 'string' }, to: { type: 'string' },
-    source: { type: 'string' }, target: { type: 'string' }, 'operation-id': { type: 'string' }, 'target-store-id': { type: 'string' },
-    'backup-directory': { type: 'string' }, scope: { type: 'string' }, 'snapshot-digest': { type: 'string' },
-    'offline-confirmed': { type: 'boolean' }, 'effects-reconciled': { type: 'boolean' },
-    json: { type: 'boolean' }, help: { type: 'boolean', short: 'h' },
-  } });
+  const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: memoryMigrationCliOptions(process.cwd()) });
   if (values.help || positionals[0] === 'help') { process.stdout.write(help); return; }
   const command = positionals[0];
   if (positionals.length !== 1 || !['preview', 'apply', 'resume', 'status'].includes(command ?? '')) throw new PersonalMemoryMigrationError('agent_migration_command_invalid');

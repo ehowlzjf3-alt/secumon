@@ -1,3 +1,4 @@
+import { captureEngineApi, type EngineApiRegistration } from '../application/engine-extension-contracts.js';
 import { z } from 'zod';
 import type { MessageSink } from '../application/ports.js';
 import { parseContract } from '../application/contracts.js';
@@ -20,7 +21,7 @@ export interface KnoxTransport {
   send(message: Readonly<KnoxMessage>, signal: AbortSignal): ReturnType<MessageSink['send']>;
   lookup?(message: Readonly<KnoxMessage>, signal: AbortSignal): ReturnType<NonNullable<MessageSink['lookup']>>;
 }
-export interface KnoxRegistration {
+export interface KnoxRegistration extends EngineApiRegistration {
   readonly destination: string;
   readonly transport: KnoxTransport;
 }
@@ -30,13 +31,15 @@ const lookupResult = z.union([delivered, z.strictObject({ status: z.enum(['absen
 
 export function captureKnoxRegistration(value: KnoxRegistration | undefined): KnoxRegistration | null {
   if (value === undefined) return null;
+  const api = captureEngineApi(value);
   const destination = z.string().trim().min(1).max(256).refine(v => v !== 'local' && !/[\x00-\x1f\x7f]/.test(v)).parse(value.destination);
   const transport = value.transport;
   if (!transport || typeof transport.send !== 'function' || typeof transport.capabilities?.idempotentSend !== 'boolean' ||
       transport.lookup !== undefined && typeof transport.lookup !== 'function') throw new Error('knox_registration_invalid');
-  return Object.freeze({ destination, transport: Object.freeze({
+  return Object.freeze({ ...(api.engineApi ? { engineApi: api.engineApi } : {}), destination, transport: Object.freeze({
     capabilities: Object.freeze({ idempotentSend: transport.capabilities.idempotentSend }),
-    send: transport.send.bind(transport), ...(transport.lookup ? { lookup: transport.lookup.bind(transport) } : {}),
+    send: ((send) => (message: Readonly<KnoxMessage>, signal: AbortSignal) => { api.assertCurrent(); return send(message, signal); })(transport.send.bind(transport)),
+    ...(transport.lookup ? { lookup: ((lookup) => (message: Readonly<KnoxMessage>, signal: AbortSignal) => { api.assertCurrent(); return lookup(message, signal); })(transport.lookup.bind(transport)) } : {}),
   }) });
 }
 

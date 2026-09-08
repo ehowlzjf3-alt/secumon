@@ -40,7 +40,8 @@ function responseWire(reply: AgentTurnReply | SessionCompactReply, identity: Mod
 
 /** Explicit finite fixture registration. No SDK, network or arbitrary-language model is started. */
 export function createLocalContractHost(): AgentTurnHost {
-  const registration: HostModelRegistration = Object.freeze({ execution: 'deterministic_fixture', async open(profile: AgentTurnProfile) {
+  const registration: HostModelRegistration = Object.freeze({ engineApi: { version: 1, requires: ['model.turn', 'model.compact'] },
+    execution: 'deterministic_fixture', async open(profile: AgentTurnProfile) {
     const fixture = new SyntheticProfilePlanner(new SyntheticAgentTurnPlanner(profile));
     const configuration = { identity: { ...fixture.identity, revision: 'registered-1' }, destination: 'local', maxRequestBytes: 65_536,
       capabilities: { structuredOutput: true, toolCalling: false, images: false, cancellation: true,
