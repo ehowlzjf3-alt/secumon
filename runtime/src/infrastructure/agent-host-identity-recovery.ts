@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { z } from 'zod';
 import { AGENT_LOCAL_RESTORE_COMPLETION, AgentLifecycleError, AgentLocalRestoreMarkerSchema } from '../application/agent-lifecycle-contracts.js';
+import { AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING } from '../application/agent-restore-reconciliation-contracts.js';
 import { AgentPostgresRestoreMarkerSchema } from '../application/agent-postgres-backup-contracts.js';
 import { AgentConfigSchema, AgentIdentitySchema, type AgentIdentity } from '../application/agent-profile-contracts.js';
 import { inspectAgentBackup } from './agent-lifecycle.js';
@@ -26,7 +27,7 @@ const same = (left: unknown, right: unknown) => lifecycleDigest(left) === lifecy
 
 function included(path: string, kind: 'local' | 'postgres') {
   return path !== '.secumon/runtime-leases' && !path.startsWith('.secumon/runtime-leases/') &&
-    path !== '.secumon/lifecycle-maintenance.json' && path !== AGENT_LOCAL_RESTORE_COMPLETION &&
+    path !== '.secumon/lifecycle-maintenance.json' && path !== AGENT_LOCAL_RESTORE_COMPLETION && path !== AGENT_RESTORE_RECONCILIATION && path !== AGENT_RESTORE_RECONCILIATION_PENDING &&
     !(kind === 'postgres' && path === postgresCompletionName) &&
     !['.secumon/runtime.sqlite-shm', '.secumon/channel.sqlite-shm', 'memory/memory.sqlite-shm'].includes(path);
 }
@@ -51,6 +52,7 @@ async function inspectRestored(input: RebindRestoredAgentHostIdentityInput, root
     if (input.operationId !== `local:${manifest.digest}` || !same(local.value, {
       schemaVersion: 1, kind: 'secumon-local-restore', operationId: input.operationId,
       agentId: manifest.agentId, backupDigest: manifest.digest, originalRoot: root,
+      ...(local.value.restorationId === undefined ? {} : { restorationId: local.value.restorationId }),
     })) lifecycleFail('lifecycle_restore_binding_mismatch');
     completed = local;
   } else {
@@ -60,6 +62,7 @@ async function inspectRestored(input: RebindRestoredAgentHostIdentityInput, root
       schemaVersion: 1, kind: 'secumon-postgres-restore', operationId: input.operationId,
       agentId: manifest.agentId, backupDigest: manifest.digest, transferDigest: saved.transfer.digest,
       originalRoot: root, selection: saved.manifest.selection,
+      ...(postgres.value.restorationId === undefined ? {} : { restorationId: postgres.value.restorationId }),
     })) lifecycleFail('lifecycle_restore_binding_mismatch');
     completed = postgres;
   }

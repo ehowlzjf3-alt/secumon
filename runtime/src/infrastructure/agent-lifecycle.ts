@@ -1,8 +1,10 @@
 import { join } from 'node:path';
 import { unlinkSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { inspectEngineExtensions, type EngineExtensionCheckOptions } from '../application/engine-extension-contracts.js';
 import { AGENT_LOCAL_RESTORE_COMPLETION, AgentBackupSchema, AgentLocalRestoreMarkerSchema, EnginePinSchema, type EnginePin, type EngineRelease } from '../application/agent-lifecycle-contracts.js';
+import { AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING } from '../application/agent-restore-reconciliation-contracts.js';
 import { AgentConfigSchema, AgentIdentitySchema, type AgentProfileStore, type AgentProfileStatus } from '../application/agent-profile-contracts.js';
 import { acquireAgentMaintenance } from './agent-lifecycle-lease.js';
 import { captureLifecycleTree, copyLifecycleTree, createLifecycleDirectory, disjoint, lifecycleDigest, lifecycleExists, lifecycleFail, lifecycleLimits, lifecycleNames, lifecycleRoot } from './agent-lifecycle-files.js';
@@ -16,7 +18,7 @@ export { inspectAgentLocalStorageCompatibility } from './agent-storage-compatibi
 
 type Ready = Extract<AgentProfileStatus, { status: 'ready' }>;
 const backupInclude = (path: string) => path !== '.secumon/runtime-leases' && !path.startsWith('.secumon/runtime-leases/') && path !== '.secumon/lifecycle-maintenance.json' &&
-  path !== AGENT_LOCAL_RESTORE_COMPLETION &&
+  path !== AGENT_LOCAL_RESTORE_COMPLETION && path !== AGENT_RESTORE_RECONCILIATION && path !== AGENT_RESTORE_RECONCILIATION_PENDING &&
   !['.secumon/runtime.sqlite-shm', '.secumon/channel.sqlite-shm', 'memory/memory.sqlite-shm'].includes(path);
 function ready(profiles: AgentProfileStore, directory: string) {
   const profile = profiles.inspect(directory);
@@ -52,6 +54,7 @@ export function inspectAgentBackup(input: string) {
     readWindowsLifecycleJson(join(directory, 'backup.json'), AgentBackupSchema, 32 * 1024 * 1024) :
     readProfileJson(join(directory, 'backup.json'), AgentBackupSchema, [1], 32 * 1024 * 1024);
   if (!manifest) return lifecycleFail('lifecycle_backup_missing'); const { digest, ...body } = manifest;
+  if (manifest.entries.some(entry => [AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING].some(path => entry.path === path || entry.path.startsWith(`${path}/`)))) lifecycleFail('lifecycle_restore_entries_invalid');
   if (lifecycleDigest(body) !== digest || lifecycleDigest(captureLifecycleTree(join(directory, 'data'))) !== lifecycleDigest(manifest.entries)) lifecycleFail('lifecycle_backup_digest_mismatch');
   return { directory, manifest };
 }
@@ -104,24 +107,29 @@ export function restoreAgentBackup(profiles: AgentProfileStore, input: string, d
   const saved = inspectAgentBackup(input), target = lifecycleRoot(directory, false); disjoint(saved.directory, target);
   if (saved.manifest.digest !== expectedDigest || saved.manifest.originalRoot !== target) lifecycleFail('lifecycle_restore_binding_mismatch');
   const markerName = '.secumon-restore-in-progress.json';
-  const marker = { schemaVersion: 1, backupDigest: saved.manifest.digest, agentId: saved.manifest.agentId };
-  if (saved.manifest.entries.some(entry => entry.path === markerName || entry.path === AGENT_LOCAL_RESTORE_COMPLETION)) lifecycleFail('lifecycle_restore_entries_invalid');
-  const completed = AgentLocalRestoreMarkerSchema.parse({ schemaVersion: 1, kind: 'secumon-local-restore',
-    operationId: `local:${saved.manifest.digest}`, agentId: saved.manifest.agentId, backupDigest: saved.manifest.digest, originalRoot: target });
+  const markerSchema = z.strictObject({ schemaVersion: z.literal(1), backupDigest: z.string(), agentId: z.uuid(), restorationId: z.uuid().optional() });
+  let marker: z.infer<typeof markerSchema>;
+  if (saved.manifest.entries.some(entry => [markerName, AGENT_LOCAL_RESTORE_COMPLETION, AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING].includes(entry.path))) lifecycleFail('lifecycle_restore_entries_invalid');
   // A Windows retry must present the same original archive and the still-pending marker.
   if (lifecycleExists(target)) {
     if (process.platform !== 'win32') lifecycleFail('lifecycle_restore_destination_exists');
     lifecycleRoot(target);
-    const previous = readProfileJson(join(target, markerName), z.strictObject({ schemaVersion: z.literal(1), backupDigest: z.string(), agentId: z.uuid() }));
-    if (!previous || lifecycleDigest(previous) !== lifecycleDigest(marker)) lifecycleFail('lifecycle_restore_destination_exists');
+    const previous = readProfileJson(join(target, markerName), markerSchema);
+    if (!previous || previous.backupDigest !== saved.manifest.digest || previous.agentId !== saved.manifest.agentId) return lifecycleFail('lifecycle_restore_destination_exists');
+    // An old pending marker remains legacy; retry never rewrites it or invents a new occurrence.
+    marker = previous;
   } else {
+    marker = markerSchema.parse({ schemaVersion: 1, backupDigest: saved.manifest.digest, agentId: saved.manifest.agentId, restorationId: randomUUID() });
     createLifecycleDirectory(target); publishLifecycleManifest(target, markerName, marker);
   }
+  const completed = AgentLocalRestoreMarkerSchema.parse({ schemaVersion: 1, kind: 'secumon-local-restore',
+    operationId: `local:${saved.manifest.digest}`, agentId: saved.manifest.agentId, backupDigest: saved.manifest.digest, originalRoot: target,
+    ...(marker.restorationId === undefined ? {} : { restorationId: marker.restorationId }) });
   if (process.platform === 'win32') restoreWindowsLifecycleTree(join(saved.directory, 'data'), target, saved.manifest.entries,
     { operationId: `local:${saved.manifest.digest}`, backupDigest: saved.manifest.digest, agentId: saved.manifest.agentId,
-      markerName, markerBytes: Buffer.from(JSON.stringify(marker, null, 2) + '\n') }, lifecycleLimits, path => path !== AGENT_LOCAL_RESTORE_COMPLETION);
+      markerName, markerBytes: Buffer.from(JSON.stringify(marker, null, 2) + '\n') }, lifecycleLimits, path => path !== AGENT_LOCAL_RESTORE_COMPLETION && path !== AGENT_RESTORE_RECONCILIATION && path !== AGENT_RESTORE_RECONCILIATION_PENDING);
   else copyLifecycleTree(join(saved.directory, 'data'), target, saved.manifest.entries);
-  if (lifecycleDigest(captureLifecycleTree(target, path => path !== markerName && path !== AGENT_LOCAL_RESTORE_COMPLETION)) !== lifecycleDigest(saved.manifest.entries)) lifecycleFail('lifecycle_restore_digest_mismatch');
+  if (lifecycleDigest(captureLifecycleTree(target, path => path !== markerName && path !== AGENT_LOCAL_RESTORE_COMPLETION && path !== AGENT_RESTORE_RECONCILIATION && path !== AGENT_RESTORE_RECONCILIATION_PENDING)) !== lifecycleDigest(saved.manifest.entries)) lifecycleFail('lifecycle_restore_digest_mismatch');
   const identity = readProfileJson(join(target, '.secumon', 'identity.json'), AgentIdentitySchema);
   const config = readProfileJson(join(target, 'config.json'), AgentConfigSchema, [1, 2]);
   if (!identity || identity.agentId !== saved.manifest.agentId || !config || lifecycleDigest(config.identity) !== lifecycleDigest(identity)) lifecycleFail('lifecycle_restore_owner_mismatch');
@@ -139,6 +147,7 @@ export function restoreAgentBackup(profiles: AgentProfileStore, input: string, d
   } finally { scope.close(); }
   const profile = ready(profiles, target);
   return { agentId: profile.identity.agentId, root: target, backupDigest: saved.manifest.digest, operationId: completed.operationId,
+    ...(completed.restorationId === undefined ? {} : { restorationId: completed.restorationId }),
     pin, recoveryRequired: true, externalEffects: 'not undone; restore may require external reconciliation' };
 }
 export function lifecycleInventory(root: string) {

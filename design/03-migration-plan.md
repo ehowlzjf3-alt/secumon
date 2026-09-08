@@ -1,5 +1,11 @@
 # 통합 구현 순서와 검증 플랜
 
+2026-09-08 · checkpoint390 · 기준선 `158b82b`. 복원마다 새 고유 번호를 붙이고 호스트 조회 source의 외부 이력 대조를 일반 저장소 입구에 연결했다. 대조 전/미해결 복원은 새 실행을 막고, 일치한 복원은 같은 세션·원 업무로 이어간다. provisional 게시 실패도 재개를 막으며 동일 원 증명의 재시도는 영수증을 보존한다. 같은 build1 신규17개·기존 신원 복원9개·관련 회귀46개, 고유72/72 통과(실패·취소·건너뜀0). build/core exit0·계층200/위반0·최종2,454파일 대조 일치. [결과](chapters/C10-restore-reconciliation-result.md) · [사용법](chapters/C10-restore-reconciliation-usage.md) · [체크포인트](../runtime/evidence/checkpoint390.json).
+
+다음은 C10에서 외부 이력보다 오래된 복원본의 누락 원기록 가져오기와 provisional 자료변경 회복을 기존 증거/복구 코드에 연결하는 일이다. C09 취소·목표 변경·일시정지/저널/이력 비용, C05/C06 후속, 현재 Linux/native Windows·실제 PostgreSQL·사내 연동·설치 입구/운영 배포·최종 통합도 유지한다. 전체 C10/goal은 미완료이며 실제 모델/API 시험 중단·사내/외부 서비스 연결0을 유지한다. 활성 빌드·시험은 없다.
+
+이전 checkpoint389의 기록(아래 다음 행동과 미실행 표시는 당시 기준이다):
+
 2026-09-08 · checkpoint389 · 기준선 `53019cf`. 쓰기 가능한 저장소를 열기 전에 공통 읽기 전용 형식 검사를 연결하고, 정확한 버전·compact 지원 확인과 기존 SQLite 상태 1/2→3·지식 1→2 이행을 재사용했다. 신규 경계9개·실제 설치 A/B의 구형 저장 구조 통합 시나리오2개·관련 회귀109개가 통과했다. Node 집계는 통합 묶음 상위 항목1개를 포함한121개이며 전체 최종 소스 재실행이 아니다. 최종 build3의 선검사9개·문서 기억8개는17/17, 설치 통합은 build2의 상위 항목 포함3개다. 관련109개는 build2의101개와 build3의 문서 기억8개다. build3 exit0·2,433파일 대조 일치, 코어 타입 exit0·계층199/위반0은 안쪽 코어가 바뀌지 않은 build1 기록이다. [결과](chapters/C10-storage-upgrade-result.md) · [사용법](chapters/C10-storage-upgrade-usage.md) · [체크포인트](../runtime/evidence/checkpoint389.json).
 
 다음은 `agent-lifecycle`·`agent-host-identity-recovery`·`workflow`·`computer-reconciliation`의 기존 복원 업무·외부 효과 대조 경로를 읽고 백업 복원 후 새 외부 실행 전의 연결 공백을 좁히는 일이다. 이후 C09 취소·목표 변경·일시정지·저널 응답 불명·이력 비용, C05/C06 후속, 현재 Linux/native Windows·실제 PostgreSQL·사내 연동·패키지 효율·운영 배포·최종통합을 이어간다. 전체 C10/goal은 미완료이며 실제 모델/API 시험 중단·외부 서비스 연결0을 유지한다. 활성 빌드·시험은 없다.

@@ -11,6 +11,8 @@ import { captureLifecycleTree, copyLifecycleTree } from '../infrastructure/agent
 import { acquireAgentRuntimeLease } from '../infrastructure/agent-lifecycle-lease.js';
 import { inspectAgentHostIdentity } from '../infrastructure/agent-host-identities.js';
 import { rebindRestoredAgentHostIdentity, type RebindRestoredAgentHostIdentityInput } from '../infrastructure/agent-host-identity-recovery.js';
+import { reconcileAgentRestore } from '../infrastructure/agent-restore-reconciliation.js';
+import type { AgentRestoreReconciliationSource } from '../application/agent-restore-reconciliation-contracts.js';
 import { sha256 } from '../infrastructure/digest.js';
 import { advance, command, delivery, initial, snapshot, type Adapter } from './state-conformance-helpers.js';
 
@@ -93,9 +95,23 @@ async function fixture(t: TestContext, backend: Adapter = 'sqlite') {
     assert.deepEqual(head(), before);
     assert.deepEqual(captureLifecycleTree(registry), registryTree);
   };
+  // This fixture has only local notes and seeded history, with no external execution registration.
+  const source: AgentRestoreReconciliationSource = { revision: '1', async inspect(basis, signal) {
+    signal.throwIfAborted(); unchangedOriginals();
+    assert.equal(basis.agentId, profile.identity.agentId); assert.equal(basis.root, root);
+    assert.equal(readFileSync(join(root, 'notes.txt'), 'utf8'), rawText);
+    return { sourceId: 'fixture-original-notes', sourceRevision: '1', basisDigest: basis.digest, status: 'consistent',
+      sourceHead: sha256(rawText), evidence: [{ reference: 'fixture:notes.txt', digest: sha256(rawText) }], unresolved: [] };
+  }, async verify(basis, report, signal) {
+    signal.throwIfAborted(); unchangedOriginals();
+    return basis.agentId === profile.identity.agentId && report.basisDigest === basis.digest && report.sourceHead === sha256(rawText) &&
+      readFileSync(join(root, 'notes.txt'), 'utf8') === rawText;
+  } };
+  const reconcile = () => reconcileAgentRestore(profiles, { directory: root, offline: true },
+    { ...identityOptions, sources: new Map([['fixture-original-notes', source]]) });
   return { base, root, preserved, archive, registry, profile, before, request, identityOptions, profiles,
     completionBytes, originalWork, originalInput, originalSession, originalHistory, artifact, state, session,
-    first, second, open, close, head, rebind, unchangedOriginals, unchangedRegistration };
+    first, second, open, close, head, rebind, reconcile, unchangedOriginals, unchangedRegistration };
 }
 
 for (const backend of ['sqlite', 'file-journal'] as const) {
@@ -111,6 +127,8 @@ for (const backend of ['sqlite', 'file-journal'] as const) {
     assert.notDeepEqual(rebound.record.rootIdentity, f.before.record.rootIdentity);
     assert.deepEqual(rebound.record.reason, { kind: 'restore', operationId: f.request.operationId,
       backupDigest: f.request.expectedBackupDigest, originalRoot: f.root });
+    await assert.rejects(f.open(), /agent_restore_reconciliation_required/);
+    assert.equal((await f.reconcile()).status, 'reconciled');
     const stores = await f.open();
     try {
       stores.assertIdentityCurrent();

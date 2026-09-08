@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { closeSync, constants, fstatSync, fsyncSync, linkSync, lstatSync, openSync, readSync, unlinkSync, writeSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { z } from 'zod';
@@ -6,6 +6,7 @@ import { AgentPostgresBackupSchema, AgentPostgresRestoreFloorSchema, AgentPostgr
   type AgentPostgresBackup, type AgentPostgresRestoreFloor } from '../application/agent-postgres-backup-contracts.js';
 import { AgentConfigSchema, AgentIdentitySchema, type AgentProfileStore, type AgentPostgresSelection } from '../application/agent-profile-contracts.js';
 import { AGENT_LOCAL_RESTORE_COMPLETION, type LifecycleEntry } from '../application/agent-lifecycle-contracts.js';
+import { AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING } from '../application/agent-restore-reconciliation-contracts.js';
 import { asJson } from '../application/plan-validator.js';
 import { acquireAgentMaintenance, recoverAgentLifecycleLeases } from './agent-lifecycle-lease.js';
 import { captureLifecycleTree, copyLifecycleTree, createLifecycleDirectory, disjoint, lifecycleDigest, lifecycleExists, lifecycleFail,
@@ -27,7 +28,7 @@ const manifestLimit = 4 * 1024 ** 2;
 const same = (a: unknown, b: unknown) => lifecycleDigest(a) === lifecycleDigest(b);
 const selected = (value: AgentPostgresSelection) => ({ storeId: value.storeId, registrationId: value.registrationId, purposes: [...value.purposes].sort() });
 const backupInclude = (path: string) => path !== '.secumon/runtime-leases' && !path.startsWith('.secumon/runtime-leases/') &&
-  path !== '.secumon/lifecycle-maintenance.json' && path !== activationName && path !== AGENT_LOCAL_RESTORE_COMPLETION &&
+  path !== '.secumon/lifecycle-maintenance.json' && path !== activationName && path !== AGENT_LOCAL_RESTORE_COMPLETION && path !== AGENT_RESTORE_RECONCILIATION && path !== AGENT_RESTORE_RECONCILIATION_PENDING &&
   !['.secumon/runtime.sqlite-shm', '.secumon/channel.sqlite-shm', 'memory/memory.sqlite-shm'].includes(path);
 const operation = (value: string) => z.uuid().parse(value);
 function uncertain(error: unknown, seen = new Set<unknown>()): boolean {
@@ -45,7 +46,7 @@ function capacity(entries: readonly LifecycleEntry[], pages: readonly PostgresTr
 function assertEntries(entries: readonly LifecycleEntry[]) {
   const names = new Map<string, LifecycleEntry>();
   for (const entry of entries) {
-    if (names.has(entry.path) || !backupInclude(entry.path) || entry.path === markerName || entry.path.split('/').some(part => part.startsWith(pendingPrefix))) lifecycleFail('postgres_backup_entries_invalid');
+    if (names.has(entry.path) || !backupInclude(entry.path) || [AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING].some(path => entry.path.startsWith(`${path}/`)) || entry.path === markerName || entry.path.split('/').some(part => part.startsWith(pendingPrefix))) lifecycleFail('postgres_backup_entries_invalid');
     const parent = dirname(entry.path);
     if (parent !== '.' && names.get(parent)?.kind !== 'directory') lifecycleFail('postgres_backup_entries_invalid');
     names.set(entry.path, entry);
@@ -217,23 +218,29 @@ export async function restoreAgentPostgresBackup(profiles: AgentProfileStore, in
   disjoint(saved.directory, target);
   if (manifest.digest !== options.expectedDigest || manifest.originalRoot !== target || floor.agentId !== manifest.agentId || floor.backupDigest !== manifest.digest ||
     !same(selected(host.selection), selected(manifest.selection))) lifecycleFail('lifecycle_restore_binding_mismatch');
-  const marker = AgentPostgresRestoreMarkerSchema.parse({ schemaVersion: 1, kind: 'secumon-postgres-restore', operationId: id,
+  let marker = AgentPostgresRestoreMarkerSchema.parse({ schemaVersion: 1, kind: 'secumon-postgres-restore', operationId: id,
     agentId: manifest.agentId, backupDigest: manifest.digest, transferDigest: saved.transfer.digest, originalRoot: target, selection: manifest.selection });
-  const recovery: WindowsLifecycleRecovery = { operationId: id, backupDigest: manifest.digest, agentId: manifest.agentId,
-    markerName, markerBytes: Buffer.from(JSON.stringify(marker, null, 2) + '\n') };
   const exists = lifecycleExists(target);
   if (exists) {
     lifecycleRoot(target);
     const pending = readProfileJson(join(target, markerName), AgentPostgresRestoreMarkerSchema);
     const activation = readProfileJson(join(target, activationName), AgentPostgresRestoreMarkerSchema);
-    if (!(pending && same(pending, marker)) && !(activation && same(activation, marker))) lifecycleFail('lifecycle_restore_destination_exists');
-    if (pending && !same(pending, marker) || activation && !same(activation, marker)) lifecycleFail('lifecycle_restore_binding_mismatch');
-  }
+    const matches = (value: z.infer<typeof AgentPostgresRestoreMarkerSchema>) => same(value, {
+      ...marker, ...(value.restorationId === undefined ? {} : { restorationId: value.restorationId }),
+    });
+    const previous = pending ?? activation;
+    if (!previous || !matches(previous)) return lifecycleFail('lifecycle_restore_destination_exists');
+    if (pending && !matches(pending) || activation && !matches(activation) || pending && activation && !same(pending, activation)) lifecycleFail('lifecycle_restore_binding_mismatch');
+    // Retry retains the exact original occurrence, including a legacy marker without a nonce.
+    marker = previous;
+  } else marker = AgentPostgresRestoreMarkerSchema.parse({ ...marker, restorationId: randomUUID() });
+  const recovery: WindowsLifecycleRecovery = { operationId: id, backupDigest: manifest.digest, agentId: manifest.agentId,
+    markerName, markerBytes: Buffer.from(JSON.stringify(marker, null, 2) + '\n') };
   const bindings = saved.transfer.sourceBindings;
   const pool = Object.freeze({ connect: host.pool.connect.bind(host.pool) });
   let fence: Awaited<ReturnType<typeof acquirePostgresMaintenance>> | undefined;
   let local: ReturnType<typeof acquireAgentMaintenance> | undefined;
-  const failures: unknown[] = []; let result: { agentId: string; root: string; backupDigest: string; recoveryRequired: true; externalEffects: string } | undefined;
+  const failures: unknown[] = []; let result: { agentId: string; root: string; backupDigest: string; restorationId?: string; recoveryRequired: true; externalEffects: string } | undefined;
   try {
     if (!exists) { createLifecycleDirectory(target); publishLifecycleManifest(target, markerName, marker); }
     const metadata = join(target, '.secumon');
@@ -270,6 +277,7 @@ export async function restoreAgentPostgresBackup(profiles: AgentProfileStore, in
     const current = ready.status === 'ready' ? effectiveAgentPostgresSelection(ready) : null;
     if (ready.status !== 'ready' || ready.identity.agentId !== manifest.agentId || !current || !same(selected(current), selected(manifest.selection))) lifecycleFail('lifecycle_restore_owner_mismatch');
     result = { agentId: manifest.agentId, root: target, backupDigest: manifest.digest, recoveryRequired: true,
+      ...(marker.restorationId === undefined ? {} : { restorationId: marker.restorationId }),
       externalEffects: 'not undone; existing runtime recovery and external reconciliation remain required' };
   } catch (error) { failures.push(error); }
   finally {

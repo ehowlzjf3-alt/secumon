@@ -1,0 +1,90 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { captureLifecycleTree } from '../infrastructure/agent-lifecycle-files.js';
+import { inspectAgentRestoreReconciliation, reconcileAgentRestore } from '../infrastructure/agent-restore-reconciliation.js';
+import { restoreEffectsFixture } from './agent-restore-effects-fixture.js';
+
+test('an older pre-write backup remains blocked after identity rebind when the actual external history contains an unaccounted effect', { timeout: 60000 }, async t => {
+  const f = await restoreEffectsFixture(t), first = await f.open();
+  assert.equal(inspectAgentRestoreReconciliation(f.profiles, f.directory, f.identityOptions).status, 'not_restored');
+  const accepted = await f.accept(first.profile), beforeWrite = await first.profile.runtime.state(accepted.workId);
+  assert.equal(beforeWrite.attempts.length, 0); assert.equal(beforeWrite.budget.used.toolCalls, 0);
+  await f.close(first.profile);
+  const backup = f.backup(), backupState = f.stored();
+  const writer = await f.open(), applied = await f.writeAndAdopt(writer.profile, accepted.workId);
+  await f.close(writer.profile);
+  const effect = f.externalFiles(), counts = f.counts();
+  assert.equal(counts.models, 1); assert.equal(counts.writes, 1);
+  const restored = await f.restore(backup.manifest.digest);
+  await assert.rejects(f.open(), /agent_host_identity_duplicate_identity/);
+  await restored.rebind();
+  assert.equal(inspectAgentRestoreReconciliation(f.profiles, f.directory, f.identityOptions).status, 'required');
+  assert.deepEqual(f.stored(), backupState);
+  assert.ok(!JSON.stringify(backupState).includes(applied.attempts[0]!.id), 'later dispatch is absent from the actual old snapshot');
+  const beforeDeniedOpen = captureLifecycleTree(f.directory);
+  async function ordinaryResume() {
+    const opened = await f.open();
+    try { return await opened.profile.workflow.run(accepted.workId, opened.profile.actor, { maxSteps: 12 }); }
+    finally { await f.close(opened.profile); }
+  }
+  await assert.rejects(ordinaryResume(), /agent_restore_reconciliation_required/);
+  assert.deepEqual(captureLifecycleTree(f.directory), beforeDeniedOpen, 'restore gate runs before store opening or session/outbox recovery');
+  assert.deepEqual(f.counts(), counts, 'blocked restore makes no model, write, sink or reconciliation call');
+  const unresolved = await reconcileAgentRestore(f.profiles, { directory: f.directory, offline: true }, { ...f.identityOptions, sources: f.sources });
+  assert.equal(unresolved.status, 'unresolved'); assert.equal(unresolved.reports.length, 1);
+  assert.equal(unresolved.reports[0]!.status, 'unresolved');
+  assert.ok(unresolved.reports[0]!.unresolved.includes(`unaccounted_external_effect:${applied.attempts[0]!.id}`));
+  assert.equal(unresolved.reports[0]!.basisDigest, unresolved.basis.digest);
+  assert.equal(inspectAgentRestoreReconciliation(f.profiles, f.directory, f.identityOptions).status, 'required');
+  const afterInspection = captureLifecycleTree(f.directory), afterInspectionCounts = f.counts();
+  await assert.rejects(ordinaryResume(), /agent_restore_reconciliation_required/);
+  assert.deepEqual(captureLifecycleTree(f.directory), afterInspection);
+  assert.deepEqual(f.counts(), afterInspectionCounts);
+  assert.equal(f.counts().models, counts.models); assert.equal(f.counts().writes, counts.writes); assert.equal(f.counts().sends, counts.sends);
+  assert.deepEqual(f.stored(), backupState); assert.deepEqual(f.externalFiles(), effect);
+  restored.unchangedOriginals();
+});
+
+test('an accounted-effect backup requires verified external reconciliation before the ordinary workflow answers without writing again', { timeout: 60000 }, async t => {
+  const f = await restoreEffectsFixture(t), first = await f.open(), accepted = await f.accept(first.profile);
+  const applied = await f.writeAndAdopt(first.profile, accepted.workId);
+  const originalSession = await first.profile.sessions.history(first.profile.actor, accepted.sessionId, first.profile.policy, { limit: 100 });
+  await f.close(first.profile);
+  const backup = f.backup(), originals = f.stored(), effect = f.externalFiles(), counts = f.counts();
+  const restored = await f.restore(backup.manifest.digest);
+  await restored.rebind();
+  await assert.rejects(f.open(), /agent_restore_reconciliation_required/);
+  assert.deepEqual(f.counts(), counts);
+  const reconciled = await reconcileAgentRestore(f.profiles, { directory: f.directory, offline: true }, { ...f.identityOptions, sources: f.sources });
+  assert.equal(reconciled.status, 'reconciled'); assert.equal(reconciled.reports.length, 1);
+  assert.equal(reconciled.reports[0]!.status, 'consistent'); assert.deepEqual(reconciled.reports[0]!.unresolved, []);
+  assert.ok(reconciled.reports[0]!.evidence.length >= 2); assert.ok(f.counts().verifications > 0);
+  assert.equal(inspectAgentRestoreReconciliation(f.profiles, f.directory, f.identityOptions).status, 'reconciled');
+  assert.deepEqual(f.stored(), originals, 'clearance does not synthesize execution results or settle work');
+  assert.deepEqual(f.externalFiles(), effect);
+  const opened = await f.open();
+  assert.equal(opened.profile.agentId, f.ready.identity.agentId);
+  assert.deepEqual(await opened.profile.runtime.state(accepted.workId), applied);
+  assert.deepEqual(await opened.profile.sessions.history(opened.profile.actor, accepted.sessionId, opened.profile.policy, { limit: 100 }), originalSession);
+  const result = await opened.profile.workflow.run(accepted.workId, opened.profile.actor, { maxSteps: 12 });
+  assert.equal(result.control.kind, 'complete', JSON.stringify(result.control));
+  const done = await opened.profile.runtime.state(accepted.workId);
+  assert.equal(done.status, 'completed'); assert.equal(done.conversation!.session!.scope.sessionId, accepted.sessionId);
+  assert.deepEqual(done.attempts, applied.attempts); assert.deepEqual(done.evidence, applied.evidence);
+  assert.equal(done.budget.used.toolCalls, 1); assert.equal(done.budget.used.modelCalls, 2);
+  assert.equal(opened.host.observed.inputs.length, 1); assert.equal(opened.host.observed.writes, 0);
+  const history = await opened.profile.sessions.history(opened.profile.actor, accepted.sessionId, opened.profile.policy, { limit: 100 });
+  assert.equal(history.entries.filter(entry => entry.role === 'user').length, 1);
+  assert.equal(history.entries.filter(entry => entry.kind === 'result').length, 1);
+  for (const row of originals.receipts) assert.ok(f.stored().receipts.some(current => JSON.stringify(current) === JSON.stringify(row)));
+  await f.close(opened.profile);
+  const afterResumeCounts = f.counts(), finalStored = f.stored();
+  const replay = await f.open();
+  assert.equal((await replay.profile.workflow.run(accepted.workId, replay.profile.actor, { maxSteps: 12 })).control.kind, 'complete');
+  assert.equal(replay.host.observed.inputs.length, 0); assert.equal(replay.host.observed.writes, 0);
+  await f.close(replay.profile);
+  assert.equal(f.counts().sends, afterResumeCounts.sends, 'terminal reopen does not redeliver the answer');
+  assert.deepEqual(f.stored().messages, finalStored.messages);
+  assert.deepEqual(f.externalFiles(), effect); assert.equal(f.counts().writes, 1);
+  restored.unchangedOriginals();
+});

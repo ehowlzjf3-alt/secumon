@@ -33,7 +33,7 @@ export const AGENT_LOCAL_RESTORE_COMPLETION = '.secumon-local-restore-complete.j
 export const AgentLocalRestoreMarkerSchema = z.strictObject({
   schemaVersion: z.literal(1), kind: z.literal('secumon-local-restore'),
   operationId: z.string().regex(/^local:[a-f0-9]{64}$/), agentId: z.uuid(), backupDigest: digest,
-  originalRoot: z.string().min(1),
+  originalRoot: z.string().min(1), restorationId: z.uuid().optional(),
 });
 export type LifecycleEntry = z.infer<typeof LifecycleEntrySchema>;
 export type EngineRelease = z.infer<typeof EngineReleaseSchema>;

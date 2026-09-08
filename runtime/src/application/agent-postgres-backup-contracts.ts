@@ -21,4 +21,4 @@ export const AgentPostgresRestoreFloorSchema = z.strictObject({ agentId: z.uuid(
 export type AgentPostgresRestoreFloor = z.infer<typeof AgentPostgresRestoreFloorSchema>;
 export const AgentPostgresRestoreMarkerSchema = z.strictObject({ schemaVersion: z.literal(1),
   kind: z.literal('secumon-postgres-restore'), operationId: z.uuid(), agentId: z.uuid(), backupDigest: digest,
-  transferDigest: digest, originalRoot: z.string().min(1), selection: AgentPostgresSelectionSchema });
+  transferDigest: digest, originalRoot: z.string().min(1), selection: AgentPostgresSelectionSchema, restorationId: z.uuid().optional() });

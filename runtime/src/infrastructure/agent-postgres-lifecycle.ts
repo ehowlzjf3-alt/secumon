@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import { z } from 'zod';
 import { inspectEngineExtensions, type EngineExtensionCheckOptions } from '../application/engine-extension-contracts.js';
 import { AGENT_LOCAL_RESTORE_COMPLETION, type EnginePin, type EngineRelease } from '../application/agent-lifecycle-contracts.js';
+import { AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING } from '../application/agent-restore-reconciliation-contracts.js';
 import { AgentPostgresSelectionSchema, type AgentPostgresSelection, type AgentProfileStatus, type AgentProfileStore } from '../application/agent-profile-contracts.js';
 import { inspectAgentPostgresBackup } from './agent-postgres-backup.js';
 import { effectiveAgentPostgresSelection } from './agent-postgres-migration-profile.js';
@@ -28,7 +29,7 @@ const selected = (input: AgentPostgresSelection) => {
   value.purposes.sort(); return value;
 };
 const backupInclude = (path: string) => path !== '.secumon/runtime-leases' && !path.startsWith('.secumon/runtime-leases/') &&
-  path !== '.secumon/lifecycle-maintenance.json' && path !== AGENT_LOCAL_RESTORE_COMPLETION && path !== '.secumon-postgres-restore-complete.json' &&
+  path !== '.secumon/lifecycle-maintenance.json' && path !== AGENT_LOCAL_RESTORE_COMPLETION && path !== '.secumon-postgres-restore-complete.json' && path !== AGENT_RESTORE_RECONCILIATION && path !== AGENT_RESTORE_RECONCILIATION_PENDING &&
   !['.secumon/runtime.sqlite-shm', '.secumon/channel.sqlite-shm', 'memory/memory.sqlite-shm'].includes(path);
 function ready(profiles: AgentProfileStore, directory: string): Ready {
   const value = profiles.inspect(directory);

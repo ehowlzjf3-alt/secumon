@@ -25,8 +25,13 @@ import { claimAgentHostIdentity } from './agent-host-identities.js';
 import { effectiveAgentPostgresSelection } from './agent-postgres-migration-profile.js';
 import { inspectAgentLocalStorageCompatibility } from './agent-storage-compatibility.js';
 import { engineCompatibility } from './agent-engine-release.js';
+import { assertAgentRestoreReconciled } from './agent-restore-reconciliation.js';
+import type { AgentRestoreReconciliationRegistration } from '../application/agent-restore-reconciliation-contracts.js';
 
-export interface AgentStoreHostOptions { readonly identityRegistryDirectory?: string }
+export interface AgentStoreHostOptions {
+  readonly identityRegistryDirectory?: string;
+  readonly restoreReconciliation?: AgentRestoreReconciliationRegistration;
+}
 const currentEngine = fileURLToPath(new URL('../../', import.meta.url));
 
 /** Per-agent physical stores. Conversation/session authorization is added above these ports. */
@@ -62,9 +67,12 @@ export async function openAgentStores(profiles: AgentProfileStore, directory: st
     // Reject foreign or ambiguous local stores before publishing new selection/lease metadata.
     // Binding below repeats ownership checks under the lease before any writable store opens.
     assertAgentRuntimeAvailable(profile.root);
+    identityClaim.assertCurrent();
+    assertAgentRestoreReconciled(profile, identityClaim);
     if (!effectiveAgentPostgresSelection(profile)?.purposes.includes('state')) inspectAgentStateProfile(profile);
     lifecycleLease = acquireAgentRuntimeLease(profile.root);
     identityClaim.assertCurrent();
+    assertAgentRestoreReconciled(profile, identityClaim);
     inspectAgentLocalStorageCompatibility(profile, { compatibility: engineCompatibility }, { allowUninitialized: true });
     const host = postgresHost ? { selection: structuredClone(postgresHost.selection), pool: { connect: postgresHost.pool.connect.bind(postgresHost.pool) } } : undefined;
     const pg = bindAgentStorageSelection(profile, host);
