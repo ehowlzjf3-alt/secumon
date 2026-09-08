@@ -1,16 +1,17 @@
 import type { EvaluationCase, EvaluationObservation, EvaluationSample, EvaluationScore } from '../domain/execution-evaluation.js';
 import type { Delivery, Evidence, WorkState } from '../domain/model.js';
+import { responseOracleFailures } from './evaluation-response.js';
 
 const dimensions = ['toolCalls', 'modelCalls', 'tokens', 'replans'] as const;
 const knownNumber = (value: number) => Number.isSafeInteger(value) && value >= 0;
 const same = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.stringify(right);
 
-function readableOriginals(state: WorkState): Evidence[] {
+function readableEvidence(state: WorkState): Evidence[] {
   const counts = new Map<string, number>();
   for (const record of state.evidence) counts.set(record.id, (counts.get(record.id) ?? 0) + 1);
   const permitted = (value: { tenantId: string; labels: string[] }) => value.tenantId === state.policy.tenantId && value.labels.every(label => state.policy.allowedLabels.includes(label));
   const readable = (record: Evidence) => counts.get(record.id) === 1 && record.status === 'accepted' && (record.access ?? 'available') === 'available' &&
-    record.derivedFrom.length === 0 && record.scope === state.goal.scope && permitted(record) &&
+    record.scope === state.goal.scope && permitted(record) &&
     (!record.artifact || permitted(record.artifact) && !state.dataLifecycle?.blockedArtifactIds.includes(record.artifact.id));
   const superseded = new Set<string>();
   for (const replacement of state.evidence) for (const id of replacement.supersedes) {
@@ -21,11 +22,23 @@ function readableOriginals(state: WorkState): Evidence[] {
       prior.lineageId === replacement.lineageId && prior.observedAt <= replacement.observedAt &&
       prior.observedAt <= prior.recordedAt && replacement.observedAt <= replacement.recordedAt) superseded.add(id);
   }
-  return state.evidence.filter(record => !superseded.has(record.id) && readable(record));
+  const candidates = state.evidence.filter(record => !superseded.has(record.id) && readable(record));
+  const visible = new Set<string>(), pending = new Map<string, number>(), children = new Map<string, string[]>(), queue: string[] = [];
+  // Derived citations are readable only when every parent is readable; cycles and missing/withdrawn parents stay excluded.
+  for (const record of candidates) {
+    const parents = [...new Set(record.derivedFrom)]; pending.set(record.id, parents.length);
+    if (!parents.length) queue.push(record.id);
+    for (const id of parents) { const dependents = children.get(id) ?? []; dependents.push(record.id); children.set(id, dependents); }
+  }
+  for (let index = 0; index < queue.length; index++) {
+    const id = queue[index]!; visible.add(id);
+    for (const child of children.get(id) ?? []) { const remaining = pending.get(child)! - 1; pending.set(child, remaining); if (!remaining) queue.push(child); }
+  }
+  return candidates.filter(record => visible.has(record.id));
 }
 
 function firstVerifiedOriginal(observation: EvaluationObservation, oracle: EvaluationCase['oracle']): boolean {
-  return readableOriginals(observation.state).some(record => {
+  return readableEvidence(observation.state).filter(record => record.derivedFrom.length === 0).some(record => {
     const expected = oracle.originals.find(value => value.id === record.id);
     return oracle.requiredEvidenceIds.includes(record.id) && expected && record.sourceId === expected.sourceId && record.lineageId === expected.lineageId &&
       record.observedAt === expected.observedAt && record.observedAt <= record.recordedAt && record.recordedAt <= observation.at && record.coverage === 'complete' &&
@@ -36,8 +49,10 @@ function firstVerifiedOriginal(observation: EvaluationObservation, oracle: Evalu
 /** Fixture truth is checked independently of the runtime's completion implementation. */
 function oracleFailures(observation: EvaluationObservation, oracle: EvaluationCase['oracle'], delivery: Delivery | null): string[] {
   const { state, at } = observation; const failures: string[] = [];
-  const originals = readableOriginals(state); const selected = originals.filter(record => oracle.requiredEvidenceIds.includes(record.id));
-  if (!oracle.requiredEvidenceIds.length || !Object.keys(oracle.facts).length) failures.push('oracle_has_no_completion_evidence');
+  const readable = readableEvidence(state), originals = readable.filter(record => record.derivedFrom.length === 0);
+  const selected = originals.filter(record => oracle.requiredEvidenceIds.includes(record.id));
+  if ((!oracle.requiredEvidenceIds.length || !Object.keys(oracle.facts).length) && !oracle.response) failures.push('oracle_has_no_completion_evidence');
+  failures.push(...responseOracleFailures(observation, oracle, delivery, readable));
   if (!oracle.completionEligible) failures.push('completion_not_eligible');
   if (oracle.noCompletionBefore !== null && at < oracle.noCompletionBefore) failures.push('completion_before_release');
   for (const id of oracle.requiredEvidenceIds) {
@@ -53,7 +68,7 @@ function oracleFailures(observation: EvaluationObservation, oracle: EvaluationCa
     if (!selected.some(record => Object.hasOwn(record.facts, key) && record.facts[key] === expected)) failures.push(`expected_fact_missing:${key}`);
     if (originals.some(record => Object.hasOwn(record.facts, key) && record.facts[key] !== expected)) failures.push(`counterevidence_unresolved:${key}`);
   }
-  if (!state.goal.criteria.length) failures.push('completion_criteria_missing');
+  if (!state.goal.criteria.length && !oracle.response) failures.push('completion_criteria_missing');
   for (const criterion of state.goal.criteria) {
     const matching = originals.filter(record => Object.hasOwn(record.facts, criterion.key) &&
       (criterion.operator === 'present' || record.facts[criterion.key] === criterion.equals) && (!criterion.requireCompleteCoverage || record.coverage === 'complete'));
@@ -134,7 +149,8 @@ export function scoreEvaluation(sample: EvaluationSample): EvaluationScore {
     if (!knownNumber(at) || at < sample.startedAt || at > sample.finishedAt || prior && at < prior.at) failures.add('observation_time_invalid');
     if (state.id !== first.state.id || prior && state.revision < prior.state.revision) failures.add('observation_state_identity_invalid');
     const previousRevision = visitedRevisions.get(state.revision);
-    if (previousRevision && (!same(previousRevision.state, state) || !same(previousRevision.deliveries, observation.deliveries))) failures.add('same_revision_changed');
+    if (previousRevision && (!same(previousRevision.state, state) || !same(previousRevision.deliveries, observation.deliveries) ||
+      !same(previousRevision.response, observation.response))) failures.add('same_revision_changed');
     if (!previousRevision) {
       if (observation.eventTypes.includes('user_command')) interventions++;
       if (prior?.state.executionControl?.strategy === 'direct' && state.executionControl?.strategy === 'investigate') promotions++;

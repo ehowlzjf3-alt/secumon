@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { ArtifactRef, WorkState } from '../domain/model.js';
@@ -15,13 +16,15 @@ import { ToolContracts } from '../application/tool-contracts.js';
 import { FileArtifactStore } from '../infrastructure/file-artifacts.js';
 import { Sha256Digester } from '../infrastructure/digest.js';
 import { AjvSchemas } from '../infrastructure/ajv-schemas.js';
-import { adapters, advance, command, initial, openRepository, type Adapter } from './state-conformance-helpers.js';
+import { adapters, advance, command, initial, modelCall, openRepository, type Adapter } from './state-conformance-helpers.js';
 
 const actor: WorkActor = { tenantId: 'tenant-a', principalId: 'person-a' };
 const basePins: Omit<EvaluationPins, 'caseDefinition'> = { suite: 'synthetic-replay-1', fixture: 'original-v1', code: 'local-code-v1', configuration: 'local-policy-v1', environment: { synthetic: true, node: '24', backendContract: '1' } };
 type StoreHook = (operation: 'get' | 'events' | 'deliveries' | 'receipt', commandId?: string) => Promise<void>;
+const responseExpected = '회의는 오후 세 시에 시작합니다.';
+const responseHash = (text: string) => createHash('sha256').update(text, 'utf8').digest('hex');
 
-async function fixture(adapter: Adapter) {
+async function fixture(adapter: Adapter, responseText?: string) {
   const directory = await mkdtemp(join(tmpdir(), 'evaluation-replay-'));
   let repository = openRepository(adapter, directory);
   const artifacts = new FileArtifactStore(join(directory, 'artifacts'));
@@ -29,7 +32,8 @@ async function fixture(adapter: Adapter) {
   const digest = (value: unknown) => digester.digest(asJson(value));
   const specification: EvaluationSample['case'] = { id: `${adapter}-synthetic`, family: 'document_comparison', fixtureId: 'synthetic', backend: adapter, mode: 'auto', variant: 'simple',
     oracle: { expectedFinal: 'complete', completionEligible: true, requiredEvidenceIds: ['source'], originals: [{ id: 'source', sourceId: 'original', lineageId: 'original-lineage', observedAt: 1000 }],
-      facts: { available: true }, finalHypothesis: null, forbiddenEvidenceIds: [], noCompletionBefore: null } };
+      facts: { available: true }, finalHypothesis: null, forbiddenEvidenceIds: [], noCompletionBefore: null,
+      ...(responseText !== undefined ? { response: { kind: 'exact_text' as const, text: responseExpected, sha256: responseHash(responseExpected) } } : {}) } };
   const pins: EvaluationPins = { ...structuredClone(basePins), caseDefinition: digest(specification) };
   const ref = await artifacts.put(new TextEncoder().encode('SYNTHETIC_ORIGINAL_BODY'), { tenantId: actor.tenantId, labels: ['synthetic'], mediaType: 'text/plain' });
   const past = await artifacts.put(new TextEncoder().encode('HISTORICAL_ORIGINAL_BODY'), { tenantId: actor.tenantId, labels: ['synthetic'], mediaType: 'text/plain' });
@@ -39,22 +43,50 @@ async function fixture(adapter: Adapter) {
     assert.equal(result.kind, 'committed');
     const saved = (await repository.get(state.id))!; states.push(saved); return saved;
   };
-  const first = await save(initial('replay-work'), 'created');
+  const start = initial('replay-work');
+  if (responseText !== undefined) {
+    start.goal.criteria = [];
+    start.goal.responseRequirement = { version: 1, requestMessageId: 'response-request', requestTextDigest: responseHash('회의 시간을 알려주세요.'), format: 'text' };
+    const scope = { tenantId: actor.tenantId, principalId: actor.principalId, agentId: 'replay-response-agent', sessionId: 'replay-response-session' };
+    start.conversation = { bindings: [{ id: 'response-binding', tenantId: actor.tenantId, principalId: actor.principalId,
+      channel: 'test', conversationId: 'replay-response', recipientId: actor.principalId, destination: 'local', session: scope }],
+      primaryBindingId: 'response-binding', completionRequiresDelivery: false, result: null,
+      session: { scope,
+        input: { messageId: 'response-request', sequence: 1, digest: responseHash('applied-request') } }, sessionReviewRequired: false };
+  }
+  const first = await save(start, 'created');
   const middle = advance(first); middle.artifacts = [ref, past];
   middle.evidence = [{ id: 'source', tenantId: actor.tenantId, scope: 'fixture', sourceId: 'original', lineageId: 'original-lineage', locator: 'synthetic:original',
     observedAt: 1000, recordedAt: 1001, labels: ['synthetic'], coverage: 'complete', status: 'accepted', supersedes: [], derivedFrom: [],
     facts: { available: true }, artifact: ref }];
   const second = await save(middle, 'evidence');
   const final = advance(second); final.artifacts = [ref]; final.status = 'completed'; final.statusReason = 'verified';
+  const responseRefs: ArtifactRef[] = [];
+  if (responseText !== undefined) {
+    // Recorded receipt fixture only: the actual generic model loop is covered by the separate paired-profile trial.
+    const put = (text: string, mediaType: string) => artifacts.put(new TextEncoder().encode(text), { tenantId: actor.tenantId, labels: ['synthetic'], mediaType });
+    const answer = await put(responseText, 'text/plain'), input = await put('{"kind":"recorded-model-input"}', 'application/json');
+    const reply = await put(JSON.stringify({ kind: 'recorded-model-answer', text: responseText }), 'application/json');
+    responseRefs.push(answer, input, reply); final.artifacts.push(...responseRefs);
+    const call = { ...modelCall('accepted'), purpose: 'agent_turn' as const, semanticVersion: 4 as const,
+      inputArtifact: input, replyArtifact: reply, agentTurnPromptDigest: responseHash('prompt'), finishedAt: final.updatedAt,
+      outcome: 'ok' as const, reason: 'agent_answer_stored', usageStatus: 'reported' as const, inputTokens: 1, outputTokens: 2 };
+    final.modelCalls = [call]; final.budget.used.modelCalls = 1; final.budget.used.tokens = 3;
+    final.generatedAnswer = { id: 'recorded-answer', callId: call.id, goalRevision: final.goal.revision, planRevision: 0, dataGeneration: 0,
+      input: structuredClone(final.conversation!.session!), inputArtifact: input, promptDigest: call.agentTurnPromptDigest,
+      basisDigest: responseHash('recorded-answer-basis'), artifact: answer, evidenceIds: ['source'], observedEvidenceIds: ['source'],
+      assessment: { type: 'model_self_review', verdict: 'satisfied', rationale: 'Recorded claim, not independent fixture truth.', missing: [], counterarguments: [] }, createdAt: final.updatedAt };
+  }
   await save(final, 'completed');
-  const checkpoint = await new ContextRecovery({ state: repository, artifacts, digester, clock: { now: () => states.at(-1)!.updatedAt } }, new ToolContracts([], new AjvSchemas())).restore(first.id, actor);
+  const checkpoint = responseText === undefined ? await new ContextRecovery({ state: repository, artifacts, digester, clock: { now: () => states.at(-1)!.updatedAt } }, new ToolContracts([], new AjvSchemas())).restore(first.id, actor) : null;
 
-  const makeBundle = async (checkpointRef: ArtifactRef | null = checkpoint.artifact): Promise<EvaluationReplayBundle> => {
+  const makeBundle = async (checkpointRef: ArtifactRef | null = checkpoint?.artifact ?? null): Promise<EvaluationReplayBundle> => {
     const current = (await repository.get(first.id))!;
     const events = await repository.events(first.id, 0); const deliveries = await repository.deliveries(first.id);
     const sample: EvaluationSample = { case: structuredClone(specification),
       observations: states.map(state => ({ at: state.updatedAt, stage: 'committed', state: structuredClone(state),
-        eventTypes: events.filter(event => event.revision === state.revision).map(event => event.type), deliveries: [] })),
+        eventTypes: events.filter(event => event.revision === state.revision).map(event => event.type), deliveries: [],
+        ...(state.generatedAnswer && responseText !== undefined ? { response: { artifact: structuredClone(state.generatedAnswer.artifact), text: responseText } } : {}) })),
       entries: [], finalControl: 'complete', startedAt: first.createdAt, finishedAt: current.updatedAt, wallElapsedMs: 1, runError: null };
     const score = scoreEvaluation(sample);
     const receipts: EvaluationReplayBundle['receipts'] = [];
@@ -64,7 +96,7 @@ async function fixture(adapter: Adapter) {
     }
     return { version: 1, workId: first.id, pins: structuredClone(pins), sample, sampleDigest: digest(sample), score, scoreDigest: digest(score),
       finalStateDigest: digest(current), eventsDigest: digest(events), deliveriesDigest: digest(deliveries), receipts,
-      artifacts: [ref, past, ...(checkpointRef ? [checkpointRef] : [])], checkpoint: checkpointRef };
+      artifacts: [ref, past, ...responseRefs, ...(checkpointRef ? [checkpointRef] : [])], checkpoint: checkpointRef };
   };
   let storeHook: StoreHook | null = null;
   let artifactHook: ((ref: ArtifactRef) => Promise<void>) | null = null;
@@ -99,6 +131,45 @@ async function fixture(adapter: Adapter) {
     async close() { await repository.close(); await rm(directory, { recursive: true, force: true }); },
   };
 }
+
+test('response replay: fixed answer and captured original survive repository reopen without model calls or writes', async () => {
+  const f = await fixture('sqlite', responseExpected);
+  try {
+    const bundle = await f.makeBundle(); assert.equal(bundle.score.contractPassed, true, JSON.stringify(bundle.score.failures));
+    assert.equal(bundle.score.goalCompleted, true); assert.equal(bundle.checkpoint, null, 'this receipt fixture does not claim session compact recovery');
+    const original = structuredClone(bundle), answer = bundle.sample.observations.at(-1)!.response; assert.ok(answer);
+    assert.equal(answer.text, responseExpected); assert.equal(answer.artifact.sha256, responseHash(responseExpected));
+    await f.reopen();
+    const result = await replayEvaluation(bundle, f.pins, actor, f.services);
+    assert.equal(result.available, true, JSON.stringify(result)); assert.deepEqual(result.score, bundle.score);
+    assert.equal(result.checkedReceipts, 3); assert.equal(result.checkedArtifacts, 5);
+    assert.deepEqual(bundle, original); await f.assertUntouched();
+  } finally { await f.close(); }
+});
+
+test('response replay: authentic wrong answers remain failures while altered text, references and oracle hashes cannot replace originals', async () => {
+  const wrongText = '회의는 오후 네 시에 시작합니다.', f = await fixture('sqlite', wrongText);
+  try {
+    const bundle = await f.makeBundle();
+    assert.equal(bundle.score.contractPassed, false); assert.equal(bundle.score.goalCompleted, false);
+    assert.ok(bundle.score.failures.some(value => value.includes('response_original_invalid')));
+    assert.equal(bundle.sample.observations.at(-1)!.state.generatedAnswer!.assessment.verdict, 'satisfied');
+    const result = await replayEvaluation(bundle, f.pins, actor, f.services);
+    assert.equal(result.available, true, JSON.stringify(result)); assert.deepEqual(result.score, bundle.score, 'replay authenticates a failed trial without converting it to success');
+    const altered = structuredClone(bundle); altered.sample.observations.at(-1)!.response!.text = responseExpected; f.rehash(altered);
+    assert.equal(Buffer.byteLength(wrongText), Buffer.byteLength(responseExpected));
+    assert.deepEqual((await replayEvaluation(altered, f.pins, actor, f.services)).failures, ['replay_response_original_changed']);
+    const wrongRef = structuredClone(bundle); wrongRef.sample.observations.at(-1)!.response!.artifact = structuredClone(f.past); f.rehash(wrongRef);
+    assert.deepEqual((await replayEvaluation(wrongRef, f.pins, actor, f.services)).failures, ['replay_response_original_changed']);
+    const wrongOracle = structuredClone(bundle); wrongOracle.sample.case.oracle.response!.sha256 = '0'.repeat(64);
+    wrongOracle.pins.caseDefinition = f.digest(wrongOracle.sample.case); f.rehash(wrongOracle);
+    assert.deepEqual((await replayEvaluation(wrongOracle, wrongOracle.pins, actor, f.services)).failures, ['replay_response_oracle_invalid']);
+    const unknownField = structuredClone(bundle);
+    Object.assign(unknownField.sample.observations.at(-1)!.response!, { reviewed: true }); f.rehash(unknownField);
+    assert.deepEqual((await replayEvaluation(unknownField, f.pins, actor, f.services)).failures, ['replay_invalid_or_unavailable']);
+    await f.assertUntouched();
+  } finally { await f.close(); }
+});
 
 for (const adapter of adapters) {
   test(`${adapter}: readonly evaluation replay authenticates full receipt history, old originals and the current resume packet after reopen`, async () => {
@@ -249,6 +320,7 @@ for (const adapter of adapters) {
   test(`${adapter}: foreign, body-altered and lost resume packets fail without regeneration`, async () => {
     const f = await fixture(adapter);
     try {
+      assert.ok(f.checkpoint);
       for (const change of [(packet: typeof f.checkpoint.packet) => { packet.workId = 'foreign'; },
         (packet: typeof f.checkpoint.packet) => { packet.context.goal.description = 'untrusted changed goal'; },
         (packet: typeof f.checkpoint.packet) => { packet.runtime.budget.limits.tokens++; }]) {

@@ -1,0 +1,66 @@
+TAP version 13
+# Subtest: two independent SQLite deployments use the ordinary model/tool loop for a question and an optional cited reply without creating response duties or copying memory
+ok 1 - two independent SQLite deployments use the ordinary model/tool loop for a question and an optional cited reply without creating response duties or copying memory
+  ---
+  duration_ms: 6062.450333
+  type: 'test'
+  ...
+# Subtest: reversed requester and responder roles accept and answer a request through independent profiles, wait without model work, and complete only after requester confirmation
+ok 2 - reversed requester and responder roles accept and answer a request through independent profiles, wait without model work, and complete only after requester confirmation
+  ---
+  duration_ms: 63803.537459
+  type: 'test'
+  ...
+# Subtest: withdrawn foreign-source scope invalidates the retained discussion proof and a new session sees no protected post without changing the owner original
+ok 3 - withdrawn foreign-source scope invalidates the retained discussion proof and a new session sees no protected post without changing the owner original
+  ---
+  duration_ms: 3510.358083
+  type: 'test'
+  ...
+# Subtest: ordinary board reads of unchanged content hit the default no-progress limit despite different task IDs
+ok 4 - ordinary board reads of unchanged content hit the default no-progress limit despite different task IDs
+  ---
+  duration_ms: 3550.596417
+  type: 'test'
+  ...
+# Subtest: board-mission composition: actual request and event proofs stay current independently; exact ACK, board read, withdrawal and reopen preserve the other provider
+ok 5 - board-mission composition: actual request and event proofs stay current independently; exact ACK, board read, withdrawal and reopen preserve the other provider
+  ---
+  duration_ms: 2807.40425
+  type: 'test'
+  ...
+# Subtest: board-mission composition: one ordinary model work reads its mission and publishes a cited board reply before completion without merging original stores
+not ok 6 - board-mission composition: one ordinary model work reads its mission and publishes a cited board reply before completion without merging original stores
+  ---
+  duration_ms: 8414.055209
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/board-mission-composition.test.js:126:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'blocked'
+    - 'complete'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'complete'
+  actual: 'blocked'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/board-mission-composition.test.js:195:12)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Composition tick entry: {"workId":"work-03936a611156c14917b32a93b2f41e2e99953d95290309de61470e7f5ca4bcd6","revision":5,"status":"ready","attempts":[],"reconciliationIds":[],"subscriptionProviders":["board","mission"],"notificationProviders":["mission"]}
+# Composition tick result: {"kind":"ran","control":{"kind":"blocked","reason":"no_progress_limit"},"state":{"workId":"work-03936a611156c14917b32a93b2f41e2e99953d95290309de61470e7f5ca4bcd6","revision":74,"status":"blocked","attempts":[{"id":"attempt-551ff720-5154-41cc-96a5-f42ce22275a6","toolId":"mission.events","status":"succeeded","provider":null,"operationId":null,"receiptArtifactId":null},{"id":"attempt-f5276ca1-6a0c-47ed-b637-3b6d71368bf0","toolId":"mission.events","status":"succeeded","provider":null,"operationId":null,"receiptArtifactId":null},{"id":"attempt-3a26c47f-1287-4a1e-b27d-a5c5edbfc5a0","toolId":"core.board.read","status":"succeeded","provider":null,"operationId":null,"receiptArtifactId":null},{"id":"attempt-8f3f643f-c302-4223-89a7-937696ccfcbb","toolId":"deployment.document.read","status":"succeeded","provider":null,"operationId":null,"receiptArtifactId":null},{"id":"attempt-420446c8-b5eb-45a7-941a-c84cd46375a9","toolId":"core.board.publish","status":"succeeded","provider":"board","operationId":"board:97b116639e0a3e1dc8ebfb97103576ffa51f74902e1aa61b45225b48a539ee79","receiptArtifactId":"73df8b44b144f2658a87d85a654180f780ed915d349f6b190c41380a355ee50c"},{"id":"attempt-e587f1b9-0268-41e8-986e-e965c48a2014","toolId":"mission.events","status":"succeeded","provider":null,"operationId":null,"receiptArtifactId":null}],"reconciliationIds":[],"subscriptionProviders":["board","mission"],"notificationProviders":[]},"statusReason":"no_progress_limit","progress":{"schemaVersion":1,"goalRevision":1,"policy":{"maxUnproductiveSteps":3,"maxRepeatedFailures":3,"retryWindowMs":30000,"backoffMs":100,"maxTrackedEntries":10000},"processed":["model:model-26cf9390-8852-4383-afb3-df7606b7e3e6:settled","attempt:attempt-551ff720-5154-41cc-96a5-f42ce22275a6:settled","model:model-fdd4336c-4548-40ae-83d1-4f6e33e005bd:settled","attempt:attempt-f5276ca1-6a0c-47ed-b637-3b6d71368bf0:settled","model:model-894e0572-51bb-457f-9e35-e30717a3ac91:settled","attempt:attempt-3a26c47f-1287-4a1e-b27d-a5c5edbfc5a0:settled","model:model-f4765026-71d0-4104-8935-b0095e3d605d:settled","attempt:attempt-8f3f643f-c302-4223-89a7-937696ccfcbb:settled","model:model-360b6b84-3198-423a-804e-b8f826589976:settled","attempt:attempt-420446c8-b5eb-45a7-941a-c84cd46375a9:settled","model:model-1f348956-d718-43f8-8df7-84db1781d2e0:settled","attempt:attempt-e587f1b9-0268-41e8-986e-e965c48a2014:settled","model:model-16efbed0-1642-44e9-96f6-4ff071dd0933:settled"],"knownKeys":["obligation:73376de22f264c620dbeb612a6de6f1c93abde16d65474113231e2f7b64abd2d","preparation:mission-rule:2bfdccc4eafcd7a7dc0c7b3154dd11a6e8134265c50a26291d15cf745d03a08b","preparation:mission-event:d45a0a593f9e8db0ea08bae36e2391f4cf4f5300ed38e07b73dd83b08a5f677a","preparation:board-access:17619bc791f58c5dd281b11913631024fc6ed0996c672080df7e81172cff5caf","preparation:board-post:b3336c04f0b0f8beacc8d5d1934322f664b0de56838c535a205a35a83e8a3a2d","evidence:8f310754ec89487d3062dbc1d2c2c33454c2c443cf7c3748141bc2b4f213c9fb","preparation:board-command:59c41518ef975b13fc9b600cfafaebb2ad6d1d81a4dd6b2a4d269a5111e1ed73"],"consecutiveUnproductive":3,"productiveSteps":6,"unproductiveSteps":7,"failures":[],"saturated":false},"budget":{"limits":{"toolCalls":24,"modelCalls":24,"tokens":2000000,"replans":20,"wallTimeMs":1800000},"used":{"toolCalls":6,"modelCalls":7,"tokens":1960,"replans":6,"unmeasuredModelCalls":0},"reservedToolCalls":0,"reservedModelCalls":0,"reservedTokens":0},"attempts":[{"id":"attempt-551ff720-5154-41cc-96a5-f42ce22275a6","taskId":"mission-read-9","toolId":"mission.events","status":"succeeded","adopted":true,"error":null,"resultArtifactId":"20f57d90afd902497cf96e432aea3a32adcfef190b2e632354ec5b87c5147964"},{"id":"attempt-f5276ca1-6a0c-47ed-b637-3b6d71368bf0","taskId":"mission-read-18","toolId":"mission.events","status":"succeeded","adopted":true,"error":null,"resultArtifactId":"a5f01d8c5a36bdef7d73d415ae0ef59a54dae4e21f3a96f3192841651149b6e4"},{"id":"attempt-3a26c47f-1287-4a1e-b27d-a5c5edbfc5a0","taskId":"step-28-1","toolId":"core.board.read","status":"succeeded","adopted":true,"error":null,"resultArtifactId":"f8ab88b10946c8bc53e94e4c0cc145e1bca9118a28d454055628590cc744805c"},{"id":"attempt-8f3f643f-c302-4223-89a7-937696ccfcbb","taskId":"step-37-1","toolId":"deployment.document.read","status":"succeeded","adopted":true,"error":null,"resultArtifactId":"51aaed2eb6cd3415b5aca11c941ae8ae178172e1621082f20551e26c9149ee0d"},{"id":"attempt-420446c8-b5eb-45a7-941a-c84cd46375a9","taskId":"step-46-1","toolId":"core.board.publish","status":"succeeded","adopted":true,"error":null,"resultArtifactId":"2f9fe424f28c613b08d6dd226a6152027ba4d979b540575c92bac14c11e7e6ca"},{"id":"attempt-e587f1b9-0268-41e8-986e-e965c48a2014","taskId":"mission-read-56","toolId":"mission.events","status":"succeeded","adopted":true,"error":null,"resultArtifactId":"94020d253ac7281fdb47b5aa95af28d3500e555d41b5c32785d9271c1bd408ca"}],"modelDecisions":[{"id":"model-26cf9390-8852-4383-afb3-df7606b7e3e6","purpose":"agent_turn","status":"accepted","reason":"plan","outcome":"ok","baseStateRevision":9,"inputArtifactId":"c209cfdd2aa5fb10b7f1b0f2d053ad2bef9597e3ad64b565d12853b40d3a8fdb","replyArtifactId":"b24f3793b5f87205cc2e34b7843dd8cd20b1a49b1f12f4ea8281f2563b1fd37d","decision":"plan","tasks":[{"id":"mission-read-9","toolId":"mission.events","effect":"read","dependsOn":[],"maxAttempts":1}]},{"id":"model-fdd4336c-4548-40ae-83d1-4f6e33e005bd","purpose":"agent_turn","status":"accepted","reason":"plan","outcome":"ok","baseStateRevision":18,"inputArtifactId":"d8588fb02846d422c107608242b7289974f805ab349771519fc78eadfaeac0cd","replyArtifactId":"e22c60e7e1bc3340140e2e07b6901fb3d8034b02a84aab9d0621118e61d14e37","decision":"plan","tasks":[{"id":"mission-read-18","toolId":"mission.events","effect":"read","dependsOn":[],"maxAttempts":1}]},{"id":"model-894e0572-51bb-457f-9e35-e30717a3ac91","purpose":"agent_turn","status":"accepted","reason":"plan","outcome":"ok","baseStateRevision":28,"inputArtifactId":"04a871cdfe51456bffa38c3d5c74f278a4bb71d5d3cc12732c9d9ca92564fa33","replyArtifactId":"a036eb5c53fda9771ad0887b8df69787775bf40d4c3856f2ec03ddc614da6265","decision":"plan","tasks":[{"id":"step-28-1","toolId":"core.board.read","effect":"read","dependsOn":[],"maxAttempts":1}]},{"id":"model-f4765026-71d0-4104-8935-b0095e3d605d","purpose":"agent_turn","status":"accepted","reason":"plan","outcome":"ok","baseStateRevision":37,"inputArtifactId":"39d5045a7469bcb3332ad441db87af9f0d365e30d1117911aa442699203171c4","replyArtifactId":"74e7e88fb755b01f3b7c901162bd3ab212909c7503b6ebf2770fd3421e339301","decision":"plan","tasks":[{"id":"step-37-1","toolId":"deployment.document.read","effect":"read","dependsOn":[],"maxAttempts":1}]},{"id":"model-360b6b84-3198-423a-804e-b8f826589976","purpose":"agent_turn","status":"accepted","reason":"plan","outcome":"ok","baseStateRevision":46,"inputArtifactId":"ce3a2d398cb3a00e6fe85a661741c41c5aa456afffd10ab7c20c22af1bdcf904","replyArtifactId":"da0e9ec354de8e8e918f531afc40407a99854ea1dcf7a607cea916ee06eb5884","decision":"plan","tasks":[{"id":"step-46-1","toolId":"core.board.publish","effect":"write","dependsOn":[],"maxAttempts":1}]},{"id":"model-1f348956-d718-43f8-8df7-84db1781d2e0","purpose":"agent_turn","status":"accepted","reason":"plan","outcome":"ok","baseStateRevision":56,"inputArtifactId":"194a7c33de58a0a2ba1692fa2bde8ea31ac30f42c2e834005e7af5ee6a5f0ad0","replyArtifactId":"2c0ead88eee25331ab1139c8ea33afca8ab84dffe5585ea5ea02db8e52802c9e","decision":"plan","tasks":[{"id":"mission-read-56","toolId":"mission.events","effect":"read","dependsOn":[],"maxAttempts":1}]},{"id":"model-16efbed0-1642-44e9-96f6-4ff071dd0933","purpose":"agent_turn","status":"accepted","reason":"plan","outcome":"ok","baseStateRevision":65,"inputArtifactId":"f1ec2ae5cbcedfe61b258cfa1543bc1c9b3443f22ed6c1a5bc9d64c9b4f44675","replyArtifactId":"4d8f1dfd9ee382ef341204f83d4a5aa29f55dba38b4dcb001a7a529a75c57622","decision":"plan","tasks":[{"id":"mission-read-65","toolId":"mission.events","effect":"read","dependsOn":[],"maxAttempts":1}]}]}
+1..6
+# tests 6
+# suites 0
+# pass 5
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 88395.848417

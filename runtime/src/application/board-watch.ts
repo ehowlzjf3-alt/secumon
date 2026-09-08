@@ -56,8 +56,8 @@ export class BoardWatch {
   }
   async current(state: WorkState): Promise<boolean> {
     try {
-      const subscriptions = ExternalSubscriptionsSchema.parse(state.subscriptions ?? []).filter(value => value.provider === 'board'),
-        notices = ExternalNotificationsSchema.parse(state.notifications ?? []).filter(value => value.provider === 'board');
+      const allSubscriptions = ExternalSubscriptionsSchema.parse(state.subscriptions ?? []), allNotices = ExternalNotificationsSchema.parse(state.notifications ?? []);
+      const subscriptions = allSubscriptions.filter(value => value.provider === 'board'), notices = allNotices.filter(value => value.provider === 'board');
       if (notices.some(notice => !subscriptions.some(value => value.id === notice.subscriptionId && value.status === 'active'))) return false;
       for (const subscription of subscriptions.filter(value => value.status === 'active')) {
         const own = notices.filter(value => value.subscriptionId === subscription.id);
@@ -73,7 +73,7 @@ export class BoardWatch {
       }
       const latest = await this.state(state.id);
       return latest.goal.revision === state.goal.revision && dataGeneration(latest) === dataGeneration(state) && this.digest(latest.policy) === this.digest(state.policy) &&
-        this.digest(latest.subscriptions ?? []) === this.digest(subscriptions) && this.digest(latest.notifications ?? []) === this.digest(notices);
+        this.digest(latest.subscriptions ?? []) === this.digest(allSubscriptions) && this.digest(latest.notifications ?? []) === this.digest(allNotices);
     } catch { return false; }
   }
   async register(workId: string, resourceId: string): Promise<WorkState> {

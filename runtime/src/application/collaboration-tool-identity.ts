@@ -1,6 +1,6 @@
 import type { Tool } from './ports.js';
 
-type Kind = 'archive-search' | 'archive-get' | 'board-read' | 'board-requests' | 'board-command' | 'budget' | 'a2a' | 'mission';
+type Kind = 'archive-search' | 'archive-get' | 'board-read' | 'board-requests' | 'board-command' | 'budget' | 'a2a' | 'mission' | 'peer';
 const identities = new WeakMap<Tool, Kind>();
 
 /** Native adapter identity is not inferred from serialized metadata or model-provided output. */

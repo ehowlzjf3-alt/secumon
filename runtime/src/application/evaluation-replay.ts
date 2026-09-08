@@ -31,8 +31,10 @@ const sampleSchema: z.ZodType<EvaluationSample> = z.strictObject({
     oracle: z.strictObject({ expectedFinal: z.enum(['complete', 'blocked', 'cancelled', 'wait', 'unchanged']), completionEligible: z.boolean(),
       requiredEvidenceIds: z.array(id).max(10000), originals: z.array(z.strictObject({ id, sourceId: id, lineageId: id, observedAt: count })).max(10000),
       facts: z.record(z.string(), scalar), finalHypothesis: z.strictObject({ id, status: z.enum(['supported', 'refuted', 'inconclusive']) }).nullable(),
-      forbiddenEvidenceIds: z.array(id).max(10000), noCompletionBefore: count.nullable() }) }),
-  observations: z.array(z.strictObject({ at: count, stage: id, state: WorkStateSchema, eventTypes: z.array(id).max(10000), deliveries: z.array(DeliverySchema).max(10000) })).min(1).max(10000),
+      forbiddenEvidenceIds: z.array(id).max(10000), noCompletionBefore: count.nullable(),
+      response: z.strictObject({ kind: z.literal('exact_text'), text: z.string().min(1).max(256 * 1024), sha256: hash }).optional() }) }),
+  observations: z.array(z.strictObject({ at: count, stage: id, state: WorkStateSchema, eventTypes: z.array(id).max(10000), deliveries: z.array(DeliverySchema).max(10000),
+    response: z.strictObject({ artifact: ArtifactSchema, text: z.string().max(256 * 1024) }).optional() })).min(1).max(10000),
   entries: z.array(z.strictObject({ kind: z.enum(['model', 'tool', 'send', 'lookup']), at: count, id, sourceKey: z.string().max(100000).nullable() })).max(100000),
   finalControl: id, startedAt: count, finishedAt: count, wallElapsedMs: z.number().finite().nonnegative(), runError: z.string().max(100000).nullable(),
 });
@@ -59,6 +61,13 @@ export async function replayEvaluation(bundle: EvaluationReplayBundle, expectedP
     if (!equal(input.pins, expected)) fail('replay_pins_mismatch');
     if (digest(input.sample.case) !== expected.caseDefinition) fail('replay_case_definition_mismatch');
     if (digest(input.sample) !== input.sampleDigest || digest(input.score) !== input.scoreDigest) fail('replay_payload_digest_mismatch');
+    const responseOracle = input.sample.case.oracle.response;
+    if (responseOracle) {
+      const bytes = new TextEncoder().encode(responseOracle.text);
+      const hash = await crypto.subtle.digest('SHA-256', new Uint8Array(bytes).buffer);
+      const sha256 = Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('');
+      if (!responseOracle.text.trim() || bytes.byteLength > 256 * 1024 || sha256 !== responseOracle.sha256) fail('replay_response_oracle_invalid');
+    }
     const score = scoreEvaluation(input.sample);
     if (!equal(score, input.score)) fail('replay_score_mismatch');
 
@@ -179,7 +188,24 @@ export async function replayEvaluation(bundle: EvaluationReplayBundle, expectedP
     const listed = new Map<string, ArtifactRef>();
     for (const ref of input.artifacts) { if (listed.has(ref.id)) fail('replay_references_incomplete'); listed.set(ref.id, ref); }
     if (listed.size !== refs.size || [...refs.values()].some(ref => !equal(ref, listed.get(ref.id)))) fail('replay_references_incomplete');
-    for (const ref of refs.values()) { await read(ref); checkedArtifacts++; }
+    const responses = new Map<string, string>();
+    for (const observation of input.sample.observations) if (observation.response) {
+      const response = observation.response, prior = responses.get(response.artifact.id);
+      if (!equal(response.artifact, observation.state.generatedAnswer?.artifact) || response.artifact.mediaType !== 'text/plain' ||
+        response.artifact.byteLength > 256 * 1024 || new TextEncoder().encode(response.text).byteLength !== response.artifact.byteLength ||
+        prior !== undefined && prior !== response.text) fail('replay_response_original_changed');
+      responses.set(response.artifact.id, response.text);
+    }
+    for (const ref of refs.values()) {
+      const bytes = await read(ref); checkedArtifacts++;
+      const response = responses.get(ref.id);
+      if (response !== undefined) {
+        let text: string;
+        try { text = new TextDecoder('utf-8', { fatal: true }).decode(bytes); }
+        catch { return fail('replay_response_original_changed'); }
+        if (text !== response) fail('replay_response_original_changed');
+      }
+    }
     await readReceipts(false);
     await readHistory();
     await readCanonical();

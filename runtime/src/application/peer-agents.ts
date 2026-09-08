@@ -9,6 +9,7 @@ import { asJson, taskDigest } from './plan-validator.js';
 import { frozen } from './resource-contracts.js';
 import { transact } from './work-transactions.js';
 import { readGeneratedAnswerArtifact } from './generated-answer.js';
+import { markCollaborationTool } from './collaboration-tool-identity.js';
 import { PeerIdentitySchema, PeerReplySchema, PeerRequestSchema, PeerReviewSchema, PeerTicketSchema,
   type PeerAgent } from './peer-contracts.js';
 
@@ -97,7 +98,7 @@ export class PeerAgents {
   }
   private tool(toolId: typeof PEER_TOOL_IDS[number]): Tool {
     const inputSchema = toolId === PEER_TOOL_IDS[0] ? ConsultSchema : ResumeSchema;
-    return {
+    return markCollaborationTool({
       definition: { provider: 'core', id: toolId, version: '1', effect: 'read', destination: 'local', labels: [], resultValidation: 'artifact-proof-v1',
         description: toolId === PEER_TOOL_IDS[0]
           ? `Ask a registered peer using its own read-only work budget. Review a current hypothesis in separate context. Replies are assessments, never independent evidence; use hypotheses and discriminating tasks to evaluate them. Registered peers: ${JSON.stringify([...this.#peers].map(([peerId, peer]) => ({ peerId, role: peer.identity.role })))}`
@@ -174,7 +175,7 @@ export class PeerAgents {
             await peer.current(record.request, record.reply);
         } catch { return false; }
       },
-    };
+    }, 'peer');
   }
 }
 export function createPeerTools(services: RuntimeServices, peers: ReadonlyMap<string, PeerAgent>, agentId: string): Tool[] {

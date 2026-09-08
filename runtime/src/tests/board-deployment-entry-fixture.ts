@@ -20,6 +20,7 @@ import { StructuredAgentTurnAdapter } from '../infrastructure/structured-agent-t
 import { openAgentTurnProfile, type AgentTurnProfile } from '../presentation/agent-turn-profile.js';
 import { createLocalHostBoard } from '../presentation/host-board.js';
 import type { AgentExecutionHost } from '../presentation/host-tools.js';
+import type { HostMissionRegistration } from '../presentation/host-missions.js';
 
 export const BOARD = 'shared-discussion', ENTITY = 'delivery-record', TENANT = 'board-deployment';
 export const SOURCE_TOOL = 'deployment.document.read';
@@ -170,13 +171,16 @@ function nextTurn(packet: ContextPacket, spec: Spec): AgentTurnResult {
   return command(BOARD_REQUEST_TOOLS[2], { requestId: request.id, postId: published.postId! });
 }
 
-export function boardDeploymentFixture(t: TestContext) {
+export function boardDeploymentFixture(t: TestContext, options: {
+  missions?: HostMissionRegistration;
+  turn?: (input: AgentTurnInput, which: 0 | 1) => AgentTurnResult | undefined;
+} = {}) {
   const base = realpathSync(mkdtempSync(join(tmpdir(), 'board-deployment-entry-'))), identityRegistryDirectory = join(base, 'identity-registry');
   const profiles = new FileAgentProfileStore(engine), registry = new BoardWorkSourceRegistry();
   const ready = specs.map(spec => {
     const value = profiles.initialize(join(base, spec.key), { name: spec.principalId, purpose: spec.purpose, stateBackend: 'sqlite', personalMemory: 'sqlite' });
     writeFileSync(join(value.root, 'config.json'), JSON.stringify({ ...value.config, model: { profile: PROFILE }, skills: { mode: 'off' },
-      features: { board: true, archive: false, peers: false, missions: false, a2a: false } }), { mode: 0o600 });
+      features: { board: true, archive: false, peers: false, missions: options.missions !== undefined, a2a: false } }), { mode: 0o600 });
     return value;
   });
   const actors: BoardActor[] = specs.map(spec => ({ tenantId: TENANT, principalId: spec.principalId,
@@ -194,6 +198,7 @@ export function boardDeploymentFixture(t: TestContext) {
     const spec = specs[which], observed: Observed = { inputs: [], reads: [], modelCloses: 0, toolCloses: 0 };
     const identity = { provider: 'local-fixture', model: 'board-entry', revision: '1' };
     const host: AgentExecutionHost = { identityRegistryDirectory,
+      ...(options.missions ? { missions: options.missions } : {}),
       board: createLocalHostBoard({ backend: 'sqlite', path: boardPath, allowWrites: true, allowedTools: boardTools,
         actors: { current: async () => structuredClone(actors[which]!) }, authority: { resolve: async owner => {
           const actor = actors.find(value => value.tenantId === owner.tenantId && value.principalId === owner.principalId);
@@ -210,7 +215,7 @@ export function boardDeploymentFixture(t: TestContext) {
           async invoke(request) {
             observed.inputs.push(structuredClone(request.input)); const id = request.input.packet.workId;
             const count = (calls.get(id) ?? 0) + 1; calls.set(id, count); assert.ok(count <= 16, 'finite board tool loop');
-            const result = nextTurn(request.input.packet, spec);
+            const result = options.turn?.(request.input, which) ?? nextTurn(request.input.packet, spec);
             return { provider: identity.provider, model: identity.model, finish: 'stop', content: JSON.stringify(result), usage: { inputTokens: 200, outputTokens: 80 } };
           },
         });

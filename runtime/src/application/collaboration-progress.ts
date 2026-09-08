@@ -8,6 +8,7 @@ import { toolAllowed } from './tool-contracts.js';
 import { budgetProgressKeys } from './budget-progress.js';
 import { a2aProgressKeys } from './a2a-progress.js';
 import { missionProgressKeys } from './mission-progress.js';
+import { peerProgressKeys } from './peer-progress.js';
 
 const archiveCard = ArchiveDocumentSchema.omit({ body: true });
 const search = z.strictObject({ kind: z.literal('archive_reference'), provider: z.string(), documents: z.array(archiveCard).max(50), truncated: z.boolean() });
@@ -31,6 +32,7 @@ export function collaborationProgressKeys(state: WorkState, task: TaskSpec, resu
     return [key('board-command', { toolId: task.toolId, content: stable })];
   }
   if (task.effect !== 'read' || result.effectState !== 'none') return [];
+  if (kind === 'peer') return peerProgressKeys(state, task, result, tool, key);
   if (kind === 'mission') return tool.definition.provider === 'mission' && tool.definition.destination === 'local' ? missionProgressKeys(task, result, key) : [];
   if (kind === 'budget') return budgetProgressKeys(state, task, result, key);
   if (kind === 'archive-search' || kind === 'archive-get') {

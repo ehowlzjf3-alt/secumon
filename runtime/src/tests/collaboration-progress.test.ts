@@ -9,7 +9,7 @@ import { asJson } from '../application/plan-validator.js';
 import { Sha256Digester } from '../infrastructure/digest.js';
 import { artifact, attempt, initial } from './state-conformance-helpers.js';
 
-type Kind = Exclude<Parameters<typeof markCollaborationTool>[1], 'budget' | 'a2a' | 'mission'>;
+type Kind = Exclude<Parameters<typeof markCollaborationTool>[1], 'budget' | 'a2a' | 'mission' | 'peer'>;
 const digester = new Sha256Digester();
 const card = { id: 'case-1', title: 'Previous case', path: 'db://cases/1', sourceVersion: 'original-v1', revision: 1, status: 'active' as const };
 const body = 'The previous deployment failed.';

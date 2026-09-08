@@ -19,6 +19,8 @@ export interface EvaluationCase {
     finalHypothesis: { id: string; status: 'supported' | 'refuted' | 'inconclusive' } | null;
     forbiddenEvidenceIds: string[];
     noCompletionBefore: number | null;
+    /** Fixed fixture answer and its UTF-8 SHA-256, never derived from the observed model output. */
+    response?: { kind: 'exact_text'; text: string; sha256: string } | undefined;
   };
 }
 export interface EvaluationEntry {
@@ -33,6 +35,8 @@ export interface EvaluationObservation {
   state: WorkState;
   eventTypes: string[];
   deliveries: Delivery[];
+  /** Original stored answer bytes decoded by the collector, alongside their actual artifact reference. */
+  response?: { artifact: ArtifactRef; text: string } | undefined;
 }
 export interface EvaluationSample {
   case: EvaluationCase;
