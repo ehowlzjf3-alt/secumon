@@ -1,5 +1,19 @@
 # 구현 이어가기
 
+## CHECKPOINT 387 — 설치형 자동 최초 pin과 원 초기화 복구
+
+2026-09-08 · checkpoint387. 검증된 설치 release에서 새 담당의 최초 엔진을 자동 고정하고, 원 operation·ID·pin을 유지하는 중단 복구를 연결했다. 신규20개·관련79개, 합계99개가 같은 최종 build2에서 통과했다. 빌드·코어 타입 exit0, 계층199/위반0, 최종2,403파일 대조 일치다.
+
+[결과](chapters/C10-initial-pin-result.md) · [사용법](chapters/C10-initial-pin-usage.md) · [체크포인트](../runtime/evidence/checkpoint387.json)
+
+다음은 [자동 최초 pin 계획](chapters/C10-initial-pin-plan.md)의 npm/개발 패키지에서 검증 가능한 호스트 소유 release를 만들고 그 설치본을 실제 실행하는 연결이다. 기존 bundle/install/register와 고정 CLI 전달을 재사용한다. lock 파일 부재와 의존성의 실제 설치 위치를 구분하고, 원 tgz·상위 의존성·링크형 배치를 자동 지원한다고 가정하지 않는다. 기존 무핀 담당·clone·restore는 새 담당으로 재분류하지 않는다.
+
+저장 schema 이행·미확정 외부 효과·C09 종료/저널/이력 비용·C05 권한 재허용 완주·C06 기억 HTTP/권한/브라우저·현재 Linux/native Windows/실제PG/사내 연동·운영/최종통합은 남는다. 실제 모델/API 시험 중단과 외부 서비스 연결0을 유지하며 전체 C10/goal은 미완료다. 활성 build/test는 없다.
+
+공통 메인 프롬프트는 agent-turn-prompt.ts에 구현돼 StructuredAgentTurnAdapter에 연결되어 있다. 실제 모델의 지침 준수·추론·응답 품질은 미검증이다.
+
+아래 checkpoint386 이하는 당시 기록이다.
+
 ## CHECKPOINT 386 — 새 엔진 옵션 전달과 compact 문맥 유지
 
 2026-09-08 · checkpoint386. 고정 CLI 전달 형식과 실제 compact 세션의 설치 엔진 전환을 구현·로컬 검증했다. 신규4개·관련55개, 합계59개 통과다. 큰 A/B 및 회귀는 build1, 시험 격리만 보완한3개 재시험은 build2이므로 최종 소스 전체59개 재실행으로 표시하지 않는다. build2 exit0·최종2388파일 일치, core exit0·계층199/위반0은 제품 동일 build1 기록이다.

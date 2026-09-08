@@ -44,15 +44,17 @@ for (const backend of ['sqlite', 'file-journal'] as const) {
       });
       const releases = installed; assert.ok(releases);
       const root = join(base, 'agent'), registry = join(base, 'host-identities');
-      const profiles = new FileAgentProfileStore(releases.a.directory);
+      const profileOptions = { engineRegistryDirectory: join(base, 'engine-registry') };
+      const profiles = new FileAgentProfileStore(releases.a.directory, profileOptions);
       const profile = profiles.initialize(root, { stateBackend: backend, personalMemory: backend === 'file-journal' ? 'documents' : 'sqlite' });
       async function open(directory = root, selected = profiles) {
         const store = await openAgentStores(selected, directory, undefined, { identityRegistryDirectory: registry }); active.add(store); return store;
       }
       async function close(store: Awaited<ReturnType<typeof open>>) { await store.close(); active.delete(store); }
       await close(await open());
-      const first = pinAgentEngine(profiles, root, releases.a.directory, { offline: true, expectedPrevious: null });
-      assert.equal(first.applied, true); assert.equal(first.pin.sequence, 1);
+      const automatic = readAgentEnginePin(root); assert.ok(automatic); assert.equal(automatic.releaseDigest, releases.a.release.digest);
+      const first = pinAgentEngine(profiles, root, releases.a.directory, { offline: true, expectedPrevious: automatic.releaseDigest });
+      assert.equal(first.applied, false); assert.equal(first.pin.sequence, 1); assert.deepEqual(first.pin, automatic);
       const originalPin = readAgentEnginePin(root), initialTree = captureLifecycleTree(root), registryTree = captureLifecycleTree(registry);
       const target = releases.b.directory, previous = releases.a.release.digest;
       const unchanged = (tree = initialTree) => {
@@ -75,7 +77,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) {
 
       const otherRoot = join(base, 'other-agent'); profiles.initialize(otherRoot, { stateBackend: backend });
       await close(await open(otherRoot));
-      pinAgentEngine(profiles, otherRoot, releases.a.directory, { offline: true, expectedPrevious: null });
+      const otherPin = readAgentEnginePin(otherRoot); assert.ok(otherPin); assert.equal(otherPin.releaseDigest, releases.a.release.digest);
       const foreign = backupAgent(profiles, otherRoot, join(base, 'foreign-backup'), true);
       const updatedRegistry = captureLifecycleTree(registry), beforeForeign = captureLifecycleTree(root);
       assert.throws(() => pinAgentEngine(profiles, root, target, { offline: true, expectedPrevious: previous, backup: foreign.directory }), /engine_update_backup_stale/);
@@ -120,11 +122,11 @@ for (const backend of ['sqlite', 'file-journal'] as const) {
       assert.equal(updated.pin.agentId, profile.identity.agentId); assert.equal(updated.pin.releaseDigest, releases.b.release.digest);
       assert.deepEqual(dataTree(), beforeUpdate);
       await assert.rejects(open(), /agent_engine_update_required/);
-      await close(await open(root, new FileAgentProfileStore(target)));
+      await close(await open(root, new FileAgentProfileStore(target, profileOptions)));
 
       // Rollback selects the old engine using a fresh backup of current data; it does not restore old data.
-      const beforeRollback = dataTree(), rollbackBackup = backupAgent(new FileAgentProfileStore(target), root, join(base, 'rollback-backup'), true);
-      const rolledBack = pinAgentEngine(new FileAgentProfileStore(target), root, releases.a.directory,
+      const beforeRollback = dataTree(), rollbackBackup = backupAgent(new FileAgentProfileStore(target, profileOptions), root, join(base, 'rollback-backup'), true);
+      const rolledBack = pinAgentEngine(new FileAgentProfileStore(target, profileOptions), root, releases.a.directory,
         { offline: true, expectedPrevious: releases.b.release.digest, backup: rollbackBackup.directory });
       assert.equal(rolledBack.applied, true); assert.equal(rolledBack.pin.sequence, 3);
       assert.equal(rolledBack.pin.previous, lifecycleDigest(updated.pin)); assert.equal(rolledBack.pin.backupDigest, rollbackBackup.manifest.digest);

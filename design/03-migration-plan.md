@@ -1,6 +1,6 @@
 # 통합 구현 순서와 검증 플랜
 
-2026-09-08 · checkpoint386. 고정 CLI 전달 형식과 실제 compact 세션의 설치 엔진 전환을 구현·로컬 검증했다. 신규4개·관련55개, 합계59개 통과다. 큰 A/B 및 회귀는 build1, 시험 격리만 보완한3개 재시험은 build2이므로 최종 소스 전체59개 재실행으로 표시하지 않는다. build2 exit0·최종2388파일 일치, core exit0·계층199/위반0은 제품 동일 build1 기록이다. [결과](chapters/C10-launch-envelope-result.md) · [다음 단위](chapters/C10-initial-pin-plan.md). 전체 C10/goal은 미완료다.
+2026-09-08 · checkpoint387. 검증된 설치 release에서 새 담당의 최초 엔진을 자동 고정하고, 원 operation·ID·pin을 유지하는 중단 복구를 연결했다. 신규20개·관련79개, 합계99개가 같은 최종 build2에서 통과했다. 빌드·코어 타입 exit0, 계층199/위반0, 최종2,403파일 대조 일치다. [결과](chapters/C10-initial-pin-result.md) · [다음 npm/개발 release 준비](chapters/C10-initial-pin-plan.md). 전체 C10/goal은 미완료이며 실제 모델/API 시험 중단을 유지한다.
 
 이전 기록 — 2026-09-08 checkpoint385: 전역 엔진 선택·공통 확장 호환 연결, 최종 같은 소스187개 로컬 통과. [결과](chapters/C10-launcher-extensions-result.md) · [다음 소단위](chapters/C10-launch-envelope-plan.md). 자동 최초 pin·저장 이행·플랫폼/실제 연동/최종통합과 전체 goal은 미완료다.
 

@@ -45,10 +45,10 @@ test('compatible full offline engine releases update an existing SQLite agent an
       const setup = await cli<Setup>(a, ['init', '--directory', directory, '--name', 'engine update owner']);
       assert.equal(setup.status, 'ready'); assert.equal(setup.storageInitialized, true); assert.equal(setup.runtimeConnected, false);
       const checked = await life<CheckResult>(a, ['check', '--engine', a.directory]);
-      assert.equal(checked.agentId, setup.identity.agentId); assert.equal(checked.pin, null);
+      assert.equal(checked.agentId, setup.identity.agentId); assert.ok(checked.pin);
       assert.equal(checked.storage.stateBackend, 'sqlite'); assert.equal(checked.storage.personalMemory, 'sqlite');
-      const first = await life<PinResult>(a, ['pin', '--engine', a.directory, '--offline']);
-      assert.equal(first.applied, true); assert.equal(first.pin.sequence, 1); assert.equal(first.pin.previous, null); assert.equal(first.pin.backupDigest, null);
+      const first = checked.pin;
+      assert.equal(first.releaseDigest, a.release.digest); assert.equal(first.sequence, 1); assert.equal(first.previous, null); assert.equal(first.backupDigest, null);
       const before = await json<EngineUpdateSnapshot>([probe, a.directory, 'seed', directory]);
       assert.deepEqual(before.identity, setup.identity); assert.equal(before.state.budget.used.modelCalls, 1); assert.equal(before.state.budget.used.toolCalls, 1);
       assert.equal(before.sourceState.budget.used.modelCalls + before.sourceState.budget.used.toolCalls, 0);
@@ -60,7 +60,7 @@ test('compatible full offline engine releases update an existing SQLite agent an
       const note = Buffer.from('엔진 업데이트와 별개로 유지할 담당 원자료.\n'); writeFileSync(join(directory, 'operator-note.txt'), note, { mode: 0o600 });
       const registryTree = captureLifecycleTree(home), originalPin = readFileSync(join(directory, '.secumon', 'engine-pins', '00000001.json'));
       const compatibleB = await life<CheckResult>(a, ['check', '--engine', b.directory]); assert.equal(compatibleB.release.digest, b.release.digest);
-      assert.deepEqual(compatibleB.pin, first.pin);
+      assert.deepEqual(compatibleB.pin, first);
       const backup = await life<{ directory: string; manifest: AgentBackup; recoveryRequired: boolean }>(a,
         ['backup', '--destination', join(base, 'backup-a'), '--offline']);
       assert.equal(backup.recoveryRequired, true); assert.equal(backup.manifest.releaseDigest, a.release.digest);
@@ -72,7 +72,7 @@ test('compatible full offline engine releases update an existing SQLite agent an
       const updated = await life<PinResult>(a, ['update', '--engine', b.directory, '--previous', a.release.digest, '--backup', backup.directory, '--offline']);
       assert.equal(updated.applied, true); assert.equal(updated.recoveryRequired, true); assert.equal(updated.pin.sequence, 2);
       assert.equal(updated.pin.releaseDigest, b.release.digest); assert.equal(updated.pin.engineDirectory, b.directory);
-      assert.equal(updated.pin.previous, lifecycleDigest(first.pin)); assert.equal(updated.pin.backupDigest, backup.manifest.digest);
+      assert.equal(updated.pin.previous, lifecycleDigest(first)); assert.equal(updated.pin.backupDigest, backup.manifest.digest);
       assert.deepEqual(readFileSync(join(directory, '.secumon', 'engine-pins', '00000001.json')), originalPin);
       assert.deepEqual(captureLifecycleTree(home), registryTree); assert.deepEqual(captureLifecycleTree(backup.directory), backupTree);
       const pinnedTree = captureLifecycleTree(directory);

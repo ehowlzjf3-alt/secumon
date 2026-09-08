@@ -1,13 +1,15 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { z } from 'zod';
 import { ENGINE_EXTENSION_SUPPORT } from '../application/engine-extension-contracts.js';
-import { AgentConfigSchema } from '../application/agent-profile-contracts.js';
+import { AgentCloneSetupSchema, AgentConfigSchema, AgentInitialSetupReceiptSchema, AgentSetupOperationSchema, AgentSetupReceiptSchema } from '../application/agent-profile-contracts.js';
 import { EnginePinSchema, EngineReleaseSchema, type EngineRelease } from '../application/agent-lifecycle-contracts.js';
 import { captureLifecycleTree, copyLifecycleTree, createLifecycleDirectory, disjoint, lifecycleDigest, lifecycleExists, lifecycleFail, lifecycleNames, lifecycleRoot } from './agent-lifecycle-files.js';
 import { openProfileMutationScope, profileDirectory, publishProfileJson, readProfileBytes, readProfileJson, syncProfileDirectory } from './agent-profile-files.js';
 import { publishWindowsLifecycleJson, readWindowsLifecycleJson } from './windows-lifecycle-files.js';
+import { initialEnginePinHistoryNames } from './agent-initial-pin-files.js';
 
-export const engineCompatibility = Object.freeze({ config: [1, 2], state: [1, 2, 3], knowledge: [1, 2, 3], session: [1], journal: [2], documents: [1, 2],
+export const engineCompatibility = Object.freeze({ config: [1, 2], state: [1, 2, 3], knowledge: [1, 2, 3], session: [1], journal: [2], documents: [1, 2], setup: [1, 2, 3],
   extensions: ENGINE_EXTENSION_SUPPORT,
   postgres: { installation: [2], binding: [1], state: [1], knowledge: [1], channel: [1] },
 });
@@ -54,9 +56,24 @@ export function installAgentEngine(bundle: string, destination: string, expected
   createLifecycleDirectory(target); copyLifecycleTree(source, target, release.entries); publishLifecycleManifest(target, 'release.json', release);
   inspectEngineRelease(target); return { directory: target, release, command: ['node', join(target, 'dist/presentation/agent-cli.js')] };
 }
+const setupReceiptSchema = z.union([AgentSetupReceiptSchema, AgentCloneSetupSchema, AgentInitialSetupReceiptSchema]);
+/** Reads original setup records; operation 3 already requires support before its final receipt exists. */
+export function readAgentSetupSchemaVersion(root: string): 1 | 2 | 3 | null {
+  const receipt = readProfileJson(join(root, '.secumon', 'setup.json'), setupReceiptSchema, [1, 2, 3]);
+  const operation = readProfileJson(join(root, '.secumon', 'setup-operation.json'), AgentSetupOperationSchema, [1, 2, 3], 512 * 1024);
+  if (receipt?.schemaVersion === 3 || operation?.schemaVersion === 3) return 3;
+  if (receipt?.schemaVersion === 2 || operation?.schemaVersion === 2) return 2;
+  return receipt || operation ? 1 : null;
+}
+/** Legacy manifests omit setup support and cover only the original setup formats. */
+export function assertAgentSetupCompatibility(root: string, release: Pick<EngineRelease, 'compatibility'>): void {
+  const version = readAgentSetupSchemaVersion(root);
+  if (version !== null && !(release.compatibility.setup ?? [1, 2]).includes(version)) lifecycleFail('engine_setup_incompatible');
+}
 export function readAgentEnginePin(root: string) {
   const folder = join(root, '.secumon', 'engine-pins'); if (!lifecycleExists(folder)) return null;
-  profileDirectory(folder, false); const names = lifecycleNames(folder, 1025).sort(); if (names.length > 1024) lifecycleFail('engine_pin_limit');
+  profileDirectory(folder, false); const listed = lifecycleNames(folder, 1025); if (listed.length > 1024) lifecycleFail('engine_pin_limit');
+  const names = initialEnginePinHistoryNames(root, listed).sort();
   let prior: ReturnType<typeof EnginePinSchema.parse> | null = null;
   for (const [index, name] of names.entries()) {
     if (name !== `${String(index + 1).padStart(8, '0')}.json`) lifecycleFail('engine_pin_history_invalid');
@@ -69,9 +86,14 @@ export function readAgentEnginePin(root: string) {
   return prior;
 }
 export function assertAgentEnginePin(root: string, engine: string) {
-  const pin = readAgentEnginePin(root); if (!pin) return;
+  const pin = readAgentEnginePin(root);
+  if (!pin) {
+    if (readAgentSetupSchemaVersion(root) === 3) assertAgentSetupCompatibility(root, inspectEngineRelease(engine));
+    return;
+  }
   const config = readProfileJson(join(root, 'config.json'), AgentConfigSchema, [1, 2]);
   if (!config || pin.agentId !== config.identity.agentId) return lifecycleFail('engine_pin_owner_mismatch');
   const release = inspectEngineRelease(engine);
+  assertAgentSetupCompatibility(root, release);
   if (release.digest !== pin.releaseDigest || !release.compatibility.config.includes(config.schemaVersion)) lifecycleFail('agent_engine_update_required');
 }

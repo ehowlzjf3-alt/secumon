@@ -54,7 +54,7 @@ test('an unchanged A entry dispatches B-only options and carries an actual compa
         assert.ok(first?.kind === 'file' && second?.kind === 'file'); assert.notEqual(first.sha256, second.sha256);
       }
       const setup = await cli<Status>(['init', '--directory', directory]); assert.equal(setup.status, 'ready');
-      const initial = await life<{ pin: EnginePin }>(['pin', '--engine', a.directory, '--offline']); assert.equal(initial.pin.releaseDigest, a.release.digest);
+      const initial = await life<{ pin: EnginePin | null }>(['status']); assert.ok(initial.pin); assert.equal(initial.pin.releaseDigest, a.release.digest);
       const corrected = await chat(['ask', '--message-id', 'compact-correction', '--text', requests.rewrite]);
       assert.equal(corrected.snapshot.status, 'completed'); assert.equal(corrected.snapshot.usage.modelCalls, 1);
       const question = await chat(['ask', '--session', corrected.sessionId, '--message-id', 'compact-question', '--text', requests.question]);

@@ -3,7 +3,7 @@ import { windowsProfilePath, windowsPathInfo, windowsProfileNames, windowsProfil
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { z } from 'zod';
-import { AgentConfigSchema, AgentIdentitySchema, AgentSetupOptionsSchema, AgentSetupReceiptSchema, AgentCloneOptionsSchema, AgentSetupOperationSchema, AgentCloneSetupSchema, AgentCloneCompletionSchema } from '../application/agent-profile-contracts.js';
+import { AgentConfigSchema, AgentIdentitySchema, AgentSetupOptionsSchema, AgentSetupReceiptSchema, AgentInitialSetupReceiptSchema, AgentCloneOptionsSchema, AgentSetupOperationSchema, AgentCloneSetupSchema, AgentCloneCompletionSchema } from '../application/agent-profile-contracts.js';
 import type { AgentConfig, AgentIdentity, AgentPaths, AgentProfileStatus, AgentProfileStore, AgentSetupOptions, AgentSetupOperation, AgentCloneOptions, AgentCloneOperation } from '../application/agent-profile-contracts.js';
 import { failProfile as fail, profileErrorCode as code, profileStat as stat, profileDirectory as directory, syncProfileDirectory as sync, readProfileJson as read, publishProfileJson as publish } from './agent-profile-files.js';
 import { captureCloneSkills, copyCloneSkills, verifyCloneSkills } from './agent-clone-files.js';
@@ -12,10 +12,13 @@ import type { HostFileMutationScope } from './host-file-mutations.js';
 import { inspectMigrationSelection } from './personal-memory-migration-profile.js';
 import { assertAgentEnginePin } from './agent-engine-release.js';
 import { inspectPostgresMigration, effectiveAgentPostgresSelection } from './agent-postgres-migration-profile.js';
+import { assertInitialAgentEngine, assertInitialAgentSetupProof, captureInitialAgentEngine, initialAgentEngine, publishInitialAgentEngine,
+  type InitialAgentEngineOptions } from './agent-initial-engine.js';
+import { lifecycleDigest } from './agent-lifecycle-files.js';
 
 const pathExists = (path: string) => process.platform === 'win32' ? windowsPathInfo(path, false) !== null : stat(path) !== null;
 const directoryNames = (path: string) => process.platform === 'win32' ? windowsProfileNames(path) : readdirSync(path);
-const receiptSchema = z.union([AgentSetupReceiptSchema, AgentCloneSetupSchema]);
+const receiptSchema = z.union([AgentSetupReceiptSchema, AgentCloneSetupSchema, AgentInitialSetupReceiptSchema]);
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 function contains(parent: string, child: string) { if (process.platform === 'win32') return windowsProfileContains(parent, child); const part = relative(parent, child); return part === '' || (!isAbsolute(part) && part !== '..' && !part.startsWith(`..${sep}`)); }
 function cloneDigest(operation: AgentCloneOperation) { const { manifestDigest: _, ...body } = operation; return digest(body); }
@@ -41,7 +44,11 @@ function checkStateOption(option: AgentSetupOptions['stateBackend'], selected: A
 /** Host-side setup only. Work tools receive scoped stores, never this initializer. */
 export class FileAgentProfileStore implements AgentProfileStore {
   readonly #engine: string;
-  constructor(engineDirectory: string) { this.#engine = process.platform === 'win32' ? windowsProfilePath(engineDirectory) : realpathSync(engineDirectory); }
+  readonly #initialEngineOptions: InitialAgentEngineOptions;
+  constructor(engineDirectory: string, options: InitialAgentEngineOptions = {}) {
+    this.#engine = process.platform === 'win32' ? windowsProfilePath(engineDirectory) : realpathSync(engineDirectory);
+    this.#initialEngineOptions = Object.freeze({ ...options });
+  }
 
   get engineDirectories(): readonly string[] { return Object.freeze([this.#engine]); }
 
@@ -67,14 +74,14 @@ export class FileAgentProfileStore implements AgentProfileStore {
   #read(root: string, scope?: HostFileMutationScope) {
     const paths = this.#paths(root);
     const hasMetadata = directory(paths.metadata, false, true, scope);
-    let operation = hasMetadata ? read(join(paths.metadata, 'setup-operation.json'), AgentSetupOperationSchema, [1, 2], 512 * 1024, scope) : null;
+    let operation = hasMetadata ? read(join(paths.metadata, 'setup-operation.json'), AgentSetupOperationSchema, [1, 2, 3], 512 * 1024, scope) : null;
     const identity = hasMetadata ? read(join(paths.metadata, 'identity.json'), AgentIdentitySchema, undefined, undefined, scope) : null;
-    const receipt = hasMetadata ? read(join(paths.metadata, 'setup.json'), receiptSchema, [1, 2], undefined, scope) : null;
+    const receipt = hasMetadata ? read(join(paths.metadata, 'setup.json'), receiptSchema, [1, 2, 3], undefined, scope) : null;
     const completion = hasMetadata ? read(join(paths.metadata, 'clone-complete.json'), AgentCloneCompletionSchema, undefined, undefined, scope) : null;
     const config = read(join(root, 'config.json'), AgentConfigSchema, [1, 2], undefined, scope);
     // A concurrent initializer may publish the operation after our first read, then publish these files.
     if (hasMetadata && !operation && (identity || receipt || config)) {
-      operation = read(join(paths.metadata, 'setup-operation.json'), AgentSetupOperationSchema, [1, 2], 512 * 1024, scope);
+      operation = read(join(paths.metadata, 'setup-operation.json'), AgentSetupOperationSchema, [1, 2, 3], 512 * 1024, scope);
     }
     if (operation?.kind === 'clone' && (cloneDigest(operation) !== operation.manifestDigest ||
       digest(operation.identity) !== digest(operation.config.identity) || digest(operation.entries) !== operation.source.skillsDigest ||
@@ -93,6 +100,7 @@ export class FileAgentProfileStore implements AgentProfileStore {
     if (operation?.kind === 'clone' && receipt?.schemaVersion === 1) fail('agent_clone_operation_conflict');
     if (completion && (operation?.kind !== 'clone' || receipt?.schemaVersion !== 2 ||
       completion.operationId !== operation.operationId || completion.manifestDigest !== operation.manifestDigest)) fail('agent_clone_operation_invalid');
+    assertInitialAgentSetupProof(root, operation, receipt, scope);
     return { paths, identity, receipt, config, hasMetadata, operation, completion };
   }
   #unboundData(root: string, scope?: HostFileMutationScope) {
@@ -127,7 +135,8 @@ export class FileAgentProfileStore implements AgentProfileStore {
     }
     if (missing.length || !identity || !config) return { status: 'incomplete', root, agentId: identity?.agentId ?? config?.identity.agentId ?? operation?.identity.agentId ?? receipt?.agentId ?? null,
       missing, recoverable: Boolean((identity || config || operation?.kind === 'initialize') && !(receipt && !config)) };
-    const profile = { status: 'ready' as const, root, identity, config, paths: this.#paths(root, config), modelReady: false as const };
+    const profile = { status: 'ready' as const, root, identity, config, paths: this.#paths(root, config), modelReady: false as const,
+      ...(receipt?.schemaVersion === 3 ? { setupSchemaVersion: 3 as const } : {}) };
     const personal = { ...profile, ...inspectMigrationSelection(profile) };
     return { ...personal, ...inspectPostgresMigration(personal) };
   }
@@ -140,6 +149,7 @@ export class FileAgentProfileStore implements AgentProfileStore {
   #initialize(input: string, options: AgentSetupOptions, scope: HostFileMutationScope): Extract<AgentProfileStatus, { status: 'ready' }> {
     const before = this.#inspect(input, scope);
     if (before.status === 'ready') {
+      if (before.setupSchemaVersion === 3) this.assertRuntimeCompatible(before.root);
       checkMemoryOption(options.personalMemory, before.effectivePersonalMemory.backend === 'documents' ? before.effectivePersonalMemory : null);
       checkPostgresOption(options.postgres, before.config.storage.postgres);
       checkStateOption(options.stateBackend, before.config.storage.state);
@@ -151,6 +161,8 @@ export class FileAgentProfileStore implements AgentProfileStore {
     }
     if (before.status === 'incomplete' && before.recovery === 'clone') fail('agent_clone_resume_required');
     if (before.status === 'incomplete' && (!before.recoverable || !options.repair && !before.missing.includes('setup'))) fail(before.recoverable ? 'agent_repair_required' : 'agent_recovery_source_required');
+    // A verified release is selected before any new ownership operation is published. Existing data is never upgraded here.
+    const initialCapture = before.status === 'uninitialized' ? captureInitialAgentEngine(this.#engine, before.root, this.#initialEngineOptions) : null;
     const root = this.#root(input, true, scope); const paths = this.#paths(root);
     directory(paths.metadata, true, true, scope); sync(root, scope);
     let current = this.#read(root, scope);
@@ -165,10 +177,19 @@ export class FileAgentProfileStore implements AgentProfileStore {
       const stateBackend = current.config?.storage.state ?? options.stateBackend ?? 'sqlite';
       const stateSelection = { ...(stateBackend === 'file-journal' || options.stateBackend !== undefined ? { stateBackend } : {}),
         ...(options.postgres ? { postgres: options.postgres } : {}) };
-      publish(join(paths.metadata, 'setup-operation.json'), selected ?
+      const useInitial = initialCapture && !current.identity && !current.config && !current.receipt;
+      if (useInitial && !initialCapture.release.compatibility.config.includes(selected ? 2 : 1)) fail('engine_config_incompatible');
+      const proposal = useInitial ? { schemaVersion: 3, kind: 'initialize', operationId: randomUUID(), identity, personalMemory: selected,
+        initialEngine: initialAgentEngine(initialCapture, identity), ...stateSelection } : selected ?
         { schemaVersion: 2, kind: 'initialize', operationId: randomUUID(), identity, personalMemory: selected, ...stateSelection } :
-        { schemaVersion: 1, kind: 'initialize', operationId: randomUUID(), identity, ...stateSelection }, scope);
+        { schemaVersion: 1, kind: 'initialize', operationId: randomUUID(), identity, ...stateSelection };
+      publish(join(paths.metadata, 'setup-operation.json'), AgentSetupOperationSchema.parse(proposal), scope);
       current = this.#read(root, scope);
+    }
+    checkPostgresOption(options.postgres, current.config?.storage.postgres ?? (current.operation ? operationPostgres(current.operation) : undefined));
+    if (current.operation?.schemaVersion === 3) {
+      if (!current.receipt) assertInitialAgentEngine(this.#engine, root, current.operation.initialEngine, this.#initialEngineOptions);
+      else this.assertRuntimeCompatible(root);
     }
     checkMemoryOption(options.personalMemory, operationMemory(current.operation!));
     checkStateOption(options.stateBackend, current.config?.storage.state ?? operationState(current.operation!));
@@ -189,7 +210,19 @@ export class FileAgentProfileStore implements AgentProfileStore {
     current = this.#read(root, scope);
     if (options.name !== undefined && current.config!.name !== options.name || options.purpose !== undefined && current.config!.purpose !== options.purpose) fail('agent_config_already_exists');
     this.#directories(paths, scope);
-    if (!current.receipt) publish(join(paths.metadata, 'setup.json'), { schemaVersion: 1, agentId: identity.agentId }, scope);
+    if (!current.receipt) {
+      if (current.operation?.schemaVersion === 3) {
+        const operation = current.operation;
+        assertInitialAgentEngine(this.#engine, root, operation.initialEngine, this.#initialEngineOptions);
+        // Re-read the winning operation and ownership after engine verification, before committing the first pin.
+        const latest = this.#read(root, scope);
+        if (digest(latest.operation) !== digest(operation) || digest(latest.config) !== digest(current.config) ||
+          digest(latest.identity) !== digest(identity)) fail('agent_initial_engine_proof_invalid');
+        publishInitialAgentEngine(root, operation, scope);
+        publish(join(paths.metadata, 'setup.json'), { schemaVersion: 3, agentId: identity.agentId,
+          operationId: operation.operationId, initialPinDigest: lifecycleDigest(operation.initialEngine.pin) }, scope);
+      } else publish(join(paths.metadata, 'setup.json'), { schemaVersion: 1, agentId: identity.agentId }, scope);
+    }
     const result = this.#inspect(root, scope); if (result.status !== 'ready') return fail('agent_setup_incomplete');
     return result;
   }

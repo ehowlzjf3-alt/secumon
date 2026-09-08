@@ -49,8 +49,8 @@ test('one unchanged CLI entry selects each agent pinned registered engine, prese
       const leftSetup = await cli<OpenResult>(['init', '--directory', left]), rightSetup = await cli<OpenResult>(['init', '--directory', right]);
       assert.equal(leftSetup.status, 'ready'); assert.equal(rightSetup.status, 'ready'); assert.notEqual(leftSetup.identity.agentId, rightSetup.identity.agentId);
       for (const directory of [left, right]) {
-        const first = await life<{ pin: EnginePin; applied: boolean }>(directory, ['pin', '--engine', a.directory, '--offline']);
-        assert.equal(first.applied, true); assert.equal(first.pin.releaseDigest, a.release.digest);
+        const first = await life<{ pin: EnginePin | null }>(directory, ['status']);
+        assert.ok(first.pin); assert.equal(first.pin.sequence, 1); assert.equal(first.pin.releaseDigest, a.release.digest);
       }
       const before = await json<EngineUpdateSnapshot>([probe, a.directory, 'seed', left]);
       assert.deepEqual(before.identity, leftSetup.identity); assert.notEqual(before.state.status, 'completed');

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { ENGINE_EXTENSION_SUPPORT, captureEngineApi, inspectEngineExtensions, type EngineApiDeclaration,
@@ -142,7 +142,11 @@ test('extension API: local release check, pin and real update share declared hos
     const base = realpathSync(mkdtempSync(join(tmpdir(), 'engine-extension-lifecycle-')));
     t.after(() => rmSync(base, { recursive: true, force: true }));
     const releases = createEngineUpdateReleases(base), root = join(base, 'agent'), registry = join(base, 'registry');
-    const profiles = new FileAgentProfileStore(releases.a.directory); profiles.initialize(root);
+    // Preserve the explicit first-pin compatibility gate on a historical unpinned agent.
+    const legacyEngine = join(base, 'legacy-engine'); mkdirSync(legacyEngine, { mode: 0o700 });
+    const legacyProfiles = new FileAgentProfileStore(legacyEngine, { engineRegistryDirectory: join(base, 'engine-registry') });
+    legacyProfiles.initialize(root);
+    const profiles = new FileAgentProfileStore(releases.a.directory, { engineRegistryDirectory: join(base, 'engine-registry') });
     const stores = await openAgentStores(profiles, root, undefined, { identityRegistryDirectory: registry }); await stores.close();
     const options = { extensions: [selection(api('model.turn'))], requireDeclaredExtensions: true };
     assert.equal(checkAgentLifecycle(profiles, root, releases.a.directory).extensions.status, 'unverified');
@@ -163,7 +167,7 @@ test('extension API: local release check, pin and real update share declared hos
     assert.equal(EngineReleaseSchema.parse(legacy).compatibility.extensions, undefined, 'historical manifest schema still parses; this is not an installed-release proof');
 
     const pgRoot = join(base, 'pg-agent'), selected = { storeId: randomUUID(), registrationId: randomUUID(), purposes: ['state', 'knowledge', 'channel'] as ('state' | 'knowledge' | 'channel')[] };
-    profiles.initialize(pgRoot, { postgres: selected }); let connects = 0;
+    legacyProfiles.initialize(pgRoot, { postgres: selected }); let connects = 0;
     const host = { selection: selected, pool: { async connect(): Promise<never> { connects++; throw new Error('unexpected_pg_connect'); } } };
     const pgOptions = { ...bad, offline: true, operationId: randomUUID() };
     await assert.rejects(checkAgentPostgresLifecycle(profiles, pgRoot, releases.a.directory, host, pgOptions), /engine_extension_api_incompatible/);

@@ -6,7 +6,7 @@ import { AGENT_LOCAL_RESTORE_COMPLETION, AgentBackupSchema, AgentLocalRestoreMar
 import { AgentConfigSchema, AgentIdentitySchema, type AgentProfileStore, type AgentProfileStatus } from '../application/agent-profile-contracts.js';
 import { acquireAgentMaintenance } from './agent-lifecycle-lease.js';
 import { captureLifecycleTree, copyLifecycleTree, createLifecycleDirectory, disjoint, lifecycleDigest, lifecycleExists, lifecycleFail, lifecycleLimits, lifecycleNames, lifecycleRoot } from './agent-lifecycle-files.js';
-import { engineCompatibility, inspectEngineRelease, publishLifecycleManifest, readAgentEnginePin } from './agent-engine-release.js';
+import { assertAgentSetupCompatibility, engineCompatibility, inspectEngineRelease, publishLifecycleManifest, readAgentEnginePin } from './agent-engine-release.js';
 import { openProfileMutationScope, profileDirectory, publishProfileJson, readProfileJson, syncProfileDirectory } from './agent-profile-files.js';
 import { inspectAgentDatabaseOwner } from './agent-database-owner.js';
 import { inspectDocumentKnowledgeStore } from './document-knowledge-owner.js';
@@ -37,6 +37,7 @@ function sqliteVersion(path: string, profile: Ready, kind: 'state' | 'memory' | 
 }
 /** Checks only the local portions of the actual selected storage; PG binding versions are separate. */
 export function inspectAgentLocalStorageCompatibility(profile: Ready, release: Pick<EngineRelease, 'compatibility'>) {
+  assertAgentSetupCompatibility(profile.root, release);
   if (profile.postgresMigration?.phase === 'pending' || profile.personalMemoryMigration?.phase === 'pending') lifecycleFail('agent_migration_resume_required');
   const postgres = effectiveAgentPostgresSelection(profile);
   const config = profile.config, support = release.compatibility;
@@ -116,6 +117,7 @@ export function publishAgentEnginePin(profile: Ready, engine: string, release: E
   const scope = openProfileMutationScope(profile.root, [engine]);
   let failed = false, failure: unknown;
   try {
+    assertAgentSetupCompatibility(profile.root, release);
     if (lifecycleDigest(readAgentEnginePin(profile.root)) !== lifecycleDigest(current)) lifecycleFail('engine_pin_conflict');
     const pin = EnginePinSchema.parse({ schemaVersion: 1, sequence: (current?.sequence ?? 0) + 1, agentId: profile.identity.agentId,
       releaseDigest: release.digest, engineDirectory: engine, version: release.version,

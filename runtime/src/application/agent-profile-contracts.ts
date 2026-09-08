@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { EnginePinSchema } from './agent-lifecycle-contracts.js';
 
 const text = (maximum: number) => z.string().trim().max(maximum).refine(value => !/[\x00-\x1f\x7f]/.test(value));
 export const AgentIdentitySchema = z.strictObject({
@@ -45,8 +46,20 @@ export const AgentSetupOperationV2Schema = z.discriminatedUnion('kind', [
     config: AgentConfigV2Schema, source: z.strictObject({ identity: AgentIdentitySchema, configDigest: digest, skillsDigest: digest }),
     entries: z.array(AgentCloneEntrySchema).max(512), manifestDigest: digest }),
 ]);
-export const AgentSetupOperationSchema = z.union([AgentSetupOperationV1Schema, AgentSetupOperationV2Schema]);
+export const AgentInitialEngineSchema = z.strictObject({
+  pin: EnginePinSchema.refine(pin => pin.sequence === 1 && pin.previous === null && pin.backupDigest === null,
+    { message: 'initial_engine_pin_invalid' }),
+  registrationDigest: digest,
+});
+export const AgentSetupOperationV3Schema = z.strictObject({
+  schemaVersion: z.literal(3), kind: z.literal('initialize'), operationId: z.uuid(), identity: AgentIdentitySchema,
+  personalMemory: AgentDocumentMemorySchema.nullable(), stateBackend: z.enum(['sqlite', 'file-journal']).optional(),
+  postgres: AgentPostgresSelectionSchema.optional(), initialEngine: AgentInitialEngineSchema,
+}).refine(operation => operation.initialEngine.pin.agentId === operation.identity.agentId,
+  { message: 'initial_engine_owner_mismatch', path: ['initialEngine', 'pin', 'agentId'] });
+export const AgentSetupOperationSchema = z.union([AgentSetupOperationV1Schema, AgentSetupOperationV2Schema, AgentSetupOperationV3Schema]);
 export const AgentCloneSetupSchema = z.strictObject({ schemaVersion: z.literal(2), agentId: z.uuid(), operationId: z.uuid(), manifestDigest: digest });
+export const AgentInitialSetupReceiptSchema = z.strictObject({ schemaVersion: z.literal(3), agentId: z.uuid(), operationId: z.uuid(), initialPinDigest: digest });
 export const AgentCloneCompletionSchema = z.strictObject({ schemaVersion: z.literal(1), agentId: z.uuid(), operationId: z.uuid(), manifestDigest: digest });
 export type AgentIdentity = z.infer<typeof AgentIdentitySchema>;
 export type AgentConfig = z.infer<typeof AgentConfigSchema>;
@@ -54,6 +67,8 @@ export type AgentSetupOptions = z.input<typeof AgentSetupOptionsSchema>;
 export type AgentCloneOptions = z.input<typeof AgentCloneOptionsSchema>;
 export type AgentCloneEntry = z.infer<typeof AgentCloneEntrySchema>;
 export type AgentSetupOperation = z.infer<typeof AgentSetupOperationSchema>;
+export type AgentInitialEngine = z.infer<typeof AgentInitialEngineSchema>;
+export type AgentInitialSetupReceipt = z.infer<typeof AgentInitialSetupReceiptSchema>;
 export type AgentCloneOperation = Extract<AgentSetupOperation, { kind: 'clone' }>;
 export interface AgentPaths { root: string; metadata: string; state: string; memory: string; artifacts: string; skills: string; workspace: string }
 export type AgentPersonalMemorySelection = { backend: 'sqlite' } | { backend: 'documents'; storeId: string } | { backend: 'postgres'; storeId: string; registrationId: string };
@@ -63,6 +78,7 @@ export type AgentProfileStatus =
   | { status: 'uninitialized'; root: string }
   | { status: 'incomplete'; root: string; agentId: string | null; missing: string[]; recoverable: boolean; recovery?: 'clone' }
   | { status: 'ready'; root: string; identity: AgentIdentity; config: AgentConfig; paths: AgentPaths; modelReady: false;
+      setupSchemaVersion?: 3;
       effectivePersonalMemory: AgentPersonalMemorySelection; personalMemoryMigration?: AgentMemoryMigrationStatus; postgresMigration?: AgentPostgresMigrationStatus };
 export class AgentProfileError extends Error {
   constructor(readonly code: string, options?: ErrorOptions) { super(code, options); }

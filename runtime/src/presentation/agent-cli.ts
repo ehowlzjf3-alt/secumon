@@ -70,7 +70,7 @@ export async function runAgentCli(args: string[], hostOptions: AgentStoreHostOpt
     (command !== 'clone' && (values.destination !== undefined || values.resume !== undefined))) throw new AgentProfileError('agent_option_not_supported');
   if (command === 'clone' && !values.destination) throw new AgentProfileError('agent_clone_destination_required');
   const version = (JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')) as { version: string }).version;
-  if (command === 'version') { process.stdout.write(values.json ? JSON.stringify({ version, configSchema: 1, defaultConfigSchema: 1, configSchemas: [1, 2], setupSchemas: [1, 2] }) + '\n' : `secumon-agent ${version}\n`); return; }
+  if (command === 'version') { process.stdout.write(values.json ? JSON.stringify({ version, configSchema: 1, defaultConfigSchema: 1, configSchemas: [1, 2], setupSchemas: [1, 2, 3] }) + '\n' : `secumon-agent ${version}\n`); return; }
   const store = new FileAgentProfileStore(root);
   let status: AgentProfileStatus;
   if (command === 'status') status = store.inspect(values.directory);

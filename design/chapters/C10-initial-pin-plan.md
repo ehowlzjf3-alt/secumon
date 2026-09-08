@@ -1,6 +1,10 @@
 # C10 신규 담당의 자동 최초 pin 계획
 
-2026-09-08. **계획이며 구현·실행 결과가 아니다.** checkpoint385의 소스 지문 `85f45154e47f3dae10ab15a7e57f741f6f69ff4cc949561b9ca30d082a7e17d9`와 기존 초기화 코드를 읽어 정리했다. 현재 진행 중인 고정 CLI 전달 형식·compact 세션 버전 전환과는 별도 후속 단위다. 실제 모델/API 시험은 중단 상태이며 이 조사에서 제품·시험·빌드·Git·외부 연결은 실행하지 않았다.
+2026-09-08 · checkpoint387에서 설치 release의 신규 setup 단위를 구현하고 로컬 확인을 진행했다. 실제 확인 범위는 [결과](C10-initial-pin-result.md)와 [체크포인트](../../runtime/evidence/checkpoint387.json)를 따른다. **아래 npm 준비와 미실행 검증 계획까지 완료로 읽지 않는다.** 원 계획은 checkpoint385 소스 지문 `85f45154e47f3dae10ab15a7e57f741f6f69ff4cc949561b9ca30d082a7e17d9`를 읽어 작성했고, 기준선 checkpoint386은 `27e59a3707f605b3d881b8629de8f8b0266a7c63`이다. 실제 모델/API 시험 중단을 유지한다.
+
+이번 단위는 실제 `release.json`을 가진 호출 엔진의 새 담당을 기본 자동 pin 대상으로 삼는다. `FileAgentProfileStore`가 공통 연결점이므로 설치 CLI의 init/open/chat/work가 같은 규칙을 사용한다. 임시 시험은 `engineRegistryDirectory` 호스트 옵션 또는 기존 home 격리 preload를 사용한다. manifest 없는 개발/npm 경로는 원본을 건드리지 않고 기존 동작을 유지하며, 다음 materialization 단위에서 연결한다.
+
+실제 최초 pin hardlink 직후 중단되면 pending 원 파일이 남는다. pin 목록 전체를 느슨하게 만들지 않고 schema 3 operation에 저장된 정확한 첫 pin bytes와 귀속된 링크만 검사해 해당 pending을 목록에서 구분한다. 미게시 단일 링크 후보도 정확한 원 후보여야 한다. 다른 pending·변형된 내용·외부 링크는 거절하며 임의 삭제하지 않는다.
 
 새 담당은 처음 선택한 검증된 엔진을 초기화 작업에 기록하고, 사용할 엔진의 pin까지 게시된 뒤에만 준비 완료로 보여준다. 기존 무핀 담당을 새 담당으로 간주하거나, `offline:true`를 대신 넣어 기존 업데이트 API를 호출하지 않는다. 이후 업데이트는 현재 C10의 명시 백업·오프라인·현재 pin 대조를 그대로 사용한다.
 
@@ -60,6 +64,14 @@
 ## npm 패키지에서 로컬 release 준비
 
 현재 npm 설치는 package/dist/의존성을 갖지만 `release.json`은 없다. 검증되지 않은 개발/npm 디렉터리에 manifest를 써넣거나 package version만 pin하지 않는다. 현재 실행 중인 로컬 패키지를 **다운로드 없이** 기존 bundler/installer로 검증 가능한 설치본으로 준비하고, 그 설치본이 신규 setup을 실행하게 한다.
+
+checkpoint387의 읽기 전용 사전 확인에서 다음 공백을 확인했다. 이 문단은 새 npm 실행 시험의 결과가 아니다.
+
+- `package-lock.json`이 npm 산출물에 없는 것은 현 bundler의 필수 파일 실패 조건이 아니다. 실제 존재하는 허용 항목만 수집한다. 배포 대상 dist/JSON fixture/guidance/web HTML·CSS는 현재 package의 files 목록에 있다.
+- 실제 고정 조건은 `agent-engine-release.ts`의 `root/node_modules/zod/package.json`과 자기 `node_modules` 트리다. 원 tgz에는 의존성이 없고, 상위 디렉터리에서 의존성을 찾는 local 설치도 이 조건을 충족하지 않는다. 자기 패키지 안에 production 의존성이 있는 사용자 소유 global 설치부터 범위를 구체화한다.
+- zod 한 개의 존재만으로 ajv/MCP와 그 하위 의존성까지 자체 포함됐다고 주장하지 않는다. release를 만들 때 외부 폴더의 의존성에 기대지 않고 실행 가능한지 확인해야 한다. 현재 파일 수집의 symlink·다중 hardlink·다른 소유자 거절을 npm link/pnpm·관리자 소유 prefix를 위해 몰래 완화하지 않는다. 해당 배치는 명시 지원 범위를 따로 정한다.
+- `captureInitialAgentEngine`은 manifest가 없으면 null을 반환하고 동기 `initialize`는 과거 operation을 만든다. CLI의 `launchPinnedAgent`가 현재 엔진으로 반환하기 전, 신규 담당 초기화에 해당하는 경우에만 준비·등록을 수행하고 기존 `executeSelectedAgentEngine`으로 실제 설치본을 실행하도록 연결한다. read-only status/help나 기존 무핀 담당을 자동 materialization 대상으로 삼지 않는다.
+- 기존 `agent-installation.test.ts`의 npm global 설치와 저장소 기반 bundle은 각각의 시험이다. npm 설치본→bundle/install→설치 CLI에서 원 최초 초기화까지 이어가는 인수가 필요하다. 프로그램 API의 호스트 콜백을 동기 initialize 안에서 자식 프로세스로 옮길 수 있다고 가정하지 않는다.
 
 호스트 엔진 등록표 기본값은 `~/.secumon/engines`이며 `registerAgentEngine`은 등록표와 설치 디렉터리의 포함 관계를 거절한다. 따라서 설치 자료는 별도 `~/.secumon/engine-releases/…`, 임시 후보는 별도 호스트 소유 준비 경로에 둔다. 이 경로들은 담당 DB/기억/호스트 ID 등록표와 겹치면 안 된다.
 
