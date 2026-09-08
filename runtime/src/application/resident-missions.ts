@@ -9,7 +9,7 @@ import type { SessionService } from './session-service.js';
 import type { RuntimeServices } from './services.js';
 import type { WorkActor } from './work-resources.js';
 import type { WorkflowRuntime, WorkflowRunOptions } from './workflow-runtime.js';
-import { assertExecutionAuthority } from './execution-authority.js';
+import { assertExecutionAuthority, executionAuthoritySignal } from './execution-authority.js';
 import { asJson } from './plan-validator.js';
 import { frozen } from './resource-contracts.js';
 import { transact } from './work-transactions.js';
@@ -28,6 +28,8 @@ type Checkpoint = z.infer<typeof CheckpointSchema>;
 export interface ResidentMissionDependencies {
   services: RuntimeServices; sessions: SessionService; workflow: WorkflowRuntime; agentId: string; scope: string;
   actor: WorkActor; signal: AbortSignal; sources: readonly MissionEventSource[];
+  /** Original host ownership lifetime, used only to release our claim after an observation is stopped. */
+  cleanupSignal?: AbortSignal;
 }
 export interface ResidentDriveOptions extends Pick<WorkflowRunOptions, 'maxSteps' | 'onStep'> {
   signal: AbortSignal; maxTicks?: number; intervalMs?: number;
@@ -57,8 +59,8 @@ export class ResidentMissions {
     }
   }
   private digest(value: unknown) { return this.deps.services.digester.digest(asJson(value)); }
-  private access(state: WorkState) {
-    this.deps.signal.throwIfAborted(); assertExecutionAuthority(this.deps.services, state);
+  private access(state: WorkState, signal = this.deps.signal) {
+    signal.throwIfAborted(); assertExecutionAuthority(this.deps.services, state);
     if (state.policy.tenantId !== this.#actor.tenantId || state.policy.principalId !== this.#actor.principalId || state.goal.scope !== this.deps.scope ||
       state.conversation?.session?.scope.agentId !== this.deps.agentId || state.policy.allowedLabels.some(label => this.#actor.allowedLabels && !this.#actor.allowedLabels.includes(label)) ||
       state.policy.allowedTools.some(tool => this.#actor.allowedTools && !this.#actor.allowedTools.includes(tool)) ||
@@ -70,10 +72,10 @@ export class ResidentMissions {
       source.labels.some(label => !definition.policy.allowedLabels.includes(label) || this.#actor.allowedLabels && !this.#actor.allowedLabels.includes(label))) throw new Error('mission_source_unavailable');
     return source;
   }
-  private async state(workId: string) { const state = await this.deps.services.state.get(workId); if (!state) throw new Error('work_not_found'); this.access(state); return state; }
+  private async state(workId: string, signal = this.deps.signal) { const state = await this.deps.services.state.get(workId); if (!state) throw new Error('work_not_found'); this.access(state, signal); return state; }
   private key(ruleId: string) { return `resident-${this.digest({ agentId: this.deps.agentId, ruleId })}`; }
-  private async read(workId: string): Promise<{ state: WorkState; checkpoint: Checkpoint }> {
-    const state = await this.state(workId);
+  private async read(workId: string, signal = this.deps.signal): Promise<{ state: WorkState; checkpoint: Checkpoint }> {
+    const state = await this.state(workId, signal);
     if (state.status !== 'paused' || state.statusReason !== controllerReason || state.plan || state.attempts.length || state.modelCalls.length ||
       state.budget.limits.modelCalls || state.budget.limits.toolCalls || state.budget.limits.tokens || state.budget.limits.replans) throw new Error('resident_controller_not_idle');
     const subscription = state.subscriptions?.find(value => value.provider === 'resident-mission');
@@ -92,21 +94,21 @@ export class ResidentMissions {
       subscription.goalRevision !== state.goal.revision || subscription.resourceId !== checkpoint.definition.rule.resourceId ||
       this.digest(checkpoint.definition.policy) !== this.digest(state.policy)) changed();
     this.source(checkpoint.definition);
-    if (this.digest(await this.state(workId)) !== this.digest(state)) changed();
+    if (this.digest(await this.state(workId, signal)) !== this.digest(state)) changed();
     return { state, checkpoint };
   }
-  private async save(state: WorkState, input: Checkpoint) {
+  private async save(state: WorkState, input: Checkpoint, signal = this.deps.signal) {
     const checkpoint = CheckpointSchema.parse(input), bytes = new TextEncoder().encode(JSON.stringify(checkpoint));
     if (bytes.byteLength > 512 * 1024) throw new Error('resident_checkpoint_capacity');
-    this.access(state); const artifact = await this.deps.services.artifacts.put(bytes, { tenantId: state.policy.tenantId, labels: [...state.policy.allowedLabels], mediaType: 'application/json' });
+    this.access(state, signal); const artifact = await this.deps.services.artifacts.put(bytes, { tenantId: state.policy.tenantId, labels: [...state.policy.allowedLabels], mediaType: 'application/json' });
     const subscription = { id: this.key(checkpoint.definition.rule.id), provider: 'resident-mission', resourceId: checkpoint.definition.rule.resourceId,
       goalRevision: state.goal.revision, generation: checkpoint.generation, cursor: checkpoint.cursor, status: checkpoint.status, checkpointId: `resident:${artifact.sha256}` };
     return (await transact(this.deps.services, state.id, subscription.checkpointId, 'resident_checkpoint', asJson({ subscriptionId: subscription.id, artifact }), next => {
-      if (this.digest(next) !== this.digest(state)) changed(); this.access(next);
+      if (this.digest(next) !== this.digest(state)) changed(); this.access(next, signal);
       next.status = 'paused'; next.statusReason = controllerReason;
       next.subscriptions = [...(next.subscriptions ?? []).filter(value => value.id !== subscription.id), subscription];
       if (!next.artifacts.some(value => value.id === artifact.id)) next.artifacts.push(artifact);
-    }, async () => { if (this.digest(await this.state(state.id)) !== this.digest(state)) changed(); })).state;
+    }, async () => { if (this.digest(await this.state(state.id, signal)) !== this.digest(state)) changed(); })).state;
   }
   async register(value: ResidentMission) {
     const definition = ResidentMissionSchema.parse(structuredClone(value)); this.source(definition);
@@ -171,6 +173,7 @@ export class ResidentMissions {
     if (!checkpoint.suspended) {
       checkpoint.controlRevision = (checkpoint.controlRevision ?? 0) + 1;
       checkpoint.suspended = true; checkpoint.reason = 'host_paused'; checkpoint.claim = null; await this.save(state, checkpoint);
+      this.deps.services.workCancellation?.interrupt(workId);
     }
     return this.status(workId);
   }
@@ -184,7 +187,10 @@ export class ResidentMissions {
     }
     return this.status(workId);
   }
-  async close(workId: string) { const { state, checkpoint } = await this.read(workId); checkpoint.status = 'closed'; checkpoint.reason = 'host_closed'; checkpoint.claim = null; await this.save(state, checkpoint); }
+  async close(workId: string) {
+    const { state, checkpoint } = await this.read(workId); checkpoint.status = 'closed'; checkpoint.reason = 'host_closed'; checkpoint.claim = null;
+    await this.save(state, checkpoint); this.deps.services.workCancellation?.interrupt(workId);
+  }
   async tick(workId: string, options: Pick<WorkflowRunOptions, 'maxSteps' | 'onStep'> = {}) {
     let { state, checkpoint } = await this.read(workId); const now = this.deps.services.clock.now();
     if (checkpoint.status === 'closed') return { kind: 'closed' as const, reason: checkpoint.reason };
@@ -198,10 +204,25 @@ export class ResidentMissions {
       if (!checkpoint.pending.length) {
         const source = this.source(checkpoint.definition), basis = this.digest(state);
         const authorize = async () => { const latest = await this.state(workId); this.source(checkpoint.definition); if (this.digest(latest) !== basis) changed(); };
-        await authorize();
-        const pollSignal = AbortSignal.any([this.deps.signal, AbortSignal.timeout(60000)]);
-        const page = MissionPageSchema.parse(await abortablePoll(source.poll({ resourceId: checkpoint.definition.rule.resourceId, cursor: checkpoint.cursor, snapshotDigest: checkpoint.snapshotDigest,
-          now, signal: pollSignal, authorize: async () => { pollSignal.throwIfAborted(); await authorize(); pollSignal.throwIfAborted(); } }), pollSignal)); await authorize();
+        const controller = new AbortController(), timeout = AbortSignal.timeout(60000);
+        const pollSignal = executionAuthoritySignal(this.deps.services, AbortSignal.any([this.deps.signal, controller.signal, timeout]));
+        const unregister = this.deps.services.workCancellation?.register(workId, `resident-poll:${owner}`, controller);
+        let page: z.infer<typeof MissionPageSchema>;
+        try {
+          // Registration precedes the last current-state check, closing the command-before-dispatch gap.
+          await authorize(); pollSignal.throwIfAborted();
+          page = MissionPageSchema.parse(await abortablePoll(source.poll({ resourceId: checkpoint.definition.rule.resourceId, cursor: checkpoint.cursor, snapshotDigest: checkpoint.snapshotDigest,
+            now, signal: pollSignal, authorize: async () => { pollSignal.throwIfAborted(); await authorize(); pollSignal.throwIfAborted(); } }), pollSignal));
+          await authorize(); pollSignal.throwIfAborted();
+        } catch (error) {
+          // Durable observation controls retain the existing error contract; caller/provider errors remain original.
+          if (controller.signal.aborted && error === pollSignal.reason && !this.deps.signal.aborted && !timeout.aborted) {
+            const controlled = await this.read(workId);
+            if (controlled.checkpoint.claim?.owner !== owner &&
+              (controlled.checkpoint.suspended || controlled.checkpoint.status === 'closed')) changed();
+          }
+          throw error;
+        } finally { unregister?.(); }
         if (page.cursor < checkpoint.cursor || page.events.length > 0 && page.cursor === checkpoint.cursor || new Set(page.events.map(event => event.id)).size !== page.events.length) throw new Error('mission_cursor_invalid');
         const fresh: MissionEvent[] = [];
         for (const event of page.events) {
@@ -262,8 +283,17 @@ export class ResidentMissions {
     } catch (error) { primary = { error }; throw error; }
     finally {
       try {
-        const latest = await this.read(workId);
-        if (latest.checkpoint.claim?.owner === owner) { latest.checkpoint.claim = null; await this.save(latest.state, latest.checkpoint); }
+        const cleanupSignal = this.deps.cleanupSignal ?? this.deps.signal;
+        // A stopped observer may release only its own claim while the original host authority remains live.
+        // Closing the profile leaves the original lease to expire; it never grants a cleanup write.
+        if (!cleanupSignal.aborted) {
+          const latest = await this.read(workId, cleanupSignal);
+          if (latest.checkpoint.claim?.owner === owner) {
+            // Returning to the pre-poll body must not reuse its old publication receipt and leave this claim held.
+            latest.checkpoint.controlRevision = (latest.checkpoint.controlRevision ?? 0) + 1;
+            latest.checkpoint.claim = null; await this.save(latest.state, latest.checkpoint, cleanupSignal);
+          }
+        }
       } catch (error) {
         if (primary) throw new AggregateError([primary.error, error], 'resident_claim_cleanup_failed', { cause: primary.error });
         throw error;
@@ -275,7 +305,7 @@ export class ResidentMissions {
     const limits = z.strictObject({ maxTicks: count.optional(), intervalMs: count.min(1).max(60000).default(1000) }).parse({
       ...(options.maxTicks === undefined ? {} : { maxTicks: options.maxTicks }), ...(options.intervalMs === undefined ? {} : { intervalMs: options.intervalMs }) });
     const signal = AbortSignal.any([this.deps.signal, options.signal]);
-    const runner = new ResidentMissions({ ...this.deps, signal, sources: [...this.#sources.values()] });
+    const runner = new ResidentMissions({ ...this.deps, signal, cleanupSignal: this.deps.cleanupSignal ?? this.deps.signal, sources: [...this.#sources.values()] });
     let ticks = 0;
     const sleep = (milliseconds: number) => new Promise<void>((resolve, reject) => {
       signal.throwIfAborted();

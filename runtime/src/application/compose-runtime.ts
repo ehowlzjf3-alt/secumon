@@ -169,6 +169,8 @@ export async function composeRuntime(input: { services: RuntimeServices; schemas
   catalog = new ToolCatalog(contracts, services.digester, { clock: services.clock, ids: services.ids }); resources = new WorkResources(services.state, services.artifacts, contracts, services.digester, services.knowledge, guidance, effects, services.inputs);
   const resultReuse = new ToolResultReuse(services, contracts, resources);
   const runtime = new ExecutionRuntime(services, contracts, input.owner, input.leaseMs, resultReuse, readCollections);
+  if (services.workCancellation) throw new Error('runtime_work_cancellation_conflict');
+  services.workCancellation = Object.freeze({ register: runtime.registerCancellation.bind(runtime), interrupt: runtime.interrupt.bind(runtime) });
   if (personalKnowledge && services.personalMemories) throw new Error('runtime_personal_memory_conflict');
   const personalMemories = personalKnowledge ? new PersonalMemoryService(services, personalKnowledge, id => runtime.interrupt(id)) : null;
   if (personalMemories) services.personalMemories = personalMemories;

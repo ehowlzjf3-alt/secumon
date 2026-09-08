@@ -1,5 +1,5 @@
 {
-  "revision": "v0.77",
+  "revision": "v0.78",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1922,7 +1922,7 @@
     "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
     "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
   },
-  "next_local_work_item": "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+  "next_local_work_item": "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
   "execution_state": "ordered_verification_active",
@@ -4756,71 +4756,73 @@
         "firstUnit": "A2A off/on registration, acknowledgement then explicit execution, redelivery and caller isolation"
       },
       "ordered_verification": {
-        "checkpoint": 393,
-        "status": "C09_mission_controls_local_verified",
-        "baselineCommit": "bf61a44ea229edd554d5842d4c72513b17638ffe",
-        "plan": "design/chapters/C09-mission-controls-plan.md",
-        "result": "design/chapters/C09-mission-controls-result.md",
-        "usage": "design/chapters/C09-mission-controls-usage.md",
-        "evidence": "runtime/evidence/checkpoint393.json",
-        "newUnique": 11,
-        "relatedUnique": 31,
-        "allUnique": 42,
+        "checkpoint": 394,
+        "recordedAt": "2026-09-09",
+        "status": "C09_mission_poll_controls_local_verified",
+        "baselineCommit": "ff3e2d8aa8cf5d7629d15939d92d9f60aff4d54a",
+        "plan": "design/chapters/C09-mission-poll-controls-plan.md",
+        "result": "design/chapters/C09-mission-poll-controls-result.md",
+        "usage": "design/chapters/C09-mission-poll-controls-usage.md",
+        "newUnique": 12,
+        "relatedUnique": 37,
+        "allUnique": 49,
         "mixedBuildEvidence": false,
         "allRerunAtFinalSource": true,
-        "finalBuild": "C09-mission-controls-build2",
+        "finalBuild": "C09-mission-poll-controls-build1",
         "finalSource": {
-          "build": "C09-mission-controls-build2",
+          "build": "C09-mission-poll-controls-build1",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "9b047577ef2c8fb4daea2747d2420dcfa4bf826da27dc54c715c11bb8474feca",
-          "filesDigest": "f7d975c3eabeefee37151b976eda5575398db11f93439943932be0eca6bc0069",
-          "fileCount": 2493
+          "sourceDigest": "dde99088d9c969910417c6eaa852ed11753efabe6a367d41bd8cd50d2679ded0",
+          "filesDigest": "c026b7eaaca325892ce509a36e96e30a51ebefc8b9d411f5a4855741947ce366",
+          "fileCount": 2499
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint393-final-source.json",
+        "finalSourceEvidence": "runtime/evidence/checkpoint394-final-source.json",
         "checks": {
-          "buildExitCode": 0,
           "coreExitCode": 0,
-          "coreBuild": "build2",
-          "coreLog": "runtime/evidence/C09-mission-controls-core2.log",
+          "coreLog": "runtime/evidence/C09-mission-poll-controls-core1.log",
           "architectureInspected": 202,
           "architectureViolations": 0,
-          "architectureLog": "runtime/evidence/C09-mission-controls-architecture1.log",
-          "architectureBuild": "build1",
-          "architectureReuse": "Only an optional resident counter and repeated-cycle test changed after build1; import graph unchanged"
+          "architectureLog": "runtime/evidence/C09-mission-poll-controls-architecture1.log",
+          "buildExitCode": 0,
+          "coreBuild": "build1",
+          "architectureBuild": "build1"
         },
         "verifiedScope": [
-          "Actual local profiles and SQLite with deterministic callbacks: resident pause/reopen/resume/repeated transitions preserve pending events and conversation, stop is permanent and paused polling/model invocation is zero",
-          "Explicitly saved personal memory card retains full content, source metadata and identity after reopen/resume/stop; other agent cannot read it",
-          "Original event intake before controller receipt plus later goal change reopens as the same work without inference; explicit workflow processes the new goal and later events retain the same session",
-          "In-flight goal changes stop the old resident workflow after the observed command; late gated poll pages are rejected and resume uses the same cursor",
-          "Actual per-work commands pause/cancel/goal in real workflow.onStep; pause retains events/ACK/claim-null and explicit resume executes existing work, cancel/goal preserve old originals without extra calls",
-          "Idle pause/resume chains then goal change, untouched host-closed rules, new rule at new goal, and altered command receipt/current authority refusal",
-          "Existing mission runtime, native read ACK, resident session/compact/intake and terminal recovery regression on the same final source"
+          "Actual per-work session commands pause/cancel/goal/input end observation waits before a noncooperative raw callback settles; late pages/errors preserve original events, cursor, checkpoint artifacts, receipts, state and budget",
+          "A stale command does not abort either poll; a newly committed command interrupts only its own work in the same runtime",
+          "An ordinary local profile forwards public pause to the source signal and reopens the same session and cursor for explicit resume, with original receipts retained and no inference",
+          "Completed observations unregister; registration after executor beginClose rejects a new refresh before any additional source call",
+          "Resident pause/stop ends the affected poll before raw release while a separate controller on the same registered source stays live",
+          "Caller abort and borrowed driver close release only the owned claim while host authority remains live; profile authority closure preserves the original claim for lease expiry without a cleanup write",
+          "The original source owner closes once and drains an unresolved raw callback even after the borrowed driver has closed; late raw rejection does not mutate preserved state",
+          "Existing mission runtime, native read ACK, command controls, resident session/intake/compact and host-source registration regressions pass on the same final source"
         ],
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
         "notRun": [
           "Actual model/API quality: stopped by user",
-          "SIGKILL in this unit; prior crash evidence remains historical",
+          "Whole suite or SIGKILL in this unit; earlier evidence remains historical",
           "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
         ],
         "remaining": [
-          "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
-          "C09 file-journal commit-unknown injection, long history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+          "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
+          "C09 long history/context retrieval cost, repeated goal changes with retired rule identities/capacity, and new resident control CLI/Web/Knox entry points",
           "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
           "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
           "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
         ],
         "goalComplete": false,
         "chapterComplete": false,
-        "next": "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+        "next": "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
         "notImplementedThisUnit": [
-          "New resident pause/resume CLI/Web/Knox commands; the host composition API is implemented",
-          "Durable work controls immediately aborting a noncooperative outstanding source poll",
-          "Retired rule ID reuse across repeated goal revisions"
-        ]
+          "Cross-process immediate command signalling",
+          "Command commit-unknown cancellation recovery",
+          "Forced termination of a noncooperative source callback or external process"
+        ],
+        "evidence": "runtime/evidence/checkpoint394.json",
+        "mainPrompt": "implemented_and_wired_actual_model_quality_unverified"
       },
       "mission_verification": {
         "checkpoint": 381,
@@ -5174,6 +5176,75 @@
           "Durable work controls immediately aborting a noncooperative outstanding source poll",
           "Retired rule ID reuse across repeated goal revisions"
         ]
+      },
+      "mission_poll_controls_verification": {
+        "checkpoint": 394,
+        "recordedAt": "2026-09-09",
+        "status": "C09_mission_poll_controls_local_verified",
+        "baselineCommit": "ff3e2d8aa8cf5d7629d15939d92d9f60aff4d54a",
+        "plan": "design/chapters/C09-mission-poll-controls-plan.md",
+        "result": "design/chapters/C09-mission-poll-controls-result.md",
+        "usage": "design/chapters/C09-mission-poll-controls-usage.md",
+        "newUnique": 12,
+        "relatedUnique": 37,
+        "allUnique": 49,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-mission-poll-controls-build1",
+        "finalSource": {
+          "build": "C09-mission-poll-controls-build1",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "dde99088d9c969910417c6eaa852ed11753efabe6a367d41bd8cd50d2679ded0",
+          "filesDigest": "c026b7eaaca325892ce509a36e96e30a51ebefc8b9d411f5a4855741947ce366",
+          "fileCount": 2499
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint394-final-source.json",
+        "checks": {
+          "coreExitCode": 0,
+          "coreLog": "runtime/evidence/C09-mission-poll-controls-core1.log",
+          "architectureInspected": 202,
+          "architectureViolations": 0,
+          "architectureLog": "runtime/evidence/C09-mission-poll-controls-architecture1.log",
+          "buildExitCode": 0,
+          "coreBuild": "build1",
+          "architectureBuild": "build1"
+        },
+        "verifiedScope": [
+          "Actual per-work session commands pause/cancel/goal/input end observation waits before a noncooperative raw callback settles; late pages/errors preserve original events, cursor, checkpoint artifacts, receipts, state and budget",
+          "A stale command does not abort either poll; a newly committed command interrupts only its own work in the same runtime",
+          "An ordinary local profile forwards public pause to the source signal and reopens the same session and cursor for explicit resume, with original receipts retained and no inference",
+          "Completed observations unregister; registration after executor beginClose rejects a new refresh before any additional source call",
+          "Resident pause/stop ends the affected poll before raw release while a separate controller on the same registered source stays live",
+          "Caller abort and borrowed driver close release only the owned claim while host authority remains live; profile authority closure preserves the original claim for lease expiry without a cleanup write",
+          "The original source owner closes once and drains an unresolved raw callback even after the borrowed driver has closed; late raw rejection does not mutate preserved state",
+          "Existing mission runtime, native read ACK, command controls, resident session/intake/compact and host-source registration regressions pass on the same final source"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Actual model/API quality: stopped by user",
+          "Whole suite or SIGKILL in this unit; earlier evidence remains historical",
+          "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
+        ],
+        "remaining": [
+          "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
+          "C09 long history/context retrieval cost, repeated goal changes with retired rule identities/capacity, and new resident control CLI/Web/Knox entry points",
+          "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
+        "notImplementedThisUnit": [
+          "Cross-process immediate command signalling",
+          "Command commit-unknown cancellation recovery",
+          "Forced termination of a noncooperative source callback or external process"
+        ],
+        "evidence": "runtime/evidence/checkpoint394.json",
+        "mainPrompt": "implemented_and_wired_actual_model_quality_unverified"
       }
     },
     {
@@ -5886,13 +5957,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 393,
-      "status": "C09_mission_controls_local_verified",
-      "plan": "design/chapters/C09-mission-controls-plan.md",
+      "checkpoint": 394,
+      "status": "C09_mission_poll_controls_local_verified",
+      "plan": "design/chapters/C09-mission-poll-controls-plan.md",
       "nextChapter": "C09",
       "preparedIdentityTests": 22,
       "existingFixtureFilesAdapted": 4,
-      "result": "design/chapters/C09-mission-controls-result.md",
+      "result": "design/chapters/C09-mission-poll-controls-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -6007,8 +6078,8 @@
         ]
       },
       "remaining": [
-        "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
-        "C09 file-journal commit-unknown injection, long history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+        "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
+        "C09 long history/context retrieval cost, repeated goal changes with retired rule identities/capacity, and new resident control CLI/Web/Knox entry points",
         "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
         "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
         "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
@@ -6085,6 +6156,12 @@
           "status": "C10_restore_recovery_application_local_verified",
           "nextChapter": "C09",
           "evidence": "runtime/evidence/checkpoint392.json"
+        },
+        {
+          "checkpoint": 393,
+          "status": "C09_mission_controls_local_verified",
+          "nextChapter": "C09",
+          "evidence": "runtime/evidence/checkpoint393.json"
         }
       ],
       "C03": {
@@ -6200,71 +6277,73 @@
       },
       "C09Preparation": "design/chapters/C09-ordered-verification-preparation.md",
       "C09": {
-        "checkpoint": 393,
-        "status": "C09_mission_controls_local_verified",
-        "baselineCommit": "bf61a44ea229edd554d5842d4c72513b17638ffe",
-        "plan": "design/chapters/C09-mission-controls-plan.md",
-        "result": "design/chapters/C09-mission-controls-result.md",
-        "usage": "design/chapters/C09-mission-controls-usage.md",
-        "evidence": "runtime/evidence/checkpoint393.json",
-        "newUnique": 11,
-        "relatedUnique": 31,
-        "allUnique": 42,
+        "checkpoint": 394,
+        "recordedAt": "2026-09-09",
+        "status": "C09_mission_poll_controls_local_verified",
+        "baselineCommit": "ff3e2d8aa8cf5d7629d15939d92d9f60aff4d54a",
+        "plan": "design/chapters/C09-mission-poll-controls-plan.md",
+        "result": "design/chapters/C09-mission-poll-controls-result.md",
+        "usage": "design/chapters/C09-mission-poll-controls-usage.md",
+        "newUnique": 12,
+        "relatedUnique": 37,
+        "allUnique": 49,
         "mixedBuildEvidence": false,
         "allRerunAtFinalSource": true,
-        "finalBuild": "C09-mission-controls-build2",
+        "finalBuild": "C09-mission-poll-controls-build1",
         "finalSource": {
-          "build": "C09-mission-controls-build2",
+          "build": "C09-mission-poll-controls-build1",
           "node": "v24.20.0",
           "platform": "darwin",
           "arch": "arm64",
-          "sourceDigest": "9b047577ef2c8fb4daea2747d2420dcfa4bf826da27dc54c715c11bb8474feca",
-          "filesDigest": "f7d975c3eabeefee37151b976eda5575398db11f93439943932be0eca6bc0069",
-          "fileCount": 2493
+          "sourceDigest": "dde99088d9c969910417c6eaa852ed11753efabe6a367d41bd8cd50d2679ded0",
+          "filesDigest": "c026b7eaaca325892ce509a36e96e30a51ebefc8b9d411f5a4855741947ce366",
+          "fileCount": 2499
         },
-        "finalSourceEvidence": "runtime/evidence/checkpoint393-final-source.json",
+        "finalSourceEvidence": "runtime/evidence/checkpoint394-final-source.json",
         "checks": {
-          "buildExitCode": 0,
           "coreExitCode": 0,
-          "coreBuild": "build2",
-          "coreLog": "runtime/evidence/C09-mission-controls-core2.log",
+          "coreLog": "runtime/evidence/C09-mission-poll-controls-core1.log",
           "architectureInspected": 202,
           "architectureViolations": 0,
-          "architectureLog": "runtime/evidence/C09-mission-controls-architecture1.log",
-          "architectureBuild": "build1",
-          "architectureReuse": "Only an optional resident counter and repeated-cycle test changed after build1; import graph unchanged"
+          "architectureLog": "runtime/evidence/C09-mission-poll-controls-architecture1.log",
+          "buildExitCode": 0,
+          "coreBuild": "build1",
+          "architectureBuild": "build1"
         },
         "verifiedScope": [
-          "Actual local profiles and SQLite with deterministic callbacks: resident pause/reopen/resume/repeated transitions preserve pending events and conversation, stop is permanent and paused polling/model invocation is zero",
-          "Explicitly saved personal memory card retains full content, source metadata and identity after reopen/resume/stop; other agent cannot read it",
-          "Original event intake before controller receipt plus later goal change reopens as the same work without inference; explicit workflow processes the new goal and later events retain the same session",
-          "In-flight goal changes stop the old resident workflow after the observed command; late gated poll pages are rejected and resume uses the same cursor",
-          "Actual per-work commands pause/cancel/goal in real workflow.onStep; pause retains events/ACK/claim-null and explicit resume executes existing work, cancel/goal preserve old originals without extra calls",
-          "Idle pause/resume chains then goal change, untouched host-closed rules, new rule at new goal, and altered command receipt/current authority refusal",
-          "Existing mission runtime, native read ACK, resident session/compact/intake and terminal recovery regression on the same final source"
+          "Actual per-work session commands pause/cancel/goal/input end observation waits before a noncooperative raw callback settles; late pages/errors preserve original events, cursor, checkpoint artifacts, receipts, state and budget",
+          "A stale command does not abort either poll; a newly committed command interrupts only its own work in the same runtime",
+          "An ordinary local profile forwards public pause to the source signal and reopens the same session and cursor for explicit resume, with original receipts retained and no inference",
+          "Completed observations unregister; registration after executor beginClose rejects a new refresh before any additional source call",
+          "Resident pause/stop ends the affected poll before raw release while a separate controller on the same registered source stays live",
+          "Caller abort and borrowed driver close release only the owned claim while host authority remains live; profile authority closure preserves the original claim for lease expiry without a cleanup write",
+          "The original source owner closes once and drains an unresolved raw callback even after the borrowed driver has closed; late raw rejection does not mutate preserved state",
+          "Existing mission runtime, native read ACK, command controls, resident session/intake/compact and host-source registration regressions pass on the same final source"
         ],
         "actualModelApi": "stopped_by_user",
         "externalServiceConnectionsRun": false,
         "notRun": [
           "Actual model/API quality: stopped by user",
-          "SIGKILL in this unit; prior crash evidence remains historical",
+          "Whole suite or SIGKILL in this unit; earlier evidence remains historical",
           "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
         ],
         "remaining": [
-          "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
-          "C09 file-journal commit-unknown injection, long history/context retrieval cost and repeated goal changes with retired rule identities/capacity",
+          "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
+          "C09 long history/context retrieval cost, repeated goal changes with retired rule identities/capacity, and new resident control CLI/Web/Knox entry points",
           "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
           "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
           "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
         ],
         "goalComplete": false,
         "chapterComplete": false,
-        "next": "C09 connect durable work controls to outstanding source polls, including sources that ignore cancellation; preserve observations and avoid hanging the driver",
+        "next": "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
         "notImplementedThisUnit": [
-          "New resident pause/resume CLI/Web/Knox commands; the host composition API is implemented",
-          "Durable work controls immediately aborting a noncooperative outstanding source poll",
-          "Retired rule ID reuse across repeated goal revisions"
-        ]
+          "Cross-process immediate command signalling",
+          "Command commit-unknown cancellation recovery",
+          "Forced termination of a noncooperative source callback or external process"
+        ],
+        "evidence": "runtime/evidence/checkpoint394.json",
+        "mainPrompt": "implemented_and_wired_actual_model_quality_unverified"
       },
       "C09A2A": {
         "checkpoint": 380,
@@ -6795,6 +6874,75 @@
           "Durable work controls immediately aborting a noncooperative outstanding source poll",
           "Retired rule ID reuse across repeated goal revisions"
         ]
+      },
+      "C09MissionPollControls": {
+        "checkpoint": 394,
+        "recordedAt": "2026-09-09",
+        "status": "C09_mission_poll_controls_local_verified",
+        "baselineCommit": "ff3e2d8aa8cf5d7629d15939d92d9f60aff4d54a",
+        "plan": "design/chapters/C09-mission-poll-controls-plan.md",
+        "result": "design/chapters/C09-mission-poll-controls-result.md",
+        "usage": "design/chapters/C09-mission-poll-controls-usage.md",
+        "newUnique": 12,
+        "relatedUnique": 37,
+        "allUnique": 49,
+        "mixedBuildEvidence": false,
+        "allRerunAtFinalSource": true,
+        "finalBuild": "C09-mission-poll-controls-build1",
+        "finalSource": {
+          "build": "C09-mission-poll-controls-build1",
+          "node": "v24.20.0",
+          "platform": "darwin",
+          "arch": "arm64",
+          "sourceDigest": "dde99088d9c969910417c6eaa852ed11753efabe6a367d41bd8cd50d2679ded0",
+          "filesDigest": "c026b7eaaca325892ce509a36e96e30a51ebefc8b9d411f5a4855741947ce366",
+          "fileCount": 2499
+        },
+        "finalSourceEvidence": "runtime/evidence/checkpoint394-final-source.json",
+        "checks": {
+          "coreExitCode": 0,
+          "coreLog": "runtime/evidence/C09-mission-poll-controls-core1.log",
+          "architectureInspected": 202,
+          "architectureViolations": 0,
+          "architectureLog": "runtime/evidence/C09-mission-poll-controls-architecture1.log",
+          "buildExitCode": 0,
+          "coreBuild": "build1",
+          "architectureBuild": "build1"
+        },
+        "verifiedScope": [
+          "Actual per-work session commands pause/cancel/goal/input end observation waits before a noncooperative raw callback settles; late pages/errors preserve original events, cursor, checkpoint artifacts, receipts, state and budget",
+          "A stale command does not abort either poll; a newly committed command interrupts only its own work in the same runtime",
+          "An ordinary local profile forwards public pause to the source signal and reopens the same session and cursor for explicit resume, with original receipts retained and no inference",
+          "Completed observations unregister; registration after executor beginClose rejects a new refresh before any additional source call",
+          "Resident pause/stop ends the affected poll before raw release while a separate controller on the same registered source stays live",
+          "Caller abort and borrowed driver close release only the owned claim while host authority remains live; profile authority closure preserves the original claim for lease expiry without a cleanup write",
+          "The original source owner closes once and drains an unresolved raw callback even after the borrowed driver has closed; late raw rejection does not mutate preserved state",
+          "Existing mission runtime, native read ACK, command controls, resident session/intake/compact and host-source registration regressions pass on the same final source"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "externalServiceConnectionsRun": false,
+        "notRun": [
+          "Actual model/API quality: stopped by user",
+          "Whole suite or SIGKILL in this unit; earlier evidence remains historical",
+          "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
+        ],
+        "remaining": [
+          "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
+          "C09 long history/context retrieval cost, repeated goal changes with retired rule identities/capacity, and new resident control CLI/Web/Knox entry points",
+          "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+          "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+          "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+        ],
+        "goalComplete": false,
+        "chapterComplete": false,
+        "next": "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
+        "notImplementedThisUnit": [
+          "Cross-process immediate command signalling",
+          "Command commit-unknown cancellation recovery",
+          "Forced termination of a noncooperative source callback or external process"
+        ],
+        "evidence": "runtime/evidence/checkpoint394.json",
+        "mainPrompt": "implemented_and_wired_actual_model_quality_unverified"
       }
     }
   }

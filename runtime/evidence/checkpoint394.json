@@ -1,0 +1,146 @@
+{
+  "checkpoint": 394,
+  "recordedAt": "2026-09-09",
+  "status": "C09_mission_poll_controls_local_verified",
+  "baselineCommit": "ff3e2d8aa8cf5d7629d15939d92d9f60aff4d54a",
+  "previousGoalTurn": "Identified concrete pending poll and claim cleanup gaps; drafted documents before agent usage interruption. Current source and terminal agent statuses revalidated; no build or test was running.",
+  "plan": "design/chapters/C09-mission-poll-controls-plan.md",
+  "result": "design/chapters/C09-mission-poll-controls-result.md",
+  "usage": "design/chapters/C09-mission-poll-controls-usage.md",
+  "inProgress": [],
+  "testsExecuted": [
+    {
+      "id": "target1",
+      "files": [
+        "mission-poll-controls.test.js",
+        "resident-missions-poll-controls.test.js"
+      ],
+      "build": "build1",
+      "exitCode": 0,
+      "total": 12,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 4609.956167,
+      "log": "runtime/evidence/C09-mission-poll-controls-target1.log"
+    },
+    {
+      "id": "regression1",
+      "files": [
+        "mission-runtime.test.js",
+        "mission-controls.test.js",
+        "resident-missions-controls.test.js",
+        "resident-missions-entry.test.js",
+        "host-missions-registration.test.js",
+        "mission-read-ack.test.js"
+      ],
+      "build": "build1",
+      "exitCode": 0,
+      "total": 37,
+      "pass": 37,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "durationMs": 32144.989917,
+      "log": "runtime/evidence/C09-mission-poll-controls-regression1.log"
+    }
+  ],
+  "activeRuns": [],
+  "actualModelApi": "stopped_by_user",
+  "externalServiceConnectionsRun": false,
+  "notImplementedThisUnit": [
+    "Cross-process immediate command signalling",
+    "Command commit-unknown cancellation recovery",
+    "Forced termination of a noncooperative source callback or external process"
+  ],
+  "goalComplete": false,
+  "chapterComplete": false,
+  "reviewFindings": [
+    {
+      "kind": "source_review_defect",
+      "detail": "Claim release can reconstruct an earlier checkpoint and its command ID; increment existing controlRevision only on actual owned-claim release. Found before executing new tests."
+    }
+  ],
+  "checks": {
+    "coreExitCode": 0,
+    "coreLog": "runtime/evidence/C09-mission-poll-controls-core1.log",
+    "architectureInspected": 202,
+    "architectureViolations": 0,
+    "architectureLog": "runtime/evidence/C09-mission-poll-controls-architecture1.log",
+    "buildExitCode": 0,
+    "coreBuild": "build1",
+    "architectureBuild": "build1"
+  },
+  "builds": [
+    {
+      "id": "build1",
+      "exitCode": 0,
+      "log": "runtime/evidence/C09-mission-poll-controls-build1.log",
+      "source": {
+        "build": "C09-mission-poll-controls-build1",
+        "node": "v24.20.0",
+        "platform": "darwin",
+        "arch": "arm64",
+        "sourceDigest": "dde99088d9c969910417c6eaa852ed11753efabe6a367d41bd8cd50d2679ded0",
+        "filesDigest": "c026b7eaaca325892ce509a36e96e30a51ebefc8b9d411f5a4855741947ce366",
+        "fileCount": 2499
+      }
+    }
+  ],
+  "mainPrompt": {
+    "status": "implemented_and_wired_actual_model_quality_unverified",
+    "confirmedFromCurrentSource": true,
+    "source": "runtime/src/infrastructure/agent-turn-prompt.ts",
+    "adapter": "runtime/src/infrastructure/structured-agent-turn.ts",
+    "changedThisUnit": false
+  },
+  "implemented": [
+    "Composition exposes existing work cancellation registration and interrupt operations to observation runtimes",
+    "MissionRuntime observes the actual work command cancellation signal while preserving interrupted poll cursor and original records",
+    "New cancellation registrations after executor beginClose receive an aborted signal immediately",
+    "Resident pause/stop interrupts outstanding polls after durable local save while preserving the existing control error contract",
+    "Caller/driver cancellation releases only its owned claim under the original live host authority; profile closure preserves the lease",
+    "A monotonic existing control revision prevents claim-release publication from replaying an earlier checkpoint"
+  ],
+  "failureHistory": [],
+  "newUnique": 12,
+  "relatedUnique": 37,
+  "allUnique": 49,
+  "mixedBuildEvidence": false,
+  "allRerunAtFinalSource": true,
+  "finalBuild": "C09-mission-poll-controls-build1",
+  "finalSource": {
+    "build": "C09-mission-poll-controls-build1",
+    "node": "v24.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "sourceDigest": "dde99088d9c969910417c6eaa852ed11753efabe6a367d41bd8cd50d2679ded0",
+    "filesDigest": "c026b7eaaca325892ce509a36e96e30a51ebefc8b9d411f5a4855741947ce366",
+    "fileCount": 2499
+  },
+  "finalSourceEvidence": "runtime/evidence/checkpoint394-final-source.json",
+  "verifiedScope": [
+    "Actual per-work session commands pause/cancel/goal/input end observation waits before a noncooperative raw callback settles; late pages/errors preserve original events, cursor, checkpoint artifacts, receipts, state and budget",
+    "A stale command does not abort either poll; a newly committed command interrupts only its own work in the same runtime",
+    "An ordinary local profile forwards public pause to the source signal and reopens the same session and cursor for explicit resume, with original receipts retained and no inference",
+    "Completed observations unregister; registration after executor beginClose rejects a new refresh before any additional source call",
+    "Resident pause/stop ends the affected poll before raw release while a separate controller on the same registered source stays live",
+    "Caller abort and borrowed driver close release only the owned claim while host authority remains live; profile authority closure preserves the original claim for lease expiry without a cleanup write",
+    "The original source owner closes once and drains an unresolved raw callback even after the borrowed driver has closed; late raw rejection does not mutate preserved state",
+    "Existing mission runtime, native read ACK, command controls, resident session/intake/compact and host-source registration regressions pass on the same final source"
+  ],
+  "notRun": [
+    "Actual model/API quality: stopped by user",
+    "Whole suite or SIGKILL in this unit; earlier evidence remains historical",
+    "Current Linux/native Windows, real PostgreSQL, corporate MCP/Knox/external A2A, installed binary and deployment/final integration"
+  ],
+  "remaining": [
+    "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate",
+    "C09 long history/context retrieval cost, repeated goal changes with retired rule identities/capacity, and new resident control CLI/Web/Knox entry points",
+    "C05 policy regrant to stored completion; C06 memory HTTP permissions/latency/browser",
+    "C10 earliest interruption before trustworthy restore intent/marker, current Linux/native Windows/real PostgreSQL, installed native addon availability and packaging efficiency",
+    "Actual corporate MCP/Knox/external A2A and deployment/final integration; model/API trials remain stopped"
+  ],
+  "next": "C09 file-journal command commit-unknown injection and cancellation recovery based on original receipts; cross-process immediate signalling remains separate"
+}

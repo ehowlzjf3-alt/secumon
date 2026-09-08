@@ -12,7 +12,7 @@ export interface HostResidentMissionDefaults {
 export function createHostResidentMissions(dependencies: ResidentMissionDependencies, defaults: HostResidentMissionDefaults) {
   const selected = frozen(structuredClone(defaults)), actor = frozen(structuredClone(dependencies.actor));
   const lifetime = new AbortController(); const signal = AbortSignal.any([dependencies.signal, lifetime.signal]);
-  const driver = new ResidentMissions({ ...dependencies, actor, signal });
+  const driver = new ResidentMissions({ ...dependencies, actor, signal, cleanupSignal: dependencies.cleanupSignal ?? dependencies.signal });
   const active = new Set<Promise<unknown>>(); let closing: Promise<void> | undefined;
   function track<T>(action: () => Promise<T>): Promise<T> {
     signal.throwIfAborted(); const operation = Promise.resolve().then(action); active.add(operation);

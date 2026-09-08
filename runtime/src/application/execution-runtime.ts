@@ -107,6 +107,7 @@ export class ExecutionRuntime {
     return state.attempts.some(attempt => this.storedResults.candidate(state, attempt.id));
   }
   registerCancellation(workId: string, operationId: string, controller: AbortController): () => void {
+    if (this.#closing) { controller.abort(); return () => {}; }
     if (this.#signals.has(operationId)) throw new Error('operation_signal_registered');
     this.#signals.set(operationId, { workId, controller });
     return () => { if (this.#signals.get(operationId)?.controller === controller) this.#signals.delete(operationId); };
