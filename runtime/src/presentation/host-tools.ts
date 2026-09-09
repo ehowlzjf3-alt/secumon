@@ -52,6 +52,8 @@ export interface HostBudgetRegistration extends EngineApiRegistration {
   readonly authority?: BudgetAuthority; readonly children?: BudgetChildRuntime; readonly ledgers?: BudgetWorkLedgers;
 }
 export interface AgentExecutionHost extends AgentTurnHost {
+  /** Allow or deny personal-memory management without changing external tool write permission. */
+  readonly allowPersonalMemoryWrites?: boolean;
   /** Host policy only; legacy registrations otherwise remain explicitly unverified. */
   readonly requireDeclaredExtensions?: boolean;
   /** One trusted registry location shared by all agents on this host; absent uses the host default. */

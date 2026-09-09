@@ -1,5 +1,7 @@
 # C05 도구·문맥·MCP 순차 검증
 
+2026-09-09 checkpoint402 후속: C05 권한 재허용 후 CLI 원목표 완주와 C06 기억 전용 허가·HTTP 저장/선택·실제 화면을 확인했다. 조회량은 감소했지만 문서형 HTTP23.7초의 성능 인수는 남는다. [최신 결과](C05-C06-completion-result.md)를 우선하며 아래는 이전 실행 기록이다.
+
 ## Checkpoint375 — 원문 검사 재사용과 collection 권한 차단 입구
 
 이번 신규 고유 20개가 통과해 C05 선택은 **682개(662+7+6+4+3)**다. 원문 검사 재사용 7개, collection 권한 차단 6개, 일반 CLI/HTTP custody 입구 4개, CLI 현재 제한 안내 3개를 더했고 관련 재실행은 중복 합산하지 않았다. 실제 모델/API 시험 중단을 유지한다. [실행 기록](../../runtime/evidence/checkpoint375.json) · [collection 결과·실패 이력](C05-collection-permission-resume-result.md).

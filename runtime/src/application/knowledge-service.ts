@@ -308,12 +308,13 @@ export class KnowledgeService {
     await this.#sameActor(actor);
     const now = this.#d.clock.now();
     const resolve = (record: KnowledgeRecord, path = new Set<string>(), budget = { remaining: 256 }): KnowledgeDependency => {
-      if (--budget.remaining < 0 || path.has(record.id) || !canReadKnowledge(record, actor, now)) throw unavailable();
+      if (--budget.remaining < 0 || path.has(record.id) || path.size >= 64 || !canReadKnowledge(record, actor, now)) throw unavailable();
       if (record.kind === 'personal') {
         const checked = personal.get(record.id); if (!checked || !record.owner) throw unavailable();
         return { schemaVersion: 2, owner: structuredClone(record.owner), tenantId: actor.tenantId, knowledgeId: record.id,
           knowledgeRevision: record.revision, actorDigest: this.#actorDigest(actor), ...checked };
       }
+      if (this.#d.personalOwner) throw unavailable();
       path.add(record.id); const parents = new Map<string, { id: string; revision: number }>();
       for (const ref of record.derivedFrom) {
         const parent = records.get(ref.id);
@@ -353,8 +354,9 @@ export class KnowledgeService {
   }
 
   /** Equal complete revision vectors bound one stable view; separate stores are not an atomic snapshot. */
-  async #stable(ids: string[], actor: TrustedKnowledgeActor, namespace?: string, collection?: SourceCollection): Promise<KnowledgeSnapshot> {
-    let previous = await this.#snapshot(ids, actor, namespace, collection);
+  async #stable(ids: string[], actor: TrustedKnowledgeActor, namespace?: string, collection?: SourceCollection,
+    initial?: KnowledgeSnapshot): Promise<KnowledgeSnapshot> {
+    let previous = initial ?? await this.#snapshot(ids, actor, namespace, collection);
     let stableFences = 0;
     for (let attempt = 0; attempt < 4; attempt++) {
       const current = await this.#snapshot(ids, actor, namespace, collection);
@@ -366,8 +368,9 @@ export class KnowledgeService {
   }
 
   async #read(id: string, actor: TrustedKnowledgeActor): Promise<KnowledgeRead> {
-    await this.#materialize(id, actor);
-    const stable = await this.#stable([id], actor);
+    const initial = await this.#snapshot([id], actor);
+    if (!initial.reads.length) throw unavailable();
+    const stable = await this.#stable([id], actor, undefined, undefined, initial);
     const read = stable.reads[0]; if (!read) throw unavailable(); return read;
   }
 

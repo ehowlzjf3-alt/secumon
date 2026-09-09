@@ -100,6 +100,8 @@ export async function openAgentTurnProfile(directory: string, options: AgentTurn
   const profileName = selected.provider === 'registered' ? ready.config.model?.profile ?? null : null;
   const registration = selected.provider === 'registered' ? resolveHostModelRegistration(host, profileName) : null;
   const toolRegistration = resolveHostToolRegistration(host);
+  const allowPersonalMemoryWrites = host?.allowPersonalMemoryWrites;
+  if (allowPersonalMemoryWrites !== undefined && typeof allowPersonalMemoryWrites !== 'boolean') throw new Error('agent_personal_memory_permission_invalid');
   const knoxRegistration = captureKnoxRegistration(host?.knox);
   const boardRegistration = ready.config.features.board ? resolveHostBoardRegistration(host) : null;
   if (ready.config.features.board && !boardRegistration) throw new Error('agent_board_registration_required');
@@ -184,7 +186,8 @@ export async function openAgentTurnProfile(directory: string, options: AgentTurn
         ...(openedA2a?.allowedTools ?? []), ...(missionRegistration ? ['mission.events'] : [])])],
       allowWrites: channelPolicy.allowWrites || (openedBoard?.allowWrites ?? false) || (openedArchive?.allowWrites ?? false) || (openedA2a?.allowWrites ?? false) });
     const actor: WorkActor = frozen({ tenantId: policy.tenantId, principalId: policy.principalId,
-      allowedTools: [...policy.allowedTools], allowedLabels: [...policy.allowedLabels], allowedDestinations: [...policy.allowedDestinations], allowWrites: policy.allowWrites });
+      allowedTools: [...policy.allowedTools], allowedLabels: [...policy.allowedLabels], allowedDestinations: [...policy.allowedDestinations], allowWrites: policy.allowWrites,
+      ...(allowPersonalMemoryWrites === undefined ? {} : { allowPersonalMemoryWrites }) });
     // Identity-only channel binding; execution entry points pass the full actor above.
     const executionActor = frozen({ tenantId: actor.tenantId, principalId: actor.principalId });
     const knowledgeActor: TrustedKnowledgeActor = frozen({ tenantId: actor.tenantId, principalId: actor.principalId, agentId,

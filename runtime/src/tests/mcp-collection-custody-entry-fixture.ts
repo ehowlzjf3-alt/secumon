@@ -109,14 +109,19 @@ export async function seedCollectionCustodyEntry(t: TestContext, backend: 'sqlit
     const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), directory, undefined, mcpFixtureIdentityOptions(options));
     try { return await read(stores); } finally { await stores.close(); }
   };
-  const inspect = () => withStores(async stores => {
+  const inspect = (bodyAccess: 'denied' | 'permitted' = 'denied') => withStores(async stores => {
     const current = await stores.state.get(workId); assert.ok(current);
     const selected = current.attempts.find(value => value.id === attempt.id); assert.ok(selected);
     const receipts = await Promise.all([`dispatch:${attempt.id}`, `read:${attempt.id}:${head.id}`, responseId]
       .map(id => stores.state.receipt(workId, id)));
     const originals = await Promise.all(immutableRefs.map(async ref => ({ ref, bytes: Array.from(await stores.artifacts.get(ref, originalPolicy)) })));
-    await assert.rejects(stores.artifacts.get(raw, current.policy), /artifact_access_denied/);
-    await assert.rejects(stores.artifacts.get(head, current.policy), /artifact_access_denied/);
+    if (bodyAccess === 'denied') {
+      await assert.rejects(stores.artifacts.get(raw, current.policy), /artifact_access_denied/);
+      await assert.rejects(stores.artifacts.get(head, current.policy), /artifact_access_denied/);
+    } else {
+      assert.deepEqual(await stores.artifacts.get(raw, current.policy), await stores.artifacts.get(raw, originalPolicy));
+      assert.deepEqual(await stores.artifacts.get(head, current.policy), await stores.artifacts.get(head, originalPolicy));
+    }
     return { state: current, attempt: selected, receipts, originals,
       checkpoint: await new ReadCheckpointReader({ ...current, policy: originalPolicy }, stores.artifacts, new Sha256Digester()).load(head),
       receive: await stores.state.receipt(workId, `receive:${attempt.id}`),
@@ -164,6 +169,8 @@ export async function seedCollectionCustodyEntry(t: TestContext, backend: 'sqlit
   // Expiration closes the original attempt's call set without rewriting its owner, lease, or receipt timestamps.
   options.now = attempt.leaseUntil + 1;
   return { options, directory, workId, sessionId: session.scope.sessionId, conversationId, before, inspect, unchangedOriginal,
+    originalPolicy: structuredClone(originalPolicy),
+    retainedOriginal: { options, workId, attemptId: attempt.id, scope: session.scope, raw, originalHead: head, responseCommandId: responseId },
     noBody, noExtraExecution, cleanupWith(close: () => Promise<void>) { extraClose = close; },
     readResume: (ref: ArtifactRef) => withStores(async stores => {
       const current = await stores.state.get(workId); assert.ok(current);

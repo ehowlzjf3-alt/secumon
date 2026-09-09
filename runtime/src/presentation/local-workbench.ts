@@ -12,7 +12,7 @@ import { newWork } from '../application/new-work.js';
 import { ConversationBindingSchema, parseContract } from '../application/contracts.js';
 import { asJson } from '../application/plan-validator.js';
 import { transact } from '../application/work-transactions.js';
-import type { WorkActor } from '../application/work-resources.js';
+import { canWritePersonalMemory, type WorkActor } from '../application/work-resources.js';
 import { RESOURCE_TOOL_IDS } from '../application/resource-tools.js';
 import { KNOWLEDGE_TOOL_IDS } from '../application/knowledge-tools.js';
 import type { SessionRecord } from '../domain/session.js';
@@ -96,14 +96,14 @@ export class LocalWorkbench {
   config(): WorkbenchConfig {
     if (this.#profile.general) return { profile: this.#profile.general.provider === 'registered' ? 'local-registered' : 'local-synthetic', generalRequests: true, conversationId: this.#conversationId,
       persistentSession: { agentId: this.#profile.general.agentId, ...(this.#selectedSession ? { sessionId: this.#selectedSession.scope.sessionId } : {}) },
-      memoryDrafts: Boolean(this.#profile.memoryDrafts), personalMemoryBackend: this.#profile.general.personalMemoryBackend,
+      memoryDrafts: Boolean(this.#profile.memoryDrafts), personalMemoryWritable: canWritePersonalMemory(this.#actor), personalMemoryBackend: this.#profile.general.personalMemoryBackend,
       residentMissions: Boolean(this.#profile.general.missions),
       scenarios: [], modes: ['auto', 'fast', 'deep'], allowDiagnostics: true,
       model: this.#profile.general.provider === 'registered' ? 'registered-agent-turn' : 'synthetic-agent-turn', modelInfo: this.#profile.general.modelInfo,
       compactProvider: this.#profile.compactProvider, deliveryMeaning: 'local-channel-storage', pageSize: 20 };
     return { profile: 'local-synthetic', conversationId: this.#conversationId, ...(this.#profile.agentId ? { persistentSession: {
       agentId: this.#profile.agentId, ...(this.#selectedSession ? { sessionId: this.#selectedSession.scope.sessionId } : {}) } } : {}),
-      memoryDrafts: Boolean(this.#profile.memoryDrafts), residentMissions: false, ...(this.#profile.personalMemoryBackend ? { personalMemoryBackend: this.#profile.personalMemoryBackend } : {}), scenarios: [
+      memoryDrafts: Boolean(this.#profile.memoryDrafts), personalMemoryWritable: canWritePersonalMemory(this.#actor), residentMissions: false, ...(this.#profile.personalMemoryBackend ? { personalMemoryBackend: this.#profile.personalMemoryBackend } : {}), scenarios: [
       { id: 'documents-simple', title: '문서 근거 확인', description: '합성 문서에서 현행 보존기간을 확인합니다.' },
       { id: 'observations-simple', title: '관측 범위 확인', description: '합성 관측의 수집 완료 여부를 확인합니다.' },
       { id: 'documents-question', title: '질문에 답한 뒤 문서 확인', description: '답변 저장으로 문서 선택을 확인한 뒤 명시 실행하는 합성 예제입니다.' },

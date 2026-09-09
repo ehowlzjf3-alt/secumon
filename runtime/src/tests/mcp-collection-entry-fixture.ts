@@ -31,6 +31,7 @@ export interface CollectionEntryOptions {
   now: number; window?: number;
 }
 export const COLLECTION_ENTRY_TEXT = '[합성 collection] 지정한 자료의 모든 항목을 읽고 항목별 값과 합계를 알려 줘. 원문 보존.';
+export const COLLECTION_ENTRY_RESUME_TEXT = '[합성 collection 재개] 권한을 다시 허용했으니 저장된 원문으로 기존 항목별 값과 합계 작업을 이어서 완료해 줘. 원문 보존.';
 export const COLLECTION_ENTRY_TAIL = COLLECTION_ENTRY_TEXT + ' ' +
   '원문 보존. 완료된 항목의 원래 출처를 유지하고 전체 항목을 확인한 뒤 답한다. '.repeat(32);
 export const entryIds = (scenario: EntryScenario) => scenario === 'nonfinal' ? ['a', 'b', 'c', 'd'] : ['a', 'b'];
@@ -136,7 +137,7 @@ export function createCollectionEntryHost(options: CollectionEntryOptions, mode:
       const input = request.input, packet = input.packet, session = packet.session;
       const raw = session?.entries.find(entry => entry.role === 'user' && entry.workId === packet.workId &&
         entry.sourceId === session.basis.input.messageId && entry.sequence === session.basis.input.sequence);
-      assert.ok(raw && [COLLECTION_ENTRY_TEXT, COLLECTION_ENTRY_TAIL].includes(raw.text), 'only exact fixture inputs are accepted');
+      assert.ok(raw && [COLLECTION_ENTRY_TEXT, COLLECTION_ENTRY_TAIL, COLLECTION_ENTRY_RESUME_TEXT].includes(raw.text), 'only exact fixture inputs are accepted');
       const wanted = entryIds(options.scenario);
       const evidence = wanted.map(id => packet.evidence.find(value => value.facts['collection.record'] === id &&
         value.status === 'accepted' && value.coverage === 'complete' && value.scope === packet.goal.scope && typeof value.facts.value === 'number'));
@@ -199,7 +200,7 @@ export interface CollectionEntryMarker {
   attemptId: string; task: TaskSpec; raw: ArtifactRef; responseCommandId: string; originalHead: ArtifactRef;
   original: WorkState; calibration: { requiredTokens: number; selectedTokens: number; inputLimit: number; window: number } | null;
 }
-export async function readEntry(marker: CollectionEntryMarker) {
+export async function readEntry(marker: Pick<CollectionEntryMarker, 'options' | 'workId' | 'attemptId' | 'scope' | 'raw' | 'originalHead' | 'responseCommandId'>) {
   const stores = await openAgentStores(new FileAgentProfileStore(runtimeRoot), marker.options.directory, undefined, mcpFixtureIdentityOptions(marker.options));
   try {
     const state = await stores.state.get(marker.workId); assert.ok(state);

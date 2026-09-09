@@ -140,6 +140,83 @@ test('host caller restrictions reach the actual reader and do not prevent author
   await assert.rejects(h.root.forPersonal({ ...actor, principalId: 'other' }), /knowledge_unavailable/);
 });
 
+async function storedPersonalOriginals(h: Awaited<ReturnType<typeof fixture>>) {
+  const scope = { partition: 'personal' as const, agentId: h.access.actor.agentId!, principalId: actor.principalId };
+  return {
+    record: await h.f.stores.knowledge.get(actor.tenantId, h.remember.id, scope),
+    receipt: await h.f.stores.knowledge.receipt(actor.tenantId, h.remember.id, h.remember.commandId, scope),
+    input: await h.f.stores.sessions.input(h.session.scope, h.remember.source.messageId),
+  };
+}
+
+for (const personalMemory of ['sqlite', 'documents'] as const) {
+  test(`personal coherent lookup ${personalMemory}: three complete snapshots preserve originals and independent revalidation after reopen`, async t => {
+    const h = await fixture(t, 'sqlite', personalMemory), saved = await h.memory.remember(h.remember);
+    const originals = await storedPersonalOriginals(h), state = await h.f.stores.state.get(h.accepted.workId);
+    for (const reopened of [false, true]) {
+      if (reopened) await h.reopen();
+      let reads = 0;
+      const repository = new Proxy(h.f.stores.knowledge, { get(target, key) {
+        if (key === 'get') return async (...args: Parameters<KnowledgeRepository['get']>) => {
+          reads++; return target.get(...args);
+        };
+        const value: unknown = Reflect.get(target, key); return typeof value === 'function' ? value.bind(target) : value;
+      } });
+      const memory = await h.makeRoot(repository).forPersonal(actor), read = await memory.get(h.remember.id);
+      assert.deepEqual(read.card, saved.card);
+      assert.equal(reads, 3, 'one initial full snapshot and two matching complete vectors, without the discarded fourth read');
+      reads = 0;
+      assert.equal(await memory.validateDependencies([read.dependency]), true);
+      assert.equal(reads, 3, 'a separate validation still rereads all three snapshots');
+      assert.deepEqual(await storedPersonalOriginals(h), originals);
+      assert.deepEqual(await h.f.stores.state.get(h.accepted.workId), state);
+      assert.deepEqual(h.f.tool.invocations, []);
+      t.diagnostic(JSON.stringify({ personalMemory, reopened, lookupRecordReads: 3, independentValidationRecordReads: reads,
+        measurement: 'Actual repository get calls for one original personal record; not HTTP latency or physical disk I/O.' }));
+    }
+  });
+}
+
+test('personal coherent lookup: source withdrawal during the second snapshot cannot return the earlier original', async t => {
+  const h = await fixture(t, 'sqlite', 'documents'); await h.memory.remember(h.remember);
+  const originals = await storedPersonalOriginals(h);
+  let reads = 0, changedState: WorkState | undefined;
+  const repository = new Proxy(h.f.stores.knowledge, { get(target, key) {
+    if (key === 'get') return async (...args: Parameters<KnowledgeRepository['get']>) => {
+      const record = await target.get(...args);
+      if (++reads === 2) changedState = (await h.mutate(state => { state.policy.allowedDestinations = []; })).state;
+      return record;
+    };
+    const value: unknown = Reflect.get(target, key); return typeof value === 'function' ? value.bind(target) : value;
+  } });
+  const memory = await h.makeRoot(repository).forPersonal(actor);
+  await assert.rejects(memory.get(h.remember.id), /knowledge_unavailable|knowledge_contention/);
+  assert.ok(changedState); assert.ok(reads >= 3 && reads <= 5, 'the changed source participates in the remaining bounded full snapshots');
+  assert.deepEqual(await h.f.stores.state.get(h.accepted.workId), changedState);
+  assert.deepEqual(await storedPersonalOriginals(h), originals);
+  assert.deepEqual(h.f.tool.invocations, []);
+});
+
+test('personal coherent lookup: the final snapshot rechecks current actor authority without changing stored originals', async t => {
+  const h = await fixture(t); await h.memory.remember(h.remember);
+  const originals = await storedPersonalOriginals(h), state = await h.f.stores.state.get(h.accepted.workId);
+  let reads = 0;
+  const repository = new Proxy(h.f.stores.knowledge, { get(target, key) {
+    if (key === 'get') return async (...args: Parameters<KnowledgeRepository['get']>) => {
+      const record = await target.get(...args);
+      if (++reads === 3) h.access.actor.allowedLabels = [];
+      return record;
+    };
+    const value: unknown = Reflect.get(target, key); return typeof value === 'function' ? value.bind(target) : value;
+  } });
+  const memory = await h.makeRoot(repository).forPersonal(actor);
+  await assert.rejects(memory.get(h.remember.id), /knowledge_unavailable/);
+  assert.equal(reads, 3, 'the final complete vector cannot reuse authority checked for the earlier vectors');
+  assert.deepEqual(await h.f.stores.state.get(h.accepted.workId), state);
+  assert.deepEqual(await storedPersonalOriginals(h), originals);
+  assert.deepEqual(h.f.tool.invocations, []);
+});
+
 test('reviewer grants cannot expose another user personal record or command receipt', async t => {
   const h = await fixture(t); await h.memory.remember(h.remember);
   const retainedService = h.memory;

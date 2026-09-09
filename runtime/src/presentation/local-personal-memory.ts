@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { LocalProfile } from './local-profile.js';
-import type { WorkActor } from '../application/work-resources.js';
+import { canWritePersonalMemory, type WorkActor } from '../application/work-resources.js';
 import type { PersonalMemoryRef } from '../domain/knowledge.js';
 
 const id = z.string().min(1).max(256);
@@ -22,7 +22,7 @@ export type PersonalRememberInput = z.infer<typeof PersonalRememberSchema>;
 export type PersonalReviseInput = z.infer<typeof PersonalReviseSchema>;
 export type PersonalForgetInput = z.infer<typeof PersonalForgetSchema>;
 export type PersonalRecallInput = z.infer<typeof PersonalRecallSchema>;
-function assertWritable(actor: WorkActor) { if (actor.allowWrites === false) throw new Error('personal_memory_read_only'); }
+function assertWritable(actor: WorkActor) { if (!canWritePersonalMemory(actor)) throw new Error('personal_memory_read_only'); }
 
 async function sourceReference(profile: LocalProfile, actor: WorkActor, source: z.infer<typeof PersonalSourceSchema>) {
   if (source.kind === 'existing') return { sessionId: source.sessionId, messageId: source.messageId, quote: source.quote };

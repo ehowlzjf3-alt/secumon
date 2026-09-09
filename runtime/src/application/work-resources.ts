@@ -14,7 +14,12 @@ import { effectProofsCurrent } from './effect-proofs.js';
 import type { GuidanceCatalog, GuidanceManifest } from './guidance.js';
 import { ReadCheckpoints } from './read-checkpoints.js';
 
-export type WorkActor = { tenantId: string; principalId: string } & Partial<Pick<Policy, 'allowedLabels' | 'allowedTools' | 'allowedDestinations' | 'allowWrites'>>;
+export type WorkActor = { tenantId: string; principalId: string;
+  /** Personal-memory management only; never grants permission to execute write tools. */
+  allowPersonalMemoryWrites?: boolean;
+} & Partial<Pick<Policy, 'allowedLabels' | 'allowedTools' | 'allowedDestinations' | 'allowWrites'>>;
+/** Omission preserves existing trusted callers; an explicit memory decision overrides only memory access. */
+export function canWritePersonalMemory(actor: WorkActor): boolean { return actor.allowPersonalMemoryWrites ?? (actor.allowWrites !== false); }
 export interface ToolContractPin { id: string; version: string; digest: string }
 export interface ResultMaterialization {
   result: ToolResult;

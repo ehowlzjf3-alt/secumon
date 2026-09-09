@@ -1,5 +1,5 @@
 {
-  "revision": "v0.85",
+  "revision": "v0.86",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -4423,6 +4423,23 @@
         "evidence": "runtime/evidence/C05-write-computer-host-checkpoint.json",
         "buildExitCode": 0,
         "detailedTestsRun": false
+      },
+      "completion_acceptance402": {
+        "checkpoint": 402,
+        "status": "local_named_flows_verified_response_time_acceptance_pending",
+        "plan": "design/chapters/C05-C06-completion-plan.md",
+        "result": "design/chapters/C05-C06-completion-result.md",
+        "evidence": "runtime/evidence/checkpoint402.json",
+        "uniqueTests": 184,
+        "passingTests": 184,
+        "newTests": 6,
+        "finalSourceEvidence": "runtime/evidence/checkpoint402-final-source.json",
+        "measurements": "runtime/evidence/checkpoint402-measurements.json",
+        "browser": "runtime/evidence/checkpoint402-browser.json",
+        "limits": [
+          "One local timing sample; document memory still about23.7s and SQLite-memory elapsed time did not improve. Final selected-deployment response-time acceptance remains.",
+          "Actual model/API tests remain stopped; real services and current Linux/native Windows remain unverified."
+        ]
       }
     },
     {
@@ -4508,6 +4525,23 @@
         "updatedAt": "2026-09-08",
         "result": "design/chapters/C06-C10-implementation-result.md",
         "checkpoint": 367
+      },
+      "completion_acceptance402": {
+        "checkpoint": 402,
+        "status": "local_named_flows_verified_response_time_acceptance_pending",
+        "plan": "design/chapters/C05-C06-completion-plan.md",
+        "result": "design/chapters/C05-C06-completion-result.md",
+        "evidence": "runtime/evidence/checkpoint402.json",
+        "uniqueTests": 184,
+        "passingTests": 184,
+        "newTests": 6,
+        "finalSourceEvidence": "runtime/evidence/checkpoint402-final-source.json",
+        "measurements": "runtime/evidence/checkpoint402-measurements.json",
+        "browser": "runtime/evidence/checkpoint402-browser.json",
+        "limits": [
+          "One local timing sample; document memory still about23.7s and SQLite-memory elapsed time did not improve. Final selected-deployment response-time acceptance remains.",
+          "Actual model/API tests remain stopped; real services and current Linux/native Windows remain unverified."
+        ]
       }
     },
     {
@@ -6666,7 +6700,7 @@
     }
   ],
   "legacy_next_work_item": "P1-06",
-  "next_execution_chapter": "C05",
+  "next_execution_chapter": "C10",
   "reconciliation_documents": [
     "design/chapters/workspace-agent-defaults.md",
     "design/chapters/agent-lifecycle-and-memory-boundaries.md",
@@ -6734,13 +6768,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 401,
-      "status": "C09_retained_history_local_verified_C05_C06_next",
-      "plan": "design/chapters/C09-retained-history-plan.md",
-      "nextChapter": "C05",
+      "checkpoint": 402,
+      "status": "C05_C06_local_completion_and_memory_cost_verified_C10_next",
+      "plan": "design/chapters/C05-C06-completion-plan.md",
+      "nextChapter": "C10",
       "preparedIdentityTests": 23,
       "existingFixtureFilesAdapted": 1,
-      "result": "design/chapters/C09-retained-history-result.md",
+      "result": "design/chapters/C05-C06-completion-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -6855,9 +6889,8 @@
         ]
       },
       "remaining": [
-        "C05 policy regrant to original stored completion; C06 personal-memory HTTP permissions/latency/browser",
         "C10 earliest restore interruption, retained-original backup/transfer and local capacity acceptance, installation; current Linux/native Windows/real PostgreSQL",
-        "Final integration and actual corporate MCP/Knox/external A2A, operational retention/capacity and deployment; model/API trials remain stopped"
+        "Final integration including selected-deployment memory HTTP response time (documents fixture23.7s), actual corporate MCP/Knox/external A2A, operational retention/capacity and deployment; model/API trials remain stopped"
       ],
       "history": [
         {
@@ -6979,6 +7012,12 @@
           "status": "C09_history_read_cost_and_capacity_preservation_local_verified",
           "nextChapter": "C09",
           "evidence": "runtime/evidence/checkpoint400.json"
+        },
+        {
+          "checkpoint": 401,
+          "status": "C09_retained_history_local_verified_C05_C06_next",
+          "nextChapter": "C05",
+          "evidence": "runtime/evidence/checkpoint401.json"
         }
       ],
       "C03": {
@@ -7015,11 +7054,15 @@
         "result": "design/chapters/C05-ordered-verification-result.md",
         "evidence": "runtime/evidence/C05-ordered-checkpoint.json",
         "remaining": [
-          "Trusted policy regrant followed by explicit user resume and full stored-collection CLI completion not yet accepted end to end; denied-entry and independent successor tests do not substitute for it",
           "Current Linux/native Windows/final integration and actual models/services/Knox/A2A/PostgreSQL acceptance; actual model/API tests remain stopped"
         ],
         "sourceReadComparison": "runtime/evidence/C05-source-read-comparison2.json",
-        "latestCheckpoint": "runtime/evidence/checkpoint375.json"
+        "latestCheckpoint": "runtime/evidence/checkpoint375.json",
+        "completion402": {
+          "status": "trusted_policy_regrant_and_explicit_stored_collection_cli_completion_verified",
+          "tests": 2,
+          "evidence": "runtime/evidence/checkpoint402.json"
+        }
       },
       "C06Preparation": "design/chapters/C06-ordered-verification-preparation.md",
       "C06": {
@@ -7032,14 +7075,28 @@
         "sameSourceForAllTests": false,
         "finalSource": "runtime/evidence/checkpoint376-final-source.json",
         "remaining": [
-          "C06 browser rendering and actual user interaction",
           "Current Linux/native Windows and final integrated regression",
           "Actual Knox/corporate integrations and actual model quality; model/API tests remain stopped",
-          "C05 trusted policy regrant and explicit stored-collection CLI resume end-to-end acceptance",
-          "Memory-bearing HTTP completion latency: target7 exceeded fixture20s; bounded60s acceptance wait is not a speed improvement",
-          "Memory-only write permission ergonomics: current host allowWrites also requires actual write/computer registration; test excludes all write tools from allowlist",
-          "Registry publication and version upgrades are outside this same-version isolated installation test"
-        ]
+          "Registry publication and version upgrades are outside this same-version isolated installation test",
+          "Measured memory lookups decrease2064 to1845, but documents HTTP remains23.7s; final selected-deployment response-time acceptance is pending, not a claimed SLA or uniform speedup."
+        ],
+        "completion402": {
+          "checkpoint": 402,
+          "status": "local_named_flows_verified_response_time_acceptance_pending",
+          "plan": "design/chapters/C05-C06-completion-plan.md",
+          "result": "design/chapters/C05-C06-completion-result.md",
+          "evidence": "runtime/evidence/checkpoint402.json",
+          "uniqueTests": 184,
+          "passingTests": 184,
+          "newTests": 6,
+          "finalSourceEvidence": "runtime/evidence/checkpoint402-final-source.json",
+          "measurements": "runtime/evidence/checkpoint402-measurements.json",
+          "browser": "runtime/evidence/checkpoint402-browser.json",
+          "limits": [
+            "One local timing sample; document memory still about23.7s and SQLite-memory elapsed time did not improve. Final selected-deployment response-time acceptance remains.",
+            "Actual model/API tests remain stopped; real services and current Linux/native Windows remain unverified."
+          ]
+        }
       },
       "C07Preparation": "design/chapters/C07-ordered-verification-preparation.md",
       "C07": {
@@ -8537,6 +8594,23 @@
         ],
         "newColdArchiveSubsystemAdded": false,
         "evidence": "runtime/evidence/checkpoint401.json"
+      },
+      "C05C06Completion": {
+        "checkpoint": 402,
+        "status": "local_named_flows_verified_response_time_acceptance_pending",
+        "plan": "design/chapters/C05-C06-completion-plan.md",
+        "result": "design/chapters/C05-C06-completion-result.md",
+        "evidence": "runtime/evidence/checkpoint402.json",
+        "uniqueTests": 184,
+        "passingTests": 184,
+        "newTests": 6,
+        "finalSourceEvidence": "runtime/evidence/checkpoint402-final-source.json",
+        "measurements": "runtime/evidence/checkpoint402-measurements.json",
+        "browser": "runtime/evidence/checkpoint402-browser.json",
+        "limits": [
+          "One local timing sample; document memory still about23.7s and SQLite-memory elapsed time did not improve. Final selected-deployment response-time acceptance remains.",
+          "Actual model/API tests remain stopped; real services and current Linux/native Windows remain unverified."
+        ]
       }
     }
   }

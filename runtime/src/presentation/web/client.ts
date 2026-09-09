@@ -383,6 +383,7 @@ const residentUI = installResidentMissionsUI({ request, epoch: () => sessionEpoc
   errorCode: error => error instanceof RequestError ? error.code : null, storage: () => sessionStorage });
 const memoryUI = installPersonalMemoryUI({ request, current, workId: () => selectedId, epoch: () => sessionEpoch, errorText,
   sessionId: () => persistentSessionId, documentDrafts: () => config?.memoryDrafts === true,
+  writable: () => config?.personalMemoryWritable === true,
   refresh: async () => { const view = await readView('conversation', true); if (view && selectedId === view.workId && !stream) connectStream(view.workId); await loadHistory(); await loadWorks(); } });
 element('review-memory').addEventListener('click', () => {
   element<HTMLDetailsElement>('personal-memory').open = true;
@@ -401,6 +402,7 @@ async function loadHistory(more = false) {
       item.append(node('strong', entry.role === 'user' ? '사용자' : '담당'), node('span', ` · ${entry.kind} · ${entry.workId}`, 'muted'), node('p', entry.text));
       if (entry.role === 'user') {
         const remember = node('button', '이 발언을 기억 출처로 선택', 'button quiet'); remember.type = 'button';
+        remember.disabled = config?.personalMemoryWritable !== true;
         remember.addEventListener('click', () => { memoryUI.chooseSource({ sessionId: page.sessionId, messageId: entry.sourceId, quote: entry.text }); }); item.append(remember);
       }
       element('history-list').append(item);
@@ -642,6 +644,7 @@ async function start() {
     element('persistent-conversation').hidden = !config.persistentSession;
     element('personal-memory').hidden = !config.persistentSession;
     element('memory-document-tools').hidden = !config.memoryDrafts;
+    memoryUI.configure();
     element('memory-backend').textContent = config.personalMemoryBackend === 'documents' ? '문서 저장' : config.personalMemoryBackend === 'postgres' ? 'PostgreSQL 저장' : config.personalMemoryBackend === 'sqlite' ? 'SQLite 저장' : '';
     element('attach-form').closest('details')!.hidden = Boolean(config.persistentSession);
     element<HTMLSelectElement>('scenario').replaceChildren(...config.scenarios.map(scenario => { const option = node('option', scenario.title); option.value = scenario.id; return option; }));

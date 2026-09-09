@@ -7,7 +7,6 @@ import type { WorkState } from '../domain/model.js';
 import type { WorkViewResult } from '../domain/work-view.js';
 import type { WebAcceptResult, WebCommandResult, WebConversation, WorkList } from '../presentation/web-contracts.js';
 import { deploymentFixture, deploymentRequest, type DeploymentSpec, type DeploymentWeb } from './agent-deployment-entry-fixture.js';
-import { WRITE_TOOL } from './host-write-computer-entry-fixture.js';
 
 const run = { requestId: 'same-run', kind: 'run', expectedGoalRevision: 1 } as const;
 async function accept(web: DeploymentWeb, requestId: string, rawText: string) {
@@ -44,16 +43,14 @@ function collaborationOff(web: DeploymentWeb, allowMemorySelection = false) {
   assert.equal(profile.archive, null); assert.equal(profile.missions, null); assert.equal(profile.a2a, null);
   assert.deepEqual(profile.missionSources, []);
   assert.ok(profile.policy.allowedTools.every(id => id === 'core.guidance.load' || !id.startsWith('core.')));
-  assert.equal(profile.policy.allowWrites, allowMemorySelection); assert.equal(profile.actor.allowWrites, allowMemorySelection);
+  assert.equal(profile.policy.allowWrites, false); assert.equal(profile.actor.allowWrites, false);
+  assert.equal(profile.actor.allowPersonalMemoryWrites, allowMemorySelection ? true : undefined);
+  assert.equal(web.config.personalMemoryWritable, allowMemorySelection);
 }
 function noWriteExecution(web: DeploymentWeb) {
-  const profile = web.app.profile.general!, observed = web.writeHost;
-  assert.ok(observed); assert.ok(profile.contracts.get(WRITE_TOOL, '1'));
-  assert.equal(profile.policy.allowedTools.includes(WRITE_TOOL), false);
-  assert.equal(profile.contracts.checkExecution({ id: 'forbidden-write', description: 'Registered but not permitted', toolId: WRITE_TOOL,
-    toolVersion: '1', effect: 'write', input: { text: 'reviewed' }, dependsOn: [], maxAttempts: 1, satisfies: [] }, profile.policy), 'tool_permission_denied');
-  assert.equal(observed.writes, 0); assert.equal(observed.validations, 0); assert.equal(observed.effectChecks, 0);
-  assert.equal(observed.inputs.length, 0);
+  const profile = web.app.profile.general!;
+  assert.equal(profile.policy.allowWrites, false); assert.equal(profile.actor.allowWrites, false);
+  assert.deepEqual(profile.services.tools.filter(tool => tool.definition.effect === 'write'), [], 'memory permission does not register any external write tool');
 }
 
 test('two business deployments use one engine through HTTP with distinct configuration, tools and selected skills, and isolated work/session reopen', async t => {
@@ -66,6 +63,14 @@ test('two business deployments use one engine through HTTP with distinct configu
   const first = await accept(a, 'same-input', deploymentRequest(research.spec));
   const second = await accept(b, 'same-input', deploymentRequest(review.spec));
   assert.notEqual(first.workId, second.workId); assert.notEqual(first.sessionId, second.sessionId);
+  for (const [web, input, spec] of [[a, first, research.spec], [b, second, review.spec]] as const) {
+    const before = await web.app.profile.general!.runtime.state(input.workId);
+    assert.equal((await web.request<{ code: string }>('/api/memories/remember', { id: 'not-allowed', requestId: 'not-allowed', title: '기본 읽기 전용',
+      source: { kind: 'existing', sessionId: input.sessionId, messageId: 'same-input', quote: deploymentRequest(spec) } }, 403)).code, 'personal_memory_read_only');
+    assert.equal((await web.request<{ code: string }>(`/api/works/${input.workId}/memories`, { requestId: 'not-allowed', expectedGoalRevision: before.goal.revision,
+      expectedStateRevision: before.revision, refs: [] }, 409)).code, 'personal_memory_not_selectable');
+    assert.deepEqual(await web.app.profile.general!.runtime.state(input.workId), before); noWriteExecution(web);
+  }
   const untouched = await b.app.profile.general!.runtime.state(second.workId);
   completed(await a.request<WebCommandResult>(`/api/works/${first.workId}/commands`, run), research.spec);
   assert.deepEqual(await b.app.profile.general!.runtime.state(second.workId), untouched);
@@ -109,11 +114,8 @@ test('two deployments keep same-ID personal memories separate through HTTP recal
   for (const [index, deployment] of f.deployments.entries()) {
     const web = initial[index]!, source = await accept(web, 'same-source', deployment.spec.preference); sources.push(source);
     const profile = web.app.profile.general!, before = await profile.runtime.state(source.workId); sourceStates.push(before);
-    // Seed through the existing trusted host service; public HTTP selection below
-    // requires the explicitly enabled work-actor state-editing permission.
-    const memory = await profile.personalKnowledge(profile.actor);
-    const saved = await memory.remember({ id: 'same-preference', commandId: 'same-save', title: '담당 표현 방식',
-      source: { sessionId: source.sessionId, messageId: 'same-source', quote: deployment.spec.preference } });
+    const saved = await web.request<{ card: KnowledgeCard }>('/api/memories/remember', { id: 'same-preference', requestId: 'same-save', title: '담당 표현 방식',
+      source: { kind: 'existing', sessionId: source.sessionId, messageId: 'same-source', quote: deployment.spec.preference } });
     assert.equal(saved.card.owner?.agentId, deployment.agentId); assert.equal(saved.card.owner?.principalId, 'same-operator');
     assert.equal(saved.card.body, deployment.spec.preference); assert.equal(saved.card.revision, 1);
     assert.deepEqual(await profile.runtime.state(source.workId), before);
@@ -123,7 +125,7 @@ test('two deployments keep same-ID personal memories separate through HTTP recal
   const memoryA = await initial[0]!.app.profile.general!.personalKnowledge(initial[0]!.app.profile.general!.actor);
   await assert.rejects(memoryA.remember({ id: 'foreign-source', commandId: 'foreign-source', title: '다른 담당의 입력',
     source: { sessionId: sources[1]!.sessionId, messageId: 'same-source', quote: review.spec.preference } }), /^Error: session_unavailable$/);
-  for (const web of initial) { await web.app.close(); assert.equal(web.writeHost!.toolCloses, 1); }
+  for (const web of initial) { await web.app.close(); assert.equal(web.observed.toolCloses, 1); }
   const reopened = [await research.open(sources[0]!.sessionId), await review.open(sources[1]!.sessionId)];
   for (const [index, deployment] of f.deployments.entries()) {
     const web = reopened[index]!, profile = web.app.profile.general!, other = f.deployments[1 - index]!;
@@ -157,6 +159,6 @@ test('two deployments keep same-ID personal memories separate through HTTP recal
     assert.deepEqual(history.entries.filter(entry => entry.role === 'user').map(entry => entry.text), [deployment.spec.preference, deploymentRequest(deployment.spec)]);
     assert.equal(JSON.stringify(history).includes(other.spec.preference), false);
     noWriteExecution(web);
-    await web.app.close(); assert.equal(web.writeHost!.toolCloses, 1);
+    await web.app.close(); assert.equal(web.observed.toolCloses, 1);
   }
 });

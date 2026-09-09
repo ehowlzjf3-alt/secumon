@@ -62,6 +62,8 @@ export interface WorkbenchConfig {
   conversationId: string;
   persistentSession?: { agentId: string; sessionId?: string };
   memoryDrafts?: boolean;
+  /** Effective permission for personal-memory changes and explicit selection; independent of external writes. */
+  personalMemoryWritable?: boolean;
   residentMissions?: boolean;
   personalMemoryBackend?: 'sqlite' | 'documents' | 'postgres';
   compactProvider?: 'synthetic' | 'registered' | null;

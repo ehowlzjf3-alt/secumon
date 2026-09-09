@@ -190,11 +190,18 @@ test('surface authority rejects other users, labels, destinations and session wo
     assert.equal((await next.memorySearch('보고서')).cards.length, 1);
     await assert.rejects(next.memorySelected(x.workId), /session_work_unavailable/);
     await assert.rejects(next.memoryRecall(x.workId, { requestId: 'wrong-session', expectedGoalRevision: 1, expectedStateRevision: 1, refs: [] }), /session_work_unavailable/);
-    const readonly = new LocalWorkbench(profile, { ...actor, allowWrites: false });
-    assert.equal((await readonly.memoryGet('report-style')).card.body, original);
-    await assert.rejects(readonly.memoryForget({ id: 'report-style', requestId: 'read-only-forget', expectedRevision: 1, reason: '읽기 전용 요청' }), /personal_memory_read_only/);
-    await assert.rejects(readonly.memoryRemember({ ...remember(x.sessionId!), requestId: 'read-only-remember', id: 'read-only' }), /personal_memory_read_only/);
-    await readonly.drain();
+    for (const permission of [{ allowWrites: false }, { allowWrites: true, allowPersonalMemoryWrites: false }]) {
+      const readonly = new LocalWorkbench(profile, { ...actor, ...permission }, 'web', { sessionId: x.sessionId! });
+      assert.equal(readonly.config().personalMemoryWritable, false);
+      assert.equal((await readonly.memoryGet('report-style')).card.body, original);
+      await assert.rejects(readonly.memoryForget({ id: 'report-style', requestId: 'read-only-forget', expectedRevision: 1, reason: '읽기 전용 요청' }), /personal_memory_read_only/);
+      await assert.rejects(readonly.memoryRemember({ ...remember(x.sessionId!), requestId: 'read-only-remember', id: 'read-only' }), /personal_memory_read_only/);
+      const before = await profile.runtime.state(x.workId);
+      await assert.rejects(readonly.memoryRecall(x.workId, { requestId: 'read-only-select', expectedGoalRevision: before.goal.revision,
+        expectedStateRevision: before.revision, refs: [] }), /personal_memory_not_selectable/);
+      assert.deepEqual(await profile.runtime.state(x.workId), before);
+      await readonly.drain();
+    }
     foreign = await openAgentLocalProfile(join(f.base, 'other-agent'), {}, undefined, f.hostOptions); const otherAgent = new LocalWorkbench(foreign);
     await assert.rejects(otherAgent.memoryGet('report-style')); assert.deepEqual((await otherAgent.memorySearch('')).cards, []);
     await next.drain(); await otherAgent.drain();

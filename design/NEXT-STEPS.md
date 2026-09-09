@@ -1,5 +1,21 @@
 # 다음 작업
 
+2026-09-09 · checkpoint402 · 기준선 `f93305d`. C05의 신뢰된 권한 복구 → 명시 CLI 재개 → 저장 수집 자료로 원래 목표 완료를 SQLite/file-journal에서 확인했다. 중복 재개는 원문·영수증·정산·대화·결과를 바꾸지 않으며 추가 송신도 없다. 같은 원문을 검증하는 읽기 전용 투영은 유지한다.
+
+C06은 호스트의 선택적 `allowPersonalMemoryWrites`를 기억 저장·정정·잊기·draft·선택과 Web 버튼에 연결했다. 외부 쓰기 도구 등록 없이 `policy.allowWrites:false`인 두 담당의 HTTP 기억 저장·선택·후속 업무를 확인했다. 미지정은 기존 actor 형태와 허가 동작을 유지하고 명시 false는 기억 변경만 거절한다.
+
+기억 조회의 버려지는 사전 자료화를 없앴다. 첫 전체 snapshot이 무효면 즉시 거절하고, 유효하면 같은 snapshot을 안정성 검사의 시작으로 재사용한다. 정상 전체 snapshot3회·동일 벡터2회와 원문·권한·마지막 검증은 유지한다. 원 조회2064→1845회, 상태 조회6365→5927회를 측정했다. 문서형 HTTP24.634→23.677초, SQLite 기억4.128→4.185초의 한 번씩 측정이며 일관된 속도 개선·SLA 증거가 아니다. **문서형23.7초와 실제 배치의 응답 시간 인수는 최종 통합에 남긴다.**
+
+최종 코드에 대응하는 고유184개(신규6·기존178)가 통과했다. build1의176/182에서 실패한 원인과 로그를 보존하고 build2에서 영향받는163개 및 배치2개를 확인했다. 영향없는19개는 재사용했다. build2/core2 exit0, 구조204개·위반0, 시험 후2589개 컴파일 파일과 소스 대조 일치다. 실제 내장 브라우저에서 기억 저장·선택·완료·재접속을 확인했으며, 대화의 접수/결과 각각1개와 원 읽기1회·합성 모델3회가 유지됐다. 실제 모델/API0이며 모든 시험·서버·임시 탭은 종료했다.
+
+[계획](chapters/C05-C06-completion-plan.md) · [결과](chapters/C05-C06-completion-result.md) · [사용법](chapters/C05-C06-completion-usage.md) · [체크포인트](../runtime/evidence/checkpoint402.json) · [측정](../runtime/evidence/checkpoint402-measurements.json) · [남은 확인 목록](REMAINING-ACCEPTANCE.md)
+
+**다음은 C10: 최초 복원 표식 전 중단, 보존 이력 백업/복원/이행, 설치 구성과 용량 인수다.** 이후 최종 통합·응답 시간·실환경을 확인한다. C09 보존 이력의 운영 인수, 현재 Linux/native Windows·실제 PostgreSQL·사내 MCP/Knox·외부 A2A는 남으며 실제 모델/API 중단을 유지한다. 전체 C05/C06/C09/goal 완료 선언이 아니다.
+
+## 이전 기록 — checkpoint401
+
+아래는 당시 기록이며 현재 다음 작업은 checkpoint402를 따른다.
+
 2026-09-09 · checkpoint401 · 기준선 `b9fa88d5`. 새 관측 저장부터 검증된 직전 checkpoint 참조를 현재 목록에서 교체하고, 과거 제어·사건은 원영수증을 통해 조회하도록 연결했다. 원파일·원사건·영수증과 다른 현재 구조의 참조를 보존한다.
 
 업무 mission은 최대512개씩 구간을 연결해 같은 목표의 사건을 이어 받는다. 원 발행 checkpoint/revision을 따라 옛 ID의 원본문 해시를 대조한다. legacy `event_capacity` 종료는 명시적 `continueAfterCapacity` API만 다시 열며, 일반 등록 재전달·취소·완료 업무는 자동 재개하지 않는다.

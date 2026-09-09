@@ -106,7 +106,7 @@ for (const backend of ['sqlite', 'file-journal'] as const) {
   test(`${backend}: custody-free reads keep their original I/O path and a W to M to W custody cycle remains finite`, async t => {
     const f = await fixture(t, backend); const m = await f.service.create(input('M', 'W'));
     const ordinary = f.counted(); assert.equal((await ordinary.service.get('M')).card.body, input('M', 'W').body);
-    assert.deepEqual(ordinary.counts, { works: 4, records: 4 }, 'no retained dependency means no extra state or record reads');
+    assert.deepEqual(ordinary.counts, { works: 3, records: 3 }, 'three complete snapshots need no discarded pre-read or extra custody reads');
     await f.retain('W', [m.dependency]); const before = await f.states.get('W');
     const cyclic = f.counted(); assert.equal((await cyclic.service.get('M')).card.body, m.card.body);
     assert.ok(cyclic.counts.works <= 12 && cyclic.counts.records <= 12, 'custody cycles are visited once per bounded snapshot');

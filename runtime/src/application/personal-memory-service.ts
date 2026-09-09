@@ -4,7 +4,7 @@ import type { WorkState } from '../domain/model.js';
 import type { RuntimeServices } from './services.js';
 import type { PersonalKnowledgeFactory, PersonalMemoryContextProvider } from './personal-memory-ports.js';
 import { PersonalMemoryContextSchema, PersonalMemorySelectionSchema, PersonalMemorySelectSchema } from './personal-memory-contracts.js';
-import { authorizedWork, type WorkActor } from './work-resources.js';
+import { authorizedWork, canWritePersonalMemory, type WorkActor } from './work-resources.js';
 import { asJson } from './plan-validator.js';
 import { transact } from './work-transactions.js';
 import { quarantineKnowledge } from './data-lifecycle.js';
@@ -90,7 +90,7 @@ export class PersonalMemoryService implements PersonalMemoryContextProvider {
       if (receipt.digest !== this.digest({ type, data })) throw new Error('idempotency_conflict');
       return { selectionId: args.commandId, applied: false, stateRevision: receipt.state.revision, refs: args.refs };
     }
-    if (actor.allowWrites === false || ['cancelled', 'completed', 'failed', 'paused'].includes(state.status)) throw new Error('personal_memory_not_selectable');
+    if (!canWritePersonalMemory(actor) || ['cancelled', 'completed', 'failed', 'paused'].includes(state.status)) throw new Error('personal_memory_not_selectable');
     if (state.revision !== args.expectedStateRevision || state.goal.revision !== args.expectedGoalRevision) throw new Error('personal_memory_selection_stale');
     if (!(await sessionInputsCurrent(this.services, state))) throw new Error('personal_memory_selection_stale');
     const read = await this.read(state, args.refs);

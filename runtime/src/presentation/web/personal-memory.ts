@@ -13,6 +13,7 @@ interface Host {
   errorText(error: unknown): string;
   sessionId(): string | null;
   documentDrafts(): boolean;
+  writable(): boolean;
 }
 type Source = Extract<PersonalRememberInput['source'], { kind: 'existing' }>;
 type Draft = { id: string; revision: number | null; source: Source | null; workId: string | null; goalRevision: number | null };
@@ -48,9 +49,9 @@ export function installPersonalMemoryUI(host: Host) {
   const status = (value: string) => write('memory-status', value);
   const documentStatus = (value: string) => write('memory-draft-status', value);
   function documentButtons() {
-    element<HTMLButtonElement>('memory-draft-apply').disabled = pending || !documentDraft?.path || documentDraft.complete;
+    element<HTMLButtonElement>('memory-draft-apply').disabled = !host.writable() || pending || !documentDraft?.path || documentDraft.complete;
     element<HTMLButtonElement>('memory-draft-check').disabled = pending;
-    element<HTMLButtonElement>('memory-draft-resume').disabled = pending;
+    element<HTMLButtonElement>('memory-draft-resume').disabled = !host.writable() || pending;
     element<HTMLInputElement>('memory-draft-reason').readOnly = Boolean(documentDraft?.applyInput);
   }
   function showDocumentDraft(value: DocumentDraft) {
@@ -79,7 +80,7 @@ export function installPersonalMemoryUI(host: Host) {
     if (documentDraft?.applyId === value.applyId) { documentDraft.complete = ['complete', 'unchanged'].includes(value.stage); documentButtons(); }
   }
   async function beginDocumentDraft(card: KnowledgeCard) {
-    if (pending || !host.documentDrafts()) return;
+    if (pending || !host.writable() || !host.documentDrafts()) return;
     const key = JSON.stringify([card.id, card.revision]);
     let value = documentDrafts.get(key);
     if (!value || value.complete) { value = { draftId: crypto.randomUUID(), applyId: crypto.randomUUID(), memoryId: card.id, title: card.title,
@@ -100,7 +101,7 @@ export function installPersonalMemoryUI(host: Host) {
     catch { status('기억 관리 상태는 위에 유지했습니다. 업무 화면은 별도로 새로고침하세요.'); }
   }
   async function applyDocumentDraft() {
-    const saved = documentDraft; if (pending || !saved?.path || saved.complete) return;
+    const saved = documentDraft; if (pending || !host.writable() || !saved?.path || saved.complete) return;
     if (!saved.applyInput) {
       const sessionId = host.sessionId(), view = host.current();
       const basis = view ?? (selection?.workId === host.workId() ? selection : null);
@@ -119,7 +120,7 @@ export function installPersonalMemoryUI(host: Host) {
     finally { pending = false; if (epoch === host.epoch()) documentButtons(); }
   }
   async function checkDocumentApplication(resume: boolean) {
-    if (pending || !host.documentDrafts()) return;
+    if (pending || !host.documentDrafts() || resume && !host.writable()) return;
     const sessionId = host.sessionId(), applyId = element<HTMLInputElement>('memory-draft-lookup').value.trim();
     if (!sessionId || !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(applyId)) { documentStatus('현재 대화와 올바른 적용 ID를 확인하세요.'); return; }
     const epoch = host.epoch(); pending = true; documentButtons(); documentStatus(resume ? '같은 적용 요청을 재개합니다.' : '적용 상태를 확인합니다.');
@@ -142,7 +143,7 @@ export function installPersonalMemoryUI(host: Host) {
     element<HTMLDetailsElement>('personal-memory').open = true;
   }
   function chooseSource(source: Omit<Source, 'kind'>) {
-    if (pending) return;
+    if (pending || !host.writable()) return;
     const prior = draft;
     showDraft({ id: prior?.id ?? crypto.randomUUID(), revision: prior?.revision ?? null, source: { kind: 'existing', ...source }, workId: null, goalRevision: null },
       prior ? element<HTMLInputElement>('memory-title').value : '', source.quote);
@@ -156,7 +157,7 @@ export function installPersonalMemoryUI(host: Host) {
       const result = await host.request<{ workId: string; goalRevision: number; stateRevision: number; refs: PersonalMemoryRef[]; available: boolean; selectionId: string | null }>(`/api/works/${encodeURIComponent(workId)}/memories`);
       if (epoch !== host.epoch() || host.workId() !== workId || read !== selectionRead) return;
       selection = result;
-      element<HTMLButtonElement>('memory-clear').disabled = pending;
+      element<HTMLButtonElement>('memory-clear').disabled = pending || !host.writable();
       write('memory-selected', !result.available ? '선택한 기억의 버전이나 원문 출처를 재확인해야 합니다. 최신 기억을 검색해 다시 선택하거나 이번 업무의 선택을 해제하세요. 별도로 남은 검토 요청은 업무에서 확인합니다.' :
         result.refs.length ? `이번 업무의 기억: ${result.refs.map(ref => `${ref.id} (버전 ${ref.revision})`).join(', ')}` : '이번 업무에 선택한 개인 기억이 없습니다.');
     } catch (error) { if (epoch === host.epoch() && host.workId() === workId && read === selectionRead) {
@@ -164,7 +165,7 @@ export function installPersonalMemoryUI(host: Host) {
     } }
   }
   async function mutate(key: string, path: string, payload: Record<string, unknown>, message: string) {
-    if (pending) return false;
+    if (pending || !host.writable()) return false;
     const epoch = host.epoch(); const workId = host.workId(); const requestIdentity = identity(key); const requestId = requestIdentity.forPayload(payload, () => crypto.randomUUID());
     pending = true; element<HTMLButtonElement>('memory-save').disabled = true; status('요청을 접수하고 결과를 확인합니다.');
     try {
@@ -175,10 +176,10 @@ export function installPersonalMemoryUI(host: Host) {
     } catch (error) {
       if (epoch === host.epoch() && workId === host.workId()) { status(`${host.errorText(error)} 작성한 내용과 요청 식별자는 유지했습니다.`); await host.refresh(); await selected(); }
       return false;
-    } finally { pending = false; if (epoch === host.epoch()) { element<HTMLButtonElement>('memory-save').disabled = false; element<HTMLButtonElement>('memory-clear').disabled = !selection || selection.workId !== host.workId(); } }
+    } finally { pending = false; if (epoch === host.epoch()) { element<HTMLButtonElement>('memory-save').disabled = !host.writable(); element<HTMLButtonElement>('memory-clear').disabled = !host.writable() || !selection || selection.workId !== host.workId(); } }
   }
   async function recall(refs: { id: string; revision: number }[]) {
-    if (pending) return;
+    if (pending || !host.writable()) return;
     const workId = host.workId(), epoch = host.epoch();
     await selected(); if (host.workId() !== workId || host.epoch() !== epoch) return;
     const basis = selection;
@@ -190,15 +191,18 @@ export function installPersonalMemoryUI(host: Host) {
     const item = node('article', '', 'memory-card');
     item.append(node('strong', card.title), node('span', ` · 버전 ${card.revision}`, 'muted'), node('p', card.body), node('p', card.id, 'help-text'));
     const recallButton = node('button', '이번 업무에 사용', 'button secondary'); recallButton.type = 'button';
+    recallButton.disabled = !host.writable();
     recallButton.addEventListener('click', () => { void recall([{ id: card.id, revision: card.revision }]); });
     const revise = node('button', '정정', 'button quiet'); revise.type = 'button';
+    revise.disabled = !host.writable();
     revise.addEventListener('click', () => {
-      if (pending) return; const view = host.current(); const basis = view ?? (selection?.workId === host.workId() ? selection : null);
+      if (pending || !host.writable()) return; const view = host.current(); const basis = view ?? (selection?.workId === host.workId() ? selection : null);
       showDraft({ id: card.id, revision: card.revision, source: null, workId: basis?.workId ?? null, goalRevision: basis?.goalRevision ?? null }, card.title, '');
       status('새 발언을 입력하거나 위 대화 기록에서 적용된 발언을 고르세요.');
     });
     const forgetReason = node('input', ''); forgetReason.type = 'text'; forgetReason.maxLength = 1000; forgetReason.placeholder = '잊는 이유'; forgetReason.setAttribute('aria-label', `${card.title} 잊는 이유`);
     const forget = node('button', '잊기', 'button quiet danger'); forget.type = 'button';
+    forget.disabled = !host.writable(); forgetReason.disabled = !host.writable();
     forget.addEventListener('click', () => {
       if (!forgetReason.value.trim()) { status('잊는 이유를 입력하세요.'); forgetReason.focus(); return; }
       void mutate(`forget:${card.id}`, '/api/memories/forget', { id: card.id, expectedRevision: card.revision, reason: forgetReason.value }, '현재 개인 기억에서 제외했습니다. 과거 대화 원문과 기록·백업은 유지됩니다.');
@@ -207,6 +211,7 @@ export function installPersonalMemoryUI(host: Host) {
     if (host.documentDrafts()) {
       const completed = documentDrafts.get(JSON.stringify([card.id, card.revision]))?.complete === true;
       const create = node('button', completed ? '새 문서 초안 만들기' : '문서 초안 만들기', 'button secondary'); create.type = 'button';
+      create.disabled = !host.writable();
       create.addEventListener('click', () => { void beginDocumentDraft(card); }); item.append(create);
     }
     item.append(forgetReason, forget); return item;
@@ -231,13 +236,13 @@ export function installPersonalMemoryUI(host: Host) {
   element('memory-refresh').addEventListener('click', () => { void search(); void selected(); });
   element('memory-clear').addEventListener('click', () => { void recall([]); });
   element('memory-new').addEventListener('click', () => {
-    if (pending) return; const view = host.current();
+    if (pending || !host.writable()) return; const view = host.current();
     if (!view || ['completed', 'cancelled', 'failed'].includes(view.progress.status)) { status('새 발언을 받을 진행 중인 업무를 선택하세요. 기존 발언은 대화 기록에서 선택할 수 있습니다.'); return; }
     showDraft({ id: crypto.randomUUID(), revision: null, source: null, workId: view.workId, goalRevision: view.goalRevision }, '', '');
   });
   element('memory-dismiss').addEventListener('click', () => { if (!pending) { draft = null; element('memory-form').hidden = true; } });
   element('memory-form').addEventListener('submit', event => {
-    event.preventDefault(); if (!draft || pending) return; const saved = draft;
+    event.preventDefault(); if (!draft || pending || !host.writable()) return; const saved = draft;
     const title = element<HTMLInputElement>('memory-title').value; const quote = element<HTMLTextAreaElement>('memory-quote').value; const reason = element<HTMLInputElement>('memory-reason').value;
     if (!saved.source && (!saved.workId || !saved.goalRevision || host.workId() !== saved.workId)) { status('새 발언을 저장할 업무가 바뀌었습니다. 발언을 다시 선택하거나 새 편집을 여세요.'); return; }
     const sourceKey = identity(`source:${saved.id}`); const sourcePayload = { id: saved.id, workId: saved.workId, goalRevision: saved.goalRevision, quote };
@@ -249,7 +254,12 @@ export function installPersonalMemoryUI(host: Host) {
       if (ok && draft === saved) { draft = null; element('memory-form').hidden = true; }
     });
   });
-  return { chooseSource, refresh: async () => { if (opened()) { await search(); await selected(); } }, clear: () => {
+  return { chooseSource, configure: () => {
+    element<HTMLButtonElement>('memory-new').disabled = !host.writable() || pending;
+    element<HTMLButtonElement>('memory-save').disabled = !host.writable() || pending;
+    element<HTMLButtonElement>('memory-clear').disabled = !host.writable() || pending || !selection;
+    documentButtons(); if (!host.writable()) status('개인 기억은 조회만 가능합니다.');
+  }, refresh: async () => { if (opened()) { await search(); await selected(); } }, clear: () => {
     draft = null; selection = null; selectionRead++; searchEpoch++; identities.clear(); element('memory-cards').replaceChildren(); element('memory-form').hidden = true; element('personal-memory').hidden = true;
     documentDraft = null; documentDrafts.clear(); element('memory-draft-apply-form').hidden = true; element('memory-draft-result').replaceChildren(); element('memory-draft-result').hidden = true;
     element('memory-document-tools').hidden = true; documentStatus(''); write('memory-draft-title', ''); write('memory-draft-target', '');

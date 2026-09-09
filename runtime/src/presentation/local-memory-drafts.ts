@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import type { LocalProfile } from './local-profile.js';
 import type { WorkActor } from '../application/work-resources.js';
-import { authorizedWork } from '../application/work-resources.js';
+import { authorizedWork, canWritePersonalMemory } from '../application/work-resources.js';
 import { asJson } from '../application/plan-validator.js';
 import { MemoryDraftApplySchema, MemoryDraftCreateSchema, MemoryDraftResumeSchema, MemoryDraftOwnerSchema, MemoryDraftIntentSchema,
   type MemoryDraftApplyInput, type MemoryDraftCreateInput, type MemoryDraftResumeInput, type MemoryDraftIntent,
@@ -12,7 +12,7 @@ const bodyDigest = (body: string) => createHash('sha256').update(body, 'utf8').d
 const sourceId = (applyId: string) => `draft-source:${applyId}`;
 const commandId = (applyId: string) => `draft-memory:${applyId}`;
 const same = (profile: LocalProfile, a: unknown, b: unknown) => profile.services.digester.digest(asJson(a)) === profile.services.digester.digest(asJson(b));
-function writable(actor: WorkActor) { if (actor.allowWrites === false) throw new Error('personal_memory_read_only'); }
+function writable(actor: WorkActor) { if (!canWritePersonalMemory(actor)) throw new Error('personal_memory_read_only'); }
 async function retryKnowledgeContention<T>(operation: () => Promise<T>): Promise<T> {
   for (let attempt = 0; ; attempt++) {
     try { return await operation(); }

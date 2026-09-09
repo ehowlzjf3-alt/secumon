@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import type { TestContext } from 'node:test';
-import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,7 +15,6 @@ import { StructuredAgentTurnAdapter } from '../infrastructure/structured-agent-t
 import { openAgentWeb } from '../presentation/agent-web.js';
 import type { AgentExecutionHost } from '../presentation/host-tools.js';
 import type { WorkbenchConfig } from '../presentation/web-contracts.js';
-import { writeComputerEntryFixture } from './host-write-computer-entry-fixture.js';
 
 export const deploymentEngine = fileURLToPath(new URL('../../', import.meta.url));
 export const deploymentSpecs = [{
@@ -48,11 +47,10 @@ function errorSummary(value: unknown, depth = 0): Record<string, unknown> {
     ...(depth === 0 && value.cause !== undefined ? { cause: errorSummary(value.cause, 1) } : {}) };
 }
 
-function hostFor(spec: DeploymentSpec, identityRegistryDirectory: string, writeHostDirectory?: string) {
+function hostFor(spec: DeploymentSpec, identityRegistryDirectory: string, allowMemorySelection = false) {
   const observed = { inputs: [] as AgentTurnInput[], reads: 0, modelCloses: 0, toolCloses: 0 };
-  const writeHost = writeHostDirectory ? writeComputerEntryFixture({ base: writeHostDirectory, mode: 'write' }) : null;
   const identity = { provider: 'local-fixture', model: 'two-deployment-entry', revision: '1' };
-  const host: AgentExecutionHost = { identityRegistryDirectory,
+  const host: AgentExecutionHost = { identityRegistryDirectory, ...(allowMemorySelection ? { allowPersonalMemoryWrites: true } : {}),
     models: new Map([[`deployment-${spec.key}`, { execution: 'deterministic_fixture', async open(profile) {
       assert.equal(profile.purpose, spec.purpose); assert.equal(profile.skillsMode, spec.skillsMode);
       const turns = new Map<string, number>();
@@ -85,12 +83,8 @@ function hostFor(spec: DeploymentSpec, identityRegistryDirectory: string, writeH
       });
       return { planner, inputLimits: { maxInputBytes: 65536, maxOutputTokens: 2048 }, async close() { observed.modelCloses++; } };
     } }]]),
-    tools: { async open(context, assembly) {
-      // The existing host contract couples actor.allowWrites to a real write/computer
-      // registration. This grants state editing; allowedTools still excludes every write.
-      const writes = writeHost ? await writeHost.host.tools!.open(context, assembly) : null;
-      if (writes) { assert.ok(writes.writeTools?.length); assert.ok(writes.effectReaders?.length); }
-      const policy: Policy = { tenantId: 'deployment-company', principalId: 'same-operator', allowWrites: writeHost !== null,
+    tools: { async open(context) {
+      const policy: Policy = { tenantId: 'deployment-company', principalId: 'same-operator', allowWrites: false,
         allowedTools: [spec.toolId, 'core.guidance.load'], allowedLabels: ['internal', 'public'], allowedDestinations: ['local'] };
       const tool: Tool = { definition: { provider: spec.key, id: spec.toolId, version: '1', description: spec.purpose,
         effect: 'read', destination: 'local', labels: ['internal'],
@@ -106,16 +100,16 @@ function hostFor(spec: DeploymentSpec, identityRegistryDirectory: string, writeH
         return { resultId: `${invocation.attemptId}:result`, attemptId: invocation.attemptId, status: 'success', effectState: 'none',
           evidence: [evidence], artifacts: [], output: { summary: spec.sourceText }, error: null, cursor: null, coverage: 'complete' };
       } };
-      return { tools: [tool], ...(writes ? { writeTools: writes.writeTools!, effectReaders: writes.effectReaders! } : {}),
+      return { tools: [tool],
         policy, limits: { toolCalls: 6, modelCalls: 6, tokens: 1000000, replans: 4, wallTimeMs: 600000 },
-        async close() { observed.toolCloses++; await writes?.close(); } };
+        async close() { observed.toolCloses++; } };
     } },
   };
-  return { host, observed, writeHost: writeHost?.observed ?? null };
+  return { host, observed };
 }
 
-async function connect(directory: string, spec: DeploymentSpec, registry: string, sessionId?: string, writeHostDirectory?: string) {
-  const fixture = hostFor(spec, registry, writeHostDirectory);
+async function connect(directory: string, spec: DeploymentSpec, registry: string, sessionId?: string, allowMemorySelection = false) {
+  const fixture = hostFor(spec, registry, allowMemorySelection);
   const app = await openAgentWeb(['--directory', directory, '--provider', 'registered', '--conversation', 'same-conversation',
     ...(sessionId ? ['--session', sessionId] : [])], fixture.host);
   assert.ok(app);
@@ -128,7 +122,7 @@ async function connect(directory: string, spec: DeploymentSpec, registry: string
     async function request<T>(path: string, body?: unknown, expected = 200): Promise<T> {
       // The memory-bearing completion includes source revalidation; this is a
       // bounded acceptance wait, not a claim that it meets a 20-second latency target.
-      const timeoutMs = writeHostDirectory && path.endsWith('/commands') ? 60000 : 20000;
+      const timeoutMs = allowMemorySelection && path.endsWith('/commands') ? 60000 : 20000;
       const method = body === undefined ? 'GET' : 'POST', signal = AbortSignal.timeout(timeoutMs), started = performance.now();
       let status: number | null = null;
       try {
@@ -144,7 +138,7 @@ async function connect(directory: string, spec: DeploymentSpec, registry: string
           modelInputs: fixture.observed.inputs.length, sourceReads: fixture.observed.reads })}`);
       }
     }
-    return { app, observed: fixture.observed, writeHost: fixture.writeHost, config: session.config, request };
+    return { app, observed: fixture.observed, config: session.config, request };
   } catch (error) {
     try { await app.close(); } catch (cleanup) { throw new AggregateError([error, cleanup], 'deployment_connect_cleanup_failed', { cause: error }); }
     throw error;
@@ -166,8 +160,6 @@ export function deploymentFixture(t: TestContext, options: { allowMemorySelectio
     if (errors.length) throw new AggregateError(errors, 'deployment_fixture_cleanup_failed', { cause: errors[0] });
   });
   const deployments = deploymentSpecs.map(spec => {
-    const writeHostDirectory = options.allowMemorySelection ? join(base, `${spec.key}-registered-write-host`) : undefined;
-    if (writeHostDirectory) mkdirSync(writeHostDirectory, { mode: 0o700 });
     const directory = join(base, spec.key), ready = profiles.initialize(directory,
       { name: spec.name, purpose: spec.purpose, stateBackend: spec.stateBackend, personalMemory: spec.personalMemory });
     const config = { ...ready.config, model: { profile: `deployment-${spec.key}` }, skills: { mode: spec.skillsMode },
@@ -180,7 +172,7 @@ export function deploymentFixture(t: TestContext, options: { allowMemorySelectio
     writeFileSync(join(ready.paths.skills, 'catalog.json'), JSON.stringify({ schemaVersion: 1, entries: [{ ...manifest, bodyFile: 'guide.md' }] }), { mode: 0o600 });
     return { spec, directory, agentId: ready.identity.agentId, config,
       configBytes: readFileSync(join(directory, 'config.json')), catalogBytes: readFileSync(join(ready.paths.skills, 'catalog.json')),
-      async open(sessionId?: string) { const web = await connect(directory, spec, registry, sessionId, writeHostDirectory); opened.add(web); return web; } };
+      async open(sessionId?: string) { const web = await connect(directory, spec, registry, sessionId, options.allowMemorySelection); opened.add(web); return web; } };
   });
   return { base, registry, profiles, deployments };
 }
