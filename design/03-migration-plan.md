@@ -1,5 +1,19 @@
 # 통합 구현 순서와 검증 플랜
 
+2026-09-09 · checkpoint407. **준비된 환경의 기존 필수 검사는 0묶음이다. 현재 가능한 검증을 마감하고 정해 둔 외부 환경 인수로 구분한다.** 전체 C10/goal 완료는 아니다.
+
+마지막 PG 전체 전달 64MiB 검사는 실제 NAS PG15.18에서 pass/exit0이다. 유효한 pending 224개(67,200,000 bytes)의 초과를 거절하고 부분 29페이지·로컬 원문·18테이블 467행을 보존했다. source fence 3개는 null이다.
+
+첫 직접 호출의 exit0은 로그·case가 없어 성공으로 세지 않았다. 같은 동결 fixture를 로그 wrapper에서 실제 실행해 확인했으며 모델·workflow·tool 실행, 제품 변경·재빌드·전체 회귀는 0이다.
+
+PG 정상 종료(status3)와 원자료·부분 백업·DB 보존을 확인했다. 전용 SSH master 종료와 로컬 control 디렉터리 제거도 확인했다. 이후 외부 환경 인수와 실제 모델/API 중단을 유지하며 새 syscall·혼합 조합을 필수 검사로 늘리지 않는다.
+
+[결과 설명](chapters/C10-postgres-capacity-result.md) · [결과 원본](../runtime/evidence/checkpoint407-capacity-result.json) · [실행 로그](../runtime/evidence/C10-postgres-capacity-launcher1.log) · [체크포인트](../runtime/evidence/checkpoint407.json) · [외부 인수](REMAINING-ACCEPTANCE.md)
+
+## 이전 기록 — checkpoint406
+
+아래의 남은 1묶음과 다음 작업 표현은 당시 기록이며 현재 상태는 위 checkpoint407을 따른다.
+
 2026-09-09 · checkpoint406 · 기준선 `b9bb7b5`. **현재 환경의 필수 검증 순서는 기존 V10-07의 PostgreSQL 전체 전달 64MiB 초과 거절·원자료/부분 백업 보존 1묶음 → 현재 가능한 검증 마감이다.** 이후 Windows·운영 PG 역할/규모·사내 MCP/Knox/A2A·실제 앱·운영 목표/파일럿은 해당 외부 환경에서 인수한다.
 
 기존 PG 이관·백업·복원·엔진 관리의 선택한 중단/호환 조건을 확인했다. SQLite는 전체 exit0, journal은 첫 이관 통과를 보존하고 시험 비교문 교정 뒤 엔진부터 재개해 exit0이다. 원자료·이관 결과·PG 원행·페이지 SHA·fence를 재검증했으며 같은 fixture 판본의 전체 2회 성공으로 계산하지 않는다. 제품 소스·core 의존성 변경, 재빌드·전체 회귀 반복은 없다.

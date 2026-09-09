@@ -1,16 +1,20 @@
 # 남은 확인 작업
 
-2026-09-09 · checkpoint406. **현재 환경에서 진행할 명명된 필수 검사는 1묶음: 기존 V10-07의 PostgreSQL 전체 전달 64MiB 초과 거절·원자료/부분 백업 보존이다.** 이 묶음 뒤 현재 가능한 검증을 마감한다. 모든 syscall·혼합 조합을 새 필수 검사로 확장하거나 완료한 전체 흐름을 반복하지 않는다.
+2026-09-09 · checkpoint407. **준비된 환경에서 남은 기존 필수 검사는 0묶음이며 현재 가능한 검증을 마감했다.** 아래 외부 환경 인수는 남아 있으므로 전체 C10/goal 완료는 아니다.
 
-## 현재 환경에서 남은 1묶음
+NAS PG15.18에서 pending 224개·67,200,000 UTF-8 bytes가 한도 67,108,864 bytes를 넘자 `postgres_transfer_limit`으로 거절했다. 부분 29페이지·66,490,644 bytes와 로컬 원문을 보존했고 완료 manifest 부재·inspect 거절을 확인했다. 18테이블 467행과 업무·기억·대화·영수증·pending 입력 원문은 같고 source fence 3개는 모두 null이다.
 
-실제 PG에 유효한 pending 사용자 입력을 기존 `sessions.receive`로 저장해 전체 전달 64MiB 한도를 넘었을 때 명확히 거절하는지, 원자료와 미완성 백업이 보존되는지 확인한다. 적용하지 않은 입력을 applied로 표시하지 않는다. 이것은 기존 용량 인수이며 새 요구가 아니다. 아직 실행하지 않았으므로 통과로 표시하지 않는다.
+첫 직접 호출은 exit0이었지만 0B 로그·case 부재·프로세스 부재로 성공에 포함하지 않았다. 동일 동결 fixture를 진입/반환 로그 wrapper에서 실제 실행해 pass/exit0을 확인했다. 모델·workflow·tool 실행, 제품 변경·재빌드·전체 회귀는 0이다.
+
+PG 정상 종료(status3), 원자료·부분 백업·DB 보존을 확인했다. 전용 SSH master 종료와 로컬 control 디렉터리 제거도 확인했다. 새 syscall·혼합 조합을 필수 검사로 추가하지 않고 실제 모델/API 중단을 유지한다.
+
+[결과 설명](chapters/C10-postgres-capacity-result.md) · [결과 원본](../runtime/evidence/checkpoint407-capacity-result.json) · [실행 로그](../runtime/evidence/C10-postgres-capacity-launcher1.log) · [체크포인트](../runtime/evidence/checkpoint407.json)
 
 ## 재사용하는 완료 증거
 
 checkpoint404의 로컬 기록 연결·기억 선택 복구 UI·문서 기억 비용과 checkpoint405의 두 실제 PG 정상 흐름을 재사용한다. checkpoint406은 SQLite 전체 실행 exit0, journal 첫 이관 성공 + 시험 비교문 교정 뒤 엔진부터 재개 exit0으로 기존 중단/호환 조건을 확인했다. 같은 fixture 판본의 전체 2회 성공이 아니며 검사문 수를 독립 시험 수로 더하지 않는다. 제품 소스·core 의존성 변경, 재빌드·전체 회귀 반복은 없었다.
 
-서버·DB pool·전용 SSH를 종료했고 원문·부분/완성 백업·DB·실패 기록은 임시 NAS 경로에 보존했다. 마지막 과거 migration apply 거절 뒤 복원 DB의 옛 operation fence는 남겨 두었다. 원자료 보존 검증의 성공을 그 DB가 일반 가동 가능한 상태라는 뜻으로 읽지 않는다. 구체적인 입증 범위와 예외 주입의 한계는 [복구 결과](chapters/C10-postgres-recovery-result.md)와 [요구 대조](chapters/C10-postgres-recovery-audit.md)에 있다.
+checkpoint406의 서버·DB pool·전용 SSH는 종료했고 원문·부분/완성 백업·DB·실패 기록은 임시 NAS 경로에 보존했다. 당시 마지막 과거 migration apply 거절 뒤 복원 DB의 옛 operation fence는 남겨 두었다. 이번 407의 별도 source fence 해제는 그 복원 DB의 fence를 해제했다는 뜻이 아니다. 구체적인 입증 범위와 예외 주입의 한계는 [복구 결과](chapters/C10-postgres-recovery-result.md)와 [요구 대조](chapters/C10-postgres-recovery-audit.md)에 있다.
 
 문서형 합성 업무의 로컬 처리 시간은 동일 계측에서 23.132→13.317초, 디렉터리 검사 호출은 6,601,410→3,568,230회였다. 원문 읽기량과 논리 조회 횟수는 유지했다. 이 단회 관측을 운영 응답 시간·SLA 충족으로 표시하지 않는다. 현재의 남은 비용과 파일 저널의 누적 원문 검증·디스크 사용은 제한으로 유지한다.
 
@@ -19,10 +23,10 @@ checkpoint404의 로컬 기록 연결·기억 선택 복구 UI·문서 기억 �
 | 항목 | 필요한 환경·입력 | 이어서 확인할 기존 범위 |
 | --- | --- | --- |
 | native Windows | Windows 시험 호스트, OS/CPU와 파일시스템, 사용할 계정·설치/담당 디렉터리, 해당 native 빌드 | 실제 설치·버전 선택·파일 handle/권한·복원·담당 격리. macOS/Linux 통과를 대신 사용하지 않음 |
-| 운영 PostgreSQL | 선택할 운영 연결·역할·schema 권한·TLS 및 운영 자료량 | 정상 흐름과 선택한 중단/호환 분기는 checkpoint405/406에서 확인. 실제 운영 역할·규모·복구 목표는 해당 환경에서 인수. 연결 비밀은 문서/Git에 기록하지 않음 |
+| 운영 PostgreSQL 역할·TLS | 선택할 운영 연결·역할·schema 권한·TLS | 정상 흐름·선택한 중단/호환·전체 전달 한도는 checkpoint405~407에서 확인. 운영 역할·접속 조건은 해당 환경에서 인수. 연결 비밀은 문서/Git에 기록하지 않음 |
 | 사내 MCP·Knox·외부 A2A | 기존 MCP endpoint/transport와 도구 schema, 계정·채널/시험 수신자, peer 연결·허용 업무 범위 | 실제 접수·진행·결과·중복/재접속, 원자료/권한·전달 결과. 연결부와 로컬 대역 결과는 이미 존재 |
 | 사내 앱의 컴퓨터 유즈 | 사용할 OS·앱·입력/관찰 연결과 대표 업무 | 실제 화면 관측·선택적 이미지·입력 결과 확인·오류 복구와 호출 비용. 기존 계측 localhost Chrome 인수를 비계측 앱/native 입력으로 확대하지 않음 |
-| 운영 규모·응답 시간·복원 목표 | 담당 수·동시 업무 수·보관 기간·대표 자료량·허용 응답 시간·복구 목표(RPO/RTO) | 현재 한도와 실제 자료를 대조하고 보관·백업/복원·이행 시간·조회 비용 확인. RPO는 허용 데이터 손실 시간, RTO는 복구까지 허용하는 시간 |
+| 운영 목표·규모·삭제/철회·늦은 효과 | 담당 수·동시 업무 수·보관 기간·대표 자료량·응답/복구 목표·삭제/철회 정책과 실제 서비스 이력 | 운영 보관·백업/복원·이행 시간·조회 비용과 늦은 외부 효과·삭제/철회를 해당 자료로 인수. RPO는 허용 데이터 손실 시간, RTO는 복구까지 허용하는 시간 |
 | 시범 운영·기존 업무 이행 | 사용할 배치와 대상 업무·관찰 기간. 기존 업무 이행은 명시 선택 | 설치본·설정·원본 자료를 기준으로 인수한 뒤 선택한 운영 환경에서 사용성·변경 승격 확인 |
 
 현재 로컬 백업 한도는 전체 4GiB/파일 1GiB/10만 항목, PostgreSQL 전달은 전체 64MiB다. C09 참조 축소·구간 연결은 원문 전체 저장량을 일정하게 만드는 기능이 아니다. C10 checkpoint403의 소규모 SQLite/file-journal 백업·복원·재연결과 NAS 설치 인수는 재사용한다. 이번 404 Linux 결과는 문서 저장과 기록 연결의 관련 17개이며 모든 Linux 배치·release 성능 검증을 뜻하지 않는다.
@@ -33,9 +37,17 @@ checkpoint404의 로컬 기록 연결·기억 선택 복구 UI·문서 기억 �
 
 ## 상태를 읽는 기준
 
-현재 가능한 필수 검사는 위 64MiB 한도 1묶음이며, 그 뒤 현재 환경의 검증을 마감한다. 위 실제 환경·운영 인수는 미완료이므로 전체 goal을 완료로 표시하지 않는다. 외부 조건이 갖춰지면 그 조건에 해당하는 기존 인수만 이어간다. 결과 문서에 기록한 미관측 syscall·혼합 조합 등의 한계는 새로운 무제한 필수 시험 목록을 뜻하지 않는다.
+현재 준비된 환경의 기존 필수 검사는 0묶음이고 검증을 마감했다. 위 6분류의 외부 환경·운영 인수는 미완료이므로 전체 goal을 완료로 표시하지 않는다. 외부 조건이 갖춰지면 그 조건에 해당하는 기존 인수만 이어간다. 결과 문서에 기록한 미관측 syscall·혼합 조합 등의 한계는 새로운 무제한 필수 시험 목록을 뜻하지 않는다.
 
-근거: [복구 결과](chapters/C10-postgres-recovery-result.md), [복구 요구 대조](chapters/C10-postgres-recovery-audit.md), [실PG 정상 결과](chapters/C10-postgres-real-result.md), [최종 로컬 결과](chapters/final-integration-result.md), [전체 백로그](implementation-backlog.json), [C06–C10 검증 계획](chapters/C06-C10-verification-plan.md). 오래된 체크포인트의 다음 작업보다 이 최신 잔여 목록을 우선한다.
+근거: [용량 결과 원본](../runtime/evidence/checkpoint407-capacity-result.json), [복구 결과](chapters/C10-postgres-recovery-result.md), [실PG 정상 결과](chapters/C10-postgres-real-result.md), [최종 로컬 결과](chapters/final-integration-result.md), [전체 백로그](implementation-backlog.json), [C06–C10 검증 계획](chapters/C06-C10-verification-plan.md). 오래된 체크포인트의 다음 작업보다 이 최신 잔여 목록을 우선한다.
+
+## 이전 기록 — checkpoint406
+
+아래는 당시의 잔여 판단이며 64MiB 검사는 checkpoint407에서 마감했다.
+
+2026-09-09 · checkpoint406. **현재 환경에서 진행할 명명된 필수 검사는 1묶음: 기존 V10-07의 PostgreSQL 전체 전달 64MiB 초과 거절·원자료/부분 백업 보존이다.** 이 묶음 뒤 현재 가능한 검증을 마감한다. 모든 syscall·혼합 조합을 새 필수 검사로 확장하거나 완료한 전체 흐름을 반복하지 않는다.
+
+실제 PG에 유효한 pending 사용자 입력을 기존 `sessions.receive`로 저장해 전체 전달 64MiB 한도를 넘었을 때 명확히 거절하는지, 원자료와 미완성 백업이 보존되는지 확인한다. 적용하지 않은 입력을 applied로 표시하지 않는다. 이것은 기존 용량 인수이며 새 요구가 아니다. 아직 실행하지 않았으므로 통과로 표시하지 않는다.
 
 ## 이전 기록 — checkpoint405
 

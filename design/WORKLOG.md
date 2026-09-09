@@ -1,6 +1,20 @@
 # 시큐몬 설계 조사 기록
 
-## 최신 기록 — 체크포인트 406: 실제 PostgreSQL 중단·재개
+## 최신 기록 — 체크포인트 407: 마지막 PG 전달 한도 검사
+
+2026-09-09. **준비된 환경의 기존 필수 검사는 0묶음이며 현재 가능한 검증을 마감했다.** 전체 C10/goal 완료는 아니다.
+
+실제 NAS PG15.18에서 pending 224개·67,200,000 bytes로 64MiB 한도 초과 거절을 확인했다. 부분 29페이지·66,490,644 bytes와 로컬 원문을 보존하고 manifest 부재·inspect 거절을 확인했다. 18테이블 467행·업무/기억/대화/영수증·입력 pending 원문이 같고 source fence 3개는 null이다.
+
+처음 직접 호출은 exit0이었지만 0B 로그·case/프로세스 부재로 성공 처리하지 않았다. 같은 동결 fixture를 로그 wrapper에서 실제 실행해 pass/exit0을 확인했다. 모델·workflow·tool 실행, 제품 변경·재빌드·전체 회귀는 0이다.
+
+PG 정상 종료(status3)와 원문·부분 백업·DB 보존을 확인했으며 전용 SSH master 종료와 로컬 control 디렉터리 제거도 확인했다. 이후 외부 환경 인수 6분류와 실제 모델/API 중단을 유지한다. 새 syscall·혼합 조합 검사는 추가하지 않는다.
+
+[결과 설명](chapters/C10-postgres-capacity-result.md) · [결과 원본](../runtime/evidence/checkpoint407-capacity-result.json) · [실행 로그](../runtime/evidence/C10-postgres-capacity-launcher1.log) · [체크포인트](../runtime/evidence/checkpoint407.json) · [외부 인수](REMAINING-ACCEPTANCE.md)
+
+## 이전 기록 — 체크포인트 406: 실제 PostgreSQL 중단·재개
+
+아래의 남은 1묶음과 다음 작업 표현은 당시 기록이며 현재 상태는 위 checkpoint407을 따른다.
 
 2026-09-09 · 기준선 `b9bb7b5`. SQLite 전체 실행 exit0, file-journal의 첫 이관 성공 + 비교문 교정 뒤 엔진부터 재개 exit0을 확인했다. Journal의 JSON 속성 순서에 민감한 비교를 구조 비교로 고쳤고, private 원자료·저장 이관 결과·PG 원행·페이지 SHA·fence를 재확인해 완료한 이관을 재사용했다. 같은 fixture 판본의 전체 2회 통과나 검사문 개수를 독립 시험 수로 계산하지 않는다.
 

@@ -1,5 +1,19 @@
 # 다음 작업
 
+2026-09-09 · checkpoint407. **준비된 환경의 기존 필수 검사는 0묶음이며 현재 가능한 검증을 마감했다.** 다음은 선택한 외부 환경의 인수이고, 전체 C10/goal 완료는 아니다.
+
+마지막 V10-07은 실제 NAS PG15.18에서 pass/exit0이다. pending 224개가 전체 64MiB 한도를 넘자 `postgres_transfer_limit`으로 거절했고 원자료·부분 백업·입력의 pending 상태를 보존했다. source fence 3개는 모두 null이다.
+
+로그·case가 없던 첫 exit0은 성공에 포함하지 않았다. 동일 동결 fixture의 wrapper 실행에서 진입·실제 결과·반환을 확인했다. 모델·workflow·tool 실행, 제품 변경·재빌드·전체 회귀는 0이다.
+
+PG 정상 종료(status3), 원문·부분 백업·DB 보존을 확인했으며 전용 SSH master 종료와 로컬 control 디렉터리 제거도 확인했다. 실제 모델/API 중단을 유지하고 새 syscall·혼합 조합 검사를 추가하지 않는다.
+
+[결과 설명](chapters/C10-postgres-capacity-result.md) · [결과 원본](../runtime/evidence/checkpoint407-capacity-result.json) · [실행 로그](../runtime/evidence/C10-postgres-capacity-launcher1.log) · [체크포인트](../runtime/evidence/checkpoint407.json) · [외부 인수 6분류](REMAINING-ACCEPTANCE.md)
+
+## 이전 기록 — checkpoint406
+
+아래의 남은 1묶음과 다음 작업 표현은 당시 기록이며 현재 상태는 위 checkpoint407을 따른다.
+
 2026-09-09 · checkpoint406 · 기준선 `b9bb7b5`. **다음 필수 검사는 1묶음이다: 기존 V10-07의 PostgreSQL 전체 전달 64MiB 초과 거절·원자료/부분 백업 보존.** 유효한 pending 입력을 사용하며 적용하지 않은 입력을 적용 완료로 기록하지 않는다. 이 묶음 뒤 현재 환경에서 가능한 검증을 마감한다.
 
 실제 PG 중단·재개는 SQLite 전체 실행 exit0, file-journal의 첫 이관 성공과 비교문 교정 뒤 엔진부터 재개 exit0으로 확인했다. 같은 fixture 판본의 전체 2회 실행이 아니다. 원자료·저장 이관 결과·실제 PG 원행·페이지 SHA·fence를 재확인해 완료한 이관을 재사용했다. 제품 소스·core 의존성 변경, 재빌드·전체 회귀 반복은 없다.
