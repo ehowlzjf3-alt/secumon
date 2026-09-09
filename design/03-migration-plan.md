@@ -1,5 +1,19 @@
 # 통합 구현 순서와 검증 플랜
 
+2026-09-09 · checkpoint406 · 기준선 `b9bb7b5`. **현재 환경의 필수 검증 순서는 기존 V10-07의 PostgreSQL 전체 전달 64MiB 초과 거절·원자료/부분 백업 보존 1묶음 → 현재 가능한 검증 마감이다.** 이후 Windows·운영 PG 역할/규모·사내 MCP/Knox/A2A·실제 앱·운영 목표/파일럿은 해당 외부 환경에서 인수한다.
+
+기존 PG 이관·백업·복원·엔진 관리의 선택한 중단/호환 조건을 확인했다. SQLite는 전체 exit0, journal은 첫 이관 통과를 보존하고 시험 비교문 교정 뒤 엔진부터 재개해 exit0이다. 원자료·이관 결과·PG 원행·페이지 SHA·fence를 재검증했으며 같은 fixture 판본의 전체 2회 성공으로 계산하지 않는다. 제품 소스·core 의존성 변경, 재빌드·전체 회귀 반복은 없다.
+
+서버·DB pool·전용 SSH를 종료하고 원문·부분/완성 백업·DB·실패 증거를 보존했다. 마지막 과거 migration apply 거절 후 복원 DB의 옛 operation fence는 유지되어 있다. 원자료 보존과 복구 검증의 성공을 일반 운영 가능 상태와 구분한다.
+
+실제 모델/API 시험 중단을 유지한다. 모든 syscall·혼합 조합을 추가 필수 검사로 확장하지 않으며, 현재 환경의 검증 마감을 전체 C10/goal 또는 실운영 완료로 표시하지 않는다.
+
+[결과](chapters/C10-postgres-recovery-result.md) · [요구 대조](chapters/C10-postgres-recovery-audit.md) · [체크포인트](../runtime/evidence/checkpoint406.json) · [남은 확인](REMAINING-ACCEPTANCE.md)
+
+## 이전 기록 — checkpoint405
+
+아래 다음 작업·미실행 표현은 당시 기록이며, 현재 순서는 위 checkpoint406을 따른다.
+
 2026-09-09 · checkpoint405 · 기준선 6291525. **실제 PostgreSQL에서 SQLite/file-journal 두 원본 경로의 이행·엔진 변경·백업·복원·재접속을 확인했다.** 각 업무2·영수증21·세션/compact head를 보존했고 원자료는18페이지·67/71행이었다. 두 실행 모두 exit0이다.
 
 제품 소스·core 의존성 변경과 전체 회귀 반복은 없다. NAS private runtime의 기존 Node24.20.0/PG15.18, 별도 host driver pg8.23.0을 사용했다. runtime 복사 누락·홈 권한과 journal/SQL 행 순서의 시험 가정을 교정하고 원 실패 로그를 보존했다. 최종 macOS/NAS 소스·컴파일2616개가 checkpoint404와 일치한다.

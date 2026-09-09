@@ -1,0 +1,372 @@
+{
+  "checkpoint": 406,
+  "recordedAt": "2026-09-09T02:24:40.964Z",
+  "baseline": "b9bb7b5bef4db393ac2b3e673041c3f7fd4898fc",
+  "status": "real_postgres_recovery_paths_verified_capacity_external_acceptance_pending",
+  "productSourceChanged": false,
+  "coreDependencyChanged": false,
+  "rebuildOrWholeSuiteRepeated": false,
+  "source": {
+    "sourceDigest": "34d86285b32363dd4d4c498885820725e43cf54b7705bfbca3c0c0883ac0f6a2",
+    "filesDigest": "7e55006e4b89076e3492649aa1234f0ec51ed07492acbd011ef47378a39055d3",
+    "fileCount": 2616
+  },
+  "environment": {
+    "node": "v24.20.0",
+    "platform": "linux",
+    "arch": "x64",
+    "postgresVersion": "15.18 (Debian 15.18-0+deb12u1)",
+    "driverVersion": "8.23.0",
+    "runtime": "/tmp/secumon-postgres-405.sJ1Huq/runtime",
+    "transport": "private Unix socket; no TCP listener",
+    "databaseNames": [
+      "secumon406_sqlite_source",
+      "secumon406_sqlite_restore",
+      "secumon406_journal_source",
+      "secumon406_journal_restore"
+    ]
+  },
+  "flows": [
+    {
+      "log": "runtime/evidence/C10-postgres-recovery-sqlite-run1.log",
+      "exitCode": 0,
+      "configuration": "sqlite + document memory",
+      "execution": "whole recovery flow",
+      "status": "passed",
+      "backend": "sqlite",
+      "works": 2,
+      "receipts": 21,
+      "tables": 18,
+      "rows": 67,
+      "fixtureFiles": [
+        {
+          "name": "C10-postgres-recovery-fixture.mjs",
+          "bytes": 12461,
+          "sha256": "f95cb701f5d6ec57501441bdd876ab99b887dfe0cf867918e1fe011a0c172b7d"
+        },
+        {
+          "name": "C10-postgres-recovery-migration.mjs",
+          "bytes": 12851,
+          "sha256": "e16135f0fcde3b1940093b6aa5f67c08a6ca0b8fe760d87ff40c451f89106086"
+        },
+        {
+          "name": "C10-postgres-recovery-engine.mjs",
+          "bytes": 13601,
+          "sha256": "16520a6c08609fca22fe6abea1223c11383dad85859bdaf785b164fbea1521ff"
+        },
+        {
+          "name": "C10-postgres-recovery-backup.mjs",
+          "bytes": 19377,
+          "sha256": "108bbf856cede91fe68c644395ec9ef691f00d6d83cc1e21093017f5a626299d"
+        }
+      ],
+      "originalRecordsDigest": "540e927fcbce7a15a508286e26ebc71ca892959b534824ed9fdf71e89ba61e0c",
+      "migration": {
+        "checks": [
+          "prepare_record_published_response_lost_same_id_resume",
+          "actual_import_commit_response_lost_rows_and_fence_retained",
+          "one_real_channel_retirement_committed_other_sources_preserved",
+          "activation_published_response_lost_runtime_fenced"
+        ],
+        "injectedBoundaries": 4,
+        "processKills": 0,
+        "backend": "sqlite",
+        "partialRetirementPurpose": "channel",
+        "operationDigest": "bd4e9d40e2c3dcff3aed377c9e5ddc64e009995da3aadc42d1ef81e21eba9bd0",
+        "operationBytesSha256": "f710adf879bd5220fe89bbf37e0ff5e78058457e89dafc52ce7f310a685c0fab",
+        "activationBytesSha256": "50d57394e40edf49f1f151210b0362c0e54fd2f81614bd645f3cf54f8a08df2d",
+        "originalRowsDigest": "d5c645ba028d4a7bb15bf1c4d20d1b8f583f4c27c46e0f8ca47b6401a51897b5",
+        "tables": 18,
+        "rows": 67,
+        "originalRecordsDigest": "540e927fcbce7a15a508286e26ebc71ca892959b534824ed9fdf71e89ba61e0c",
+        "limitations": [
+          "Exception injection after real publication/commit; not SIGKILL or power loss",
+          "Partial retirement interrupts channel SQLite first in both configurations; file-journal header-specific interruption not exercised"
+        ]
+      },
+      "engine": {
+        "scope": "V10-18 real PG mismatch/maintenance and post-pin client-exception recovery",
+        "injection": "after real release UPDATE; before sending COMMIT; ordinary ROLLBACK",
+        "pinSequence": 2,
+        "currentPinDigest": "1d808a117ccddc458c0864197aa305abbaddeedea411d754b762980d2a3122c1",
+        "networkFailureInjected": false,
+        "processSignalInjected": false
+      },
+      "backup": {
+        "scope": "V10-07/08 actual PostgreSQL snapshot and exception recovery subset",
+        "injection": "actual database COMMIT followed by a host response exception; no SIGKILL or physical network cut",
+        "snapshot": {
+          "originalDigest": "3ce3a25e3c7510afb1841cca0529ae635e8bacc970678a578e37503f3e2016e8",
+          "changedDuringSnapshot": "12a3c3f48a1ceea8c253a6ca1c9b174f204c10df91ea07f72a880b025ee250d9",
+          "restoredToOriginal": true
+        },
+        "digest": "57c608255b373a73c388c00b2628d13e247dbe9ca85ae8cf8063e7a416cbf9d8",
+        "restoreOperationId": "0b0567ef-8af6-4a33-bc4d-ca2dd6725f10",
+        "restorationId": "7b7ac23c-4b14-473f-95bd-9fd0267451c9",
+        "rebindAndFreshReconciliation": true,
+        "oldMigration": {
+          "refused": "agent_postgres_migration_receipt_missing",
+          "operationId": "ea921d05-7ed4-43a2-be0f-c833143afecc",
+          "retainedFences": [
+            {
+              "purpose": "channel",
+              "maintenance_id": "ea921d05-7ed4-43a2-be0f-c833143afecc"
+            },
+            {
+              "purpose": "knowledge",
+              "maintenance_id": "ea921d05-7ed4-43a2-be0f-c833143afecc"
+            },
+            {
+              "purpose": "state",
+              "maintenance_id": "ea921d05-7ed4-43a2-be0f-c833143afecc"
+            }
+          ],
+          "automaticFenceRemoval": false
+        }
+      },
+      "timings": {
+        "migrationMs": 682.886976,
+        "engineMs": 12539.910530000001,
+        "backupMs": 4361.932094999998
+      },
+      "resumedAfter": null,
+      "finalRestoredFences": [
+        {
+          "purpose": "channel",
+          "maintenance_id": "ea921d05-7ed4-43a2-be0f-c833143afecc"
+        },
+        {
+          "purpose": "knowledge",
+          "maintenance_id": "ea921d05-7ed4-43a2-be0f-c833143afecc"
+        },
+        {
+          "purpose": "state",
+          "maintenance_id": "ea921d05-7ed4-43a2-be0f-c833143afecc"
+        }
+      ],
+      "sourceFencesClear": true,
+      "restoredDatabaseOrdinaryRunnableAtFinalState": false,
+      "externalModelApiCalls": 0,
+      "productionEffects": 0,
+      "dataRetained": true
+    },
+    {
+      "log": "runtime/evidence/C10-postgres-recovery-journal-resume1.log",
+      "exitCode": 0,
+      "configuration": "file-journal + SQLite memory",
+      "execution": "saved migration from failed first run + engine/backup resume",
+      "priorLog": "runtime/evidence/C10-postgres-recovery-journal-run1-failed.log",
+      "status": "passed",
+      "backend": "file-journal",
+      "works": 2,
+      "receipts": 21,
+      "tables": 18,
+      "rows": 71,
+      "fixtureFiles": [
+        {
+          "name": "C10-postgres-recovery-fixture.mjs",
+          "bytes": 14652,
+          "sha256": "554ec2858e12e903287590f6e0d9488abd6ea04f805929e12ac1692611ef0bea"
+        },
+        {
+          "name": "C10-postgres-recovery-migration.mjs",
+          "bytes": 12851,
+          "sha256": "e16135f0fcde3b1940093b6aa5f67c08a6ca0b8fe760d87ff40c451f89106086"
+        },
+        {
+          "name": "C10-postgres-recovery-engine.mjs",
+          "bytes": 13565,
+          "sha256": "3f29df9aa0d1494abf39905f59a84d2bd75525a5001803dfb7c1e389c5c417da"
+        },
+        {
+          "name": "C10-postgres-recovery-backup.mjs",
+          "bytes": 19377,
+          "sha256": "108bbf856cede91fe68c644395ec9ef691f00d6d83cc1e21093017f5a626299d"
+        },
+        {
+          "name": "C10-postgres-real-pages.mjs",
+          "bytes": 1756,
+          "sha256": "27f4585b54b1f483cb404a98592b6e1f2423422014b8cf880a60f9464f6d3752"
+        }
+      ],
+      "originalRecordsDigest": "afe2be67e5715164b26b90d44ba4191473feef1d532ae8f43811aaa711c20e70",
+      "migration": {
+        "checks": [
+          "prepare_record_published_response_lost_same_id_resume",
+          "actual_import_commit_response_lost_rows_and_fence_retained",
+          "one_real_channel_retirement_committed_other_sources_preserved",
+          "activation_published_response_lost_runtime_fenced"
+        ],
+        "injectedBoundaries": 4,
+        "processKills": 0,
+        "backend": "file-journal",
+        "partialRetirementPurpose": "channel",
+        "operationDigest": "d80f927926d749762eeaf9d159ab5247d83769947d200f1c8818f00907d8f618",
+        "operationBytesSha256": "bcec267138e07760ce0fdf4d1b2146da8bea8216bf1454d856b69fda13de6aea",
+        "activationBytesSha256": "98723fcf79f2eb11b6fa74963c75b37bc5c218941f028cc385588ff7574c2c66",
+        "originalRowsDigest": "d4531317e8b466337305bfaa428698b53dbc4f628ef9b842dc1c777e4f138ccb",
+        "tables": 18,
+        "rows": 71,
+        "originalRecordsDigest": "afe2be67e5715164b26b90d44ba4191473feef1d532ae8f43811aaa711c20e70",
+        "limitations": [
+          "Exception injection after real publication/commit; not SIGKILL or power loss",
+          "Partial retirement interrupts channel SQLite first in both configurations; file-journal header-specific interruption not exercised"
+        ]
+      },
+      "engine": {
+        "scope": "V10-18 real PG mismatch/maintenance and post-pin client-exception recovery",
+        "injection": "after real release UPDATE; before sending COMMIT; ordinary ROLLBACK",
+        "pinSequence": 2,
+        "currentPinDigest": "eb74c515058fe59e049715af39c7fed28bdb84cded25fb7f7c5c8efe3f19a187",
+        "networkFailureInjected": false,
+        "processSignalInjected": false
+      },
+      "backup": {
+        "scope": "V10-07/08 actual PostgreSQL snapshot and exception recovery subset",
+        "injection": "actual database COMMIT followed by a host response exception; no SIGKILL or physical network cut",
+        "snapshot": {
+          "originalDigest": "02ba91b8a70b48dd523a447f610a8220f22e0d403ccdd4fcbea85e897beab7e2",
+          "changedDuringSnapshot": "9e70a5848b8c0a4c6ec98421563737644e5e09b74223e1aa905adef2f93b4532",
+          "restoredToOriginal": true
+        },
+        "digest": "77c95272615ccbfb19464598536de095637cf53d07902cf96488b531d5a38351",
+        "restoreOperationId": "d855f6c1-3cd7-4787-b530-126eedb76cf3",
+        "restorationId": "af410e4e-9418-4cdd-8a39-1d54b90f87e8",
+        "rebindAndFreshReconciliation": true,
+        "oldMigration": {
+          "refused": "agent_postgres_migration_receipt_missing",
+          "operationId": "1c457e62-c280-4fc7-bb29-249c29c43df4",
+          "retainedFences": [
+            {
+              "purpose": "channel",
+              "maintenance_id": "1c457e62-c280-4fc7-bb29-249c29c43df4"
+            },
+            {
+              "purpose": "knowledge",
+              "maintenance_id": "1c457e62-c280-4fc7-bb29-249c29c43df4"
+            },
+            {
+              "purpose": "state",
+              "maintenance_id": "1c457e62-c280-4fc7-bb29-249c29c43df4"
+            }
+          ],
+          "automaticFenceRemoval": false
+        }
+      },
+      "timings": {
+        "migrationMs": null,
+        "engineMs": 12685.820038,
+        "backupMs": 4377.4011230000015
+      },
+      "resumedAfter": "migration",
+      "finalRestoredFences": [
+        {
+          "purpose": "channel",
+          "maintenance_id": "1c457e62-c280-4fc7-bb29-249c29c43df4"
+        },
+        {
+          "purpose": "knowledge",
+          "maintenance_id": "1c457e62-c280-4fc7-bb29-249c29c43df4"
+        },
+        {
+          "purpose": "state",
+          "maintenance_id": "1c457e62-c280-4fc7-bb29-249c29c43df4"
+        }
+      ],
+      "sourceFencesClear": true,
+      "restoredDatabaseOrdinaryRunnableAtFinalState": false,
+      "externalModelApiCalls": 0,
+      "productionEffects": 0,
+      "dataRetained": true
+    }
+  ],
+  "failedAttempt": {
+    "log": "runtime/evidence/C10-postgres-recovery-journal-run1-failed.log",
+    "exitCode": 1,
+    "failure": {
+      "kind": "postgres_recovery_acceptance",
+      "status": "failed",
+      "stage": "complete",
+      "codes": [
+        "ERR_ASSERTION"
+      ],
+      "assertion": "engine_entry_original_record_digest",
+      "frames": [],
+      "dataRetained": true
+    },
+    "migrationCompleted": true,
+    "originalsPreserved": true,
+    "correction": "Harness engine entry uses deepEqual instead of JSON.stringify digest, preserving formal product digests; guarded resume revalidates saved migration and current originals.",
+    "successfulMigrationRepeated": false,
+    "sqliteRecoveryRepeated": false
+  },
+  "finalFiles": [
+    {
+      "name": "C10-postgres-recovery-fixture.mjs",
+      "bytes": 14652,
+      "sha256": "554ec2858e12e903287590f6e0d9488abd6ea04f805929e12ac1692611ef0bea"
+    },
+    {
+      "name": "C10-postgres-recovery-migration.mjs",
+      "bytes": 12851,
+      "sha256": "e16135f0fcde3b1940093b6aa5f67c08a6ca0b8fe760d87ff40c451f89106086"
+    },
+    {
+      "name": "C10-postgres-recovery-engine.mjs",
+      "bytes": 13565,
+      "sha256": "3f29df9aa0d1494abf39905f59a84d2bd75525a5001803dfb7c1e389c5c417da"
+    },
+    {
+      "name": "C10-postgres-recovery-backup.mjs",
+      "bytes": 19377,
+      "sha256": "108bbf856cede91fe68c644395ec9ef691f00d6d83cc1e21093017f5a626299d"
+    },
+    {
+      "name": "C10-postgres-real-pages.mjs",
+      "bytes": 1756,
+      "sha256": "27f4585b54b1f483cb404a98592b6e1f2423422014b8cf880a60f9464f6d3752"
+    }
+  ],
+  "finalPins": {
+    "local": "runtime/evidence/checkpoint406-local-final.json",
+    "linux": "runtime/evidence/checkpoint406-linux-final.json",
+    "match": true
+  },
+  "cleanup": {
+    "log": "runtime/evidence/C10-postgres-recovery-shutdown.log",
+    "postgresFastStopExitCode": 0,
+    "postgresStatusExitCode": 3,
+    "postgresStatus": "no server running",
+    "oldPostmasterPid": 1941468,
+    "oldPostmasterAbsent": true,
+    "postmasterPidFileAbsent": true,
+    "sshMasterClosed": true,
+    "sshControlDirectoryRemoved": true,
+    "dataRetainedAt": "/tmp/secumon-postgres-405.sJ1Huq",
+    "temporaryDataDurabilityGuaranteed": false
+  },
+  "next": {
+    "existingRequirement": "V10-07",
+    "stage": "postgres_transfer_capacity_acceptance",
+    "readyEnvironmentVerificationGroups": 1,
+    "scope": "Existing PostgreSQL total transfer 64MiB limit: reject overflow, preserve valid originals and incomplete backup; do not claim completion or replay inputs.",
+    "completionBoundary": "After this existing group and its result/Git handoff, close verification possible in the currently prepared environments; leave selected external/operational acceptance explicit."
+  },
+  "externalAcceptance": [
+    "native Windows host and installation/filesystem acceptance",
+    "Operational PostgreSQL roles, schema permissions and TLS",
+    "Corporate MCP, Knox and external A2A endpoints and test recipients",
+    "Actual corporate application computer-use environment",
+    "Selected operational volume, retention, latency, RPO/RTO and actual late effects/deletion/retraction reconciliation",
+    "Selected pilot deployment and optional existing-work migration"
+  ],
+  "realModelApiTrials": "stopped by user",
+  "limits": [
+    "Exception injection is not SIGKILL, power-loss or physical network-cut evidence.",
+    "Two configuration results use different harness revisions; journal completion combines preserved migration with guarded resume.",
+    "Checks within a flow are not independent test cases.",
+    "Final restored DB keeps the old migration-operation fence after its expected refusal; the fence was not automatically cleared.",
+    "Uncovered combinations and arbitrary syscall points do not create new mandatory verification gates."
+  ],
+  "goalComplete": false
+}

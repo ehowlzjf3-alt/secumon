@@ -1,5 +1,21 @@
 # 시큐몬 설계 조사 기록
 
+## 최신 기록 — 체크포인트 406: 실제 PostgreSQL 중단·재개
+
+2026-09-09 · 기준선 `b9bb7b5`. SQLite 전체 실행 exit0, file-journal의 첫 이관 성공 + 비교문 교정 뒤 엔진부터 재개 exit0을 확인했다. Journal의 JSON 속성 순서에 민감한 비교를 구조 비교로 고쳤고, private 원자료·저장 이관 결과·PG 원행·페이지 SHA·fence를 재확인해 완료한 이관을 재사용했다. 같은 fixture 판본의 전체 2회 통과나 검사문 개수를 독립 시험 수로 계산하지 않는다.
+
+기존 V10-06/07/08/18의 선택한 이관/백업/복원/엔진 중단·호환 조건과 원자료 보존을 확인했다. 제품 소스·core 의존성 변경, 재빌드·전체 회귀 반복은 없었다. 실제 COMMIT 뒤 응답 예외와 엔진 COMMIT 전 예외·ROLLBACK을 구분하며 SIGKILL·전원 장애 증거로 확대하지 않는다.
+
+서버·DB pool·전용 SSH를 종료하고 원문·부분/완성 백업·DB·실패 기록을 보존했다. 마지막 과거 migration apply 거절 뒤 복원 DB에는 옛 operation fence가 남아 있다. 원 업무 영수증은 보존했으며 그 DB를 일반 가동 가능 상태로 표시하거나 fence를 임의 해제하지 않았다.
+
+**현재 환경에서 남은 명명된 필수 검사는 기존 V10-07 PostgreSQL 전체 전달 64MiB 초과 거절·원자료/부분 백업 보존 1묶음이다.** 그 뒤 현재 가능한 검증을 마감한다. Windows·운영 PG 역할/규모·사내 MCP/Knox/A2A·실제 앱·운영 목표/파일럿은 외부 환경 인수이며 실제 모델/API 중단을 유지한다. 모든 syscall·혼합 조합으로 필수 검사를 계속 늘리지 않는다.
+
+[결과](chapters/C10-postgres-recovery-result.md) · [요구 대조](chapters/C10-postgres-recovery-audit.md) · [체크포인트](../runtime/evidence/checkpoint406.json) · [현재 잔여](REMAINING-ACCEPTANCE.md)
+
+## 이전 조사·구현 기록 — 체크포인트 1~405
+
+아래의 미확정·미구현·다음 작업 표현은 각 당시 기록이며 현재 순서는 위 checkpoint406과 최신 잔여 목록을 따른다.
+
 ## 범위
 - 2026-09-05 제공된 Gmail.zip을 원본 보존 상태에서 완전히 복원하고 코드 기반 설계안을 작성한다.
 - 이번 단계는 정적 분석과 설계이며 애플리케이션 실행이나 운영 시스템 접속을 포함하지 않는다.

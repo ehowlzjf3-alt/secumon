@@ -1,5 +1,5 @@
 {
-  "revision": "v0.89",
+  "revision": "v0.90",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1966,7 +1966,7 @@
   "next_local_work_item": null,
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
-  "execution_state": "named_local_and_real_postgres_normal_paths_verified_recovery_external_acceptance_pending",
+  "execution_state": "named_local_and_real_postgres_recovery_paths_verified_capacity_external_acceptance_pending",
   "scope_note": "All discussed capabilities remain in scope; optional means deploy-time opt-in, not omitted implementation.",
   "execution_chapters": [
     {
@@ -6843,13 +6843,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 405,
-      "status": "real_postgres_normal_paths_verified_recovery_external_acceptance_pending",
-      "plan": "design/chapters/C10-postgres-real-plan.md",
+      "checkpoint": 406,
+      "status": "real_postgres_recovery_paths_verified_capacity_external_acceptance_pending",
+      "plan": "design/chapters/C10-postgres-recovery-plan.md",
       "nextChapter": "C10",
       "preparedIdentityTests": 23,
       "existingFixtureFilesAdapted": 1,
-      "result": "design/chapters/C10-postgres-real-result.md",
+      "result": "design/chapters/C10-postgres-recovery-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -8704,7 +8704,7 @@
         ],
         "followUp": "FinalIntegration (checkpoint404): exact record links and recovery UI verified; same document-memory HTTP flow observed at13.317s; operational response-time acceptance remains"
       },
-      "nextStage": "postgres_remaining_named_recovery_acceptance",
+      "nextStage": "postgres_transfer_capacity_acceptance",
       "C10Completion": {
         "checkpoint": 403,
         "status": "named_local_and_linux_acceptance_verified",
@@ -8796,6 +8796,56 @@
           "Native Windows, corporate MCP/Knox/A2A, uninstrumented apps and selected pilot environment",
           "Real model/API trials remain stopped by user"
         ],
+        "goalComplete": false,
+        "followUp": "PostgresRecovery checkpoint406 verifies the selected existing interruption/concurrency/compatibility conditions. Remaining verification in the prepared environment is the existing V10-07 64MiB total transfer limit group; operational/external acceptance stays separate."
+      },
+      "PostgresRecovery": {
+        "checkpoint": 406,
+        "status": "real_postgres_recovery_paths_verified_capacity_external_acceptance_pending",
+        "plan": "design/chapters/C10-postgres-recovery-plan.md",
+        "result": "design/chapters/C10-postgres-recovery-result.md",
+        "audit": "design/chapters/C10-postgres-recovery-audit.md",
+        "evidence": "runtime/evidence/checkpoint406.json",
+        "flows": [
+          {
+            "backend": "sqlite",
+            "configuration": "sqlite + document memory",
+            "log": "runtime/evidence/C10-postgres-recovery-sqlite-run1.log",
+            "execution": "whole recovery flow",
+            "works": 2,
+            "receipts": 21,
+            "tables": 18,
+            "rows": 67
+          },
+          {
+            "backend": "file-journal",
+            "configuration": "file-journal + SQLite memory",
+            "log": "runtime/evidence/C10-postgres-recovery-journal-resume1.log",
+            "priorLog": "runtime/evidence/C10-postgres-recovery-journal-run1-failed.log",
+            "execution": "saved migration from failed first run + engine/backup resume",
+            "works": 2,
+            "receipts": 21,
+            "tables": 18,
+            "rows": 71
+          }
+        ],
+        "productSourceChanged": false,
+        "source": {
+          "sourceDigest": "34d86285b32363dd4d4c498885820725e43cf54b7705bfbca3c0c0883ac0f6a2",
+          "filesDigest": "7e55006e4b89076e3492649aa1234f0ec51ed07492acbd011ef47378a39055d3",
+          "fileCount": 2616
+        },
+        "readyEnvironmentVerificationGroupsRemaining": 1,
+        "nextScope": "Existing PostgreSQL total transfer 64MiB limit: reject overflow, preserve valid originals and incomplete backup; do not claim completion or replay inputs.",
+        "externalAcceptance": [
+          "native Windows host and installation/filesystem acceptance",
+          "Operational PostgreSQL roles, schema permissions and TLS",
+          "Corporate MCP, Knox and external A2A endpoints and test recipients",
+          "Actual corporate application computer-use environment",
+          "Selected operational volume, retention, latency, RPO/RTO and actual late effects/deletion/retraction reconciliation",
+          "Selected pilot deployment and optional existing-work migration"
+        ],
+        "realModelApiTrials": "stopped by user",
         "goalComplete": false
       }
     }
