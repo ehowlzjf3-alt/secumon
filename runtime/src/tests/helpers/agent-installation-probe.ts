@@ -19,6 +19,10 @@ const moduleUrl = (path: string) => pathToFileURL(join(engine, 'dist', path)).hr
 
 // Dynamic imports must come from the installed tree; source-repository imports above are types only.
 if (mode === 'assets') {
+  const { assertAgentEngineNative, AGENT_ENGINE_NATIVE_PATH } = await import(moduleUrl('infrastructure/agent-engine-native.js')) as typeof import('../../infrastructure/agent-engine-native.js');
+  const { inspectEngineRelease } = await import(moduleUrl('infrastructure/agent-engine-release.js')) as typeof import('../../infrastructure/agent-engine-release.js');
+  const release = inspectEngineRelease(engine), native = assertAgentEngineNative(engine, release.entries);
+  const nativeSha256 = createHash('sha256').update(readFileSync(join(engine, AGENT_ENGINE_NATIVE_PATH))).digest('hex');
   const { FileGuidanceSource } = await import(moduleUrl('infrastructure/file-guidance.js')) as typeof import('../../infrastructure/file-guidance.js');
   const guidance = new FileGuidanceSource(join(engine, 'guidance'));
   const manifests = await guidance.list();
@@ -48,7 +52,7 @@ if (mode === 'assets') {
       assert.deepEqual(Buffer.from(await response.arrayBuffer()), readFileSync(join(engine, path)), path);
     }
   } finally { await web.close(); }
-  process.stdout.write(JSON.stringify({ assets: assets.map(([route]) => route), guidance: manifests.map(item => item.id) }) + '\n');
+  process.stdout.write(JSON.stringify({ assets: assets.map(([route]) => route), guidance: manifests.map(item => item.id), native, nativeSha256 }) + '\n');
 } else if (mode === 'snapshot') {
   assert.ok(workId && sessionId);
   const { openAgentTurnProfile } = await import(moduleUrl('presentation/agent-turn-profile.js')) as typeof import('../../presentation/agent-turn-profile.js');

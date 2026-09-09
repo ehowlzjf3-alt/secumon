@@ -15,6 +15,7 @@ import { resolveAgentEngine } from '../infrastructure/agent-engine-registry.js';
 import { captureLifecycleTree, lifecycleDigest } from '../infrastructure/agent-lifecycle-files.js';
 import { SYNTHETIC_AGENT_TURN_REQUESTS } from '../infrastructure/synthetic-agent-turn.js';
 import type { InitialEngineBoundary } from './helpers/agent-initial-engine-worker.js';
+import { copyAgentEngineNativeFixture } from './helpers/agent-engine-native-fixture.js';
 
 const execute = promisify(execFile), runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
 const worker = fileURLToPath(new URL('./helpers/agent-initial-engine-worker.js', import.meta.url));
@@ -39,6 +40,7 @@ function smallRelease(base: string, name = 'a') {
   json(join(source, 'package.json'), { name: 'long-horizon-runtime', version: `0.0.${name === 'a' ? 1 : 2}-initial-engine`, engines: { node: '>=24.20.0 <25' } });
   json(join(source, 'node_modules/zod/package.json'), { name: 'zod', version: '0.0.0-metadata-fixture' });
   writeFileSync(join(source, 'dist/presentation/agent-cli.js'), 'throw new Error("metadata_fixture_must_not_execute");\n', { mode: 0o600 });
+  copyAgentEngineNativeFixture(source);
   const bundle = bundleAgentEngine(source, join(base, `bundle-${name}`));
   return installAgentEngine(bundle.directory, join(base, `engine-${name}`), bundle.release.digest);
 }

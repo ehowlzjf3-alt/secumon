@@ -1,5 +1,5 @@
 {
-  "revision": "v0.86",
+  "revision": "v0.87",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1922,10 +1922,10 @@
     "P4_before_v012": "MCP/Knox/computer-use integration moved to P3; A2A and ongoing missions remain P4",
     "P5_before_v012": "Domain deployment stays P5; foundational generality starts P0/P1 and sensitive-data gate moves before real integration"
   },
-  "next_local_work_item": "C05 policy regrant to original stored completion; C06 personal-memory HTTP permissions/latency/browser",
+  "next_local_work_item": "Final integration: original/session/memory/execution record linkage, memory selection expiration/error/reopen UI and document-memory response latency",
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
-  "execution_state": "ordered_verification_active",
+  "execution_state": "final_integration_verification_active",
   "scope_note": "All discussed capabilities remain in scope; optional means deploy-time opt-in, not omitted implementation.",
   "execution_chapters": [
     {
@@ -6680,7 +6680,7 @@
       },
       "retained_history_acceptance": {
         "fromCheckpoint": 401,
-        "status": "not_run",
+        "status": "small_local_and_linux_backup_restore_verified_operational_capacity_and_pg_pending",
         "local": [
           "Verify retained historical mission/resident originals through existing offline backup/restore and storage-transfer acceptance after current-head pruning",
           "Measure selected deployment history size and restore/transfer time against existing limits; local backup currently caps total4GiB/per-file1GiB/100000 entries and PostgreSQL transfer total64MiB",
@@ -6695,12 +6695,44 @@
           "runtime/src/infrastructure/postgres-transfer-tables.ts: original events/state_receipts/session inbox are transferred"
         ],
         "newColdArchiveSubsystemAdded": false,
-        "evidence": "runtime/evidence/checkpoint401.json"
+        "evidence": "runtime/evidence/checkpoint403.json",
+        "checkpoint": 403,
+        "result": "design/chapters/C10-completion-result.md"
+      },
+      "completion_verification": {
+        "checkpoint": 403,
+        "status": "named_local_and_linux_acceptance_verified",
+        "plan": "design/chapters/C10-completion-plan.md",
+        "result": "design/chapters/C10-completion-result.md",
+        "usage": "design/chapters/C10-completion-usage.md",
+        "evidence": "runtime/evidence/checkpoint403.json",
+        "localUnique": 69,
+        "linuxUnique": 24,
+        "newUnique": 11,
+        "chapterComplete": false,
+        "goalComplete": false,
+        "verifiedScope": [
+          "Prepared early intent/gate/restore seed publication and same-operation exception recovery",
+          "Full retained-history backup/restore/rebind/local inventory reconciliation and original redelivery in SQLite/file-journal",
+          "OS/CPU native presence and fresh Node loader checks; actual NAS Linux native build and npm/offline bundle installation"
+        ],
+        "remaining": [
+          "Final integrated record linkage, existing memory selection UI expiration/error recovery, document-memory latency about23.7s",
+          "Native Windows, real PostgreSQL migration/restore, corporate integrations and selected operational retention/capacity/restore acceptance"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "productChanged": true,
+        "productCompiledFilesChangedAfterBuild1": 0,
+        "finalSource": {
+          "sourceDigest": "0d29f57fce03d0eafe388b2f231bea05096181a072f8c8637585db7a72e70a30",
+          "filesDigest": "f5b0b01c4247a7da37815cb81c03ee7cb80a05a774daadec7f323ee4b715ff5f",
+          "fileCount": 2610
+        }
       }
     }
   ],
   "legacy_next_work_item": "P1-06",
-  "next_execution_chapter": "C10",
+  "next_execution_chapter": null,
   "reconciliation_documents": [
     "design/chapters/workspace-agent-defaults.md",
     "design/chapters/agent-lifecycle-and-memory-boundaries.md",
@@ -6716,12 +6748,13 @@
     ],
     "development_host": "macos",
     "verification": {
-      "linux": "explicit_personal_memory_verified_partial_chapter",
+      "linux": "C10_named_installation_restore_verified_not_full_runtime_or_production",
       "windows": "not_run",
       "macos": "local_development_only"
     },
     "note": "User clarified actual deployment targets are Linux and Windows. Native Windows is a target; WSL/macOS results are not substitutes.",
-    "linux_evidence": "runtime/evidence/C03-personal-verification.json"
+    "linux_evidence": "runtime/evidence/C03-personal-verification.json",
+    "linux_latest_evidence": "runtime/evidence/checkpoint403.json"
   },
   "execution_policy": {
     "revision": "checkpoint352",
@@ -6768,13 +6801,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 402,
-      "status": "C05_C06_local_completion_and_memory_cost_verified_C10_next",
-      "plan": "design/chapters/C05-C06-completion-plan.md",
-      "nextChapter": "C10",
+      "checkpoint": 403,
+      "status": "C10_named_local_and_linux_acceptance_verified_final_integration_next",
+      "plan": "design/chapters/C10-completion-plan.md",
+      "nextChapter": null,
       "preparedIdentityTests": 23,
       "existingFixtureFilesAdapted": 1,
-      "result": "design/chapters/C05-C06-completion-result.md",
+      "result": "design/chapters/C10-completion-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -6889,8 +6922,8 @@
         ]
       },
       "remaining": [
-        "C10 earliest restore interruption, retained-original backup/transfer and local capacity acceptance, installation; current Linux/native Windows/real PostgreSQL",
-        "Final integration including selected-deployment memory HTTP response time (documents fixture23.7s), actual corporate MCP/Knox/external A2A, operational retention/capacity and deployment; model/API trials remain stopped"
+        "Final integrated record linkage, existing memory selection UI expiration/error recovery, document-memory latency about23.7s",
+        "Native Windows, real PostgreSQL migration/restore, corporate integrations and selected operational retention/capacity/restore acceptance"
       ],
       "history": [
         {
@@ -7018,6 +7051,13 @@
           "status": "C09_retained_history_local_verified_C05_C06_next",
           "nextChapter": "C05",
           "evidence": "runtime/evidence/checkpoint401.json"
+        },
+        {
+          "checkpoint": 402,
+          "status": "C05_C06_local_completion_and_memory_cost_verified_C10_next",
+          "plan": "design/chapters/C05-C06-completion-plan.md",
+          "result": "design/chapters/C05-C06-completion-result.md",
+          "nextChapter": "C10"
         }
       ],
       "C03": {
@@ -8611,6 +8651,37 @@
           "One local timing sample; document memory still about23.7s and SQLite-memory elapsed time did not improve. Final selected-deployment response-time acceptance remains.",
           "Actual model/API tests remain stopped; real services and current Linux/native Windows remain unverified."
         ]
+      },
+      "nextStage": "final_integration",
+      "C10Completion": {
+        "checkpoint": 403,
+        "status": "named_local_and_linux_acceptance_verified",
+        "plan": "design/chapters/C10-completion-plan.md",
+        "result": "design/chapters/C10-completion-result.md",
+        "usage": "design/chapters/C10-completion-usage.md",
+        "evidence": "runtime/evidence/checkpoint403.json",
+        "localUnique": 69,
+        "linuxUnique": 24,
+        "newUnique": 11,
+        "chapterComplete": false,
+        "goalComplete": false,
+        "verifiedScope": [
+          "Prepared early intent/gate/restore seed publication and same-operation exception recovery",
+          "Full retained-history backup/restore/rebind/local inventory reconciliation and original redelivery in SQLite/file-journal",
+          "OS/CPU native presence and fresh Node loader checks; actual NAS Linux native build and npm/offline bundle installation"
+        ],
+        "remaining": [
+          "Final integrated record linkage, existing memory selection UI expiration/error recovery, document-memory latency about23.7s",
+          "Native Windows, real PostgreSQL migration/restore, corporate integrations and selected operational retention/capacity/restore acceptance"
+        ],
+        "actualModelApi": "stopped_by_user",
+        "productChanged": true,
+        "productCompiledFilesChangedAfterBuild1": 0,
+        "finalSource": {
+          "sourceDigest": "0d29f57fce03d0eafe388b2f231bea05096181a072f8c8637585db7a72e70a30",
+          "filesDigest": "f5b0b01c4247a7da37815cb81c03ee7cb80a05a774daadec7f323ee4b715ff5f",
+          "fileCount": 2610
+        }
       }
     }
   }

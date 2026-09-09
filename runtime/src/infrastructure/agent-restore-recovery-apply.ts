@@ -1,4 +1,5 @@
 import { dirname, join } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import type { AgentProfileStore } from '../application/agent-profile-contracts.js';
 import type { AgentHostIdentityOptions } from '../application/agent-host-identity-contracts.js';
@@ -6,8 +7,9 @@ import { AGENT_LOCAL_RESTORE_COMPLETION, AgentLocalRestoreMarkerSchema } from '.
 import {
   AGENT_RESTORE_RECOVERY_PENDING, AgentRestoreRecoveryApplyInputSchema, AgentRestoreRecoveryApplyIntentSchema,
   AgentRestoreRecoveryApplyPendingSchema, AgentRestoreRecoveryApplyCompleteSchema, AgentRestoreRecoveryPartialSchema,
+  AgentRestoreRecoveryGateSchema, AgentRestoreRecoverySeedSchema,
   type AgentRestoreRecoveryApplyInput, type AgentRestoreRecoveryApplyIntent, type AgentRestoreRecoveryApplyComplete,
-  type AgentRestoreRecoveryApplyProgress,
+  type AgentRestoreRecoveryApplyProgress, type AgentRestoreRecoveryPreparationProgress,
 } from '../application/agent-restore-recovery-apply-contracts.js';
 import { claimAgentHostIdentity, inspectAgentHostIdentity, agentHostIdentityRegistryDirectory } from './agent-host-identities.js';
 import { inspectAgentRestoreRecovery } from './agent-restore-recovery.js';
@@ -18,6 +20,7 @@ import { captureLifecycleTree, disjoint, lifecycleDigest, lifecycleExists, lifec
 import { openProfileMutationScope, profileDirectory, publishProfileJson, readProfileJson } from './agent-profile-files.js';
 import { hostMetadataFiles, releaseMetadataDirectory, sameFileIdentity, type FileIdentity } from './host-metadata-files.js';
 import { assertHostDirectoryRetirementAvailable, inspectHostDirectoryRetirement, retireHostDirectory } from './host-directory-retirement.js';
+import { captureRestoreRecoveryPublication, publishRestoreRecoveryGate } from './agent-restore-recovery-publication.js';
 
 const restorePending = '.secumon-restore-in-progress.json';
 const RestorePendingSchema = z.strictObject({ schemaVersion: z.literal(1), backupDigest: z.string(), agentId: z.uuid(), restorationId: z.uuid().optional() });
@@ -26,6 +29,7 @@ const same = (a: unknown, b: unknown) => lifecycleDigest(a) === lifecycleDigest(
 const originalIncluded = (path: string) => path !== '.secumon/runtime-leases' && !path.startsWith('.secumon/runtime-leases/') &&
   path !== '.secumon/lifecycle-maintenance.json' && path !== AGENT_RESTORE_RECOVERY_PENDING;
 type Prepared = ReturnType<typeof inspectAgentRestoreRecovery>;
+type PreparationObserver = ((phase: AgentRestoreRecoveryPreparationProgress) => void) | undefined;
 function signed<T extends { digest: string }>(schema: z.ZodType<T>, body: Omit<T, 'digest'>): T {
   const { digest: _, ...parsed } = schema.parse({ ...body, digest: '0'.repeat(64) });
   return schema.parse({ ...parsed, digest: lifecycleDigest(parsed) });
@@ -95,8 +99,15 @@ function pending(intent: AgentRestoreRecoveryApplyIntent) {
   return AgentRestoreRecoveryApplyPendingSchema.parse({ schemaVersion: 1, operationId: intent.operationId,
     recoveryDigest: intent.recoveryDigest, intentDigest: intent.digest });
 }
+function publishGate(intent: AgentRestoreRecoveryApplyIntent, root: string) {
+  const record = readSigned(join(intent.operationDirectory, 'gate-publication.json'), AgentRestoreRecoveryGateSchema);
+  if (!record || record.intentDigest !== intent.digest || !sameFileIdentity(identity(root), intent.originalIdentity))
+    return fail('application_binding_mismatch');
+  publishRestoreRecoveryGate(join(intent.operationDirectory, 'original-gate.json'), join(root, AGENT_RESTORE_RECOVERY_PENDING), record.file,
+    Buffer.from(JSON.stringify(pending(intent), null, 2) + '\n'));
+}
 function preserveOriginal(profiles: AgentProfileStore, prepared: Prepared, intent: AgentRestoreRecoveryApplyIntent,
-  host: AgentHostIdentityOptions, forbidden: readonly string[]) {
+  host: AgentHostIdentityOptions, forbidden: readonly string[], observe: PreparationObserver) {
   const move = { source: intent.root, destination: intent.retiredDirectory, expectedIdentity: intent.originalIdentity, forbiddenRoots: forbidden };
   const observed = inspectHostDirectoryRetirement(move);
   if (observed.retired) {
@@ -105,6 +116,9 @@ function preserveOriginal(profiles: AgentProfileStore, prepared: Prepared, inten
       fail('application_binding_mismatch');
     return;
   }
+  // A killed POSIX publisher can leave the exact recorded staging alias linked to the gate.
+  // Complete that publication before ordinary profile readers require a single-link metadata file.
+  if (intent.publication && lifecycleExists(join(intent.root, AGENT_RESTORE_RECOVERY_PENDING))) publishGate(intent, intent.root);
   const profile = profiles.inspect(intent.root); if (profile.status !== 'ready') return fail('profile_not_ready');
   const claim = claimAgentHostIdentity(profile, host); let lease: ReturnType<typeof acquireAgentMaintenance> | undefined;
   const errors: unknown[] = [];
@@ -116,7 +130,11 @@ function preserveOriginal(profiles: AgentProfileStore, prepared: Prepared, inten
     recoverAgentLifecycleLeases(intent.root, true);
     lease = acquireAgentMaintenance(intent.root, true);
     assertOriginal(prepared, intent.root); assertPackage(prepared); claim.assertCurrent();
-    if (!savedPending) writeRecord(intent.root, AGENT_RESTORE_RECOVERY_PENDING, pending(intent), forbidden);
+    if (!savedPending) {
+      if (intent.publication) publishGate(intent, intent.root);
+      else writeRecord(intent.root, AGENT_RESTORE_RECOVERY_PENDING, pending(intent), forbidden);
+    }
+    observe?.('gate_published');
     assertOriginal(prepared, intent.root); claim.assertCurrent();
   } catch (error) { errors.push(error); }
   finally {
@@ -129,6 +147,41 @@ function preserveOriginal(profiles: AgentProfileStore, prepared: Prepared, inten
   assertOriginal(prepared, intent.root); assertPackage(prepared);
   retireHostDirectory(move);
   assertOriginal(prepared, intent.retiredDirectory);
+}
+
+function readSeed(intent: AgentRestoreRecoveryApplyIntent, restorationId: string) {
+  const seed = readSigned(join(intent.operationDirectory, `restore-seed-${restorationId}.json`), AgentRestoreRecoverySeedSchema);
+  if (!seed || seed.intentDigest !== intent.digest || seed.restorationId !== restorationId ||
+    seed.source !== join(dirname(intent.root), `.secumon-restore-seed-${intent.operationId}-${restorationId}`)) return fail('partial_restore_unidentified');
+  return seed;
+}
+function seedMarker(intent: AgentRestoreRecoveryApplyIntent, restorationId: string) {
+  return RestorePendingSchema.parse({ schemaVersion: 1, backupDigest: intent.backupDigest, agentId: intent.agentId, restorationId });
+}
+function emptySeed(intent: AgentRestoreRecoveryApplyIntent, restorationId: string) {
+  const seed = readSeed(intent, restorationId);
+  if (!sameFileIdentity(identity(intent.root), seed.rootIdentity) ||
+    !same(readProfileJson(join(intent.root, restorePending), RestorePendingSchema), seedMarker(intent, restorationId)))
+    return fail('application_binding_mismatch');
+  return captureLifecycleTree(intent.root, path => path !== restorePending).length === 0 ? seed : null;
+}
+function createSeed(intent: AgentRestoreRecoveryApplyIntent, forbidden: readonly string[], observe: PreparationObserver) {
+  const restorationId = randomUUID(), source = join(dirname(intent.root), `.secumon-restore-seed-${intent.operationId}-${restorationId}`);
+  const scope = openProfileMutationScope(source, [...forbidden, intent.root, intent.retiredDirectory]);
+  let rootIdentity: FileIdentity;
+  try {
+    profileDirectory(source, true, true, scope, true); observe?.('restore_directory_created');
+    if (!publishProfileJson(join(source, restorePending), seedMarker(intent, restorationId), scope)) fail('application_record_exists');
+    const directory = scope.directory(source, 'private'); if (!directory) return fail('directory_missing');
+    rootIdentity = { ...directory.identity }; scope.check();
+  } finally { scope.close(); }
+  const seed = signed(AgentRestoreRecoverySeedSchema, { schemaVersion: 1, intentDigest: intent.digest, restorationId, source, rootIdentity });
+  writeRecord(intent.operationDirectory, `restore-seed-${restorationId}.json`, seed, forbidden.filter(path => path !== intent.operationDirectory));
+  observe?.('restore_seeded');
+  // Before publication, abandoned random seeds stay untouched. Only a fully marked root gets the public target name.
+  retireHostDirectory({ source, destination: intent.root, expectedIdentity: rootIdentity, forbiddenRoots: [...forbidden, intent.retiredDirectory] });
+  observe?.('restore_published');
+  return seed;
 }
 
 /** POSIX restore retries retain the partial directory, then copy the original archive into a new root. */
@@ -150,7 +203,8 @@ function preservePartial(intent: AgentRestoreRecoveryApplyIntent, forbidden: rea
 
 /** Applies one explicitly selected full replacement; external history reconciliation remains a separate existing operation. */
 export async function applyAgentRestoreRecovery(profiles: AgentProfileStore, value: AgentRestoreRecoveryApplyInput,
-  host: AgentHostIdentityOptions, options: { onProgress?: (phase: AgentRestoreRecoveryApplyProgress) => void } = {}) {
+  host: AgentHostIdentityOptions, options: { onProgress?: (phase: AgentRestoreRecoveryApplyProgress) => void;
+    onPreparation?: (phase: AgentRestoreRecoveryPreparationProgress) => void } = {}) {
   const input = AgentRestoreRecoveryApplyInputSchema.parse(value);
   if (!input.offline) lifecycleFail('lifecycle_offline_confirmation_required');
   const prepared = inspectAgentRestoreRecovery(input.recoveryDirectory);
@@ -175,14 +229,26 @@ export async function applyAgentRestoreRecovery(profiles: AgentProfileStore, val
     intent = signed(AgentRestoreRecoveryApplyIntentSchema, { schemaVersion: 1, kind: 'secumon-restore-recovery-application',
       operationId: prepared.manifest.operationId, agentId: prepared.manifest.agentId, recoveryDirectory: prepared.directory,
       recoveryDigest: prepared.manifest.digest, ...paths, originalIdentity: head.record.rootIdentity,
-      previousHeadDigest: head.digest, backupDigest: prepared.manifest.selectedBackup.digest });
-    const scope = openProfileMutationScope(paths.operationDirectory, [paths.root, paths.retiredDirectory, prepared.directory, registry, ...engines]);
+      previousHeadDigest: head.digest, backupDigest: prepared.manifest.selectedBackup.digest, publication: 'staged-v1' });
+    const staging = `${paths.operationDirectory}.staging-${randomUUID()}`;
+    const scope = openProfileMutationScope(staging, [paths.root, paths.retiredDirectory, ...protectedRoots]);
+    let stagingIdentity: FileIdentity;
     try {
-      profileDirectory(paths.operationDirectory, true, true, scope, true);
-      profileDirectory(join(paths.operationDirectory, '.secumon'), true, true, scope, true);
-      if (!publishProfileJson(join(paths.operationDirectory, 'intent.json'), intent, scope)) fail('application_record_exists');
+      profileDirectory(staging, true, true, scope, true); options.onPreparation?.('intent_directory_created');
+      profileDirectory(join(staging, '.secumon'), true, true, scope, true);
+      if (!publishProfileJson(join(staging, 'intent.json'), intent, scope)) fail('application_record_exists');
+      const gateBytes = Buffer.from(JSON.stringify(pending(intent), null, 2) + '\n');
+      if (!publishProfileJson(join(staging, 'original-gate.json'), pending(intent), scope)) fail('application_record_exists');
+      const file = captureRestoreRecoveryPublication(join(staging, 'original-gate.json'), gateBytes);
+      if (!publishProfileJson(join(staging, 'gate-publication.json'), signed(AgentRestoreRecoveryGateSchema,
+        { schemaVersion: 1, intentDigest: intent.digest, file }), scope)) fail('application_record_exists');
+      const directory = scope.directory(staging, 'private'); if (!directory) return fail('directory_missing');
+      stagingIdentity = { ...directory.identity };
       scope.check();
     } finally { scope.close(); }
+    retireHostDirectory({ source: staging, destination: paths.operationDirectory, expectedIdentity: stagingIdentity,
+      forbiddenRoots: [paths.root, paths.retiredDirectory, prepared.directory, registry, ...engines] });
+    options.onPreparation?.('intent_published');
   }
   // Exclusive management lease; live or foreign owners are never displaced by a retry.
   recoverAgentLifecycleLeases(intent.operationDirectory, true);
@@ -199,16 +265,21 @@ export async function applyAgentRestoreRecovery(profiles: AgentProfileStore, val
         return fail('application_no_longer_current');
       return summary(intent, completed);
     }
-    preserveOriginal(profiles, prepared, intent, host, protectedRoots);
+    preserveOriginal(profiles, prepared, intent, host, protectedRoots, options.onPreparation);
     options.onProgress?.('original_preserved');
     assertPackage(prepared); assertOriginal(prepared, intent.retiredDirectory);
     let restored = lifecycleExists(intent.root) ? readProfileJson(join(intent.root, AGENT_LOCAL_RESTORE_COMPLETION), AgentLocalRestoreMarkerSchema) : null;
+    let seed: ReturnType<typeof createSeed> | null = null;
     if (lifecycleExists(intent.root) && lifecycleExists(join(intent.root, restorePending))) {
-      if (process.platform !== 'win32') preservePartial(intent, protectedRoots);
+      const marker = readProfileJson(join(intent.root, restorePending), RestorePendingSchema);
+      if (intent.publication && marker?.restorationId) seed = emptySeed(intent, marker.restorationId);
+      if (!seed && process.platform !== 'win32') preservePartial(intent, protectedRoots);
       restored = null;
     }
     if (!restored) {
-      restoreAgentBackup(profiles, join(prepared.directory, 'selected-backup'), intent.root, intent.backupDigest, true);
+      if (intent.publication && !lifecycleExists(intent.root)) seed = createSeed(intent, protectedRoots, options.onPreparation);
+      restoreAgentBackup(profiles, join(prepared.directory, 'selected-backup'), intent.root, intent.backupDigest, true,
+        seed ? { rootIdentity: seed.rootIdentity, restorationId: seed.restorationId } : undefined);
       restored = readProfileJson(join(intent.root, AGENT_LOCAL_RESTORE_COMPLETION), AgentLocalRestoreMarkerSchema);
     }
     if (!restored?.restorationId || restored.agentId !== intent.agentId || restored.backupDigest !== intent.backupDigest ||

@@ -15,6 +15,7 @@ import { effectiveAgentPostgresSelection } from './agent-postgres-migration-prof
 import { readWindowsLifecycleJson, removeWindowsLifecycleMarker } from './windows-lifecycle-files.js';
 import { restoreWindowsLifecycleTree } from './windows-lifecycle-recovery.js';
 import { inspectAgentLocalStorageCompatibility } from './agent-storage-compatibility.js';
+import { hostMetadataFiles, releaseMetadataDirectory, sameFileIdentity, type FileIdentity } from './host-metadata-files.js';
 export { inspectAgentLocalStorageCompatibility } from './agent-storage-compatibility.js';
 
 type Ready = Extract<AgentProfileStatus, { status: 'ready' }>;
@@ -104,7 +105,8 @@ export function publishAgentEnginePin(profile: Ready, engine: string, release: E
     }
   }
 }
-export function restoreAgentBackup(profiles: AgentProfileStore, input: string, directory: string, expectedDigest: string, offline: boolean) {
+export function restoreAgentBackup(profiles: AgentProfileStore, input: string, directory: string, expectedDigest: string, offline: boolean,
+  preparedSeed?: { readonly rootIdentity: FileIdentity; readonly restorationId: string }) {
   if (offline !== true) lifecycleFail('lifecycle_offline_confirmation_required');
   const saved = inspectAgentBackup(input), target = lifecycleRoot(directory, false); disjoint(saved.directory, target);
   if (saved.manifest.digest !== expectedDigest || saved.manifest.originalRoot !== target) lifecycleFail('lifecycle_restore_binding_mismatch');
@@ -114,13 +116,24 @@ export function restoreAgentBackup(profiles: AgentProfileStore, input: string, d
   if (saved.manifest.entries.some(entry => [markerName, AGENT_LOCAL_RESTORE_COMPLETION, AGENT_RESTORE_RECONCILIATION, AGENT_RESTORE_RECONCILIATION_PENDING].includes(entry.path))) lifecycleFail('lifecycle_restore_entries_invalid');
   // A Windows retry must present the same original archive and the still-pending marker.
   if (lifecycleExists(target)) {
-    if (process.platform !== 'win32') lifecycleFail('lifecycle_restore_destination_exists');
+    if (process.platform !== 'win32' && !preparedSeed) lifecycleFail('lifecycle_restore_destination_exists');
     lifecycleRoot(target);
     const previous = readProfileJson(join(target, markerName), markerSchema);
     if (!previous || previous.backupDigest !== saved.manifest.digest || previous.agentId !== saved.manifest.agentId) return lifecycleFail('lifecycle_restore_destination_exists');
+    if (preparedSeed) {
+      // Only the apply operation's exact pre-published, otherwise-empty nonce seed is accepted on POSIX.
+      const files = hostMetadataFiles(), held = files.inspectDirectory(target, 'private');
+      if (!held) return lifecycleFail('lifecycle_restore_destination_exists');
+      try {
+        if (!sameFileIdentity(held.identity, preparedSeed.rootIdentity) || previous.restorationId !== preparedSeed.restorationId ||
+          captureLifecycleTree(target, path => path !== markerName).length !== 0) lifecycleFail('lifecycle_restore_binding_mismatch');
+        files.inspectDirectory(target, 'private', held);
+      } finally { releaseMetadataDirectory(files, held); }
+    }
     // An old pending marker remains legacy; retry never rewrites it or invents a new occurrence.
     marker = previous;
   } else {
+    if (preparedSeed) lifecycleFail('lifecycle_restore_binding_mismatch');
     marker = markerSchema.parse({ schemaVersion: 1, backupDigest: saved.manifest.digest, agentId: saved.manifest.agentId, restorationId: randomUUID() });
     createLifecycleDirectory(target); publishLifecycleManifest(target, markerName, marker);
   }

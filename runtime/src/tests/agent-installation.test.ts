@@ -14,6 +14,7 @@ import { AgentInitialSetupReceiptSchema, AgentSetupOperationV3Schema } from '../
 import { SYNTHETIC_AGENT_TURN_REQUESTS } from '../infrastructure/synthetic-agent-turn.js';
 import type { SessionPage } from '../domain/session.js';
 import type { InstallationSnapshot } from './helpers/agent-installation-probe.js';
+import { AGENT_ENGINE_NATIVE_PATH, type AgentEngineNativeCapabilities } from '../infrastructure/agent-engine-native.js';
 
 const execute = promisify(execFile);
 const runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
@@ -28,6 +29,7 @@ const requiredFiles = [
   'fixtures/documents-simple.json', 'guidance/catalog.json', 'guidance/evidence-review.md', 'examples/two-agents.md',
   'src/presentation/web/index.html', 'src/presentation/web/styles.css',
   'dist/presentation/web/client.js', 'dist/presentation/web/view-state.js', 'dist/presentation/web/personal-memory.js',
+  AGENT_ENGINE_NATIVE_PATH, 'dist/infrastructure/agent-engine-native.js',
 ] as const;
 const sha256 = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
 
@@ -75,9 +77,11 @@ function fixture(commandTimeoutMs = 45000) {
     return json<InstallationSnapshot>(process.execPath, [probe, engine, 'snapshot', directory, workId, sessionId]);
   }
   async function assets(engine: string) {
-    const result = await json<{ assets: string[]; guidance: string[] }>(process.execPath, [probe, engine, 'assets', directory]);
+    const result = await json<{ assets: string[]; guidance: string[]; native: AgentEngineNativeCapabilities; nativeSha256: string }>(process.execPath, [probe, engine, 'assets', directory]);
     assert.deepEqual(result.assets, ['/', '/assets/styles.css', '/assets/client.js', '/assets/view-state.js', '/assets/personal-memory.js']);
     assert.ok(result.guidance.includes('core.evidence-review'));
+    assert.deepEqual(result.native, { platform: process.platform, arch: process.arch, fileApi: 4, retirementApi: 1 });
+    assert.equal(result.nativeSha256, sha256(readFileSync(join(runtimeRoot, AGENT_ENGINE_NATIVE_PATH))));
   }
   return { base, directory, prefix, home, env, command, json, inspect, assets,
     close: () => rmSync(base, { recursive: true, force: true }) };

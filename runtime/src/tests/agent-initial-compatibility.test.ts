@@ -10,6 +10,7 @@ import { assertAgentEnginePin, assertAgentSetupCompatibility, engineCompatibilit
   readAgentSetupSchemaVersion } from '../infrastructure/agent-engine-release.js';
 import { captureLifecycleTree, lifecycleDigest } from '../infrastructure/agent-lifecycle-files.js';
 import { inspectAgentLocalStorageCompatibility } from '../infrastructure/agent-lifecycle.js';
+import { copyAgentEngineNativeFixture } from './helpers/agent-engine-native-fixture.js';
 
 const identity = { schemaVersion: 1 as const, agentId: '08fe733c-7bdb-4bf8-89d2-455276dd5bd2', createdAt: 1000 };
 const operationId = '797fc417-e66c-4a58-912d-f6ac8f1bfe32';
@@ -44,6 +45,7 @@ function engine(root: string, compatibility: EngineRelease['compatibility']) {
   mkdirSync(join(root, 'dist', 'presentation'), { recursive: true, mode: 0o700 });
   // A private release-verifier fixture only; no engine code from this tree is invoked.
   writeFileSync(join(root, 'dist', 'presentation', 'agent-cli.js'), '// release validation fixture\n', { mode: 0o600 });
+  copyAgentEngineNativeFixture(root);
   const parsed = EngineReleaseSchema.parse({ ...releaseBody(compatibility), entries: captureLifecycleTree(root), digest: hash });
   const { digest: _digest, ...body } = parsed;
   const release = { ...parsed, digest: lifecycleDigest(body) }; json(join(root, 'release.json'), release);
@@ -158,6 +160,6 @@ test('local and all-Postgres lifecycle purposes reject unsupported setup before 
   for (const profile of [local, postgres])
     assert.throws(() => inspectAgentLocalStorageCompatibility(profile, { compatibility: legacyCompatibility() }), /engine_setup_incompatible/);
   assert.deepEqual(inspectAgentLocalStorageCompatibility(postgres, { compatibility: engineCompatibility }),
-    { config: 1, stateBackend: 'sqlite', state: null, knowledge: null, session: null, personalMemory: 'postgres' });
+    { config: 1, stateBackend: 'sqlite', state: null, knowledge: null, session: null, sessionCompact: null, personalMemory: 'postgres' });
   assert.deepEqual(captureLifecycleTree(root), before);
 });

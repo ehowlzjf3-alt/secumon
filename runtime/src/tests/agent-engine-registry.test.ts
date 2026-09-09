@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { bundleAgentEngine, inspectEngineRelease, installAgentEngine, readAgentEnginePin } from '../infrastructure/agent-engine-release.js';
+import { copyAgentEngineNativeFixture } from './helpers/agent-engine-native-fixture.js';
 import { registerAgentEngine, resolveAgentEngine } from '../infrastructure/agent-engine-registry.js';
 import { publishAgentEnginePin } from '../infrastructure/agent-lifecycle.js';
 import { captureLifecycleTree, copyLifecycleTree } from '../infrastructure/agent-lifecycle-files.js';
@@ -33,6 +34,7 @@ function fixture(t: TestContext) {
   json(join(source, 'package.json'), { name: 'long-horizon-runtime', version: '0.0.1-registry-fixture', type: 'module', engines: { node: '>=24.20.0 <25' } });
   json(join(source, 'node_modules/zod/package.json'), { name: 'zod', version: '0.0.0-registry-fixture' });
   writeFileSync(join(source, 'dist/presentation/agent-cli.js'), 'throw new Error("metadata_fixture_must_not_execute");\n', { mode: 0o600 });
+  copyAgentEngineNativeFixture(source);
   const bundle = bundleAgentEngine(source, join(base, 'bundle'));
   const installed = installAgentEngine(bundle.directory, join(base, 'installed'), bundle.release.digest);
   const profiles = new FileAgentProfileStore(current), profile = profiles.initialize(join(base, 'agent'), { name: '등록 경계 담당' });

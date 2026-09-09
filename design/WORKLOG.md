@@ -2411,3 +2411,20 @@ C06은 호스트의 선택적 `allowPersonalMemoryWrites`를 기억 저장·정�
 [계획](chapters/C05-C06-completion-plan.md) · [결과](chapters/C05-C06-completion-result.md) · [사용법](chapters/C05-C06-completion-usage.md) · [체크포인트](../runtime/evidence/checkpoint402.json) · [측정](../runtime/evidence/checkpoint402-measurements.json) · [남은 확인 목록](REMAINING-ACCEPTANCE.md)
 
 **다음은 C10: 최초 복원 표식 전 중단, 보존 이력 백업/복원/이행, 설치 구성과 용량 인수다.** 이후 최종 통합·응답 시간·실환경을 확인한다. C09 보존 이력의 운영 인수, 현재 Linux/native Windows·실제 PostgreSQL·사내 MCP/Knox·외부 A2A는 남으며 실제 모델/API 중단을 유지한다. 전체 C05/C06/C09/goal 완료 선언이 아니다.
+
+
+## checkpoint403 · C10 초기 복원·보존 이력·Linux 설치 인수
+
+2026-09-09 · checkpoint403 · 기준선 `3c6f86f`. C10 초기 복원 중단·보존 이력·설치의 명명된 인수를 로컬69개, NAS Linux24개로 확인했다. 플랫폼 사이 중복을 더해 고유93개라고 세지 않는다. 원 실패 로그와 시험/환경 준비 교정을 보존했다.
+
+복원 intent·원본 접근 차단 표식·nonce seed를 고정 경로 게시 전에 준비하고, 기존 native no-replace 이동으로 공개한다. 같은 operation의 정확한 파일·nonce만 재사용한다. 무관한 고정 경로는 자동 채택하지 않으며 미게시 임시 자료는 보존한다. 초기5개는 실제 파일 경계의 주입 예외이며 이번 단위의 SIGKILL·전원 손실 검증은 아니다.
+
+SQLite/file-journal의 과거 원영수증·원문을 전체 백업·복원·신원 재연결·저장소 대사 뒤 재조회했다. 같은 명령/사건의 재전달은 새 실행·송신·중복 정산을 만들지 않는다. legacy512개는 명시 준비, 새32개만 실제 접수한 합성 사례다. 작은 백업42/58항목의 측정이며 운영 용량 완료가 아니다.
+
+macOS/Linux의 설치에 native 파일을 필수로 확인하고, 명시 준비·설치·등록 때 digest 확인 후 새 Node 자식 프로세스에서 실제 OS/CPU/API를 검사한다. NAS Linux x64 native 빌드·로드, 실제 npm 전역 설치와 오프라인 bundle, 복원 경로를 확인했다. 시스템 Node18·과거 자료는 유지했고, 별도 Node24.20.0/격리 Rust1.93.1과 캐시를 사용했다. native Windows 실행과 release 성능 검증은 남는다.
+
+최종 build3와 Linux build2의 소스·컴파일2610개 지문이 일치한다. 최초 build1 이후 제품 컴파일 변경0, 시험 JS/소스맵6개만 교정되어 유효한 통과 결과를 재사용했다. 코어 타입 exit0, 구조204개·위반0. 모든 관리 빌드·시험과 전용 SSH 연결은 종료했다. 실제 모델/API 호출은0이고 중단 결정을 유지한다.
+
+[계획](chapters/C10-completion-plan.md) · [결과](chapters/C10-completion-result.md) · [사용법](chapters/C10-completion-usage.md) · [체크포인트](../runtime/evidence/checkpoint403.json) · [측정](../runtime/evidence/checkpoint403-measurements.json) · [남은 확인 목록](REMAINING-ACCEPTANCE.md)
+
+**다음 로컬 실행은 최종 통합 한 묶음이다:** 원자료·세션·기억·실행 기록 연결 → 이미 구현된 기억 선택 만료/오류/재선택·재접속 UI → 문서형 기억 약23.7초의 응답 지연. 기존 완료 시나리오를 재사용하며 새 가정만으로 검증을 늘리지 않는다. 선택 운영 용량·복원 목표, 실제 PostgreSQL 이행·복원, native Windows, 사내 MCP/Knox/외부 A2A와 미실행 운영 인수는 별도로 남는다. 전체 C10/goal 완료 선언이 아니다.

@@ -10,6 +10,7 @@ import { openProfileMutationScope, profileDirectory, publishProfileJson, readPro
 import { hostMetadataFiles, releaseMetadataDirectory, sameFileIdentity } from './host-metadata-files.js';
 import { FileAgentProfileStore } from './file-agent-profile.js';
 import type { HostFileMutationScope } from './host-file-mutations.js';
+import { assertAgentEngineNative } from './agent-engine-native.js';
 
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const RegistrationSchema = z.strictObject({ schemaVersion: z.literal(1), kind: z.literal('secumon-engine-installation'),
@@ -31,6 +32,7 @@ export function registerAgentEngine(input: string, expectedDigest: string, optio
   try {
     const release = inspectEngineRelease(directory);
     if (release.digest !== expectedDigest) lifecycleFail('engine_release_digest_mismatch');
+    assertAgentEngineNative(directory, release.entries);
     if (!profileDirectory(dirname(registryDirectory), false, false)) {
       if (options.registryDirectory !== undefined) lifecycleFail('engine_registry_parent_missing');
       const parentScope = openProfileMutationScope(dirname(registryDirectory), [directory]);

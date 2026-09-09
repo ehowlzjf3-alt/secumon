@@ -9,12 +9,13 @@ import { openProfileMutationScope, profileDirectory, publishProfileJson, readPro
 import { publishWindowsLifecycleJson, readWindowsLifecycleJson } from './windows-lifecycle-files.js';
 import { initialEnginePinHistoryNames } from './agent-initial-pin-files.js';
 import { assertAgentEngineDependencies } from './agent-engine-dependencies.js';
+import { AGENT_ENGINE_NATIVE_PATHS, assertAgentEngineNative, assertAgentEngineNativeEntries } from './agent-engine-native.js';
 
 export const engineCompatibility = Object.freeze({ config: [1, 2], state: [1, 2, 3], knowledge: [1, 2, 3], session: [1], journal: [2], documents: [1, 2], setup: [1, 2, 3], sessionCompact: [1],
   extensions: ENGINE_EXTENSION_SUPPORT,
   postgres: { installation: [2], binding: [1], state: [1], knowledge: [1], channel: [1] },
 });
-const nativeReleaseFiles = ['native', 'native/windows-files', 'native/windows-files/secumon_windows_files.node'];
+const nativeReleaseFiles: readonly string[] = AGENT_ENGINE_NATIVE_PATHS;
 const releaseInclude = (path: string) => nativeReleaseFiles.includes(path) || path !== 'release.json' && !path.split('/').includes('.bin') && !path.split('/').includes('.cache') &&
   ['package.json', 'package-lock.json', 'node_modules', 'guidance', 'examples', 'fixtures', 'src', 'src/presentation', 'src/presentation/web', 'src/presentation/web/index.html', 'src/presentation/web/styles.css', 'dist', 'dist/domain', 'dist/application', 'dist/infrastructure', 'dist/presentation'].some(prefix => path === prefix || ['node_modules', 'guidance', 'examples', 'fixtures', 'dist/domain', 'dist/application', 'dist/infrastructure', 'dist/presentation'].includes(prefix) && path.startsWith(`${prefix}/`));
 export function publishLifecycleManifest(root: string, name: string, value: unknown) {
@@ -34,6 +35,7 @@ export function inspectEngineRelease(input: string, verify = true): EngineReleas
   const value = process.platform === 'win32' ? readWindowsLifecycleJson(join(root, 'release.json'), EngineReleaseSchema, 32 * 1024 * 1024) :
     readProfileJson(join(root, 'release.json'), EngineReleaseSchema, [1], 32 * 1024 * 1024);
   if (!value) return lifecycleFail('engine_release_missing'); assertManifest(value);
+  assertAgentEngineNativeEntries(value.entries);
   if (verify && lifecycleDigest(captureLifecycleTree(root, path => path !== 'release.json')) !== lifecycleDigest(value.entries)) lifecycleFail('engine_release_files_changed');
   return value;
 }
@@ -44,12 +46,12 @@ export function inspectAgentEngineBuild(input: string): EngineRelease {
   if (!raw) return lifecycleFail('engine_build_required');
   const pkg = JSON.parse(raw.toString('utf8')) as { name?: string; version?: string; engines?: { node?: string } };
   if (pkg.name !== 'long-horizon-runtime' || typeof pkg.version !== 'string' || pkg.engines?.node !== '>=24.20.0 <25' || !lifecycleExists(join(root, 'dist/presentation/agent-cli.js')) || !lifecycleExists(join(root, 'node_modules/zod/package.json'))) lifecycleFail('engine_build_required');
-  if (process.platform === 'win32' && !lifecycleExists(join(root, 'native/windows-files/secumon_windows_files.node'))) lifecycleFail('engine_native_build_required');
   const entries = captureLifecycleTree(root, releaseInclude);
   const packageEntry = entries.find(entry => entry.path === 'package.json');
   if (packageEntry?.kind !== 'file' || packageEntry.bytes !== raw.length ||
     packageEntry.sha256 !== createHash('sha256').update(raw).digest('hex')) lifecycleFail('lifecycle_source_changed');
   assertAgentEngineDependencies(root, entries);
+  assertAgentEngineNative(root, entries);
   const body = { schemaVersion: 1 as const, kind: 'secumon-engine-release' as const, version: pkg.version, node: '>=24.20.0 <25' as const, platform: process.platform, arch: process.arch, compatibility: engineCompatibility, entries };
   const release = EngineReleaseSchema.parse({ ...body, digest: lifecycleDigest(body) }); assertManifest(release); return release;
 }
@@ -63,7 +65,9 @@ export function bundleAgentEngine(input: string, destination: string) {
 export function installAgentEngine(bundle: string, destination: string, expectedDigest: string) {
   const source = lifecycleRoot(bundle), target = lifecycleRoot(destination, false); disjoint(source, target);
   const release = inspectEngineRelease(source); if (release.digest !== expectedDigest) lifecycleFail('engine_release_digest_mismatch');
-  createLifecycleDirectory(target); copyLifecycleTree(source, target, release.entries); publishLifecycleManifest(target, 'release.json', release);
+  assertAgentEngineNative(source, release.entries);
+  createLifecycleDirectory(target); copyLifecycleTree(source, target, release.entries);
+  assertAgentEngineNative(target, release.entries); publishLifecycleManifest(target, 'release.json', release);
   inspectEngineRelease(target); return { directory: target, release, command: ['node', join(target, 'dist/presentation/agent-cli.js')] };
 }
 const setupReceiptSchema = z.union([AgentSetupReceiptSchema, AgentCloneSetupSchema, AgentInitialSetupReceiptSchema]);

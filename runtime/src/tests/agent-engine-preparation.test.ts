@@ -11,6 +11,7 @@ import { inspectAgentEngineBuild, inspectEngineRelease } from '../infrastructure
 import { captureLifecycleTree, lifecycleDigest } from '../infrastructure/agent-lifecycle-files.js';
 import { hostMetadataFiles, releaseMetadataDirectory } from '../infrastructure/host-metadata-files.js';
 import type { PreparationBoundary, PreparationStage } from './helpers/agent-engine-preparation-worker.js';
+import { copyAgentEngineNativeFixture } from './helpers/agent-engine-native-fixture.js';
 
 const runtimeRoot = fileURLToPath(new URL('../../', import.meta.url));
 const worker = fileURLToPath(new URL('./helpers/agent-engine-preparation-worker.js', import.meta.url));
@@ -35,6 +36,7 @@ function fixture(t: TestContext) {
   writeFileSync(join(source, 'node_modules/zod/package.json'), readFileSync(join(runtimeRoot, 'node_modules/zod/package.json')), { mode: 0o600 });
   // Real bundle/install/registry metadata acceptance. This deliberately incomplete CLI/dependency fixture is never executed.
   writeFileSync(join(source, 'dist/presentation/agent-cli.js'), 'throw new Error("preparation_metadata_fixture_must_not_execute");\n', { mode: 0o600 });
+  copyAgentEngineNativeFixture(source);
   writeFileSync(join(source, 'operator-note.md'), 'Source files remain in their original checkout.\n', { mode: 0o600 });
   writeFileSync(join(agent, 'operator-note.md'), 'Preparation must not initialize or pin this agent.\n', { mode: 0o600 });
   const options = { preparationDirectory, registryDirectory }, prepare = (root = agent) => prepareAgentEngine(source, root, options);

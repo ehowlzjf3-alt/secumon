@@ -11,7 +11,8 @@ import { bindAgentDatabase } from '../infrastructure/agent-database-owner.js';
 import { bindAgentStateProfile } from '../infrastructure/agent-state-profile.js';
 import { checkAgentLifecycle } from '../infrastructure/agent-lifecycle.js';
 import { engineCompatibility, publishLifecycleManifest } from '../infrastructure/agent-engine-release.js';
-import { lifecycleDigest } from '../infrastructure/agent-lifecycle-files.js';
+import { captureLifecycleTree, lifecycleDigest } from '../infrastructure/agent-lifecycle-files.js';
+import { copyAgentEngineNativeFixture } from './helpers/agent-engine-native-fixture.js';
 import { openHostSqliteDatabase } from '../infrastructure/windows-sqlite.js';
 import { LocalChannel } from '../infrastructure/local-channel.js';
 import { initial, command, delivery } from './state-conformance-helpers.js';
@@ -61,9 +62,10 @@ function candidate(f: ReturnType<typeof fixture>, compact: number[] | undefined,
   const directory = join(f.base, name); mkdirSync(directory, { mode: 0o700 });
   const compatibility: EngineRelease['compatibility'] = structuredClone(engineCompatibility);
   if (compact === undefined) delete compatibility.sessionCompact; else compatibility.sessionCompact = compact;
+  copyAgentEngineNativeFixture(directory);
   // A metadata-only release is sufficient to exercise lifecycle inspection; it is never executed or installed.
   const body = { schemaVersion: 1 as const, kind: 'secumon-engine-release' as const, version: '0.1.0', node: '>=24.20.0 <25' as const,
-    platform: process.platform, arch: process.arch, compatibility, entries: [] };
+    platform: process.platform, arch: process.arch, compatibility, entries: captureLifecycleTree(directory) };
   publishLifecycleManifest(directory, 'release.json', { ...body, digest: lifecycleDigest(body) });
   return directory;
 }
