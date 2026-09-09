@@ -31,19 +31,29 @@ export class DocumentFiles {
   readonly scope: HostFileMutationScope;
   readonly directory: string;
   readonly binding: Readonly<DocumentKnowledgeBinding & { root: string }>;
+  readonly #directoryRefs = new Map<string, MetadataDirectory>();
   constructor(directory: string, binding: DocumentKnowledgeBinding) {
     const selected = documentBinding(directory, binding); this.directory = selected.directory; this.binding = selected.binding;
     this.scope = hostFileMutations().openScope({ root: this.binding.root, forbiddenRoots: [] });
   }
   directoryRef(path: string, create = false): MetadataDirectory | null {
-    const tail = relative(this.binding.root, path);
+    const target = resolve(path), tail = relative(this.binding.root, target);
     if (tail === '..' || tail.startsWith(`..${sep}`) || isAbsolute(tail)) throw new DocumentKnowledgeError('document_knowledge_root_mismatch');
     const rootAccess = this.binding.root === this.directory ? 'private' : 'owner-writable';
+    const retained = create === false ? this.#directoryRefs.get(target) : undefined;
+    if (retained) {
+      // Retain only a scope-owned identity. Every hit still checks current ancestors, access and the named object.
+      this.scope.check();
+      if (this.files instanceof WindowsMetadataFiles) this.files.handle(retained);
+      else if (!this.files.inspectDirectory(target, tail ? 'private' : rootAccess, retained)) throw new FileBoundaryFault('changed', 'directory');
+      return retained;
+    }
     let ref = this.scope.directory(this.binding.root, rootAccess, create); if (!ref) return null;
     let parent = this.binding.root;
     for (const leaf of tail ? tail.split(sep) : []) {
       parent = join(parent, leaf); ref = this.scope.directory(parent, 'private', create); if (!ref) return null;
     }
+    if (this.#directoryRefs.has(target) || this.#directoryRefs.size < 64) this.#directoryRefs.set(target, ref);
     return ref;
   }
   check(path: string, ref: MetadataDirectory) {
@@ -104,7 +114,7 @@ export class DocumentFiles {
     }
   }
   sync(ref: MetadataDirectory) { this.scope.check(); const barrier = completeMetadataPublication(this.files, ref); this.scope.check(); return barrier; }
-  close() { this.scope.close(); }
+  close() { this.#directoryRefs.clear(); this.scope.close(); }
 }
 const owner = (binding: DocumentKnowledgeBinding) => ({ schemaVersion: 1, kind: 'document-knowledge', agentId: binding.agentId, storeId: binding.storeId });
 class RootPendingChanged extends Error {

@@ -1,0 +1,108 @@
+{
+  "checkpoint": 404,
+  "date": "2026-09-09",
+  "baselineCommit": "d4144a31b418bb0113d22de416b279272dc60b31",
+  "status": "named_final_local_integration_verified",
+  "goalComplete": false,
+  "actualModelApi": "stopped_by_user",
+  "actualModelApiCalls": 0,
+  "productChanges": [
+    "Bounded per-instance reuse of document directory references; current scope, identity and permission checks remain on every hit; no raw snapshot or source read is skipped"
+  ],
+  "build": {
+    "sourceDigest": "34d86285b32363dd4d4c498885820725e43cf54b7705bfbca3c0c0883ac0f6a2",
+    "filesDigest": "7e55006e4b89076e3492649aa1234f0ec51ed07492acbd011ef47378a39055d3",
+    "fileCount": 2616,
+    "buildExitCode": 0,
+    "coreExitCode": 0,
+    "architecture": {
+      "inspected": 204,
+      "violations": 0,
+      "exitCode": 0
+    }
+  },
+  "local": {
+    "targeted": {
+      "log": "runtime/evidence/final-integration-target1.log",
+      "total": 61,
+      "pass": 61,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "measuredHttp": {
+      "log": "runtime/evidence/C06-final-memory-after.log",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "uniquePassingTests": 62
+  },
+  "linux": {
+    "environment": {
+      "node": "v24.20.0",
+      "platform": "linux",
+      "arch": "x64"
+    },
+    "targeted": {
+      "log": "runtime/evidence/final-integration-linux-target1.log",
+      "total": 17,
+      "pass": 17,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "build": {
+      "sourceDigest": "34d86285b32363dd4d4c498885820725e43cf54b7705bfbca3c0c0883ac0f6a2",
+      "filesDigest": "7e55006e4b89076e3492649aa1234f0ec51ed07492acbd011ef47378a39055d3",
+      "fileCount": 2616
+    },
+    "sourceAndCompiledFilesMatchLocal": true,
+    "scope": "Document directory reuse, exact source/receipt chain, storage and filesystem boundaries. Existing isolated dependencies reused; no installation or native Windows test in this checkpoint."
+  },
+  "browser": {
+    "status": "verified_existing_ui",
+    "fixture": "runtime/evidence/C06-memory-recovery-browser-fixture.mjs",
+    "observations": "runtime/evidence/checkpoint404-browser-dom.json",
+    "events": "runtime/evidence/checkpoint404-browser-fixture-events.json",
+    "flow": [
+      "memory revision expires selected source",
+      "explicit latest selection recovers same work",
+      "second revision then explicit clear recovers and retains memory",
+      "real restricted actor yields permission-specific UI",
+      "restored actor recovers same work",
+      "HTTP server reopened on same origin and fresh document login restores saved work without selecting it again"
+    ],
+    "stateRevisionAfterClear": 6,
+    "stateRevisionAfterReconnect": 6,
+    "sourceEntries": 1,
+    "modelCalls": 0,
+    "toolCalls": 0,
+    "notes": [
+      "The first no-PTY fixture ended at stdin EOF before browser testing; acceptance used the live PTY fixture.",
+      "A text locator without the full summary text matched no node; the rendered recovery button opened the existing panel.",
+      "Same-document fragment navigation did not reload login bootstrap; about:blank then the fresh URL loaded a new document in the same tab. The intermediate screen is retained.",
+      "The fixture reopens HTTP servers on the same profile, not an OS process crash. Profile close/reopen is covered by the record-linkage test."
+    ]
+  },
+  "measurements": "runtime/evidence/checkpoint404-measurements.json",
+  "cleanup": {
+    "managedBuildAndTestCommands": "terminal_exit_0",
+    "browserFixture": "terminal_exit_0",
+    "browserTestTabClosed": true,
+    "existingReviewTabPreserved": true,
+    "loopbackPort53080": "no_listening_process_lsof_exit_1",
+    "linuxRuntimeProcesses": 0,
+    "sshControlMaster": "exit_requested_and_local_control_directory_removed"
+  },
+  "remaining": [
+    "Native Windows installation/filesystem acceptance",
+    "Actual PostgreSQL migration/restore with supplied environment",
+    "Actual corporate MCP, Knox, external A2A and selected deployment acceptance",
+    "Selected operational response-time, retention, capacity and recovery targets; single local timing sample is not an SLA",
+    "Actual model/API quality trials remain stopped by the user"
+  ],
+  "fullSuiteRerun": false
+}

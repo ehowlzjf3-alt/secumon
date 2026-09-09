@@ -1,0 +1,115 @@
+TAP version 13
+# Subtest: personal memory execution preserves the exact source and receipt chain across profile reopen
+ok 1 - personal memory execution preserves the exact source and receipt chain across profile reopen
+  ---
+  duration_ms: 31920.984527
+  type: 'test'
+  ...
+# {"stateBackend":"sqlite","personalMemory":"documents","sourceWorkId":"work-a84e750cf66e8ed8166b893fa4dcb7c8fd20193c8471255798db63dbcb8dc701","workId":"work-4115652077211165e73da7e026c74241e521cb7f108be1e3bcfd48cd9034736e","sessionId":"2eaca41e-4b4f-432e-a5ca-30dea983ea38","selectionCommandId":"personal-memory-select:linked-selection","toolAttemptId":"attempt-e3a3f3ad-7796-4ef0-baa8-a8f9cf4b2428","resultId":"attempt-e3a3f3ad-7796-4ef0-baa8-a8f9cf4b2428:result","answerCallId":"model-61399ecb-e33c-4ed2-91c0-d87624edf401","deliveryId":"result-7a54da9ad6e1565b25a8207b1bbc39fceef7140d7408f01c1376922add3a3dfd","sourceDigest":"d5ed0bedaffc9ba58fb8cc824e4f18b52956139443a8d20564441c6016591f01","answerSha256":"3d06066d65c967579c93193cc3fc02ffe87c35a00b4e6eeec6d1f419b5e44a58","modelCalls":3,"sourceCalls":1,"replayModelCalls":0,"replaySourceCalls":0}
+# {"stateBackend":"file-journal","personalMemory":"sqlite","sourceWorkId":"work-f67c39dffc7b34b2d7ec0254c4f55946ad1bdd2227c82786a1286038feaa3f30","workId":"work-78fb40e7f84cb81fa43a5ad8f9edea93a2ac6c561029729e84dbc78ba8278cb9","sessionId":"2360f2a7-0cff-450b-ad46-2136036c8b22","selectionCommandId":"personal-memory-select:linked-selection","toolAttemptId":"attempt-d91286bf-5dbe-441b-9299-052ef2d43f7b","resultId":"attempt-d91286bf-5dbe-441b-9299-052ef2d43f7b:result","answerCallId":"model-f500ebff-db83-4337-a08a-a6e3999c230d","deliveryId":"result-fe5fb456f835b7985ad6d5ba7447820ba01e8fd226005fa34a08cbf26106749d","sourceDigest":"89044e07c4e58789c02f11fced38f758ebcdb9be9f0c3c94889633e2a74fcbe1","answerSha256":"b02ccd25a97578c7807c56e2873718184847c6488da05937a59e404a1bfbd051","modelCalls":3,"sourceCalls":1,"replayModelCalls":0,"replaySourceCalls":0}
+# Subtest: document directory reuse reduces traversal while retaining exact reads, root access and same-path custody
+ok 2 - document directory reuse reduces traversal while retaining exact reads, root access and same-path custody
+  ---
+  duration_ms: 44.371369
+  type: 'test'
+  ...
+# {"cold":{"directoryChecks":67,"fileStats":3,"fileOpens":1,"fileCloses":1,"dataReads":2,"dataBytes":1567,"siblingLists":0,"siblingEntries":0,"directorySyncs":0},"warm":{"directoryChecks":42,"fileStats":3,"fileOpens":1,"fileCloses":1,"dataReads":2,"dataBytes":1567,"siblingLists":0,"siblingEntries":0,"directorySyncs":0},"coldTraversals":4,"warmTraversals":0,"measurement":"Actual POSIX metadata counters for identical original reads; separate from HTTP timing and native Windows acceptance."}
+# Subtest: document worker retains early IPC and reports a closed child with its original stderr
+ok 3 - document worker retains early IPC and reports a closed child with its original stderr
+  ---
+  duration_ms: 140.360649
+  type: 'test'
+  ...
+# Subtest: document codec preserves body bytes and rejects malformed UTF-8, checksum, identity and schema changes
+ok 4 - document codec preserves body bytes and rejects malformed UTF-8, checksum, identity and schema changes
+  ---
+  duration_ms: 13.528935
+  type: 'test'
+  ...
+# Subtest: a deleted forgotten tail or whole namespace cannot resurrect prior active memory after reopening
+ok 5 - a deleted forgotten tail or whole namespace cannot resurrect prior active memory after reopening
+  ---
+  duration_ms: 130.577892
+  type: 'test'
+  ...
+# Subtest: document reads reject external links, unsafe permissions, unknown files and tampered witnesses without falling back
+ok 6 - document reads reject external links, unsafe permissions, unknown files and tampered witnesses without falling back
+  ---
+  duration_ms: 88.242681
+  type: 'test'
+  ...
+# Subtest: bounded namespace enumeration and file bytes fail explicitly rather than truncating history
+ok 7 - bounded namespace enumeration and file bytes fail explicitly rather than truncating history
+  ---
+  duration_ms: 35.043808
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at document candidate keeps only canonical publication and resumes witness through get
+ok 8 - actual SIGKILL at document candidate keeps only canonical publication and resumes witness through get
+  ---
+  duration_ms: 174.155687
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at document event keeps only canonical publication and resumes witness through get
+ok 9 - actual SIGKILL at document event keeps only canonical publication and resumes witness through get
+  ---
+  duration_ms: 147.987124
+  type: 'test'
+  ...
+# Subtest: post-publication sync EIO preserves original cause and publication state; receipt-first retry recovers
+ok 10 - post-publication sync EIO preserves original cause and publication state; receipt-first retry recovers
+  ---
+  duration_ms: 164.720164
+  type: 'test'
+  ...
+# Subtest: separate processes contend on one namespace with same memory IDs
+ok 11 - separate processes contend on one namespace with same memory IDs
+  ---
+  duration_ms: 314.712607
+  type: 'test'
+  ...
+# Subtest: separate processes contend on one namespace with different memory IDs
+ok 12 - separate processes contend on one namespace with different memory IDs
+  ---
+  duration_ms: 257.307163
+  type: 'test'
+  ...
+# Subtest: namespace retries its full snapshot when a canonical link appears after the pending-only listing
+ok 13 - namespace retries its full snapshot when a canonical link appears after the pending-only listing
+  ---
+  duration_ms: 202.552209
+  type: 'test'
+  ...
+# Subtest: document storage requires explicit registration, preserves a 0755 supplied parent and pins copied owner binding
+ok 14 - document storage requires explicit registration, preserves a 0755 supplied parent and pins copied owner binding
+  ---
+  duration_ms: 72.463077
+  type: 'test'
+  ...
+# Subtest: Markdown record and receipt survive reopen, exact text, revision CAS, correction and forgetting without resurrection
+ok 15 - Markdown record and receipt survive reopen, exact text, revision CAS, correction and forgetting without resurrection
+  ---
+  duration_ms: 134.567455
+  type: 'test'
+  ...
+# Subtest: document namespaces isolate tenant, principal, refs, receipts and index error/rebuild state
+ok 16 - document namespaces isolate tenant, principal, refs, receipts and index error/rebuild state
+  ---
+  duration_ms: 296.368943
+  type: 'test'
+  ...
+# Subtest: document candidate ordering, maximum and private labels follow the existing personal repository contract
+ok 17 - document candidate ordering, maximum and private labels follow the existing personal repository contract
+  ---
+  duration_ms: 57.574058
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 34948.149789

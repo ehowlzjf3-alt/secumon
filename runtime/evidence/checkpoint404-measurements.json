@@ -1,0 +1,40 @@
+{
+  "scenario": "same-ID personal memory isolation through two local HTTP deployments",
+  "sourceBefore": "0d29f57fce03d0eafe388b2f231bea05096181a072f8c8637585db7a72e70a30",
+  "sourceAfter": "34d86285b32363dd4d4c498885820725e43cf54b7705bfbca3c0c0883ac0f6a2",
+  "node": "v24.20.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "pairs": [
+    {
+      "backend": "sqlite state + document personal memory",
+      "beforeMs": 23132.377625,
+      "afterMs": 13317.343832999999,
+      "reductionPercent": 42.42985287164143,
+      "beforeDirectoryChecks": 6601410,
+      "afterDirectoryChecks": 3568230,
+      "directoryCheckReductionPercent": 45.94745667970933,
+      "logicalCallsUnchanged": true,
+      "originalReadOperationsUnchanged": true,
+      "rawReadBytes": 10811700
+    },
+    {
+      "backend": "file journal state + SQLite personal memory",
+      "beforeMs": 4068.7438330000004,
+      "afterMs": 4025.733959000001,
+      "reductionPercent": 1.0570799186511382,
+      "beforeDirectoryChecks": 121052,
+      "afterDirectoryChecks": 121052,
+      "directoryCheckReductionPercent": 0,
+      "logicalCallsUnchanged": true,
+      "originalReadOperationsUnchanged": true,
+      "rawReadBytes": 3217152
+    }
+  ],
+  "caveats": [
+    "single local run",
+    "method timings are inclusive and must not be summed",
+    "logical calls are not physical disk I/O",
+    "metadata counters are instrumented API operations; OS caches and physical disk I/O are not measured"
+  ]
+}

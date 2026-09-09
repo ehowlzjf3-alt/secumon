@@ -1,0 +1,383 @@
+TAP version 13
+# Subtest: personal memory execution preserves the exact source and receipt chain across profile reopen
+ok 1 - personal memory execution preserves the exact source and receipt chain across profile reopen
+  ---
+  duration_ms: 21234.238916
+  type: 'test'
+  ...
+# {"stateBackend":"sqlite","personalMemory":"documents","sourceWorkId":"work-976f0ad60fbc24f01e692245d973c0aa051d01c7261ae430a3a4fc7c5998592e","workId":"work-8e8968d912fb20689f33a9025bc8f37ee3d662bac29dbd7433c58a9109b3e98c","sessionId":"d9ad1b08-b3a2-4b0d-afab-9ed328b3ec9a","selectionCommandId":"personal-memory-select:linked-selection","toolAttemptId":"attempt-775d978d-ef56-46ae-ae6f-f00176b2f52b","resultId":"attempt-775d978d-ef56-46ae-ae6f-f00176b2f52b:result","answerCallId":"model-c9a05d69-c02c-4583-ae5a-abb3ad75c0ee","deliveryId":"result-62c080e3173061fffdcf7ff8c2f51de9c54c046dbc0e99403d997aa3db2bacaf","sourceDigest":"18b1f4296c49fc401d6c338679579b4a6e8f61ad19a8c58d80a0160aa7dc19b8","answerSha256":"3d06066d65c967579c93193cc3fc02ffe87c35a00b4e6eeec6d1f419b5e44a58","modelCalls":3,"sourceCalls":1,"replayModelCalls":0,"replaySourceCalls":0}
+# {"stateBackend":"file-journal","personalMemory":"sqlite","sourceWorkId":"work-0fa389201b7c20fa99506508e5a25b066ea3b6694577b320120cd6a60cccb71c","workId":"work-7fa8ef5f62ab99fd2089f53a54291a60e53bce6c5b0ef0b610494f354be3ed50","sessionId":"1d559a27-ac06-4e49-ab93-aff89d4a4b67","selectionCommandId":"personal-memory-select:linked-selection","toolAttemptId":"attempt-695a7d4d-47d7-4a65-9063-1be839c1ba4d","resultId":"attempt-695a7d4d-47d7-4a65-9063-1be839c1ba4d:result","answerCallId":"model-90eb836c-899b-470c-adb6-a018290741ac","deliveryId":"result-395fd44acf2c305da0670cc497cd7f9e612b053347d829cb8f336251f17612ea","sourceDigest":"a291bffa5a233d6c4a06123a98fc2cd7f4096883f9c77c26b755c929c55d7681","answerSha256":"b02ccd25a97578c7807c56e2873718184847c6488da05937a59e404a1bfbd051","modelCalls":3,"sourceCalls":1,"replayModelCalls":0,"replaySourceCalls":0}
+# Subtest: document directory reuse reduces traversal while retaining exact reads, root access and same-path custody
+ok 2 - document directory reuse reduces traversal while retaining exact reads, root access and same-path custody
+  ---
+  duration_ms: 79.099625
+  type: 'test'
+  ...
+# {"cold":{"directoryChecks":127,"fileStats":3,"fileOpens":1,"fileCloses":1,"dataReads":2,"dataBytes":1567,"siblingLists":0,"siblingEntries":0,"directorySyncs":0},"warm":{"directoryChecks":67,"fileStats":3,"fileOpens":1,"fileCloses":1,"dataReads":2,"dataBytes":1567,"siblingLists":0,"siblingEntries":0,"directorySyncs":0},"coldTraversals":4,"warmTraversals":0,"measurement":"Actual POSIX metadata counters for identical original reads; separate from HTTP timing and native Windows acceptance."}
+# Subtest: document worker retains early IPC and reports a closed child with its original stderr
+ok 3 - document worker retains early IPC and reports a closed child with its original stderr
+  ---
+  duration_ms: 82.52275
+  type: 'test'
+  ...
+# Subtest: document codec preserves body bytes and rejects malformed UTF-8, checksum, identity and schema changes
+ok 4 - document codec preserves body bytes and rejects malformed UTF-8, checksum, identity and schema changes
+  ---
+  duration_ms: 6.922417
+  type: 'test'
+  ...
+# Subtest: a deleted forgotten tail or whole namespace cannot resurrect prior active memory after reopening
+ok 5 - a deleted forgotten tail or whole namespace cannot resurrect prior active memory after reopening
+  ---
+  duration_ms: 212.491334
+  type: 'test'
+  ...
+# Subtest: document reads reject external links, unsafe permissions, unknown files and tampered witnesses without falling back
+ok 6 - document reads reject external links, unsafe permissions, unknown files and tampered witnesses without falling back
+  ---
+  duration_ms: 295.440917
+  type: 'test'
+  ...
+# Subtest: bounded namespace enumeration and file bytes fail explicitly rather than truncating history
+ok 7 - bounded namespace enumeration and file bytes fail explicitly rather than truncating history
+  ---
+  duration_ms: 278.670291
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at document candidate keeps only canonical publication and resumes witness through get
+ok 8 - actual SIGKILL at document candidate keeps only canonical publication and resumes witness through get
+  ---
+  duration_ms: 136.184084
+  type: 'test'
+  ...
+# Subtest: actual SIGKILL at document event keeps only canonical publication and resumes witness through get
+ok 9 - actual SIGKILL at document event keeps only canonical publication and resumes witness through get
+  ---
+  duration_ms: 127.108292
+  type: 'test'
+  ...
+# Subtest: post-publication sync EIO preserves original cause and publication state; receipt-first retry recovers
+ok 10 - post-publication sync EIO preserves original cause and publication state; receipt-first retry recovers
+  ---
+  duration_ms: 138.546
+  type: 'test'
+  ...
+# Subtest: separate processes contend on one namespace with same memory IDs
+ok 11 - separate processes contend on one namespace with same memory IDs
+  ---
+  duration_ms: 172.8345
+  type: 'test'
+  ...
+# Subtest: separate processes contend on one namespace with different memory IDs
+ok 12 - separate processes contend on one namespace with different memory IDs
+  ---
+  duration_ms: 173.971667
+  type: 'test'
+  ...
+# Subtest: namespace retries its full snapshot when a canonical link appears after the pending-only listing
+ok 13 - namespace retries its full snapshot when a canonical link appears after the pending-only listing
+  ---
+  duration_ms: 178.161041
+  type: 'test'
+  ...
+# Subtest: document storage requires explicit registration, preserves a 0755 supplied parent and pins copied owner binding
+ok 14 - document storage requires explicit registration, preserves a 0755 supplied parent and pins copied owner binding
+  ---
+  duration_ms: 87.030125
+  type: 'test'
+  ...
+# Subtest: Markdown record and receipt survive reopen, exact text, revision CAS, correction and forgetting without resurrection
+ok 15 - Markdown record and receipt survive reopen, exact text, revision CAS, correction and forgetting without resurrection
+  ---
+  duration_ms: 187.063292
+  type: 'test'
+  ...
+# Subtest: document namespaces isolate tenant, principal, refs, receipts and index error/rebuild state
+ok 16 - document namespaces isolate tenant, principal, refs, receipts and index error/rebuild state
+  ---
+  duration_ms: 391.475459
+  type: 'test'
+  ...
+# Subtest: document candidate ordering, maximum and private labels follow the existing personal repository contract
+ok 17 - document candidate ordering, maximum and private labels follow the existing personal repository contract
+  ---
+  duration_ms: 125.449625
+  type: 'test'
+  ...
+# Subtest: CLI init explicitly selects documents, preserves ready choices and truthfully advertises schema support
+ok 18 - CLI init explicitly selects documents, preserves ready choices and truthfully advertises schema support
+  ---
+  duration_ms: 1499.248625
+  type: 'test'
+  ...
+# Subtest: sqlite: existing Web memory lifecycle uses documents while real Evidence memory stays in SQLite
+ok 19 - sqlite: existing Web memory lifecycle uses documents while real Evidence memory stays in SQLite
+  ---
+  duration_ms: 1455.097041
+  type: 'test'
+  ...
+# Subtest: file-journal: existing Web memory lifecycle uses documents while real Evidence memory stays in SQLite
+ok 20 - file-journal: existing Web memory lifecycle uses documents while real Evidence memory stays in SQLite
+  ---
+  duration_ms: 1693.841
+  type: 'test'
+  ...
+# Subtest: built CLI entrypoint document-backed memory survives separate processes and uses the existing explicit recall commands
+ok 21 - built CLI entrypoint document-backed memory survives separate processes and uses the existing explicit recall commands
+  ---
+  duration_ms: 3918.554208
+  type: 'test'
+  ...
+# Subtest: personal memory reuses applied original and survives restart without copying conversation (sqlite)
+ok 22 - personal memory reuses applied original and survives restart without copying conversation (sqlite)
+  ---
+  duration_ms: 291.092459
+  type: 'test'
+  ...
+# Subtest: personal memory reuses applied original and survives restart without copying conversation (file-journal)
+ok 23 - personal memory reuses applied original and survives restart without copying conversation (file-journal)
+  ---
+  duration_ms: 287.313083
+  type: 'test'
+  ...
+# Subtest: personal correction uses a new applied original and invalidates the old dependency
+ok 24 - personal correction uses a new applied original and invalidates the old dependency
+  ---
+  duration_ms: 194.09675
+  type: 'test'
+  ...
+# Subtest: forget removes active body and quote, preserves originals and never revives an old create
+ok 25 - forget removes active body and quote, preserves originals and never revives an old create
+  ---
+  duration_ms: 250.074834
+  type: 'test'
+  ...
+# Subtest: personal source never becomes shareable Evidence or a derived work-knowledge fact
+ok 26 - personal source never becomes shareable Evidence or a derived work-knowledge fact
+  ---
+  duration_ms: 181.829459
+  type: 'test'
+  ...
+# Subtest: current user-source labels prevents cached read and dependency reuse
+ok 27 - current user-source labels prevents cached read and dependency reuse
+  ---
+  duration_ms: 197.745042
+  type: 'test'
+  ...
+# Subtest: current user-source scope prevents cached read and dependency reuse
+ok 28 - current user-source scope prevents cached read and dependency reuse
+  ---
+  duration_ms: 250.616792
+  type: 'test'
+  ...
+# Subtest: current user-source destination prevents cached read and dependency reuse
+ok 29 - current user-source destination prevents cached read and dependency reuse
+  ---
+  duration_ms: 311.152208
+  type: 'test'
+  ...
+# Subtest: current user-source principal prevents cached read and dependency reuse
+ok 30 - current user-source principal prevents cached read and dependency reuse
+  ---
+  duration_ms: 203.863875
+  type: 'test'
+  ...
+# Subtest: current user-source tenant prevents cached read and dependency reuse
+ok 31 - current user-source tenant prevents cached read and dependency reuse
+  ---
+  duration_ms: 179.241042
+  type: 'test'
+  ...
+# Subtest: current user-source generation prevents cached read and dependency reuse
+ok 32 - current user-source generation prevents cached read and dependency reuse
+  ---
+  duration_ms: 181.189625
+  type: 'test'
+  ...
+# Subtest: host caller restrictions reach the actual reader and do not prevent authorized forgetting
+ok 33 - host caller restrictions reach the actual reader and do not prevent authorized forgetting
+  ---
+  duration_ms: 167.054375
+  type: 'test'
+  ...
+# Subtest: personal coherent lookup sqlite: three complete snapshots preserve originals and independent revalidation after reopen
+ok 34 - personal coherent lookup sqlite: three complete snapshots preserve originals and independent revalidation after reopen
+  ---
+  duration_ms: 266.044333
+  type: 'test'
+  ...
+# {"personalMemory":"sqlite","reopened":false,"lookupRecordReads":3,"independentValidationRecordReads":3,"measurement":"Actual repository get calls for one original personal record; not HTTP latency or physical disk I/O."}
+# {"personalMemory":"sqlite","reopened":true,"lookupRecordReads":3,"independentValidationRecordReads":3,"measurement":"Actual repository get calls for one original personal record; not HTTP latency or physical disk I/O."}
+# Subtest: personal coherent lookup documents: three complete snapshots preserve originals and independent revalidation after reopen
+ok 35 - personal coherent lookup documents: three complete snapshots preserve originals and independent revalidation after reopen
+  ---
+  duration_ms: 506.914375
+  type: 'test'
+  ...
+# {"personalMemory":"documents","reopened":false,"lookupRecordReads":3,"independentValidationRecordReads":3,"measurement":"Actual repository get calls for one original personal record; not HTTP latency or physical disk I/O."}
+# {"personalMemory":"documents","reopened":true,"lookupRecordReads":3,"independentValidationRecordReads":3,"measurement":"Actual repository get calls for one original personal record; not HTTP latency or physical disk I/O."}
+# Subtest: personal coherent lookup: source withdrawal during the second snapshot cannot return the earlier original
+ok 36 - personal coherent lookup: source withdrawal during the second snapshot cannot return the earlier original
+  ---
+  duration_ms: 329.309125
+  type: 'test'
+  ...
+# Subtest: personal coherent lookup: the final snapshot rechecks current actor authority without changing stored originals
+ok 37 - personal coherent lookup: the final snapshot rechecks current actor authority without changing stored originals
+  ---
+  duration_ms: 171.925167
+  type: 'test'
+  ...
+# Subtest: reviewer grants cannot expose another user personal record or command receipt
+ok 38 - reviewer grants cannot expose another user personal record or command receipt
+  ---
+  duration_ms: 180.006042
+  type: 'test'
+  ...
+# Subtest: personal original history boundary is checked against actual stored intake
+ok 39 - personal original history boundary is checked against actual stored intake
+  ---
+  duration_ms: 179.15825
+  type: 'test'
+  ...
+# Subtest: personal original receipt-digest boundary is checked against actual stored intake
+ok 40 - personal original receipt-digest boundary is checked against actual stored intake
+  ---
+  duration_ms: 186.549458
+  type: 'test'
+  ...
+# Subtest: personal original pending boundary is checked against actual stored intake
+ok 41 - personal original pending boundary is checked against actual stored intake
+  ---
+  duration_ms: 181.280791
+  type: 'test'
+  ...
+# Subtest: personal original rejected boundary is checked against actual stored intake
+ok 42 - personal original rejected boundary is checked against actual stored intake
+  ---
+  duration_ms: 180.656375
+  type: 'test'
+  ...
+# Subtest: personal original missing boundary is checked against actual stored intake
+ok 43 - personal original missing boundary is checked against actual stored intake
+  ---
+  duration_ms: 189.547375
+  type: 'test'
+  ...
+# Subtest: fabricated or assistant text cannot be an explicit user-memory source
+ok 44 - fabricated or assistant text cannot be an explicit user-memory source
+  ---
+  duration_ms: 181.807125
+  type: 'test'
+  ...
+# Subtest: commit response loss resumes from scoped receipt with one personal revision
+ok 45 - commit response loss resumes from scoped receipt with one personal revision
+  ---
+  duration_ms: 198.790958
+  type: 'test'
+  ...
+# Subtest: user-source inspection does not inherit unrelated model inputs or form a work-memory cycle
+ok 46 - user-source inspection does not inherit unrelated model inputs or form a work-memory cycle
+  ---
+  duration_ms: 189.034167
+  type: 'test'
+  ...
+# Subtest: recorded derived-copy quarantine does not revoke the new user correction it will consume
+ok 47 - recorded derived-copy quarantine does not revoke the new user correction it will consume
+  ---
+  duration_ms: 198.778584
+  type: 'test'
+  ...
+# Subtest: sqlite: actual memory tools recall personal cards across work scopes without accepting caller ownership
+ok 48 - sqlite: actual memory tools recall personal cards across work scopes without accepting caller ownership
+  ---
+  duration_ms: 214.972417
+  type: 'test'
+  ...
+# Subtest: documents: actual memory tools recall personal cards across work scopes without accepting caller ownership
+ok 49 - documents: actual memory tools recall personal cards across work scopes without accepting caller ownership
+  ---
+  duration_ms: 541.51875
+  type: 'test'
+  ...
+# Subtest: sqlite/sqlite: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+ok 50 - sqlite/sqlite: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+  ---
+  duration_ms: 498.8655
+  type: 'test'
+  ...
+# Subtest: sqlite/documents: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+ok 51 - sqlite/documents: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+  ---
+  duration_ms: 1607.359291
+  type: 'test'
+  ...
+# Subtest: file-journal/sqlite: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+ok 52 - file-journal/sqlite: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+  ---
+  duration_ms: 573.50725
+  type: 'test'
+  ...
+# Subtest: file-journal/documents: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+ok 53 - file-journal/documents: explicit personal recall reaches the real packet, frame and reopened resume without copying the old session
+  ---
+  duration_ms: 1959.877458
+  type: 'test'
+  ...
+# Subtest: omitted, forged or unavailable personal context cannot stage or validate a selected work frame
+ok 54 - omitted, forged or unavailable personal context cannot stage or validate a selected work frame
+  ---
+  duration_ms: 284.610625
+  type: 'test'
+  ...
+# Subtest: selection is idempotent and refuses a same-goal newer input, foreign owner, and a cancelled work
+ok 55 - selection is idempotent and refuses a same-goal newer input, foreign owner, and a cancelled work
+  ---
+  duration_ms: 190.017958
+  type: 'test'
+  ...
+# Subtest: sqlite: forgetting during a real delayed synthetic model call rejects the reply while preserving reported usage
+ok 56 - sqlite: forgetting during a real delayed synthetic model call rejects the reply while preserving reported usage
+  ---
+  duration_ms: 360.522084
+  type: 'test'
+  ...
+# Subtest: documents: forgetting during a real delayed synthetic model call rejects the reply while preserving reported usage
+ok 57 - documents: forgetting during a real delayed synthetic model call rejects the reply while preserving reported usage
+  ---
+  duration_ms: 1283.08875
+  type: 'test'
+  ...
+# Subtest: a changed revision invalidates an existing frame and the replacement needs a fresh explicit selection
+ok 58 - a changed revision invalidates an existing frame and the replacement needs a fresh explicit selection
+  ---
+  duration_ms: 344.170542
+  type: 'test'
+  ...
+# Subtest: clear preserves a pre-existing work-memory quarantine review and its completion gate
+ok 59 - clear preserves a pre-existing work-memory quarantine review and its completion gate
+  ---
+  duration_ms: 186.013416
+  type: 'test'
+  ...
+# Subtest: recall preserves a pre-existing work-memory quarantine review and its completion gate
+ok 60 - recall preserves a pre-existing work-memory quarantine review and its completion gate
+  ---
+  duration_ms: 207.187
+  type: 'test'
+  ...
+# Subtest: replacing a selection waives only its newly created quarantine review
+ok 61 - replacing a selection waives only its newly created quarantine review
+  ---
+  duration_ms: 214.640375
+  type: 'test'
+  ...
+1..61
+# tests 61
+# suites 0
+# pass 61
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 47488.82675
