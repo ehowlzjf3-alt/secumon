@@ -2,6 +2,8 @@
 
 2026-09-09 · checkpoint407. **준비된 환경의 기존 필수 검사는 0묶음이며 현재 가능한 검증을 마감했다.** 다음은 선택한 외부 환경의 인수이고, 전체 C10/goal 완료는 아니다.
 
+실제 Windows 시험 호스트 또는 사내 MCP 연결 정보를 요청해 둔 상태다. 저장소의 안내·예시를 실제 접속 대상으로 사용하지 않는다. [외부 입력 대기 기록](external-acceptance-wait.json)을 기준으로 연결 정보가 제공된 범위부터 이어간다.
+
 마지막 V10-07은 실제 NAS PG15.18에서 pass/exit0이다. pending 224개가 전체 64MiB 한도를 넘자 `postgres_transfer_limit`으로 거절했고 원자료·부분 백업·입력의 pending 상태를 보존했다. source fence 3개는 모두 null이다.
 
 로그·case가 없던 첫 exit0은 성공에 포함하지 않았다. 동일 동결 fixture의 wrapper 실행에서 진입·실제 결과·반환을 확인했다. 모델·workflow·tool 실행, 제품 변경·재빌드·전체 회귀는 0이다.
