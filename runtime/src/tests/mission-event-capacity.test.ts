@@ -22,7 +22,7 @@ async function preserve(f: Fixture, original: Awaited<ReturnType<typeof records>
   assert.deepEqual(events.slice(0, original.events.length), original.events);
   for (const item of original.receipts) assert.deepEqual(await f.state.receipt(f.workId, item.commandId), item.receipt);
   for (const item of original.artifacts) {
-    assert.deepEqual(state.artifacts.find(ref => ref.id === item.ref.id), item.ref);
+    // A superseded mission head leaves the current projection; its original receipt and bytes remain authoritative and retained.
     assert.deepEqual(await f.artifacts.get(item.ref, state.policy), item.bytes);
   }
   assert.deepEqual(state.goal, original.state.goal); assert.deepEqual(state.policy, original.state.policy);
@@ -32,7 +32,7 @@ async function preserve(f: Fixture, original: Awaited<ReturnType<typeof records>
 }
 
 /** Bounded setup, not 512 executed intakes or an ACK-authority test. Publish a copied valid checkpoint through real artifact/receipt ports. */
-async function seeded(t: TestContext, stateBackend: Backend, size: 511 | 512) {
+async function seeded(t: TestContext, stateBackend: Backend, size: 511 | 512, capacityClosed = false) {
   const f = await missionFixture(t, ['observations'], { stateBackend });
   await f.missions.register(f.workId, rule());
   const initial = await f.checkpoint();
@@ -45,12 +45,13 @@ async function seeded(t: TestContext, stateBackend: Backend, size: 511 | 512) {
   const originalBody: Record<string, unknown> = JSON.parse(new TextDecoder().decode(initial.bytes));
   const value = { ...originalBody, ...initial.value, cursor: 42, snapshotDigest: 'capacity-original-snapshot', nextPollAt: f.clock.now(),
     idlePolls: 2, seen, events: [history.at(-1)!], pendingRun: false,
+    status: capacityClosed ? 'closed' as const : 'active' as const, reason: capacityClosed ? 'event_capacity' : null,
     // Preservation marker only. Actual adopted-read issuance/authority stays covered by mission-read-ack.test.ts.
     acknowledgedRead: { attemptId: 'fixture-capacity-ack-attempt', resultId: 'fixture-capacity-ack-result' } };
   const bytes = new TextEncoder().encode(JSON.stringify(value));
   const artifact = await f.artifacts.put(bytes, { tenantId: initial.work.policy.tenantId,
     labels: [...initial.work.policy.allowedLabels], mediaType: 'application/json' });
-  const subscription = { ...initial.subscription, cursor: value.cursor, checkpointId: `mission:${artifact.sha256}` };
+  const subscription = { ...initial.subscription, cursor: value.cursor, status: value.status, checkpointId: `mission:${artifact.sha256}` };
   await transact(f.bundle.services, f.workId, subscription.checkpointId, 'mission_checkpoint',
     asJson({ subscriptionId: subscription.id, artifact }), next => {
       next.subscriptions = next.subscriptions!.map(prior => prior.id === subscription.id ? subscription : prior);
@@ -62,30 +63,39 @@ async function seeded(t: TestContext, stateBackend: Backend, size: 511 | 512) {
   return { f, history, value, original: await records(f), checkpoint: await f.checkpoint() };
 }
 
-for (const backend of backends) test(`mission event capacity ${backend}: an unadmitted page preserves the prior cursor, original body and ACK across reopen`, { timeout: 60000 }, async t => {
-  const { f, value, original, checkpoint } = await seeded(t, backend, 512);
+for (const backend of backends) test(`mission event capacity ${backend}: explicit legacy continuation retains the source position and then admits the previously rejected page`, { timeout: 60000 }, async t => {
+  const { f, value, original, checkpoint } = await seeded(t, backend, 512, true);
   const fresh = { ...event('capacity-unadmitted'), body: { original: 'not admitted at capacity' } };
   const page = { cursor: value.cursor + 1, snapshotDigest: 'unadmitted-snapshot', events: [fresh] };
   f.page('observations', page);
-  await f.missions.refresh(f.workId);
-  const closed = await f.checkpoint(), expected = { ...value, status: 'closed', reason: 'event_capacity' };
-  assert.deepEqual(JSON.parse(new TextDecoder().decode(closed.bytes)), expected);
-  assert.equal(closed.subscription.cursor, checkpoint.subscription.cursor); assert.equal(closed.subscription.status, 'closed');
-  assert.equal(closed.work.revision, original.state.revision + 1);
-  assert.deepEqual(closed.work.notifications, []);
-  assert.equal(closed.work.obligations.find(item => item.id === 'mission-wait')?.status, 'satisfied');
+  assert.deepEqual(await f.missions.register(f.workId, rule()), checkpoint.work, 'registration cannot implicitly continue a legacy capacity closure');
+  assert.deepEqual(await f.missions.refresh(f.workId), checkpoint.work); assert.equal(f.sourceCalls.length, 0);
   assert.deepEqual(await f.missions.readEvents(f.workId, rule().id), {
     rule: rule(), events: value.events, cursor: value.cursor, status: 'closed', reason: 'event_capacity',
   });
-  assert.equal(closed.work.artifacts.length, original.state.artifacts.length + 1, 'only the closed checkpoint is published, not a claimed intake of the new page');
-  assert.equal(f.sourceCalls.length, 1); assert.equal(f.sourceCalls[0]!.cursor, value.cursor);
-  assert.deepEqual(page.events, [fresh]);
-  await preserve(f, original);
   await f.reopen();
-  assert.deepEqual(await f.current(), closed.work); assert.deepEqual((await f.checkpoint()).bytes, closed.bytes);
-  assert.deepEqual(await f.state.receipt(f.workId, closed.subscription.checkpointId), closed.receipt);
-  assert.deepEqual(await f.missions.register(f.workId, rule()), closed.work, 'capacity closure is not implicitly resumed in the same goal');
-  assert.deepEqual(await f.missions.refresh(f.workId), closed.work); assert.equal(f.sourceCalls.length, 1);
+  assert.deepEqual((await f.checkpoint()).bytes, checkpoint.bytes);
+  await f.missions.continueAfterCapacity(f.workId, rule().id);
+  const continued = await f.checkpoint(), continuedBody = JSON.parse(new TextDecoder().decode(continued.bytes));
+  assert.equal(continued.value.status, 'active'); assert.equal(continued.value.reason, null);
+  assert.equal(continued.value.cursor, value.cursor); assert.equal(continued.value.snapshotDigest, value.snapshotDigest);
+  assert.deepEqual(continued.value.seen, value.seen); assert.deepEqual(continued.value.events, value.events);
+  assert.deepEqual(continuedBody.acknowledgedRead, value.acknowledgedRead); assert.equal(continuedBody.capacityContinuations, 1);
+  assert.equal(continued.value.idlePolls, value.idlePolls); assert.equal(continued.value.resumes, value.resumes);
+  assert.equal(continued.value.noProgress, value.noProgress); assert.equal(f.sourceCalls.length, 0);
+  await preserve(f, original);
+  await f.missions.refresh(f.workId);
+  const admitted = await f.checkpoint(), admittedBody = JSON.parse(new TextDecoder().decode(admitted.bytes));
+  assert.equal(admitted.value.status, 'active'); assert.equal(admitted.value.reason, null);
+  assert.equal(admitted.value.cursor, page.cursor); assert.equal(admitted.value.snapshotDigest, page.snapshotDigest);
+  assert.deepEqual(admitted.value.events, [fresh]); assert.equal(admitted.value.pendingRun, true);
+  assert.deepEqual(admitted.value.seen, [{ id: fresh.id, digest: f.bundle.services.digester.digest(asJson(fresh)) }]);
+  assert.deepEqual(admittedBody.seenHistory, { checkpointId: continued.subscription.checkpointId, revision: continued.receipt.state.revision });
+  assert.equal(Object.hasOwn(admittedBody, 'acknowledgedRead'), false);
+  assert.equal(admittedBody.capacityContinuations, 1); assert.equal(f.sourceCalls.length, 1);
+  assert.equal(f.sourceCalls[0]!.cursor, value.cursor); assert.equal(admitted.work.notifications?.length, 1);
+  await f.reopen(); assert.deepEqual((await f.checkpoint()).bytes, admitted.bytes);
+  assert.deepEqual((await f.missions.readEvents(f.workId, rule().id)).events, [fresh]);
   await preserve(f, original);
 });
 

@@ -1,0 +1,165 @@
+{
+  "checkpoint": 401,
+  "recordedAt": "2026-09-09",
+  "status": "C09_retained_history_local_verified_C05_C06_next",
+  "baselineCommit": "b9fa88d5acf051bc34e69d300b4b5a7f3003cc7a",
+  "plan": "design/chapters/C09-retained-history-plan.md",
+  "result": "design/chapters/C09-retained-history-result.md",
+  "usage": "design/chapters/C09-retained-history-usage.md",
+  "newUnique": 8,
+  "updatedUnique": 4,
+  "relatedUnique": 63,
+  "allUnique": 75,
+  "mixedBuildEvidence": true,
+  "allRerunAtFinalSource": false,
+  "finalBuild": "C09-retained-history-build3",
+  "finalSource": {
+    "build": "C09-retained-history-build3",
+    "node": "v24.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "sourceDigest": "a9414ec860d052cb5f117ce9a73f076a6bf5e5e7b144933cf7130d0fcaeb21c0",
+    "filesDigest": "edf6d7bb00abeef58f04686fee244d0222926f60b4f7beeb8e2e05241b4b2232",
+    "fileCount": 2586
+  },
+  "finalSourceEvidence": "runtime/evidence/checkpoint401-final-source.json",
+  "measurementsEvidence": "runtime/evidence/checkpoint401-measurements.json",
+  "buildComparison": "runtime/evidence/checkpoint401-build3-comparison.json",
+  "checks": {
+    "buildExitCode": 0,
+    "coreExitCode": 0,
+    "architectureInspected": 204,
+    "architectureViolations": 0,
+    "finalBuildLog": "runtime/evidence/C09-retained-history-build3.log",
+    "coreLog": "runtime/evidence/C09-retained-history-core1.log",
+    "architectureLog": "runtime/evidence/C09-retained-history-architecture1.log",
+    "runs": [
+      {
+        "build": "build1",
+        "log": "runtime/evidence/C09-retained-history-target1.log",
+        "exitCode": 1,
+        "tests": 12,
+        "pass": 10,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      {
+        "build": "build1",
+        "log": "runtime/evidence/C09-retained-history-regression1.log",
+        "exitCode": 0,
+        "tests": 48,
+        "pass": 48,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      {
+        "build": "build1",
+        "log": "runtime/evidence/C09-retained-history-resident1.log",
+        "exitCode": 0,
+        "tests": 15,
+        "pass": 15,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      {
+        "build": "build2",
+        "log": "runtime/evidence/C09-retained-history-seen2.log",
+        "exitCode": 1,
+        "tests": 3,
+        "pass": 2,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      {
+        "build": "build3",
+        "log": "runtime/evidence/C09-retained-history-seen3.log",
+        "exitCode": 0,
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      }
+    ],
+    "reused": "72 passes outside mission-seen-history.test from build1; its two retained-boundary cases passed build2 and its corrected 544-event case passed build3. Product binaries remain identical. Core/import graph checks reused from build1.",
+    "finalSourceMatchesPreTest": true
+  },
+  "verifiedScope": [
+    "Current projection replaces only a verified prior mission/resident head; unrelated and currently shared references remain while all original artifacts/events/receipts stay stored",
+    "Historical resident controls read the exact original receipt and validate current policy, generation, scope and raw SHA; ordinary head reads require current membership",
+    "Mission history keeps <=512 IDs per segment and links exact prior checkpoint receipt/revision; historical duplicate/conflict checks traverse decreasing revisions in the same work/goal/generation/rule",
+    "Legacy event_capacity closures require explicit continueAfterCapacity; cursor/originals/ACK/limits retained and ordinary register does not reopen",
+    "544 unique synthetic events across 17 real source pages and local read workflows, same goal, then oldest-page duplicate and changed-body conflict after reopen",
+    "SQLite/file-journal resident seven-poll comparison: current refs22 to1; original checkpoint objects22 retained; final poll exists checks66 to6; final commit request10167 to at most4938bytes"
+  ],
+  "limitations": [
+    "The 544-event fixture uses a finite fixture-only productivity allowance32 and mission maxNoProgress16; default production limits are unchanged. It deliberately reads the same original and does not prove useful reasoning or 544 completed tasks.",
+    "Mission boundary source pages/events are synthetic; some 511/512 legacy/permission cases seed valid originals via real storage ports, not hundreds of actual operations.",
+    "Current-head pruning starts with new publications and leaves legacy accumulated refs and references shared by other live structures. Terminal completion closure refs can remain.",
+    "Segment misses traverse retained full segments; file-journal validates original records. History/disk usage is not constant and no cold relocation/deletion was implemented.",
+    "Raw original storage and deletion-generation restrictions are preserved; explicit legacy capacity continuation is a host API, not a new CLI or messenger command."
+  ],
+  "initialVerificationIssues": [
+    {
+      "build": "build1",
+      "failures": 2,
+      "reason": "Capacity fixture ended its actual incomplete-goal workflow without a next-page wait; permission fixture used invalid generation0",
+      "productChangeNeeded": false
+    },
+    {
+      "build": "build2",
+      "failures": 1,
+      "reason": "Repeated identical reads reached existing WorkProgress default no_progress_limit; fixture-only finite allowance added before the run",
+      "diagnostic": "runtime/evidence/C09-retained-history-diagnostic.log",
+      "productChangeNeeded": false
+    }
+  ],
+  "measurements": {
+    "acceptedUniqueEvents": 544,
+    "sourcePages": 17,
+    "checkpointBytes": 3921,
+    "currentSeen": 32,
+    "anchoredSegments": 1,
+    "actualModelApiCalls": 0,
+    "localReadCalls": 17
+  },
+  "storageHandoff": {
+    "status": "not_run",
+    "local": [
+      "Verify retained historical mission/resident originals through existing offline backup/restore and storage-transfer acceptance after current-head pruning",
+      "Measure selected deployment history size and restore/transfer time against existing limits; local backup currently caps total4GiB/per-file1GiB/100000 entries and PostgreSQL transfer total64MiB",
+      "File-journal full original replay cost and disk accumulation remain; current-reference bounds are not total-storage bounds"
+    ],
+    "external": [
+      "Current Linux/native Windows and actual PostgreSQL backup/transfer/recovery",
+      "Selected operational retention period, capacity and recovery objectives"
+    ],
+    "reuse": [
+      "runtime/src/infrastructure/agent-lifecycle.ts: backupAgent captures the full file tree",
+      "runtime/src/infrastructure/postgres-transfer-tables.ts: original events/state_receipts/session inbox are transferred"
+    ],
+    "newColdArchiveSubsystemAdded": false
+  },
+  "actualModelApi": "stopped_by_user",
+  "externalServiceConnectionsRun": false,
+  "notRun": [
+    "Full suite and browser interactions; no UI changes",
+    "Retained-original backup/restore/transfer and selected capacity validation in C10",
+    "Current Linux/native Windows, actual PostgreSQL, corporate MCP/Knox/external A2A and operational deployment",
+    "Actual model/API quality trials remain stopped"
+  ],
+  "remaining": [
+    "C05 policy regrant to original stored completion; C06 personal-memory HTTP permissions/latency/browser",
+    "C10 earliest restore interruption, retained-original backup/transfer and local capacity acceptance, installation; current Linux/native Windows/real PostgreSQL",
+    "Final integration and actual corporate MCP/Knox/external A2A, operational retention/capacity and deployment; model/API trials remain stopped"
+  ],
+  "goalComplete": false,
+  "chapterComplete": false,
+  "next": "C05 policy regrant to original stored completion; C06 personal-memory HTTP permissions/latency/browser",
+  "evidence": "runtime/evidence/checkpoint401.json",
+  "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
+}

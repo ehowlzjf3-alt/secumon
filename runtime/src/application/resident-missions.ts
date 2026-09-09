@@ -15,6 +15,7 @@ import { asJson } from './plan-validator.js';
 import { frozen } from './resource-contracts.js';
 import { transact } from './work-transactions.js';
 import { observePendingPoll } from './observation-control-watch.js';
+import { releaseObservationHead } from './observation-checkpoint-retention.js';
 
 const id = z.string().min(1).max(256), count = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER), hash = z.string().regex(/^[a-f0-9]{64}$/);
 export const ResidentMissionSchema = z.strictObject({ rule: MissionRuleSchema, sessionId: id, binding: BindingInputSchema.omit({ session: true }),
@@ -33,6 +34,7 @@ const CheckpointSchema = z.strictObject({ schemaVersion: z.literal(1), workId: i
   seen: z.array(z.strictObject({ id, digest: hash, workId: id })).max(512),
   pending: z.array(z.strictObject({ event: MissionEventSchema, workId: id.nullable(), started: z.boolean() })).max(32) });
 type Checkpoint = z.infer<typeof CheckpointSchema>;
+type Publication = NonNullable<Awaited<ReturnType<RuntimeServices['state']['receipt']>>>;
 export interface ResidentMissionDependencies {
   services: RuntimeServices; sessions: SessionService; workflow: WorkflowRuntime; agentId: string; scope: string;
   actor: WorkActor; signal: AbortSignal; sources: readonly MissionEventSource[];
@@ -97,16 +99,18 @@ export class ResidentMissions {
     if (this.digest(await this.state(workId, signal)) !== this.digest(state)) changed();
     return { state, ...publication };
   }
-  private async readCheckpoint(state: WorkState, subscription: ExternalSubscription, signal: AbortSignal) {
+  private async readCheckpoint(state: WorkState, subscription: ExternalSubscription, signal: AbortSignal, knownPublication?: Publication) {
     this.access(state, signal);
     if (!subscription || !subscription.checkpointId.startsWith('resident:')) throw new Error('resident_not_registered');
-    const artifact = state.artifacts.find(value => value.sha256 === subscription.checkpointId.slice(9));
+    // Historical lookup requires the exact command receipt; ordinary current-head reads never fall back to history.
+    if (knownPublication && (knownPublication.state.id !== state.id || knownPublication.state.createdAt !== state.createdAt)) changed();
+    const artifact = (knownPublication?.state ?? state).artifacts.find(value => value.sha256 === subscription.checkpointId.slice(9));
     if (!artifact || !visibleArtifact(state, artifact) || artifact.byteLength > 512 * 1024) throw new Error('resident_checkpoint_unavailable');
     const bytes = await this.deps.services.artifacts.get(artifact, state.policy), hashed = await crypto.subtle.digest('SHA-256', new Uint8Array(bytes).buffer);
     if (bytes.byteLength !== artifact.byteLength || Array.from(new Uint8Array(hashed), byte => byte.toString(16).padStart(2, '0')).join('') !== artifact.sha256) changed();
     const checkpoint = CheckpointSchema.parse(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)));
     const publication = this.publication(checkpoint, subscription, artifact);
-    const receipt = await this.deps.services.state.receipt(state.id, publication.commandId);
+    const receipt = knownPublication ?? await this.deps.services.state.receipt(state.id, publication.commandId);
     if (!receipt) throw new Error('resident_mission_changed');
     if (receipt.state.id !== state.id || receipt.state.createdAt !== state.createdAt || receipt.state.revision > state.revision ||
       this.digest(receipt.state.policy) !== this.digest(state.policy) || this.digest(receipt.state.goal) !== this.digest(state.goal) ||
@@ -128,7 +132,7 @@ export class ResidentMissions {
             !!checkpoint.suspended || checkpoint.reason !== null))) changed();
     }
     this.source(checkpoint.definition);
-    return { checkpoint, commandRevision: receipt.state.revision, receiptDigest: this.digest(receipt) };
+    return { checkpoint, artifact, commandRevision: receipt.state.revision, receiptDigest: this.digest(receipt) };
   }
   /** Recover only the exact intended publication; a later resume may exist, but cannot expand the interruption cutoff. */
   private async controlReceipt(state: WorkState, checkpoint: Checkpoint, artifact: ArtifactRef, subscription: ExternalSubscription, signal: AbortSignal) {
@@ -165,7 +169,10 @@ export class ResidentMissions {
     if (command) checkpoint.controlPublication = command;
     const bytes = new TextEncoder().encode(JSON.stringify(checkpoint));
     if (bytes.byteLength > 512 * 1024) throw new Error('resident_checkpoint_capacity');
-    this.access(state, signal); const artifact = await this.deps.services.artifacts.put(bytes, { tenantId: state.policy.tenantId, labels: [...state.policy.allowedLabels], mediaType: 'application/json' });
+    this.access(state, signal);
+    const previousSubscription = state.subscriptions?.find(value => value.provider === 'resident-mission' && value.id === this.key(checkpoint.definition.rule.id));
+    const previous = previousSubscription ? (await this.readCheckpoint(state, previousSubscription, signal)).artifact : undefined;
+    const artifact = await this.deps.services.artifacts.put(bytes, { tenantId: state.policy.tenantId, labels: [...state.policy.allowedLabels], mediaType: 'application/json' });
     const subscription = { id: this.key(checkpoint.definition.rule.id), provider: 'resident-mission', resourceId: checkpoint.definition.rule.resourceId,
       goalRevision: state.goal.revision, generation: checkpoint.generation, cursor: checkpoint.cursor, status: checkpoint.status, checkpointId: `resident:${artifact.sha256}` };
     const publication = this.publication(checkpoint, subscription, artifact);
@@ -175,6 +182,8 @@ export class ResidentMissions {
         if (this.digest(next) !== this.digest(state)) changed(); this.access(next, signal);
         next.status = 'paused'; next.statusReason = controllerReason;
         next.subscriptions = [...(next.subscriptions ?? []).filter(value => value.id !== subscription.id), subscription];
+        // Prune only the verified superseded head from the current projection. Original objects/events/receipts remain immutable.
+        releaseObservationHead(next, subscription.id, previous, artifact);
         if (!next.artifacts.some(value => value.id === artifact.id)) next.artifacts.push(artifact);
       }, async () => { if (this.digest(await this.state(state.id, signal)) !== this.digest(state)) changed(); });
     } catch (error) {
@@ -252,7 +261,7 @@ export class ResidentMissions {
     if (!receipt) return null;
     const subscription = receipt.state.subscriptions?.find(value => value.provider === 'resident-mission');
     if (!subscription) throw new Error('resident_mission_changed');
-    const original = await this.readCheckpoint(state, subscription, this.deps.signal), recorded = original.checkpoint.controlPublication;
+    const original = await this.readCheckpoint(state, subscription, this.deps.signal, receipt), recorded = original.checkpoint.controlPublication;
     if (original.receiptDigest !== this.digest(receipt) || !recorded || recorded.commandId !== command.commandId ||
       this.digest(original.checkpoint.definition) !== this.digest(checkpoint.definition)) changed();
     if (this.digest(recorded) !== this.digest(command)) throw new Error('resident_control_conflict');

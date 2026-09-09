@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: mission event capacity sqlite: explicit legacy continuation retains the source position and then admits the previously rejected page
+ok 1 - mission event capacity sqlite: explicit legacy continuation retains the source position and then admits the previously rejected page
+  ---
+  duration_ms: 221.732
+  type: 'test'
+  ...
+# Subtest: mission event capacity file-journal: explicit legacy continuation retains the source position and then admits the previously rejected page
+ok 2 - mission event capacity file-journal: explicit legacy continuation retains the source position and then admits the previously rejected page
+  ---
+  duration_ms: 361.97275
+  type: 'test'
+  ...
+# Subtest: mission event capacity: both backends accept exact duplicate pages at 512 and reject changed original IDs
+ok 3 - mission event capacity: both backends accept exact duplicate pages at 512 and reject changed original IDs
+  ---
+  duration_ms: 546.48975
+  type: 'test'
+  ...
+# {"backend":"sqlite","boundary":"512-duplicate-and-conflict","polls":2,"modelCalls":0,"toolCalls":0}
+# {"backend":"file-journal","boundary":"512-duplicate-and-conflict","polls":2,"modelCalls":0,"toolCalls":0}
+# Subtest: mission event capacity: both backends admit the one fresh event that reaches exactly 512
+ok 4 - mission event capacity: both backends admit the one fresh event that reaches exactly 512
+  ---
+  duration_ms: 460.262375
+  type: 'test'
+  ...
+# {"backend":"sqlite","boundary":"511-to-512","polls":1,"modelCalls":0,"toolCalls":0}
+# {"backend":"file-journal","boundary":"511-to-512","polls":1,"modelCalls":0,"toolCalls":0}
+# Subtest: mission seen history admits 544 same-goal originals through actual workflow pages and deduplicates the oldest page after reopen
+not ok 5 - mission seen history admits 544 same-goal originals through actual workflow pages and deduplicates the oldest page after reopen
+  ---
+  duration_ms: 1034.359
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-seen-history.test.js:45:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'closed' !== 'active'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'active'
+  actual: 'closed'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-seen-history.test.js:82:16)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: mission seen history refuses a missing retained receipt after reopen without advancing the source cursor
+ok 6 - mission seen history refuses a missing retained receipt after reopen without advancing the source cursor
+  ---
+  duration_ms: 335.529458
+  type: 'test'
+  ...
+# Subtest: mission seen history applies the current artifact restriction to retained segments without treating their IDs as fresh
+not ok 7 - mission seen history applies the current artifact restriction to retained segments without treating their IDs as fresh
+  ---
+  duration_ms: 320.784583
+  type: 'test'
+  location: '/Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-seen-history.test.js:144:1'
+  failureType: 'testCodeFailure'
+  error: 'invalid_contract'
+  code: 'invalid_contract'
+  stack: |-
+    parseContract (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/contracts.js:236:15)
+    validateCommit (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/store-contract.js:18:19)
+    SqliteStateRepository.commit (file:///Users/seunghanee/Documents/secumon/runtime/dist/infrastructure/sqlite-state.js:121:19)
+    commitWithArtifacts (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/commit-artifacts.js:20:18)
+    async transact (file:///Users/seunghanee/Documents/secumon/runtime/dist/application/work-transactions.js:22:24)
+    async Object.edit (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-runtime-fixture.js:110:38)
+    async TestContext.<anonymous> (file:///Users/seunghanee/Documents/secumon/runtime/dist/tests/mission-seen-history.test.js:146:5)
+    async Test.run (node:internal/test_runner/test:1404:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:969:7)
+  ...
+# Subtest: resident history retention sqlite: normal empty polls keep current refs bounded and retain every original publication
+ok 8 - resident history retention sqlite: normal empty polls keep current refs bounded and retain every original publication
+  ---
+  duration_ms: 7222.291959
+  type: 'test'
+  ...
+# {"backend":"sqlite","polls":7,"committedPublications":21,"currentArtifactRefs":1,"retainedCheckpointObjects":22,"minRequestBytes":4936,"maxRequestBytes":4938,"serializedReceiptStateBytes":96115,"firstPollExistsCalls":6,"lastPollExistsCalls":6,"firstPollHashBytes":14396,"lastPollHashBytes":14576,"measurement":"Actual Node artifact counters and serialized committed request/receipt states; not physical disk I/O, archive deletion or bounded journal replay."}
+# Subtest: resident history retention file-journal: normal empty polls keep current refs bounded and retain every original publication
+ok 9 - resident history retention file-journal: normal empty polls keep current refs bounded and retain every original publication
+  ---
+  duration_ms: 8146.663417
+  type: 'test'
+  ...
+# {"backend":"file-journal","polls":7,"committedPublications":21,"currentArtifactRefs":1,"retainedCheckpointObjects":22,"minRequestBytes":4936,"maxRequestBytes":4938,"serializedReceiptStateBytes":96115,"firstPollExistsCalls":6,"lastPollExistsCalls":6,"firstPollHashBytes":14396,"lastPollHashBytes":14576,"measurement":"Actual Node artifact counters and serialized committed request/receipt states; not physical disk I/O, archive deletion or bounded journal replay."}
+# Subtest: resident history retention: a pruned historical control replays from its exact receipt after later commands and reopen
+ok 10 - resident history retention: a pruned historical control replays from its exact receipt after later commands and reopen
+  ---
+  duration_ms: 1189.260583
+  type: 'test'
+  ...
+# Subtest: resident history retention: historical lookup respects current blocked refs and actor policy while current heads require current membership
+ok 11 - resident history retention: historical lookup respects current blocked refs and actor policy while current heads require current membership
+  ---
+  duration_ms: 955.712
+  type: 'test'
+  ...
+# Subtest: resident history retention: another current structure and unrelated artifacts keep their original references
+ok 12 - resident history retention: another current structure and unrelated artifacts keep their original references
+  ---
+  duration_ms: 1406.644792
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 10
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22545.238167
