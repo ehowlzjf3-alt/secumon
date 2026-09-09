@@ -1,15 +1,21 @@
 # 남은 확인 작업
 
-2026-09-09 · checkpoint404. **마지막 로컬 세 묶음은 완료했다.** 원자료→세션→개인기억→실행 기록, 기존 기억 선택 만료/권한 오류·재선택·해제·재접속 화면, 문서형 기억의 반복 탐색 비용을 확인했다. macOS 관련 61개+계측 1개, NAS Linux 관련 17개가 통과했다. 현재 명명된 로컬 인수를 반복해서 늘리지 않는다.
+2026-09-09 · checkpoint405. **마지막 로컬 세 묶음과 실제 PostgreSQL의 두 정상 경로는 완료했다.** 로컬 기록 연결·기억 선택 복구 UI·문서 기억 비용은 checkpoint404 결과를 재사용한다(macOS 관련 61개+계측 1개, NAS Linux 관련 17개). 이번에는 실제 PG에서 SQLite/file-journal 원본의 이행·재접속·엔진 변경·백업/복원·중복 무변경을 확인했다. 현재 명명된 로컬 인수를 반복해서 늘리지 않는다.
 
 문서형 합성 업무의 로컬 처리 시간은 동일 계측에서 23.132→13.317초, 디렉터리 검사 호출은 6,601,410→3,568,230회였다. 원문 읽기량과 논리 조회 횟수는 유지했다. 이 단회 관측을 운영 응답 시간·SLA 충족으로 표시하지 않는다. 현재의 남은 비용과 파일 저널의 누적 원문 검증·디스크 사용은 제한으로 유지한다.
+
+## 기존 실제 PostgreSQL 잔여
+
+NAS의 별도 PG15.18 시험 환경과 host driver로 정상 경로를 실행했으므로 이제 DB 연결 설정 부족을 이 항목의 전부에 대한 장애물로 표시하지 않는다. 각 업무2·영수증21·세션/compact head, 18페이지67/71행을 확인했고 시험 서버는 종료했다. 제품 변경은 없었다.
+
+기존 V10-06/07/08/18 중 중간 이행/복원·pin 게시 중단, 동시 writer/관리 잠금, COMMIT 결과 불명, 지원 schema/호환 불일치, 동시 변경 백업·운영 용량은 이번 정상 흐름이 입증하지 않는다. 구체적인 범위와 근거는 [실PG 요구 대조](chapters/C10-postgres-real-audit.md)를 따른다. 전체 정상 흐름을 새 이유 없이 반복하지 않고 원래 미실행 조건만 이어간다. TLS/운영 역할·규모/복구 목표는 선택한 배치 환경에서 확인한다.
 
 ## 실제 환경·배치 선택이 필요한 인수
 
 | 항목 | 필요한 환경·입력 | 이어서 확인할 기존 범위 |
 | --- | --- | --- |
 | native Windows | Windows 시험 호스트, OS/CPU와 파일시스템, 사용할 계정·설치/담당 디렉터리, 해당 native 빌드 | 실제 설치·버전 선택·파일 handle/권한·복원·담당 격리. macOS/Linux 통과를 대신 사용하지 않음 |
-| 실제 PostgreSQL | 시험 DB 연결 설정, 역할·schema 권한, SQLite/파일 원본과 이행 대상 | 실제 DB에 원 events/receipts/session inbox 이행·재연결·복원 및 중복 무변경. 연결 비밀은 환경 설정으로 제공하고 문서/Git에 기록하지 않음 |
+| 운영 PostgreSQL | 선택할 운영 연결·역할·schema 권한·TLS 및 운영 자료량 | 정상 이행/복원은 NAS 실PG에서 확인. 위 기존 중단/동시성 분기와 실제 운영 역할·용량을 구분해 검증. 연결 비밀은 문서/Git에 기록하지 않음 |
 | 사내 MCP·Knox·외부 A2A | 기존 MCP endpoint/transport와 도구 schema, 계정·채널/시험 수신자, peer 연결·허용 업무 범위 | 실제 접수·진행·결과·중복/재접속, 원자료/권한·전달 결과. 연결부와 로컬 대역 결과는 이미 존재 |
 | 사내 앱의 컴퓨터 유즈 | 사용할 OS·앱·입력/관찰 연결과 대표 업무 | 실제 화면 관측·선택적 이미지·입력 결과 확인·오류 복구와 호출 비용. 기존 계측 localhost Chrome 인수를 비계측 앱/native 입력으로 확대하지 않음 |
 | 운영 규모·응답 시간·복원 목표 | 담당 수·동시 업무 수·보관 기간·대표 자료량·허용 응답 시간·복구 목표(RPO/RTO) | 현재 한도와 실제 자료를 대조하고 보관·백업/복원·이행 시간·조회 비용 확인. RPO는 허용 데이터 손실 시간, RTO는 복구까지 허용하는 시간 |
@@ -25,4 +31,4 @@
 
 현재 C01–C10의 기존 명명된 로컬 인수를 대조한 범위에서 추가 미구현·미실행 항목을 찾지 못했다. 위 실제 환경·운영 인수는 미완료다. 전체 goal을 완료로 표시하지 않는다. 외부 조건이 갖춰지면 그 조건에 해당하는 기존 인수만 이어가며, 이미 통과한 전체 시험을 다시 시작하지 않는다.
 
-근거: [최종 결과](chapters/final-integration-result.md), [요구 대조](chapters/final-integration-audit.md), [전체 백로그](implementation-backlog.json), [C06–C10 검증 계획](chapters/C06-C10-verification-plan.md), [C10 결과](chapters/C10-completion-result.md). 오래된 체크포인트의 다음 작업보다 이 최신 잔여 목록을 우선한다.
+근거: [실PG 결과](chapters/C10-postgres-real-result.md), [실PG 요구 대조](chapters/C10-postgres-real-audit.md), [최종 로컬 결과](chapters/final-integration-result.md), [로컬 요구 대조](chapters/final-integration-audit.md), [전체 백로그](implementation-backlog.json), [C06–C10 검증 계획](chapters/C06-C10-verification-plan.md), [C10 결과](chapters/C10-completion-result.md). 오래된 체크포인트의 다음 작업보다 이 최신 잔여 목록을 우선한다.

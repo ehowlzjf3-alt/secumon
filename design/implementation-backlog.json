@@ -1,5 +1,5 @@
 {
-  "revision": "v0.88",
+  "revision": "v0.89",
   "kind": "implementation_tracking",
   "phase_order": [
     "P0",
@@ -1966,7 +1966,7 @@
   "next_local_work_item": null,
   "active_sequence": "execution_chapters",
   "phase_order_scope": "legacy_capability_groups_not_current_execution_order",
-  "execution_state": "named_local_acceptance_complete_external_acceptance_pending",
+  "execution_state": "named_local_and_real_postgres_normal_paths_verified_recovery_external_acceptance_pending",
   "scope_note": "All discussed capabilities remain in scope; optional means deploy-time opt-in, not omitted implementation.",
   "execution_chapters": [
     {
@@ -6773,7 +6773,7 @@
     }
   ],
   "legacy_next_work_item": "P1-06",
-  "next_execution_chapter": null,
+  "next_execution_chapter": "C10",
   "reconciliation_documents": [
     "design/chapters/workspace-agent-defaults.md",
     "design/chapters/agent-lifecycle-and-memory-boundaries.md",
@@ -6843,13 +6843,13 @@
       "fullGoalAudit": false
     },
     "ordered_verification": {
-      "checkpoint": 404,
-      "status": "final_named_local_integration_verified_external_acceptance_pending",
-      "plan": "design/chapters/final-integration-plan.md",
-      "nextChapter": null,
+      "checkpoint": 405,
+      "status": "real_postgres_normal_paths_verified_recovery_external_acceptance_pending",
+      "plan": "design/chapters/C10-postgres-real-plan.md",
+      "nextChapter": "C10",
       "preparedIdentityTests": 23,
       "existingFixtureFilesAdapted": 1,
-      "result": "design/chapters/final-integration-result.md",
+      "result": "design/chapters/C10-postgres-real-result.md",
       "goalComplete": false,
       "C01": {
         "status": "local_targeted_verified",
@@ -8704,7 +8704,7 @@
         ],
         "followUp": "FinalIntegration (checkpoint404): exact record links and recovery UI verified; same document-memory HTTP flow observed at13.317s; operational response-time acceptance remains"
       },
-      "nextStage": "external_acceptance_configuration",
+      "nextStage": "postgres_remaining_named_recovery_acceptance",
       "C10Completion": {
         "checkpoint": 403,
         "status": "named_local_and_linux_acceptance_verified",
@@ -8733,7 +8733,8 @@
           "sourceDigest": "0d29f57fce03d0eafe388b2f231bea05096181a072f8c8637585db7a72e70a30",
           "filesDigest": "f5b0b01c4247a7da37815cb81c03ee7cb80a05a774daadec7f323ee4b715ff5f",
           "fileCount": 2610
-        }
+        },
+        "followUp": "FinalIntegration checkpoint404 verified local record/UI/cost flows; PostgresReal checkpoint405 verified two actual PostgreSQL normal migration/engine/backup/restore paths. Existing real recovery/operational branches remain."
       },
       "FinalIntegration": {
         "checkpoint": 404,
@@ -8753,6 +8754,49 @@
         },
         "goalComplete": false,
         "remainingInventory": "design/REMAINING-ACCEPTANCE.md"
+      },
+      "PostgresReal": {
+        "checkpoint": 405,
+        "status": "real_postgres_normal_paths_verified_recovery_external_acceptance_pending",
+        "plan": "design/chapters/C10-postgres-real-plan.md",
+        "result": "design/chapters/C10-postgres-real-result.md",
+        "usage": "design/chapters/C10-postgres-real-usage.md",
+        "audit": "design/chapters/C10-postgres-real-audit.md",
+        "evidence": "runtime/evidence/checkpoint405.json",
+        "flows": [
+          {
+            "backend": "sqlite",
+            "personalMemory": "documents",
+            "log": "runtime/evidence/C10-postgres-sqlite-run3.log",
+            "works": 2,
+            "receipts": 21,
+            "pages": 18,
+            "rows": 67
+          },
+          {
+            "backend": "file-journal",
+            "personalMemory": "sqlite",
+            "log": "runtime/evidence/C10-postgres-journal-run2.log",
+            "works": 2,
+            "receipts": 21,
+            "pages": 18,
+            "rows": 71
+          }
+        ],
+        "productSourceChanged": false,
+        "source": {
+          "sourceDigest": "34d86285b32363dd4d4c498885820725e43cf54b7705bfbca3c0c0883ac0f6a2",
+          "filesDigest": "7e55006e4b89076e3492649aa1234f0ec51ed07492acbd011ef47378a39055d3",
+          "fileCount": 2616
+        },
+        "remaining": [
+          "Existing V10-06/07/08/18 interrupted migration/restore/pin publication and unknown COMMIT recovery branches on actual PostgreSQL",
+          "Existing actual PostgreSQL concurrent writers/maintenance, backup snapshot contention and incompatible schema/purpose checks",
+          "Selected operational volume/retention/backup capacity and RPO/RTO acceptance",
+          "Native Windows, corporate MCP/Knox/A2A, uninstrumented apps and selected pilot environment",
+          "Real model/API trials remain stopped by user"
+        ],
+        "goalComplete": false
       }
     }
   }

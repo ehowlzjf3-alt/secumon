@@ -2443,3 +2443,10 @@ macOS/Linux의 설치에 native 파일을 필수로 확인하고, 명시 준비�
 [계획](chapters/final-integration-plan.md) · [결과](chapters/final-integration-result.md) · [사용법](chapters/final-integration-usage.md) · [요구 대조](chapters/final-integration-audit.md) · [체크포인트](../runtime/evidence/checkpoint404.json) · [남은 확인 목록](REMAINING-ACCEPTANCE.md)
 
 **다음은 실제 환경·선택 배치의 인수다.** 기존 C01–C10 요구와 명명된 로컬 인수를 대조한 범위에서 추가 로컬 미구현·미실행 사례를 찾지 못했다. native Windows, 실제 PostgreSQL 이행/복원, 사내 MCP/Knox/외부 A2A·비계측 사내 앱, 운영 응답 시간·보관/용량/복원 목표와 선택 파일럿은 미완료다. 필요한 환경·입력은 남은 목록에 기록했다. 과거 원인 미확정 관측과 운영 비용 제한도 유지한다. 로컬 단위 완료를 전체 goal/실운영 완료로 표시하지 않는다.
+
+## 체크포인트 405: 실제 PostgreSQL 두 정상 경로
+
+- SQLite+문서기억 / file-journal+SQLite기억에서 실제 PG 이관·재접속·중복 무변경·엔진 A/B 변경·결합 백업·독립 DB 복원·rebind/대사·재열기를 확인했다. 각 업무2/영수증21, 18페이지67/71행을 보존했다.
+- 첫 환경 준비의 홈0777, guidance 복사 누락, 엔진 bundle 권한 실패와 journal 페이지 순서 비교 오류를 교정하고 모든 원 실패 로그를 보존했다. 실제 원행을 중복까지 보존해 비교했으며 제품 변경0이다.
+- 현재 소스·컴파일2616개는 checkpoint404와 macOS/NAS 모두 일치. 기존 유효한 build/core/전체 회귀를 재사용했다. 실제 모델/API0·운영 서비스 변경0. 시험·PG 서버·SSH를 종료하고 임시 원자료를 보존했다.
+- 결과/usage/audit/checkpoint405/최신 잔여 목록을 저장했다. 두 정상 흐름은 V10-06/07/08/18 전체 인수가 아니다. 기존 중단·동시성·COMMIT 불명/호환, native Windows·사내 연동·운영 조건이 남는다. 전체 goal active.
